@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="IM_units"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="..\Classes;..\Support"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files>
+      <Item>
+        <Filename Value="..\Classes\Settings.pas"/>
+        <UnitName Value="Settings"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Classes\Exporters.pas"/>
+        <UnitName Value="Exporters"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Classes\Logs.pas"/>
+        <UnitName Value="Logs"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Classes\MRUs.pas"/>
+        <UnitName Value="MRUs"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\ControlsSupport.pas"/>
+        <UnitName Value="ControlsSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\DBSupport.pas"/>
+        <UnitName Value="DBSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\ffmpegSupport.pas"/>
+        <UnitName Value="ffmpegSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\FileSupport.pas"/>
+        <UnitName Value="FileSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\GPSSupport.pas"/>
+        <UnitName Value="GPSSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\ImageMagickSupport.pas"/>
+        <UnitName Value="ImageMagickSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\LazSerialSupport.pas"/>
+        <UnitName Value="LazSerialSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\netMCSupport.pas"/>
+        <UnitName Value="netMCSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\OSSupport.pas"/>
+        <UnitName Value="OSSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\StringSupport.pas"/>
+        <UnitName Value="StringSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\TesseractSupport.pas"/>
+        <UnitName Value="TesseractSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\VersionSupport.pas"/>
+        <UnitName Value="VersionSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\WGS84.pas"/>
+        <UnitName Value="WGS84"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\XPDFSupport.pas"/>
+        <UnitName Value="XPDFSupport"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazSerialPort"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCLBase"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

@@ -140,7 +140,7 @@ Var
 Implementation
 
 Uses
-  DBSupport, OSSupport, FileSupport, strutils, FileUtil, ExportersFPVectorial, Clipbrd;
+  DBSupport, OSSupport, FileSupport, strutils, FileUtil, Clipbrd;
 
 Function FindReplace(Const sStringToSearch, sFind, sReplace: String): String;
 Begin
@@ -842,7 +842,8 @@ Initialization
   ExporterFactory.RegisterExporter(TTextExporter);
   ExporterFactory.RegisterExporter(TCSVExporter);
   ExporterFactory.RegisterExporter(THTMLExporter);
-  ExporterFactory.RegisterExporter(TDocumentExporter);
+  //TODO - Move to ExportersFPVectorial.pas
+  //ExporterFactory.RegisterExporter(TDocumentExporter);
 
 Finalization;
   ExporterFactory.Free;

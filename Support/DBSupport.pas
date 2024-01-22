@@ -93,7 +93,7 @@ Const
 Implementation
 
 Uses
-  StringSupport, OSSupport, Math, sqldb, typinfo, ZAbstractRODataset, Forms;
+  StringSupport, OSSupport, Math, sqldb, typinfo, {$IFDEF ZEOS}ZAbstractRODataset, {$ENDIF}Forms;
 
 { TMemTable }
 
@@ -448,9 +448,12 @@ Begin
   Try
     // Not the correct place, but certainly a convenient place
     If Assigned(oDataset) Then
+      {$IFDEF ZEOS}
       If oDataset Is TZAbstractRODataset Then
         TZAbstractRODataset(oDataset).SortType := stIgnored
-      Else If oDataset Is TSQLQuery Then
+      Else
+      {$ENDIF}
+      If oDataset Is TSQLQuery Then
         TSQLQuery(oDataset).IndexName := '';
 
     oDataset.First;

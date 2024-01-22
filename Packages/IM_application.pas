@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit IM_Shared;
+unit IM_application;
 
 {$warn 5023 off : no warning about unused units}
 interface
@@ -12,7 +12,7 @@ uses
   FrameBase, FrameCSVs, FrameGrids, FrameImages, FramePDFViewers, FrameRelatedVideos, 
   FrameVideoPlayers, ControlsSupport, DBSupport, ffmpegSupport, FileSupport, ImageMagickSupport, 
   netMCSupport, OSSupport, StringSupport, VersionSupport, XPDFSupport, FrameHTMLs, 
-  DialogSQLFilter, ExportersFPVectorial, DialogDockManager, DockManagers, FrameVideoBase, 
+  DialogSQLFilter, DialogDockManager, DockManagers, FrameVideoBase, 
   FrameVideoDirectShow, PipelineDisplay, TesseractSupport, WGS84, GPSSupport, LazSerialSupport, 
   LazarusPackageIntf;
 
@@ -23,5 +23,5 @@ begin
 end;
 
 initialization
-  RegisterPackage('IM_Shared', @Register);
+  RegisterPackage('IM_application', @Register);
 end.
