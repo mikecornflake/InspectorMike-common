@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="IM_Shared"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="..\Display\Frames"/>
+        <OtherUnitFiles Value="..\Classes;..\Display\Dialogs;..\Display\Docks;..\Display\Forms;..\Display\Frames;..\Support"/>
+        <UnitOutputDirectory Value="$(TestDir)\lib\$(TargetCPU)-$(TargetOS)\Shared"/>
+      </SearchPaths>
+      <Linking>
+        <Debugging>
+          <UseHeaptrc Value="True"/>
+          <UseExternalDbgSyms Value="True"/>
+        </Debugging>
+      </Linking>
+      <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx5024="True"/>
+        </CompilerMessages>
+      </Other>
+    </CompilerOptions>
+    <Version Minor="1" Build="2"/>
+    <Files>
+      <Item>
+        <Filename Value="..\Classes\Exporters.pas"/>
+        <UnitName Value="Exporters"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Classes\MRUs.pas"/>
+        <UnitName Value="MRUs"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Classes\Settings.pas"/>
+        <UnitName Value="Settings"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Docks\DockBase.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Docks\DockBase.pas"/>
+        <UnitName Value="DockBase"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Forms\FormAbout.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Forms\FormAbout.pas"/>
+        <UnitName Value="FormAbout"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Forms\FormMain.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Forms\FormMain.pas"/>
+        <UnitName Value="FormMain"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Forms\FormMultiDock.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Forms\FormMultiDock.pas"/>
+        <UnitName Value="FormMultiDock"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Forms\FormPersistent.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Forms\FormPersistent.pas"/>
+        <UnitName Value="FormPersistent"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameBase.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameBase.pas"/>
+        <UnitName Value="FrameBase"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameCSVs.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameCSVs.pas"/>
+        <UnitName Value="FrameCSVs"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameGrids.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameGrids.pas"/>
+        <UnitName Value="FrameGrids"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameImages.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameImages.pas"/>
+        <UnitName Value="FrameImages"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FramePDFViewers.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FramePDFViewers.pas"/>
+        <UnitName Value="FramePDFViewers"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameRelatedVideos.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameRelatedVideos.pas"/>
+        <UnitName Value="FrameRelatedVideos"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameVideoPlayers.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameVideoPlayers.pas"/>
+        <UnitName Value="FrameVideoPlayers"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\ControlsSupport.pas"/>
+        <UnitName Value="ControlsSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\DBSupport.pas"/>
+        <UnitName Value="DBSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\ffmpegSupport.pas"/>
+        <UnitName Value="ffmpegSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\FileSupport.pas"/>
+        <UnitName Value="FileSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\ImageMagickSupport.pas"/>
+        <UnitName Value="ImageMagickSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\netMCSupport.pas"/>
+        <UnitName Value="netMCSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\OSSupport.pas"/>
+        <UnitName Value="OSSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\StringSupport.pas"/>
+        <UnitName Value="StringSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\VersionSupport.pas"/>
+        <UnitName Value="VersionSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\XPDFSupport.pas"/>
+        <UnitName Value="XPDFSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameHTMLs.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameHTMLs.pas"/>
+        <UnitName Value="FrameHTMLs"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Dialogs\DialogSQLFilter.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Dialogs\DialogSQLFilter.pas"/>
+        <UnitName Value="DialogSQLFilter"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Classes\ExportersFPVectorial.pas"/>
+        <UnitName Value="ExportersFPVectorial"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Dialogs\DialogDockManager.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Dialogs\DialogDockManager.pas"/>
+        <UnitName Value="DialogDockManager"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Classes\DockManagers.pas"/>
+        <UnitName Value="DockManagers"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameVideoBase.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameVideoBase.pas"/>
+        <UnitName Value="FrameVideoBase"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameVideoDirectShow.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameVideoDirectShow.pas"/>
+        <UnitName Value="FrameVideoDirectShow"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Classes\PipelineDisplay.pas"/>
+        <UnitName Value="PipelineDisplay"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\TesseractSupport.pas"/>
+        <UnitName Value="TesseractSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\WGS84.pas"/>
+        <UnitName Value="WGS84"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\GPSSupport.pas"/>
+        <UnitName Value="GPSSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\LazSerialSupport.pas"/>
+        <UnitName Value="LazSerialSupport"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazSerialPort"/>
+      </Item>
+      <Item>
+        <PackageName Value="cryptini"/>
+      </Item>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
+      <Item>
+        <PackageName Value="fpvectorialpkg"/>
+      </Item>
+      <Item>
+        <PackageName Value="TurboPowerIPro"/>
+      </Item>
+      <Item>
+        <PackageName Value="zcomponent"/>
+      </Item>
+      <Item>
+        <PackageName Value="pl_Win_DSPack"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

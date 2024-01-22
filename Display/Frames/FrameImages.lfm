@@ -1,0 +1,68 @@
+inherited FrameImage: TFrameImage
+  Height = 323
+  Width = 377
+  ClientHeight = 323
+  ClientWidth = 377
+  OnResize = FrameResize
+  DesignLeft = 557
+  DesignTop = 103
+  object lblStatus: TLabel[0]
+    Left = 0
+    Height = 1
+    Top = 322
+    Width = 377
+    Align = alBottom
+    Alignment = taCenter
+    ParentColor = False
+  end
+  object sboxImage: TScrollBox[1]
+    Left = 0
+    Height = 322
+    Top = 0
+    Width = 377
+    HorzScrollBar.Page = 90
+    HorzScrollBar.Tracking = True
+    VertScrollBar.Page = 90
+    VertScrollBar.Tracking = True
+    Align = alClient
+    BorderStyle = bsNone
+    ClientHeight = 322
+    ClientWidth = 377
+    Color = clGray
+    ParentColor = False
+    PopupMenu = mnuImage
+    TabOrder = 0
+    OnMouseWheel = sboxImageMouseWheel
+    object imgImage: TImage
+      Left = 0
+      Height = 90
+      Top = 0
+      Width = 90
+      AntialiasingMode = amOn
+      Enabled = False
+      OnMouseWheel = sboxImageMouseWheel
+      PopupMenu = mnuImage
+      Proportional = True
+      Stretch = True
+    end
+  end
+  object mnuImage: TPopupMenu[2]
+    OnPopup = mnuImagePopup
+    left = 92
+    top = 101
+    object mnuCopyToClipboard: TMenuItem
+      Caption = 'Copy To Clipboard'
+      OnClick = mnuCopyToClipboardClick
+    end
+    object mnuOpenInExplorer2: TMenuItem
+      Caption = 'Open image file in explorer...'
+      OnClick = mnuOpenInExplorer2Click
+    end
+    object MenuItem1: TMenuItem
+    end
+    object mnuToggleStretch: TMenuItem
+      Caption = 'Show Fullsize'
+      OnClick = mnuToggleStretchClick
+    end
+  end
+end

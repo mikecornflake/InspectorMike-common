@@ -1,0 +1,13 @@
+inherited FrameDirectShowVideo: TFrameDirectShowVideo
+  DesignLeft = 414
+  DesignTop = 340
+  object pnlVideo: TPanel[0]
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 312
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 0
+  end
+end

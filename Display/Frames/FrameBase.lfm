@@ -1,0 +1,10 @@
+object fmeBase: TfmeBase
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 312
+  LCLVersion = '1.2.2.0'
+  TabOrder = 0
+  DesignLeft = 568
+  DesignTop = 146
+end

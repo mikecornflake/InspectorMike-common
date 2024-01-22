@@ -1,0 +1,7 @@
+inherited dckBase: TdckBase
+  Left = 539
+  Height = 300
+  Top = 137
+  Width = 396
+  Caption = 'dckBase'
+end

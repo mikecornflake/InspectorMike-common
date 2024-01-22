@@ -1,0 +1,60 @@
+inherited FrameCSV: TFrameCSV
+  Width = 320
+  ClientWidth = 320
+  DesignLeft = 529
+  object DBNavigator1: TDBNavigator[0]
+    Left = 0
+    Height = 25
+    Top = 0
+    Width = 320
+    Align = alTop
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.EnlargeVertical = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 100
+    ClientHeight = 25
+    ClientWidth = 320
+    DataSource = dsCSV
+    Options = []
+    TabOrder = 0
+    VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast]
+  end
+  object grdCSV: TDBGrid[1]
+    Left = 0
+    Height = 199
+    Top = 25
+    Width = 320
+    Align = alClient
+    Color = clWindow
+    Columns = <>
+    DataSource = dsCSV
+    TabOrder = 1
+  end
+  object lblStatus: TLabel[2]
+    Left = 0
+    Height = 16
+    Top = 224
+    Width = 320
+    Align = alBottom
+    Caption = 'No file loaded'
+    ParentColor = False
+  end
+  object dsCSV: TDatasource[3]
+    DataSet = dsFile
+    left = 168
+    top = 62
+  end
+  object dsFile: TSdfDataSet[4]
+    FileMustExist = True
+    ReadOnly = True
+    FieldDefs = <>
+    AllowMultiLine = False
+    Delimiter = ','
+    FirstLineAsSchema = False
+    left = 84
+    top = 62
+  end
+end

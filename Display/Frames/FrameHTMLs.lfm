@@ -1,0 +1,29 @@
+inherited FrameHTML: TFrameHTML
+  Height = 312
+  Width = 376
+  ClientHeight = 312
+  ClientWidth = 376
+  DesignLeft = 822
+  DesignTop = 113
+  object htmlPanel: TIpHtmlPanel[0]
+    Left = 0
+    Height = 312
+    Top = 0
+    Width = 376
+    Align = alClient
+    FixedTypeface = 'Courier New'
+    DefaultTypeFace = 'Tahoma'
+    DefaultFontSize = 10
+    FlagErrors = False
+    PrintSettings.MarginLeft = 0.5
+    PrintSettings.MarginTop = 0.5
+    PrintSettings.MarginRight = 0.5
+    PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 480
+    PrintSettings.Preview.Top = 270
+    PrintSettings.Preview.Width = 1440
+    PrintSettings.Preview.Height = 810
+    TabOrder = 0
+    OnHotClick = htmlPanelHotClick
+  end
+end

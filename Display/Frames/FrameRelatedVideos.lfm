@@ -1,0 +1,61 @@
+inherited FrameRelatedVideo: TFrameRelatedVideo
+  Height = 344
+  ClientHeight = 344
+  DesignLeft = 632
+  DesignTop = 353
+  object pnlVideo: TPanel[0]
+    Left = 0
+    Height = 258
+    Top = 0
+    Width = 312
+    Align = alClient
+    BevelOuter = bvNone
+    Caption = 'pnlVideo'
+    TabOrder = 0
+  end
+  object pnlRelated: TPanel[1]
+    Left = 0
+    Height = 81
+    Top = 263
+    Width = 312
+    Align = alBottom
+    BevelOuter = bvNone
+    Caption = 'pnlRelated'
+    ClientHeight = 81
+    ClientWidth = 312
+    TabOrder = 1
+    object lbRelated: TListBox
+      Left = 0
+      Height = 66
+      Top = 15
+      Width = 312
+      Align = alClient
+      ExtendedSelect = False
+      ItemHeight = 0
+      OnDblClick = lbRelatedDblClick
+      TabOrder = 0
+    end
+    object lblRelatedTitle: TLabel
+      Left = 0
+      Height = 15
+      Top = 0
+      Width = 312
+      Align = alTop
+      Caption = 'Related Video Files'
+      Color = clGradientActiveCaption
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+      Transparent = False
+    end
+  end
+  object splRelated: TSplitter[2]
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 258
+    Width = 312
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+end

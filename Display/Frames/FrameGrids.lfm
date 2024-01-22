@@ -1,0 +1,276 @@
+inherited FrameGrid: TFrameGrid
+  Height = 547
+  Width = 657
+  ClientHeight = 547
+  ClientWidth = 657
+  ParentColor = False
+  DesignLeft = 295
+  DesignTop = 257
+  object grdSQL: TDBGrid[0]
+    Left = 0
+    Height = 472
+    Top = 0
+    Width = 657
+    Align = alClient
+    AlternateColor = clNone
+    CellHintPriority = chpAll
+    Color = clWindow
+    Columns = <>
+    DataSource = dsGrid
+    Flat = True
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgHeaderHotTracking, dgRowHighlight, dgThumbTracking, dgDisplayMemoText]
+    Options2 = [goScrollToLastCol, goScrollToLastRow]
+    OptionsExtra = [dgeAutoColumns]
+    ParentFont = False
+    PopupMenu = pmnuGrid
+    ShowHint = True
+    TabOrder = 0
+    TitleFont.Style = [fsBold]
+    TitleImageList = ilGrid
+    OnDblClick = grdSQLDblClick
+    OnKeyUp = grdSQLKeyUp
+    OnMouseDown = grdSQLMouseDown
+    OnMouseLeave = grdSQLMouseLeave
+    OnMouseMove = grdSQLMouseMove
+    OnMouseUp = grdSQLMouseUp
+    OnPrepareCanvas = grdSQLPrepareCanvas
+    OnStartDrag = grdSQLStartDrag
+    OnTitleClick = grdSQLTitleClick
+  end
+  object splMemo: TSplitter[1]
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 472
+    Width = 657
+    Align = alBottom
+    Beveled = True
+    ResizeAnchor = akBottom
+  end
+  object pnlMemo: TPanel[2]
+    Left = 0
+    Height = 70
+    Top = 477
+    Width = 657
+    Align = alBottom
+    ClientHeight = 70
+    ClientWidth = 657
+    Constraints.MinHeight = 23
+    TabOrder = 2
+    object DBMemo: TDBMemo
+      AnchorSideLeft.Control = pnlMemo
+      AnchorSideTop.Control = pnlMemo
+      Left = 11
+      Height = 45
+      Top = 24
+      Width = 645
+      Align = alClient
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 23
+      Color = clBtnFace
+      DataSource = dsGrid
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      OnKeyUp = DBMemoKeyUp
+    end
+    object pnlToolbar: TPanel
+      AnchorSideLeft.Control = pnlMemo
+      AnchorSideTop.Control = pnlMemo
+      Left = 11
+      Height = 23
+      Top = 1
+      Width = 693
+      Align = alCustom
+      BorderSpacing.Left = 10
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 693
+      TabOrder = 1
+      object Panel2: TPanel
+        Left = 0
+        Height = 23
+        Top = 0
+        Width = 264
+        Align = alLeft
+        BevelOuter = bvNone
+        Caption = 'Panel2'
+        ClientHeight = 23
+        ClientWidth = 264
+        TabOrder = 0
+        object tbGrid: TToolBar
+          Left = 0
+          Height = 23
+          Top = 0
+          Width = 264
+          AutoSize = True
+          Caption = 'tbGrid'
+          EdgeBorders = []
+          Images = ilGrid
+          List = True
+          ShowCaptions = True
+          TabOrder = 0
+          Wrapable = False
+          object ToolButton1: TToolButton
+            Left = 101
+            Height = 22
+            Top = 0
+            Caption = 'ToolButton1'
+            Style = tbsSeparator
+          end
+          object btnShowFilterDlg: TToolButton
+            Left = 109
+            Top = 0
+            Caption = 'Filter...'
+            ImageIndex = 2
+            OnClick = btnShowFilterDlgClick
+          end
+          object btnClearFilter: TToolButton
+            Left = 213
+            Hint = 'No filter set'
+            Top = 0
+            Caption = 'Clear'
+            OnClick = btnClearFilterClick
+          end
+          object btnShowFilterList: TToolButton
+            Left = 179
+            Hint = 'No filter set'
+            Top = 0
+            Caption = 'Set'
+            Style = tbsButtonDrop
+            OnClick = btnShowFilterListClick
+          end
+          object cboFields: TComboBox
+            Left = 1
+            Height = 23
+            Top = 0
+            Width = 100
+            DropDownCount = 15
+            ItemHeight = 15
+            Style = csDropDownList
+            TabOrder = 0
+            OnChange = cboFieldsChange
+          end
+        end
+      end
+      object lblStatus: TLabel
+        Left = 264
+        Height = 23
+        Top = 0
+        Width = 429
+        Align = alClient
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = False
+        Color = clActiveBorder
+        Font.Style = [fsBold]
+        Layout = tlCenter
+        ParentColor = False
+        ParentFont = False
+        Transparent = False
+      end
+    end
+  end
+  object ilGrid: TImageList[3]
+    Height = 22
+    Width = 22
+    Left = 112
+    Top = 72
+    Bitmap = {
+      4C7A030000001600000016000000540100000000000078DAEDD73F4BC3401806
+      F09B8A53E92038F403E81027B77E035B70F123B8F4534887CE3A39FB090A0E76
+      EAE0260E828B148A0AD252684194827F6EA83CE6AD5C79AB974B9312EB95F781
+      674AF24B7AB95C5255AB2965AB5298366A9FEFFDEC71BA10D70797CF01EEBAE6
+      C6DC2E1C4DE93AED88F158B66BB51DF7EE3FB83E3E17C6766D5F862B91F83C7F
+      57617DF069FDF5E9FD96D57B3EABEF12F9EE5B117781FF2D12090BC229BA48FF
+      DA3D68DDE1F0F23171F71BB770B9BB676D9C7434EA0F1AD59E4665A811BC68AC
+      8F3472D4E11BF2F72314AF9FB07531C0CE791FA54617DBC757B12ED5B87BEF40
+      30060AE6877E8CB1169E6BA3F38A4D729BFD8919E786DBA736B965BADECFDF2E
+      5D2FB9C6A4E3E25C6E4FDC673DE39A71E0E6BC2EB7C9A5F1A503CDF8FE3493B8
+      DCE6F7CD662675B94D6E9499C63536B9C191DD4CEB964E6FC40D4B9E691A37AB
+      F54C22E1F90277B7AACC
+    }
+  end
+  object dsGrid: TDataSource[4]
+    AutoEdit = False
+    OnStateChange = dsGridStateChange
+    OnDataChange = dsGridDataChange
+    Left = 192
+    Top = 72
+  end
+  object pmnuFilterMRU: TPopupMenu[5]
+    Left = 296
+    Top = 72
+  end
+  object pmnuGrid: TPopupMenu[6]
+    OnPopup = pmnuGridPopup
+    Left = 40
+    Top = 72
+    object mnuExportToCSV: TMenuItem
+      Caption = 'Export to csv'
+      OnClick = mnuExportToCSVClick
+    end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object mnuCopyTable: TMenuItem
+      Caption = 'Copy table to clipboard'
+      OnClick = mnuCopyTableClick
+    end
+    object mnuCopyRow: TMenuItem
+      Caption = 'Copy row to clipboard'
+      OnClick = mnuCopyRowClick
+    end
+    object mnuCopyCell: TMenuItem
+      Caption = 'Copy cell to clipboard'
+      OnClick = mnuCopyCellClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object mnuAllowMultiline: TMenuItem
+      Caption = 'Allow Multiline'
+      object mnuAllowMultilineDefaults: TMenuItem
+        Caption = 'Use application defaults'
+        RadioItem = True
+        OnClick = mnuAllowMultilineClick
+      end
+      object mnuAllowMultilineYes: TMenuItem
+        Caption = 'Yes'
+        RadioItem = True
+        OnClick = mnuAllowMultilineClick
+      end
+      object mnuAllowMultilineNo: TMenuItem
+        Caption = 'No'
+        GroupIndex = 1
+        RadioItem = True
+        OnClick = mnuAllowMultilineClick
+      end
+    end
+  end
+  object ilScroll: TImageList[7]
+    Left = 417
+    Top = 46
+    Bitmap = {
+      4C7A0400000010000000100000007D0100000000000078DAED97CD4AC3401485
+      5DFB1C7D8042967915213649F327FA2422F800B62AEEB40AAD3F2B6D5A5B5D8A
+      A951A36E140B2E0B3EC035E7D284A8259954DCCDC00787737B334399339910D1
+      0249523637D63B7BDB4D9A056A45FD6B2B1EE551D41F0F25C1ACD709643D817E
+      1EBAAED328B865A0135FA4DF300CBA1A0EE8ECA4C340C313E9771C87FA3D9FA2
+      C790EEC3808186875A51BFEBBA9FB66D93699A3C278086879AC0FAABD9FFEB07
+      55B9C725FF497658964520EB95C9EFDD2860E6C9EF707049A7C76D06BA4C7E7B
+      7E971E429C1D370C343C995F89241FCFF3AE9179EC7BE41640C343ADA81F3979
+      797EA28FF13B8DDF5E196878A889DC1F74DD20BF7B11BFBBDB0C34BC12F70705
+      6B3E3A6C31D3B34329737EE1F7582F505575A9ECF9973C63CAA268BF44F2C7FC
+      4E72F23B11CB6F3423BF91707E976BB538B3E7E9FB1B1A5E99FC6A9A46AD837D
+      067A9EFC62CE645ED1FCED34B608EC361BE9771374E217F55BA6D15FF5DC5FDF
+      4DF05013587F25E7FE50917BFC3B5F832EDD1B
+    }
+  end
+  object dlgSave: TSaveDialog[8]
+    Title = 'Export CSV'
+    DefaultExt = '.csv'
+    Filter = 'CSV Files|*.csv'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Left = 154
+    Top = 170
+  end
+end

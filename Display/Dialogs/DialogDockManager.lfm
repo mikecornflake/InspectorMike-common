@@ -1,0 +1,293 @@
+object dlgDockManager: TdlgDockManager
+  Left = 1028
+  Height = 309
+  Top = 167
+  Width = 620
+  Caption = 'Dock Manager'
+  ClientHeight = 309
+  ClientWidth = 620
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  ShowHint = True
+  LCLVersion = '2.1.0.0'
+  object pnlLeft: TPanel
+    Left = 0
+    Height = 263
+    Top = 0
+    Width = 170
+    Align = alLeft
+    BevelOuter = bvNone
+    BorderWidth = 4
+    ClientHeight = 263
+    ClientWidth = 170
+    TabOrder = 0
+    object lbCategories: TListBox
+      Left = 4
+      Height = 242
+      Top = 17
+      Width = 162
+      Align = alClient
+      ItemHeight = 0
+      OnSelectionChange = lbCategoriesSelectionChange
+      TabOrder = 0
+    end
+    object Label1: TLabel
+      Left = 4
+      Height = 13
+      Top = 4
+      Width = 162
+      Align = alTop
+      Caption = 'Categories'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+  object pnlRight: TPanel
+    Left = 175
+    Height = 263
+    Top = 0
+    Width = 445
+    Align = alClient
+    BevelOuter = bvNone
+    BorderWidth = 4
+    ClientHeight = 263
+    ClientWidth = 445
+    TabOrder = 1
+    object cboCatImages: TComboBox
+      Left = 0
+      Height = 40
+      Top = 64
+      Width = 80
+      AutoSize = False
+      Enabled = False
+      ItemHeight = 34
+      OnChange = cboCatImagesChange
+      OnDrawItem = cboCatImagesDrawItem
+      Style = csOwnerDrawFixed
+      TabOrder = 0
+    end
+    object Label2: TLabel
+      Left = 0
+      Height = 13
+      Top = 48
+      Width = 37
+      Caption = 'Image'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edtName: TEdit
+      Left = 0
+      Height = 21
+      Top = 19
+      Width = 80
+      Enabled = False
+      OnChange = edtNameChange
+      TabOrder = 1
+    end
+    object Label3: TLabel
+      Left = 0
+      Height = 13
+      Top = 4
+      Width = 32
+      Caption = 'Name'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object btnCatUp: TSpeedButton
+      Left = 0
+      Height = 22
+      Top = 192
+      Width = 23
+      Glyph.Data = {
+        F6000000424DF600000000000000760000002800000010000000100000000100
+        04000000000080000000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333000333
+        3333333333090333333333333309033333333333330903333333333333090333
+        3333333333090333333333300009000033333330999999903333333309999903
+        3333333309999903333333333099903333333333309990333333333333090333
+        3333333333090333333333333330333333333333333033333333
+      }
+      OnClick = btnCatUpClick
+    end
+    object btnCatDown: TSpeedButton
+      Left = 0
+      Height = 22
+      Top = 219
+      Width = 23
+      Glyph.Data = {
+        F6000000424DF600000000000000760000002800000010000000100000000100
+        04000000000080000000130B0000130B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333303333
+        3333333333303333333333333309033333333333330903333333333330999033
+        3333333330999033333333330999990333333333099999033333333099999990
+        3333333000090000333333333309033333333333330903333333333333090333
+        3333333333090333333333333309033333333333330003333333
+      }
+      OnClick = btnCatDownClick
+    end
+    object pnlDocks: TPanel
+      Left = 89
+      Height = 255
+      Top = 4
+      Width = 352
+      Align = alRight
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BevelOuter = bvNone
+      ClientHeight = 255
+      ClientWidth = 352
+      TabOrder = 2
+      object Label4: TLabel
+        Left = 0
+        Height = 13
+        Top = 0
+        Width = 352
+        Align = alTop
+        Caption = 'Docks'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object lbDocks: TListBox
+        Left = 0
+        Height = 242
+        Top = 13
+        Width = 245
+        Align = alLeft
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ItemHeight = 0
+        OnSelectionChange = lbDocksSelectionChange
+        TabOrder = 0
+      end
+      object btnDockUp: TSpeedButton
+        Left = 250
+        Height = 22
+        Top = 191
+        Width = 23
+        Anchors = [akTop, akRight]
+        Glyph.Data = {
+          F6000000424DF600000000000000760000002800000010000000100000000100
+          04000000000080000000130B0000130B00001000000000000000000000000000
+          800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333000333
+          3333333333090333333333333309033333333333330903333333333333090333
+          3333333333090333333333300009000033333330999999903333333309999903
+          3333333309999903333333333099903333333333309990333333333333090333
+          3333333333090333333333333330333333333333333033333333
+        }
+        OnClick = btnDockUpClick
+      end
+      object btnDockDown: TSpeedButton
+        Left = 250
+        Height = 22
+        Top = 215
+        Width = 23
+        Anchors = [akTop, akRight]
+        Glyph.Data = {
+          F6000000424DF600000000000000760000002800000010000000100000000100
+          04000000000080000000130B0000130B00001000000000000000000000000000
+          800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333303333
+          3333333333303333333333333309033333333333330903333333333330999033
+          3333333330999033333333330999990333333333099999033333333099999990
+          3333333000090000333333333309033333333333330903333333333333090333
+          3333333333090333333333333309033333333333330003333333
+        }
+        OnClick = btnDockDownClick
+      end
+      object Label5: TLabel
+        Left = 248
+        Height = 13
+        Top = 0
+        Width = 52
+        Anchors = [akTop, akRight]
+        Caption = 'Category'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object cboCategory: TComboBox
+        Left = 250
+        Height = 21
+        Top = 19
+        Width = 100
+        Anchors = [akTop, akRight]
+        Enabled = False
+        ItemHeight = 13
+        OnChange = cboCategoryChange
+        Style = csDropDownList
+        TabOrder = 1
+      end
+      object Label6: TLabel
+        Left = 250
+        Height = 13
+        Top = 48
+        Width = 37
+        Caption = 'Image'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+      end
+      object cboDockImages: TComboBox
+        Left = 250
+        Height = 24
+        Top = 64
+        Width = 100
+        AutoSize = False
+        Enabled = False
+        ItemHeight = 18
+        OnChange = cboDockImagesChange
+        OnDrawItem = cboDockImagesDrawItem
+        Style = csOwnerDrawFixed
+        TabOrder = 2
+      end
+    end
+    object btnCatNew: TButton
+      Left = 0
+      Height = 25
+      Top = 128
+      Width = 42
+      Caption = 'New'
+      OnClick = btnCatNewClick
+      TabOrder = 3
+    end
+    object btnCatDelete: TButton
+      Left = 0
+      Height = 25
+      Hint = 'You can only delete a Category '#13#10'if there are no docks assigned to it'
+      Top = 152
+      Width = 42
+      Caption = 'Delete'
+      Enabled = False
+      OnClick = btnCatDeleteClick
+      TabOrder = 4
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 269
+    Width = 608
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object Splitter1: TSplitter
+    Left = 170
+    Height = 263
+    Top = 0
+    Width = 5
+  end
+end
