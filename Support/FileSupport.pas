@@ -25,6 +25,9 @@ Function FileRename(ASource, ADestination: String): Boolean;
 Function RenameSubfolders(ARoot: String; AOperation: TRenameSubFolderOption): Boolean;
 Function CopyFileForce(sSource, sDestination: String; bFailIfExists: Boolean = False): Boolean;
 
+// OS Safety
+Function FixOSPathDelimiter(AInput: String): String;
+
 // turns <EXEDIR> into actual exe folder and back again
 Function ExpandFolder(sFolder: String): String;
 Function ExpandFile(sFile: String): String;
@@ -34,6 +37,7 @@ Function ShrinkFile(sFile: String): String;
 Function IsImage(sExt: String): Boolean;
 Function IsVideo(sExt: String): Boolean;
 Function IsCSV(sExt: String): Boolean;
+Function IsTextfile(sExt: String): Boolean;
 
 Function LoadTextFile(AFilename: String): String;
 Procedure SaveTextFile(AFilename: String; AText: String);
@@ -46,6 +50,15 @@ Implementation
 
 Uses
   FileUtil, LazFileUtils, Forms, StrUtils;
+
+Function FixOSPathDelimiter(AInput: String): String;
+Begin
+  {$IFDEF WINDOWS}
+  Result := StringReplace(AInput, '/', '\', [rfReplaceAll]);
+  {$ELSE}
+  Result := StringReplace(AInput, '\', '/', [rfReplaceAll]);
+  {$ENDIF}
+End;
 
 Function ExpandFolder(sFolder: String): String;
 Begin
@@ -103,6 +116,14 @@ Begin
   sExt := LowerCase(sExt);
 
   Result := (sExt = '.csv') Or (sExt = '.survey') Or (sExt = '.txt');
+End;
+
+Function IsTextfile(sExt: String): Boolean;
+Begin
+  sExt := LowerCase(sExt);
+
+  Result := (sExt = '.csv') Or (sExt = '.txt') Or (sExt = '.lua') Or
+    (sExt = '.pas') Or (sExt = '.c') Or (sExt = '.me') Or (sExt = '.1st');
 End;
 
 Function LoadTextFile(AFilename: String): String;
@@ -258,7 +279,8 @@ Begin
     If (oSearchRec.Attr And faDirectory > 0) And ((oSearchRec.Name <> '.') And
       (oSearchRec.Name <> '..')) Then
     Begin
-      If Not FileRename(ARoot + IncludeSlash(oSearchRec.Name), ARoot + IncludeSlash(New(oSearchRec.Name))) Then
+      If Not FileRename(ARoot + IncludeSlash(oSearchRec.Name), ARoot +
+        IncludeSlash(New(oSearchRec.Name))) Then
         Result := False;
 
       If Not RenameSubfolders(ARoot + New(oSearchRec.Name), AOperation) Then

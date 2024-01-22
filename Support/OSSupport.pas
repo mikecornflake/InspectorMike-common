@@ -5,7 +5,7 @@ Unit OSSupport;
 Interface
 
 Uses
-  Classes, SysUtils, UTF8Process, Controls, Forms, ShellAPI, LCLType;
+  Classes, SysUtils, UTF8Process, Controls, Forms, LCLType {$IFDEF WINDOWS}, ShellAPI{$ENDIF};
 
 Procedure LaunchFile(sFilename: String; sParameters: String = '');
 Procedure LaunchDocument(sFilename: String);
@@ -13,6 +13,8 @@ Procedure LaunchDocument(sFilename: String);
 // run a simple command quietly and return any output to the console
 Function Run(sCommandLine: String): String;
 Function RunEx(sCommandLine: String; oParamaters: TStrings = nil;
+  bRedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
+Function RunEx(sCommandLine: String; arrParameters: Array Of String;
   bRedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
 
 Procedure SetBusy;
@@ -24,7 +26,8 @@ Function ShellDirectoryRegister(AAppName: String; ACommand: String; ACaption: St
   // Return True if success
 Function ShellDirectoryUnRegister(AAppName: String): Boolean; // Return True if success
 
-Procedure CopyHTMLToClipboard(AHTML: TStringList; ABaseFolder: String = ''; BAlsoAsText: Boolean = False);
+Procedure CopyHTMLToClipboard(AHTML: TStringList; ABaseFolder: String = '';
+  BAlsoAsText: Boolean = False);
 
 Const
   HTML_STYLE_SHEET =
@@ -71,7 +74,11 @@ End;
 
 Procedure LaunchDocument(sFilename: String);
 Begin
+  {$IFDEF WINDOWS}
   ShellExecute(0, 'open', Pansichar(sFilename), nil, nil, SW_SHOWNORMAL);
+  {$ELSE}
+  Run(sFilename);
+  {$ENDIF}
 End;
 
 // run a simple command quietly and return any output to the console
@@ -107,7 +114,7 @@ Const
 Var
   oStrings: TStringList;
   oStream: TMemoryStream;
-  oProcess: TProcessUTF8;
+  oProcess: TProcess;
   iNumBytes: Longint;
   iBytesRead: Longint;
   i: Integer;
@@ -117,7 +124,7 @@ Begin
   oStream := TMemoryStream.Create;
   iBytesRead := 0;
   Try
-    oProcess := TProcessUTF8.Create(nil);
+    oProcess := TProcess.Create(nil);
     Try
       If Assigned(oParamaters) Then
       Begin
@@ -185,6 +192,23 @@ Begin
     End;
   Finally
     oStream.Free;
+  End;
+End;
+
+Function RunEx(sCommandLine: String; arrParameters: Array Of String;
+  bRedirectErr: Boolean; ARunExCallback: TNotifyEvent): String;
+Var
+  slParameters: TStringList;
+  s: String;
+Begin
+  slParameters := TStringList.Create;
+  Try
+    For s In arrParameters Do
+      slParameters.Add(s);
+
+    Result := RunEx(sCommandLine, slParameters, bRedirectErr, ARunExCallback);
+  Finally
+    slParameters.Free;
   End;
 End;
 
@@ -263,7 +287,8 @@ Begin
   End;
 End;
 
-Procedure CopyHTMLToClipboard(AHTML: TStringList; ABaseFolder: String = ''; BAlsoAsText: Boolean = False);
+Procedure CopyHTMLToClipboard(AHTML: TStringList; ABaseFolder: String = '';
+  BAlsoAsText: Boolean = False);
 Var
   oHTML: TStringList;
   cfHTMLFormat: TClipboardFormat;
@@ -282,8 +307,9 @@ Begin
   oHTML := TStringList.Create;
   Try
     // HTML may contain image references that are relative.
-    If ABaseFolder<>'' Then
-      AHTML.Text := FindReplace(AHTML.Text, 'src="', Format('src="%s', [IncludeSlash(ABaseFolder)]));
+    If ABaseFolder <> '' Then
+      AHTML.Text := FindReplace(AHTML.Text, 'src="', Format('src="%s',
+        [IncludeSlash(ABaseFolder)]));
 
     If BAlsoAsText Then
       Clipboard.AsText := AHTML.Text;
