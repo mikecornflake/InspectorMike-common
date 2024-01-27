@@ -66,7 +66,7 @@ Begin
     coPropercase:
     Begin
       sTemp := Copy(ASource, 1, Length(ASource));
-      Result := AnsiProperCase(sTemp, StdWordDelims); // TODO Proper case
+      Result := AnsiProperCase(sTemp, StdWordDelims);
     End;
   End;
 End;
