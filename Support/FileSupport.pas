@@ -24,6 +24,7 @@ Function DeleteDirectoryEx(AFolder: String; AFilemask: String = '';
 Function FileRename(ASource, ADestination: String): Boolean;
 Function RenameSubfolders(ARoot: String; AOperation: TRenameSubFolderOption): Boolean;
 Function CopyFileForce(sSource, sDestination: String; bFailIfExists: Boolean = False): Boolean;
+Function IsFileAbsolute(AFilename: String): Boolean;
 
 // OS Safety
 Function FixOSPathDelimiter(AInput: String): String;
@@ -106,7 +107,6 @@ Function IsVideo(sExt: String): Boolean;
 Begin
   sExt := LowerCase(sExt);
 
-  //Result := (sExt In ['.wmv', '.avi', '.asf', '.mpg', '.mpeg', '.mp4']);
   Result := (sExt = '.wmv') Or (sExt = '.avi') Or (sExt = '.asf') Or
     (sExt = '.mpg') Or (sExt = '.mpeg') Or (sExt = '.mp4');
 End;
@@ -122,8 +122,8 @@ Function IsTextfile(sExt: String): Boolean;
 Begin
   sExt := LowerCase(sExt);
 
-  Result := (sExt = '.csv') Or (sExt = '.txt') Or (sExt = '.lua') Or
-    (sExt = '.pas') Or (sExt = '.c') Or (sExt = '.me') Or (sExt = '.1st');
+  Result := (sExt = '.txt') Or (sExt = '.lua') Or (sExt = '.pas') Or
+    (sExt = '.c') Or (sExt = '.me') Or (sExt = '.1st') Or IsCSV(sExt);
 End;
 
 Function LoadTextFile(AFilename: String): String;
@@ -310,6 +310,17 @@ Begin
 
   Result := CopyFile(sSource, sDestination);
 End;
+
+Function IsFileAbsolute(AFilename: String): Boolean;
+begin
+  AFilename := Trim(AFilename);
+
+  {$IFDEF WINDOWS}
+  Result := (Copy(AFilename, 2, 1)=':') Or (Copy(Afilename, 1, 2)='\\');
+  {$ELSE}
+  Result := (Copy(AFilename, 1, 1)='/');
+  {$ENDIF}
+end;
 
 //  http://forum.lazarus.freepascal.org/index.php/topic,16093.msg87124.html#msg87124
 
