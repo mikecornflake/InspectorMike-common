@@ -8,13 +8,10 @@ unit IM_application;
 interface
 
 uses
-  Exporters, MRUs, Settings, DockBase, FormAbout, FormMain, FormMultiDock, FormPersistent, 
-  FrameBase, FrameCSVs, FrameGrids, FrameImages, FramePDFViewers, FrameRelatedVideos, 
-  FrameVideoPlayers, ControlsSupport, DBSupport, ffmpegSupport, FileSupport, ImageMagickSupport, 
-  netMCSupport, OSSupport, StringSupport, VersionSupport, XPDFSupport, FrameHTMLs, 
-  DialogSQLFilter, DialogDockManager, DockManagers, FrameVideoBase, 
-  FrameVideoDirectShow, PipelineDisplay, TesseractSupport, WGS84, GPSSupport, LazSerialSupport, 
-  LazarusPackageIntf;
+  DockBase, FormAbout, FormMain, FormMultiDock, FormPersistent, FrameBase, 
+  FrameCSVs, FrameGrids, FrameImages, FramePDFViewers, FrameRelatedVideos, 
+  FrameVideoPlayers, FrameHTMLs, DialogSQLFilter, DialogDockManager, 
+  DockManagers, FrameVideoBase, FrameVideoDirectShow, LazarusPackageIntf;
 
 implementation
 

@@ -51,7 +51,7 @@ Implementation
 
 {$R *.lfm}
 
-Uses IpHtmlNodes;
+//Uses IpHtmlNodes;
 
 Constructor TFrameHTML.Create(TheOwner: TComponent);
 Begin

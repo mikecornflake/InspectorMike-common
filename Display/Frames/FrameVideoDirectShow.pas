@@ -164,10 +164,10 @@ Begin
       If (sExt = '.mpg') Or (sExt = '.pkt') Then
         If SUCCEEDED(CoCreateInstance(CLSID_MOONLIGHT_ELECARD_DECODER_2,
           nil, CLSCTX_INPROC_SERVER, IID_IBaseFilter, oFilter)) Then
-          FDSFilterGraph.AddFilter(oFilter, 'Elecard MPEG2 Video Decoder')
+          (FDSFilterGraph As IFilterGraph).AddFilter(oFilter, 'Elecard MPEG2 Video Decoder')
         Else If SUCCEEDED(CoCreateInstance(CLSID_MOONLIGHT_ELECARD_DECODER_4,
           nil, CLSCTX_INPROC_SERVER, IID_IBaseFilter, oFilter)) Then
-          FDSFilterGraph.AddFilter(oFilter, 'Elecard MPEG2 Video Decoder');
+          (FDSFilterGraph As IFilterGraph).AddFilter(oFilter, 'Elecard MPEG2 Video Decoder');
 
       FDSFilterGraph.RenderFile(WideString(FFilename));
 
