@@ -1,7 +1,7 @@
 Unit Exporters;
 
 {$mode objfpc}{$H+}
-
+{$WARN 5024 off : Parameter "$1" not used}
 Interface
 
 Uses
@@ -140,7 +140,7 @@ Var
 Implementation
 
 Uses
-  DBSupport, OSSupport, FileSupport, strutils, FileUtil, Clipbrd;
+  DBSupport, OSSupport, strutils, FileUtil, Clipbrd;
 
 Function FindReplace(Const sStringToSearch, sFind, sReplace: String): String;
 Begin

@@ -12,7 +12,7 @@ unit WGS84;
            som '' eller ' '
 2011-10-28 Lagt till initiering av medelMeridian till '2.5 gon V' om den inte är angiven
 }
-
+{$WARN 5024 off : Parameter "$1" not used}
 interface
 
 uses

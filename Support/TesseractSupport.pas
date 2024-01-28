@@ -17,7 +17,7 @@ Function OCR(AFilename: String): String;
 Implementation
 
 Uses
-  Forms, StringSupport, FileSupport, FileUtil, OSSupport;
+  Forms, StringSupport, FileUtil, OSSupport;
 
 Var
   FTesseractPath: String;

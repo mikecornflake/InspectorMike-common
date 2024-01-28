@@ -123,7 +123,8 @@ Begin
   sExt := LowerCase(sExt);
 
   Result := (sExt = '.txt') Or (sExt = '.lua') Or (sExt = '.pas') Or
-    (sExt = '.c') Or (sExt = '.me') Or (sExt = '.1st') Or IsCSV(sExt);
+    (sExt = '.c') Or (sExt = '.me') Or (sExt = '.1st') Or (sExt = '.ini') Or
+    (sExt = '.alias') Or (sExt = '') Or IsCSV(sExt);
 End;
 
 Function LoadTextFile(AFilename: String): String;
@@ -312,15 +313,15 @@ Begin
 End;
 
 Function IsFileAbsolute(AFilename: String): Boolean;
-begin
+Begin
   AFilename := Trim(AFilename);
 
   {$IFDEF WINDOWS}
-  Result := (Copy(AFilename, 2, 1)=':') Or (Copy(Afilename, 1, 2)='\\');
+  Result := (Copy(AFilename, 2, 1) = ':') Or (Copy(Afilename, 1, 2) = '\\');
   {$ELSE}
-  Result := (Copy(AFilename, 1, 1)='/');
+  Result := (Copy(AFilename, 1, 1) = '/');
   {$ENDIF}
-end;
+End;
 
 //  http://forum.lazarus.freepascal.org/index.php/topic,16093.msg87124.html#msg87124
 
