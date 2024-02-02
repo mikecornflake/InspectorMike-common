@@ -12,7 +12,7 @@ inherited FrameHTML: TFrameHTML
     Width = 376
     Align = alClient
     FixedTypeface = 'Courier New'
-    DefaultTypeFace = 'Tahoma'
+    DefaultTypeFace = 'Default'
     DefaultFontSize = 10
     FlagErrors = False
     PrintSettings.MarginLeft = 0.5

@@ -11,7 +11,7 @@ uses
   DockBase, FormAbout, FormMain, FormMultiDock, FormPersistent, FrameBase, 
   FrameCSVs, FrameGrids, FrameImages, FramePDFViewers, FrameRelatedVideos, 
   FrameVideoPlayers, FrameHTMLs, DialogSQLFilter, DialogDockManager, 
-  DockManagers, FrameVideoBase, FrameVideoDirectShow, LazarusPackageIntf;
+  FrameVideoBase, FrameVideoDirectShow, DockManagers, LazarusPackageIntf;
 
 implementation
 

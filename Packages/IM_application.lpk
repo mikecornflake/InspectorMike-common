@@ -8,8 +8,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="..\Display\Frames"/>
-        <OtherUnitFiles Value="..\Classes;..\Display\Dialogs;..\Display\Docks;..\Display\Forms;..\Display\Frames;..\Support"/>
+        <OtherUnitFiles Value="..\Display\Dialogs;..\Display\Docks;..\Display\Forms;..\Display\Frames"/>
         <UnitOutputDirectory Value="$(TestDir)\lib\$(TargetCPU)-$(TargetOS)\Shared"/>
       </SearchPaths>
       <Linking>
@@ -24,7 +23,7 @@
         </CompilerMessages>
       </Other>
     </CompilerOptions>
-    <Version Minor="1" Build="2"/>
+    <Version Minor="1" Build="5"/>
     <Files>
       <Item>
         <Filename Value="..\Display\Docks\DockBase.lfm"/>
@@ -147,10 +146,6 @@
         <UnitName Value="DialogDockManager"/>
       </Item>
       <Item>
-        <Filename Value="..\Classes\DockManagers.pas"/>
-        <UnitName Value="DockManagers"/>
-      </Item>
-      <Item>
         <Filename Value="..\Display\Frames\FrameVideoBase.lfm"/>
         <Type Value="LFM"/>
       </Item>
@@ -166,8 +161,15 @@
         <Filename Value="..\Display\Frames\FrameVideoDirectShow.pas"/>
         <UnitName Value="FrameVideoDirectShow"/>
       </Item>
+      <Item>
+        <Filename Value="..\Display\Docks\DockManagers.pas"/>
+        <UnitName Value="DockManagers"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="IM_units"/>
+      </Item>
       <Item>
         <PackageName Value="LazSerialPort"/>
       </Item>
