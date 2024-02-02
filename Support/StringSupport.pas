@@ -31,6 +31,9 @@ Procedure AddStringToArray(Var AStringArray: TStringArray; Const AString: String
 Procedure AddStringsToArray(Var AStringArray: TStringArray; Const AString: TStringArray);
 Function ArrayToString(Const AStrings: TStringArray; ADelimiter: String = ''): String;
 
+// HTML
+Function ValidateHTML(AInput: String): String;
+
 Type
   CharSet = Set Of Char;
 
@@ -257,6 +260,23 @@ Begin
   Result := '';
   For sItem In AStrings Do
     Result := Result + sItem + ADelimiter;
+End;
+
+Function ValidateHTML(AInput: String): String;
+Begin
+  Result := AInput;
+
+  // Encode < and > characters
+  Result := FindReplace(Result, '<', '&lt;');
+  Result := FindReplace(Result, '>', '&gt;');
+
+  // Convert line breaks to <br> tags
+  Result := FindReplace(Result, #13#10, '<br> ');
+  Result := FindReplace(Result, #13, '');
+  Result := FindReplace(Result, #10, '<br> ');
+
+  If Trim(Result) = '' Then
+    Result := '&nbsp;';
 End;
 
 Initialization

@@ -88,6 +88,9 @@
     </Files>
     <RequiredPkgs>
       <Item>
+        <PackageName Value="TurboPowerIPro"/>
+      </Item>
+      <Item>
         <PackageName Value="LazSerialPort"/>
       </Item>
       <Item>

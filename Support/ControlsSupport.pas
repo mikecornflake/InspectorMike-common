@@ -5,15 +5,18 @@ Unit ControlsSupport;
 Interface
 
 Uses
-  Classes, Graphics, ComCtrls, SysUtils;
+  Classes, Graphics, ComCtrls, SysUtils, IpHtml;
 
 // Treeview routines
 Function SelectNode(oTree: TCustomTreeView; sLocation, sDelimiter: String): Boolean;
 
+// TurboPowerPro Routines
+Procedure SetHTML(AIpHtmlPanel: TIpHtmlPanel; AHTML: String);
+
 Implementation
 
 Uses
-  StringSupport;
+  StringSupport, Dialogs;
 
 // Treeview routines
 Function SelectNode(oTree: TCustomTreeView; sLocation, sDelimiter: String): Boolean;
@@ -86,5 +89,30 @@ Begin
     Result := False;
 End;
 
+Procedure SetHTML(AIpHtmlPanel: TIpHtmlPanel; AHTML: String);
+Var
+  oHTML: TIpHtml;
+  oStream: TStringStream;
+Begin
+  oStream := TStringStream.Create(AHTML);
+  Try
+    Try
+      oHTML := TIpHtml.Create; // Beware: Will be freed automatically by htmlPanel
+
+      oStream.Position := 0;
+      oHTML.LoadFromStream(oStream);
+
+      oStream.Position := 0;
+
+      AIpHtmlPanel.SetHtml(oHTML);
+    Except
+      On E: Exception Do
+        MessageDlg('Unable to open HTML' + #13 + 'Error: ' + E.Message,
+          mtError, [mbCancel], 0);
+    End;
+  Finally
+    oStream.Free;
+  End;
+End;
 
 End.
