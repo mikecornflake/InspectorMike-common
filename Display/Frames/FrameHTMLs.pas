@@ -51,7 +51,7 @@ Implementation
 
 {$R *.lfm}
 
-//Uses IpHtmlNodes;
+Uses IpHtmlNodes;  // leave in, even if compiler tells you this isn't used
 
 Constructor TFrameHTML.Create(TheOwner: TComponent);
 Begin
