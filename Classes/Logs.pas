@@ -36,6 +36,7 @@ Type
 // Simple helpers to simplify calling code
 Function Log: TLog;
 Procedure Debug(AMessage: String);
+Procedure Debug(AMessage: String; arrParams: Array Of Const);
 Procedure Debug(AMessage: TStringList);
 
 Implementation
@@ -46,6 +47,11 @@ Var
 Procedure Debug(AMessage: String);
 Begin
   Log.Log(AMessage);
+End;
+
+Procedure Debug(AMessage: String; arrParams: Array Of Const);
+Begin
+  Debug(Format(AMessage, arrParams));
 End;
 
 Procedure Debug(AMessage: TStringList);
