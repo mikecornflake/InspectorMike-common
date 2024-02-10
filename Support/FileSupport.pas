@@ -35,6 +35,9 @@ Function ExpandFile(sFile: String): String;
 Function ShrinkFolder(sFolder: String): String;
 Function ShrinkFile(sFile: String): String;
 
+// Array of string helper
+Function InArray(AValue: String; AArray: Array Of String): Boolean;
+
 Function IsImage(sExt: String): Boolean;
 Function IsVideo(sExt: String): Boolean;
 Function IsCSV(sExt: String): Boolean;
@@ -46,6 +49,11 @@ Procedure SaveTextFile(AFilename: String; AText: String);
 Const
   EXE_DIR = '<EXEDIR>';
   faAnyFilesExcDirs = faAnyFile And Not faDirectory;
+  FileExtImage: Array[1..6] Of String = ('.jpg', '.bmp', '.tif', '.png', '.gif', '.jpeg');
+  FileExtVideo: Array[1..7] Of String = ('.mp4', '.wmv', '.avi', '.asf', '.mpg', '.mpeg', '.m4v');
+  FileExtCSV: Array[1..3] Of String = ('.csv', '.survey', '.txt');
+  FileExtText: Array[1..8] Of String =
+    ('.txt', '.lua', '.pas', '.c', '.me', '.1st', '.ini', '.alias');
 
 Implementation
 
@@ -95,36 +103,35 @@ Begin
     Result := sFile;
 End;
 
+Function InArray(AValue: String; AArray: Array Of String): Boolean;
+Var
+  sValue: String;
+Begin
+  Result := False;
+
+  For sValue In AArray Do
+    If CompareText(AValue, sValue) = 0 Then
+      exit(True);
+End;
+
 Function IsImage(sExt: String): Boolean;
 Begin
-  sExt := LowerCase(sExt);
-
-  Result := (sExt = '.jpg') Or (sExt = '.bmp') Or (sExt = '.tif') Or
-    (sExt = '.png') Or (sExt = '.gif') Or (sExt = '.jpeg');
+  Result := InArray(Lowercase(sExt), FileExtImage);
 End;
 
 Function IsVideo(sExt: String): Boolean;
 Begin
-  sExt := LowerCase(sExt);
-
-  Result := (sExt = '.wmv') Or (sExt = '.avi') Or (sExt = '.asf') Or
-    (sExt = '.mpg') Or (sExt = '.mpeg') Or (sExt = '.mp4');
+  Result := InArray(Lowercase(sExt), FileExtVideo);
 End;
 
 Function IsCSV(sExt: String): Boolean;
 Begin
-  sExt := LowerCase(sExt);
-
-  Result := (sExt = '.csv') Or (sExt = '.survey') Or (sExt = '.txt');
+  Result := InArray(Lowercase(sExt), FileExtCSV);
 End;
 
 Function IsTextfile(sExt: String): Boolean;
 Begin
-  sExt := LowerCase(sExt);
-
-  Result := (sExt = '.txt') Or (sExt = '.lua') Or (sExt = '.pas') Or
-    (sExt = '.c') Or (sExt = '.me') Or (sExt = '.1st') Or (sExt = '.ini') Or
-    (sExt = '.alias') Or (sExt = '') Or IsCSV(sExt);
+  Result := InArray(Lowercase(sExt), FileExtText) Or IsCSV(sExt);
 End;
 
 Function LoadTextFile(AFilename: String): String;
@@ -327,13 +334,13 @@ End;
 
 Function DeleteDirectoryEx(AFolder: String; AFilemask: String = '';
   ARemoveEmptyRoot: Boolean = True): Boolean;
-// Lazarus fileutil.DeleteDirectory on steroids, works like
-// deltree <directory>, rmdir /s /q <directory> or rm -rf <directory>
-// - removes read-only files/directories (DeleteDirectory doesn't)
-// - removes directory itself
-// Adapted from fileutil.DeleteDirectory, thanks to Paweł Dmitruk
+  // Lazarus fileutil.DeleteDirectory on steroids, works like
+  // deltree <directory>, rmdir /s /q <directory> or rm -rf <directory>
+  // - removes read-only files/directories (DeleteDirectory doesn't)
+  // - removes directory itself
+  // Adapted from fileutil.DeleteDirectory, thanks to Paweł Dmitruk
 
-// Modified by Mike Thompson 25 Oct 2019 to support additional paramters
+  // Modified by Mike Thompson 25 Oct 2019 to support additional paramters
 Var
   oSearchRec: TSearchRec;
   sSourceFolder: String;
