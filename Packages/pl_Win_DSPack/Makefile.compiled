@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Makefile Value="2"/>
+  <Params Value=" -Fusource;../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);../../lcl/units/$(CPU_TARGET)-$(OS_TARGET);../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../pl_Win_DirectX/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);. -Fisource  -MObjFPC -Scghi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM) pl_win_dspack.pas"/>
+</CONFIG>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Makefile Value="2"/>
+  <Params Value=" -FuSource;../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);../../lcl/units/$(CPU_TARGET)-$(OS_TARGET);../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);. -Fisource -Rintel -MObjFPC -Sgi -O1 -g -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM) pl_win_directx.pas"/>
+</CONFIG>
