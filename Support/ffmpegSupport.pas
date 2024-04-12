@@ -128,15 +128,28 @@ End;
 
 Function CreateThumbnail(sVideo, sThumbnail: String): String;
 Var
-  sCommand: String;
+  sCommand, sTemp: String;
+
+  Function GrabThumbnail(sFromTime: String): Boolean;
+  Begin
+    sCommand := Format('%s\ffmpeg%s -hide_banner -i "%s" -ss %s -frames:v 1 "%s"',
+      [FFmpegPath, GetExeExt, sVideo, sFromTime, sThumbnail]);
+
+    sTemp := RunEx(sCommand, nil, True);
+
+    Result := FileExists(sThumbnail);
+  End;
+
 Begin
   Result := '';
   If FFFmpegPath <> '' Then
   Begin
-    sCommand := Format('%s\ffmpeg%s -i "%s" -ss 00:01:00 -frames:v 1 "%s"',
-      [FFmpegPath, GetExeExt, sVideo, sThumbnail]);
+    If Not GrabThumbnail('00:01:00') Then
+      If Not GrabThumbnail('00:00:10') Then
+        GrabThumbnail('00:00:01');
 
-    Result := RunEx(sCommand, nil, True);
+    If FileExists(sThumbnail) Then
+      Result := sTemp;
   End;
 End;
 
