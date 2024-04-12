@@ -39,10 +39,12 @@ Procedure InitializeFFmpeg;
 Function ProbeFile(sFilename: String): String;
 Function ExtractStreamByCodec(AInput, ACodec: String): String; // Results will be in lowercase
 Function ExtractStreamByCodecType(AInput, ACodecType: String): String;
- // Results will be in lowercase
+// Results will be in lowercase
 Function ExtractFormat(sInput: String): String;        // Results will be in lowercase
 
 Function MediaInfo(AFilename: String): TMediaInfo;
+
+Function CreateThumbnail(sVideo, sThumbnail: String): String;
 
 Const
   FFmpegHelpAboutBlurb = '<html><body>' +
@@ -90,7 +92,7 @@ End;
 
 Procedure InitializeFFmpeg;
 Begin
-  If FFFmpegPath='' Then
+  If FFFmpegPath = '' Then
   Begin
     // By default, use the ffpmeg folder distributed with the app
     FFFmpegPath := IncludeTrailingBackslash(Application.Location) + 'ffmpeg\bin';
@@ -108,7 +110,7 @@ Begin
       Exit;
 
     FFFmpegPath := '';
-  end;
+  End;
 End;
 
 Function ProbeFile(sFilename: String): String;
@@ -116,12 +118,26 @@ Var
   sCommand: String;
 Begin
   Result := '';
-  If FFFmpegPath<>'' Then
+  If FFFmpegPath <> '' Then
   Begin
     sCommand := Format('%s\ffprobe%s -v quiet -show_format -show_streams "%s"',
       [FFmpegPath, GetExeExt, sFilename]);
     Result := RunEx(sCommand, nil, True);
-  end;
+  End;
+End;
+
+Function CreateThumbnail(sVideo, sThumbnail: String): String;
+Var
+  sCommand: String;
+Begin
+  Result := '';
+  If FFFmpegPath <> '' Then
+  Begin
+    sCommand := Format('%s\ffmpeg%s -i "%s" -ss 00:01:00 -frames:v 1 "%s"',
+      [FFmpegPath, GetExeExt, sVideo, sThumbnail]);
+
+    Result := RunEx(sCommand, nil, True);
+  End;
 End;
 
 Function ExtractStreamByCodec(AInput, ACodec: String): String;
@@ -131,7 +147,6 @@ Var
   sCodecFound: String;
   i: Integer;
   bEnd: Boolean;
-
 Begin
   sTemp := Lowercase(AInput);
   Result := '';
@@ -166,7 +181,6 @@ Var
   sCodecTypeFound: String;
   i: Integer;
   bEnd: Boolean;
-
 Begin
   sTemp := Lowercase(AInput);
   Result := '';
