@@ -1,3 +1,4 @@
 
 *.o
 *.ppu
+/Packages/lib/x86_64-win64/*.compiled

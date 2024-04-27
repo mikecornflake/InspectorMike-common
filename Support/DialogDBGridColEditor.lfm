@@ -1,0 +1,119 @@
+object dlgGridColumns: TdlgGridColumns
+  Left = 2428
+  Height = 357
+  Top = 166
+  Width = 211
+  BorderIcons = [biSystemMenu]
+  Caption = 'Grid Columns'
+  ClientHeight = 357
+  ClientWidth = 211
+  LCLVersion = '3.99.0.0'
+  object lbColumns: TCheckListBox
+    Left = 0
+    Height = 280
+    Top = 41
+    Width = 211
+    Align = alClient
+    Items.Strings = (
+      'One'
+      'Two'
+    )
+    ItemHeight = 17
+    TabOrder = 0
+    Data = {
+      020000000000
+    }
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 211
+    Caption = 'ToolBar1'
+    Images = ImageList1
+    List = True
+    ParentShowHint = False
+    ShowCaptions = True
+    ShowHint = True
+    TabOrder = 1
+    object btnUp: TToolButton
+      Left = 1
+      Hint = 'Move column towards start'
+      Top = 2
+      Caption = 'Up'
+      ImageIndex = 0
+      ShowCaption = False
+      OnClick = btnUpClick
+    end
+    object btnDown: TToolButton
+      Left = 24
+      Hint = 'Move columns towards end'
+      Top = 2
+      Caption = 'Down'
+      ImageIndex = 1
+      ShowCaption = False
+      OnClick = btnDownClick
+    end
+  end
+  object Label1: TLabel
+    Left = 0
+    Height = 15
+    Top = 26
+    Width = 211
+    Align = alTop
+    Caption = 'Make columns visible'
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 36
+    Top = 321
+    Width = 211
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 36
+    ClientWidth = 211
+    TabOrder = 2
+    object Button1: TButton
+      Left = 151
+      Height = 25
+      Top = 5
+      Width = 51
+      Anchors = [akTop, akRight]
+      Caption = 'OK'
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object Button2: TButton
+      Left = 84
+      Height = 25
+      Top = 5
+      Width = 59
+      Anchors = [akTop, akRight]
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+  object ImageList1: TImageList
+    Left = 70
+    Top = 74
+    Bitmap = {
+      4C7A020000001000000010000000B90100000000000078DA9D95CF2E035114C6
+      CFD213D8D8915858496667612135556565C31334F100963448B543ADC5DFAA84
+      8D8888449A2A1104AD124AA23A4DA78D90F4253EE7DE292989987B27F9922FF7
+      CC6FCEB937E7DC014068D28FC7F243AAE9C1AFF7F1173FD78765A72025BC121F
+      F561B19403A5D6A4A4E7354FFCC220A6ED2CE82C013A5971C57E46AC71EC5F7E
+      D69FA79809DA9B029DAFBBDA0B43AE71CC43FD9D2C43EC79BC760BBAD9E4FDCB
+      DA0D11F37C7EBCDFB1EA3528977473AB9E7FB41F41E70C74CFF9637E2DBEB792
+      013DEAF226BA2B47A067AE3FAAC1CF99E8700E40455DDE8F566717646BF2CCB4
+      D4B6418E261F0B803E765C09AFCA87CD63B2062125BC2A4FD4DEE839A3E1D5F8
+      F8D0FEF7FC0BAFCA5B2696EAEF08D94F3FEE1095FE8FBCBD82D2DC7F96A9C54F
+      54F9EE394D68F32127CFF3AF9F7FB47C05BA4A6ACF5FC0E6F9CDEAF33DA534E8
+      6E4B7B7EBB4A87A007CDFE8FF8D056E4F97BE2F38BF8BCF3F1E14B919B5293A0
+      02DFFF8575D78B1A38F6FFFD1FC4C8CB3E46EA177CF7AC4A092FD644CC43FD86
+      CC95E19CE50D5799C9AF33303CEE9FBF31C0BD33ED4A78770E55E6D7A0F920A4
+      1AAC224F4DF3FFE7FFFB13162D2BE6
+    }
+  end
+end

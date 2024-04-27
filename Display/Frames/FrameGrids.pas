@@ -28,6 +28,8 @@ Type
     ilScroll: TImageList;
     lblStatus: TLabel;
     dlgSave: TSaveDialog;
+    mnuColumnEditor: TMenuItem;
+    Separator2: TMenuItem;
     Separator1: TMenuItem;
     mnuExportToCSV: TMenuItem;
     mnuAllowMultiline: TMenuItem;
@@ -66,6 +68,7 @@ Type
     Procedure grdSQLStartDrag(Sender: TObject; Var DragObject: TDragObject);
     Procedure grdSQLTitleClick(Column: TColumn);
     Procedure mnuAllowMultilineClick(Sender: TObject);
+    procedure mnuColumnEditorClick(Sender: TObject);
     Procedure mnuCopyCellClick(Sender: TObject);
     Procedure mnuCopyRowClick(Sender: TObject);
     Procedure mnuCopyTableClick(Sender: TObject);
@@ -138,6 +141,8 @@ Type
     Procedure InitialiseDBGrid(bHideIDs: Boolean = False);
     Property SortField: String read FSortField;
 
+    Procedure ColumnEditor;
+
     Property CallingRefresh: Boolean read FParentSemaphore;
 
     Function Status(bIncRecount: Boolean = True): String;
@@ -158,7 +163,7 @@ Type
 Implementation
 
 Uses
-  DialogSQLFilter, DBSupport, StringSupport, OSSupport, FormMain,
+  DialogSQLFilter, DialogDBGridColEditor, DBSupport, StringSupport, OSSupport, FormMain,
   sqldb,
   BufDataset,
   Clipbrd,
@@ -166,7 +171,7 @@ Uses
 
   {$R *.lfm}
 
-{ TFrameGrid }
+  { TFrameGrid }
 
 Constructor TFrameGrid.Create(TheOwner: TComponent);
 Begin
@@ -259,7 +264,8 @@ Begin
   End;
 End;
 
-Procedure TFrameGrid.DatasetOnGetText(Sender: TField; Var aText: Ansistring; DisplayText: Boolean);
+Procedure TFrameGrid.DatasetOnGetText(Sender: TField; Var aText: Ansistring;
+  DisplayText: Boolean);
 Begin
   aText := Sender.AsString;
 End;
@@ -286,6 +292,8 @@ Begin
   grdSQL.ReadOnly := bDatasetAlive And bHasRecords;
   DBMemo.Enabled := bDatasetAlive And bHasRecords;
   cboFields.Enabled := bDatasetAlive And bHasRecords;
+  //mnuColumnEditor.Enabled := bDatasetAlive And bHasRecords;
+  mnuColumnEditor.Enabled := True;
 
   If (bDatasetAlive) And (bHasRecords) Then
     SetControlsEditable(FEditable)
@@ -399,6 +407,23 @@ Begin
   End;
 
   RefreshUI;
+End;
+
+Procedure TFrameGrid.ColumnEditor;
+Var
+  dlgGridColumns: TdlgGridColumns;
+Begin
+  dlgGridColumns := TdlgGridColumns.Create(Self);
+  Try
+    dlgGridColumns.Grid := grdSQL;
+
+    If dlgGridColumns.ShowModal = mrOk Then
+    Begin
+      dlgGridColumns.Apply;
+    End;
+  Finally
+    FreeAndNil(dlgGridColumns);
+  End;
 End;
 
 Procedure TFrameGrid.ClearSort;
@@ -627,6 +652,11 @@ Begin
   RefreshUI;
 End;
 
+procedure TFrameGrid.mnuColumnEditorClick(Sender: TObject);
+begin
+  ColumnEditor;
+end;
+
 Procedure TFrameGrid.mnuCopyCellClick(Sender: TObject);
 Var
   oField: TField;
@@ -658,12 +688,12 @@ End;
 Procedure TFrameGrid.mnuExportToCSVClick(Sender: TObject);
 Begin
   If dlgSave.Execute Then
-  begin
+  Begin
     ExportDatasetToCSV(FDataset, dlgSave.FileName);
 
     If dlgSave.FileName <> '' Then
       LaunchFile('explorer.exe', Format('/e,/select,"%s"', [dlgSave.FileName]));
-  end;
+  End;
 End;
 
 Procedure TFrameGrid.SetFilterHint(sHint: String);
@@ -810,7 +840,7 @@ Begin
     Begin
       FFilterMRU.Insert(0, sFilter);
 
-        // Lets keep the MRU sane...
+      // Lets keep the MRU sane...
       If FFilterMRU.Count > 10 Then
         FFilterMRU.Delete(FFilterMRU.Count - 1);
     End;
@@ -994,8 +1024,8 @@ End;
 Procedure TFrameGrid.grdSQLPrepareCanvas(Sender: TObject; DataCol: Integer;
   Column: TColumn; AState: TGridDrawState);
 
-  //http://forum.lazarus.freepascal.org/index.php/topic,25004.msg151201.html
-  // TODO, Place in a support unit.
+//http://forum.lazarus.freepascal.org/index.php/topic,25004.msg151201.html
+// TODO, Place in a support unit.
   Function CalcSelectionColor(c: TColor; ADelta: Byte): TColor;
   Type
     TRGBA = Record

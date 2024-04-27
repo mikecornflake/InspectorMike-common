@@ -18,7 +18,7 @@ inherited FrameGrid: TFrameGrid
     Columns = <>
     DataSource = dsGrid
     Flat = True
-    Options = [dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgHeaderHotTracking, dgRowHighlight, dgThumbTracking, dgDisplayMemoText]
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgHeaderHotTracking, dgRowHighlight, dgDisplayMemoText]
     Options2 = [goScrollToLastCol, goScrollToLastRow]
     OptionsExtra = [dgeAutoColumns]
     ParentFont = False
@@ -244,6 +244,13 @@ inherited FrameGrid: TFrameGrid
         RadioItem = True
         OnClick = mnuAllowMultilineClick
       end
+    end
+    object Separator2: TMenuItem
+      Caption = '-'
+    end
+    object mnuColumnEditor: TMenuItem
+      Caption = 'Column Editor...'
+      OnClick = mnuColumnEditorClick
     end
   end
   object ilScroll: TImageList[7]

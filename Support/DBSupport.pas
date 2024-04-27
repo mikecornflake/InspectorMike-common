@@ -8,7 +8,7 @@ Uses
   Classes, Graphics, Clipbrd, LCLType, DB, DBGrids, SysUtils, Variants,
   Menus, BufDataset, StdCtrls;
 
-{ TMemTable }
+  { TMemTable }
 Type
   TMemTable = Class(TObject)
   Private
@@ -28,6 +28,8 @@ Type
     Procedure ClearAllRecords;
     Function RecordCount: Integer;
     Property Active: Boolean read GetActive write SetActive;
+
+    Function HasField(AFieldName: String): Boolean;
 
     Property Table: TBufDataset read FTable;
 
@@ -95,7 +97,7 @@ Implementation
 Uses
   StringSupport, OSSupport, Math, sqldb, typinfo, {$IFDEF ZEOS}ZAbstractRODataset, {$ENDIF}Forms;
 
-{ TMemTable }
+  { TMemTable }
 
 Constructor TMemTable.Create;
 Begin
@@ -136,6 +138,30 @@ End;
 Function TMemTable.GetFieldByName(AFieldName: String): TField;
 Begin
   Result := FTable.FieldByName(AFieldName);
+End;
+
+Function TMemTable.HasField(AFieldName: String): Boolean;
+Var
+  sField: String;
+  iCount: Longint;
+  i: Integer;
+  oDef: TFieldDef;
+Begin
+  // TFields.FindField and TFieldDefs.Find both were always returning False :-(
+  Result := False;
+  sField := Lowercase(AFieldName);
+
+  iCount := FTable.FieldDefs.Count;
+
+  For i := 0 To iCount - 1 Do
+  Begin
+    oDef := FTable.FieldDefs[i];
+    If Lowercase(oDef.Name) = sField Then
+    Begin
+      Result := True;
+      Break;
+    End;
+  End;
 End;
 
 Procedure TMemTable.SetActive(AValue: Boolean);

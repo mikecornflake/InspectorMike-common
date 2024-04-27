@@ -11,7 +11,7 @@ uses
   Settings, Exporters, Logs, MRUs, ControlsSupport, DBSupport, ffmpegSupport, 
   FileSupport, GPSSupport, ImageMagickSupport, LazSerialSupport, netMCSupport, 
   OSSupport, StringSupport, TesseractSupport, VersionSupport, WGS84, 
-  XPDFSupport, LazarusPackageIntf;
+  XPDFSupport, DialogDBGridColEditor, LazarusPackageIntf;
 
 implementation
 

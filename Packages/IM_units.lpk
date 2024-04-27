@@ -86,6 +86,10 @@
         <Filename Value="..\Support\XPDFSupport.pas"/>
         <UnitName Value="XPDFSupport"/>
       </Item>
+      <Item>
+        <Filename Value="..\Support\DialogDBGridColEditor.pas"/>
+        <UnitName Value="DialogDBGridColEditor"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
