@@ -1,12 +1,13 @@
 object dlgGridColumns: TdlgGridColumns
-  Left = 2428
+  Left = 990
   Height = 357
-  Top = 166
+  Top = 154
   Width = 211
   BorderIcons = [biSystemMenu]
   Caption = 'Grid Columns'
   ClientHeight = 357
   ClientWidth = 211
+  Position = poMainFormCenter
   LCLVersion = '3.99.0.0'
   OnActivate = FormActivate
   object lbColumns: TCheckListBox
