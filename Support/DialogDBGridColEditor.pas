@@ -22,8 +22,13 @@ Type
     ToolBar1: TToolBar;
     btnUp: TToolButton;
     btnDown: TToolButton;
+    btnAll: TToolButton;
+    ToolButton2: TToolButton;
+    Procedure btnAllClick(Sender: TObject);
     Procedure btnDownClick(Sender: TObject);
     Procedure btnUpClick(Sender: TObject);
+    Procedure FormActivate(Sender: TObject);
+    Procedure lbColumnsSelectionChange(Sender: TObject; User: Boolean);
   Private
     FGrid: TDBGrid;
     Procedure SetGrid(AValue: TDBGrid);
@@ -41,40 +46,18 @@ Implementation
 
 { TdlgGridColumns }
 
-Procedure TdlgGridColumns.btnUpClick(Sender: TObject);
-Var
-  iSelected: Integer;
+Procedure TdlgGridColumns.FormActivate(Sender: TObject);
 Begin
-  If (lbColumns.SelCount = 1) Then
-  Begin
-    iSelected := lbColumns.ItemIndex;
-
-    If (iSelected > 0) Then
-    Begin
-      lbColumns.Items.Move(iSelected, iSelected - 1);
-      lbColumns.ItemIndex := iSelected - 1;
-    End;
-  End;
-
   RefreshUI;
 End;
 
-Procedure TdlgGridColumns.btnDownClick(Sender: TObject);
+Procedure TdlgGridColumns.RefreshUI;
 Var
-  iSelected: Integer;
+  bSelected: Boolean;
 Begin
-  If (lbColumns.SelCount = 1) Then
-  Begin
-    iSelected := lbColumns.ItemIndex;
-
-    If (iSelected < lbColumns.Items.Count - 1) Then
-    Begin
-      lbColumns.Items.Move(iSelected, iSelected + 1);
-      lbColumns.ItemIndex := iSelected + 1;
-    End;
-
-    RefreshUI;
-  End;
+  bSelected := (lbColumns.SelCount > 0);
+  btnUp.Enabled := bSelected And (lbColumns.ItemIndex > 0);
+  btnDown.Enabled := bSelected And (lbColumns.ItemIndex < lbColumns.Items.Count - 1);
 End;
 
 Procedure TdlgGridColumns.SetGrid(AValue: TDBGrid);
@@ -93,12 +76,6 @@ Begin
     lbColumns.Items.Add(oColumn.FieldName);
     lbColumns.Checked[i] := oColumn.Visible;
   End;
-End;
-
-Procedure TdlgGridColumns.RefreshUI;
-Begin
-  btnUp.Enabled := lbColumns.ItemIndex > 0;
-  btnDown.Enabled := lbColumns.ItemIndex < lbColumns.Items.Count - 1;
 End;
 
 Function TdlgGridColumns.Apply: Boolean;
@@ -126,6 +103,57 @@ Begin
       End;
     End;
   End;
+End;
+
+Procedure TdlgGridColumns.btnUpClick(Sender: TObject);
+Var
+  iSelected: Integer;
+Begin
+  If (lbColumns.SelCount = 1) Then
+  Begin
+    iSelected := lbColumns.ItemIndex;
+
+    If (iSelected > 0) Then
+    Begin
+      lbColumns.Items.Move(iSelected, iSelected - 1);
+      lbColumns.ItemIndex := iSelected - 1;
+    End;
+  End;
+
+  RefreshUI;
+End;
+
+Procedure TdlgGridColumns.lbColumnsSelectionChange(Sender: TObject; User: Boolean);
+Begin
+  RefreshUI;
+End;
+
+Procedure TdlgGridColumns.btnDownClick(Sender: TObject);
+Var
+  iSelected: Integer;
+Begin
+  If (lbColumns.SelCount = 1) Then
+  Begin
+    iSelected := lbColumns.ItemIndex;
+
+    If (iSelected < lbColumns.Items.Count - 1) Then
+    Begin
+      lbColumns.Items.Move(iSelected, iSelected + 1);
+      lbColumns.ItemIndex := iSelected + 1;
+    End;
+
+    RefreshUI;
+  End;
+End;
+
+Procedure TdlgGridColumns.btnAllClick(Sender: TObject);
+Var
+  i: Integer;
+Begin
+  For i := 0 To lbColumns.Items.Count - 1 Do
+    lbColumns.Checked[i] := True;
+
+  RefreshUI;
 End;
 
 End.
