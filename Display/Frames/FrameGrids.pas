@@ -68,7 +68,7 @@ Type
     Procedure grdSQLStartDrag(Sender: TObject; Var DragObject: TDragObject);
     Procedure grdSQLTitleClick(Column: TColumn);
     Procedure mnuAllowMultilineClick(Sender: TObject);
-    procedure mnuColumnEditorClick(Sender: TObject);
+    Procedure mnuColumnEditorClick(Sender: TObject);
     Procedure mnuCopyCellClick(Sender: TObject);
     Procedure mnuCopyRowClick(Sender: TObject);
     Procedure mnuCopyTableClick(Sender: TObject);
@@ -292,8 +292,7 @@ Begin
   grdSQL.ReadOnly := bDatasetAlive And bHasRecords;
   DBMemo.Enabled := bDatasetAlive And bHasRecords;
   cboFields.Enabled := bDatasetAlive And bHasRecords;
-  //mnuColumnEditor.Enabled := bDatasetAlive And bHasRecords;
-  mnuColumnEditor.Enabled := True;
+  mnuColumnEditor.Enabled := bDatasetAlive And bHasRecords;
 
   If (bDatasetAlive) And (bHasRecords) Then
     SetControlsEditable(FEditable)
@@ -652,10 +651,10 @@ Begin
   RefreshUI;
 End;
 
-procedure TFrameGrid.mnuColumnEditorClick(Sender: TObject);
-begin
+Procedure TFrameGrid.mnuColumnEditorClick(Sender: TObject);
+Begin
   ColumnEditor;
-end;
+End;
 
 Procedure TFrameGrid.mnuCopyCellClick(Sender: TObject);
 Var
