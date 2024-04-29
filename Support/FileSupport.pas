@@ -49,9 +49,14 @@ Procedure SaveTextFile(AFilename: String; AText: String);
 Const
   EXE_DIR = '<EXEDIR>';
   faAnyFilesExcDirs = faAnyFile And Not faDirectory;
-  FileExtImage: Array[1..6] Of String = ('.jpg', '.bmp', '.tif', '.png', '.gif', '.jpeg');
-  FileExtVideo: Array[1..11] Of String = ('.mp4', '.wmv', '.avi', '.asf', '.mpg', '.mpeg', '.m4v', '.mkv', '.mov', '.flv', '.pkt');
-  FileExtCSV: Array[1..3] Of String = ('.csv', '.survey', '.txt');
+  FileExtAudio: Array[1..4] Of String =
+    ('.mp3', '.wma', '.ogg', '.m4b');
+  FileExtImage: Array[1..6] Of String =
+    ('.jpg', '.bmp', '.tif', '.png', '.gif', '.jpeg');
+  FileExtVideo: Array[1..11] Of String =
+    ('.mp4', '.mkv', '.wmv', '.avi', '.asf', '.mpg', '.mpeg', '.m4v', '.mov', '.flv', '.pkt');
+  FileExtCSV: Array[1..3] Of String =
+    ('.csv', '.survey', '.txt');
   FileExtText: Array[1..8] Of String =
     ('.txt', '.lua', '.pas', '.c', '.me', '.1st', '.ini', '.alias');
 
