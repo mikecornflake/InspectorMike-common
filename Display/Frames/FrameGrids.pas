@@ -119,6 +119,7 @@ Type
 
     // To workaround an Oracle/Zeos issue....
     Procedure DatasetOnGetText(Sender: TField; Var aText: Ansistring; DisplayText: Boolean);
+    procedure DatasetAfterEdit(DataSet: TDataSet);
   Public
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
@@ -389,6 +390,11 @@ Begin
   End;
 End;
 
+Procedure TFrameGrid.DatasetAfterEdit(DataSet: TDataSet);
+Begin
+  // TODO Add an Event Here that users of TFrameGrid can call
+End;
+
 Procedure TFrameGrid.InitialiseDBGrid(bHideIDs: Boolean);
 Var
   i: Integer;
@@ -404,6 +410,8 @@ Begin
       (FReadOnlyFields.IndexOf(oColumn.Field.FieldName) <> -1);
     oColumn.ReadOnly := bTemp;
   End;
+
+  FDataset.AfterEdit := @DatasetAfterEdit;
 
   RefreshUI;
 End;
