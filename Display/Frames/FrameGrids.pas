@@ -119,7 +119,7 @@ Type
 
     // To workaround an Oracle/Zeos issue....
     Procedure DatasetOnGetText(Sender: TField; Var aText: Ansistring; DisplayText: Boolean);
-    procedure DatasetAfterEdit(DataSet: TDataSet);
+    Procedure DatasetAfterEdit(DataSet: TDataSet);
   Public
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
