@@ -93,7 +93,7 @@ Implementation
 Uses
   Math, FormAbout, FileSupport;
 
-{$R *.lfm}
+  {$R *.lfm}
 
 Function MainForm: TfrmMain;
 Begin
@@ -185,7 +185,6 @@ End;
 Procedure TfrmMain.DoLoadSettings;
 Var
   oInifile: TIniFile;
-
 Begin
   Busy := True;
   Try

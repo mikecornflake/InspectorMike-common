@@ -23,7 +23,7 @@ Procedure ClearBusy;
 // Windows routines to register and unregister a program in Explorer Right Click
 Function ShellDirectoryCommand(AAppName: String): String;
 Function ShellDirectoryRegister(AAppName: String; ACommand: String; ACaption: String): Boolean;
-  // Return True if success
+// Return True if success
 Function ShellDirectoryUnRegister(AAppName: String): Boolean; // Return True if success
 
 Procedure CopyHTMLToClipboard(AHTML: TStringList; ABaseFolder: String = '';
@@ -107,10 +107,8 @@ End;
 
 Function RunEx(sCommandLine: String; oParamaters: TStrings = nil;
   bRedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
-
 Const
   READ_BYTES = 2048;
-
 Var
   oStrings: TStringList;
   oStream: TMemoryStream;
@@ -118,7 +116,6 @@ Var
   iNumBytes: Longint;
   iBytesRead: Longint;
   i: Integer;
-
 Begin
   // A temp Memorystream is used to buffer the output
   oStream := TMemoryStream.Create;

@@ -2,23 +2,23 @@
   This source is only used to compile and install the package.
  }
 
-unit IM_application;
+Unit IM_application;
 
 {$warn 5023 off : no warning about unused units}
-interface
+Interface
 
-uses
-  DockBase, FormAbout, FormMain, FormMultiDock, FormPersistent, FrameBase, 
-  FrameCSVs, FrameGrids, FrameImages, FramePDFViewers, FrameRelatedVideos, 
-  FrameVideoPlayers, FrameHTMLs, DialogSQLFilter, DialogDockManager, 
+Uses
+  DockBase, FormAbout, FormMain, FormMultiDock, FormPersistent, FrameBase,
+  FrameCSVs, FrameGrids, FrameImages, FramePDFViewers, FrameRelatedVideos,
+  FrameVideoPlayers, FrameHTMLs, DialogSQLFilter, DialogDockManager,
   FrameVideoBase, FrameVideoDirectShow, DockManagers, LazarusPackageIntf;
 
-implementation
+Implementation
 
-procedure Register;
-begin
-end;
+Procedure Register;
+Begin
+End;
 
-initialization
+Initialization
   RegisterPackage('IM_application', @Register);
-end.
+End.
