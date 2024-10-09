@@ -21,6 +21,8 @@ Type
 
     V_Stream: Integer;
     V_Codec: String;
+    V_Profile: String;
+    V_pixfmt: String;
 
     A_Stream: Integer;
     A_Codec: String;
@@ -273,6 +275,9 @@ Begin
 
       Result.Width := StrToIntDef(ExtractField(sCodec, 'width'), -1);
       Result.Height := StrToIntDef(ExtractField(sCodec, 'height'), -1);
+
+      Result.V_Profile := ExtractField(sCodec, 'profile');
+      Result.V_pixfmt := ExtractField(sCodec, 'pix_fmt');
     End
     Else
       Result.V_Stream := -1;
