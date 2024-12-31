@@ -43,7 +43,7 @@ Function GetLCLVersion: String;
 Function GetWidgetSet: String;
 
 // Exposing resource and version info compiled into exe
-Function GetResourceStrings(oStringList : TStringList) : Boolean;
+Function GetResourceStrings(oStringList: TStringList): Boolean;
 Function GetFileVersion: String;
 Function GetProductVersion: String;
 
@@ -58,13 +58,13 @@ Begin
 End;
 
 Function GetCompilerInfo: String;
-begin
-  Result := 'FPC '+{$I %FPCVERSION%};
-end;
+Begin
+  Result := 'FPC ' + {$I %FPCVERSION%};
+End;
 
 Function GetTargetInfo: String;
 Begin
-  Result := {$I %FPCTARGETCPU%}+' - '+{$I %FPCTARGETOS%};
+  Result := {$I %FPCTARGETCPU%} + ' - ' + {$I %FPCTARGETOS%};
 End;
 
 Function GetOS: String;
@@ -72,14 +72,14 @@ Begin
   Result := {$I %FPCTARGETOS%};
 End;
 
-function GetCPU: String;
-begin
+Function GetCPU: String;
+Begin
   Result := {$I %FPCTARGETCPU%};
-end;
+End;
 
 Function GetLCLVersion: String;
 Begin
-  Result := 'LCL '+lcl_version;
+  Result := 'LCL ' + lcl_version;
 End;
 
 Function GetCompiledDate: String;
@@ -96,15 +96,15 @@ End;
 
 Type
   TVersionInfo = Class
-  private
+  Private
     FBuildInfoAvailable: Boolean;
     FVersResource: TVersionResource;
     Function GetFixedInfo: TVersionFixedInfo;
     Function GetStringFileInfo: TVersionStringFileInfo;
     Function GetVarFileInfo: TVersionVarFileInfo;
-  public
+  Public
     Constructor Create;
-    Destructor Destroy; override;
+    Destructor Destroy; Override;
 
     Procedure Load(Instance: THandle);
 
@@ -129,9 +129,9 @@ End;
 
 Function GetResourceStrings(oStringList: TStringList): Boolean;
 Var
-  i, j : Integer;
-  oTable : TVersionStringTable;
-begin
+  i, j: Integer;
+  oTable: TVersionStringTable;
+Begin
   CreateInfo;
 
   oStringList.Clear;
@@ -140,16 +140,16 @@ begin
   If FInfo.BuildInfoAvailable Then
   Begin
     Result := True;
-    For i := 0 To FInfo.StringFileInfo.Count-1 Do
+    For i := 0 To FInfo.StringFileInfo.Count - 1 Do
     Begin
       oTable := FInfo.StringFileInfo.Items[i];
 
-      For j := 0 To oTable.Count-1 Do
-        If Trim(oTable.ValuesByIndex[j])<>'' Then
+      For j := 0 To oTable.Count - 1 Do
+        If Trim(oTable.ValuesByIndex[j]) <> '' Then
           oStringList.Values[oTable.Keys[j]] := oTable.ValuesByIndex[j];
-    end;
-  end;
-end;
+    End;
+  End;
+End;
 
 Function ProductVersionToString(PV: TFileProductVersion): String;
 Begin
@@ -245,4 +245,3 @@ Finalization
   If Assigned(FInfo) Then
     FInfo.Free;
 End.
-

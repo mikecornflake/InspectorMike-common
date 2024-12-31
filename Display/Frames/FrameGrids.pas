@@ -28,6 +28,7 @@ Type
     ilScroll: TImageList;
     lblStatus: TLabel;
     dlgSave: TSaveDialog;
+    mnuURL: TMenuItem;
     mnuColumnEditor: TMenuItem;
     Separator2: TMenuItem;
     Separator1: TMenuItem;
@@ -45,6 +46,7 @@ Type
     pmnuFilterMRU: TPopupMenu;
     pmnuGrid: TPopupMenu;
     pnlMemo: TPanel;
+    mnuSepURL: TMenuItem;
     splMemo: TSplitter;
     tbGrid: TToolBar;
     ToolButton1: TToolButton;
@@ -74,6 +76,7 @@ Type
     Procedure mnuCopyTableClick(Sender: TObject);
     Procedure mnuExportToCSVClick(Sender: TObject);
     Procedure mnuSetFilterClick(Sender: TObject);
+    Procedure mnuURLClick(Sender: TObject);
     Procedure pmnuGridPopup(Sender: TObject);
   Private
     FDataChanging: Boolean;
@@ -129,9 +132,9 @@ Type
     Procedure LoadSettings(oInifile: TIniFile); Override;
     Procedure SaveSettings(oInifile: TIniFile); Override;
 
-    Property Dataset: TDataset read FDataset write SetDataset;
+    Property Dataset: TDataset Read FDataset Write SetDataset;
     Function RecordCount: Integer;
-    Property FilterMRU: String read GetFilterMRU write SetFilterMRU;
+    Property FilterMRU: String Read GetFilterMRU Write SetFilterMRU;
 
     Function ReadOnlyField(AField: String): Boolean;
     Procedure ClearReadOnlyFields;
@@ -140,25 +143,25 @@ Type
     Procedure ClearSort;
     Procedure InitialiseDataset;
     Procedure InitialiseDBGrid(bHideIDs: Boolean = False);
-    Property SortField: String read FSortField;
+    Property SortField: String Read FSortField;
 
     Procedure ColumnEditor;
 
-    Property CallingRefresh: Boolean read FParentSemaphore;
+    Property CallingRefresh: Boolean Read FParentSemaphore;
 
     Function Status(bIncRecount: Boolean = True): String;
     Procedure SetStatus(sValue: String);
 
-    Property Editable: Boolean read GetEditable write SetEditable;
+    Property Editable: Boolean Read GetEditable Write SetEditable;
 
-    Property UseMultilineDefaults: Boolean read FUseMultilineDefaults
-      write SetUseMultilineDefaults;
-    Property AllowMultiline: Boolean read FAllowMultiline write SetAllowMultiline;
+    Property UseMultilineDefaults: Boolean Read FUseMultilineDefaults
+      Write SetUseMultilineDefaults;
+    Property AllowMultiline: Boolean Read FAllowMultiline Write SetAllowMultiline;
 
-    Property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
-    Property OnGridMouseDown: TMouseEvent read FOnGridMouseDown write FOnGridMouseDown;
-    Property OnGridStartDrag: TNotifyEvent read FOnGridStartDrag write SetOnGridStartDrag;
-    Property OnAfterFilter: TNotifyEvent read FOnAfterFilter write FOnAfterFilter;
+    Property OnDblClick: TNotifyEvent Read FOnDblClick Write FOnDblClick;
+    Property OnGridMouseDown: TMouseEvent Read FOnGridMouseDown Write FOnGridMouseDown;
+    Property OnGridStartDrag: TNotifyEvent Read FOnGridStartDrag Write SetOnGridStartDrag;
+    Property OnAfterFilter: TNotifyEvent Read FOnAfterFilter Write FOnAfterFilter;
   End;
 
 Implementation
@@ -168,7 +171,8 @@ Uses
   sqldb,
   BufDataset,
   Clipbrd,
-  ZAbstractRODataset, Math; // For stAscending/stDescending
+  ZAbstractRODataset, LCLIntf,
+  Math; // For stAscending/stDescending
 
   {$R *.lfm}
 
@@ -727,6 +731,13 @@ End;
 
 Procedure TFrameGrid.pmnuGridPopup(Sender: TObject);
 Begin
+  mnuURL.Enabled := (FMouseRow <> 0) And FDataset.Active;
+  If mnuURL.Enabled Then
+    mnuURL.Visible := Assigned(FDataset.FindField('URL'))
+  Else
+    mnuURL.Visible := False;
+  mnuSepURL.Visible := mnuURL.Visible;
+
   mnuCopyTable.Enabled := (FMouseRow <> 0) And FDataset.Active;
   mnuCopyRow.Enabled := mnuCopyTable.Enabled And (RecordCount > 0);
 
@@ -775,6 +786,19 @@ Begin
       sFilter := FFilterMRU[TMenuItem(Sender).Tag];
       SetFilter(sFilter, []);
     End;
+End;
+
+Procedure TFrameGrid.mnuURLClick(Sender: TObject);
+Var
+  sURL: String;
+Begin
+  If FDataset.Active Then
+  Begin
+    sURL := Trim(Value(FDataset, 'URL'));
+
+    If sURL <> '' Then
+      OpenURL(sURL);
+  End;
 End;
 
 Procedure TFrameGrid.btnShowFilterDlgClick(Sender: TObject);
@@ -1061,7 +1085,7 @@ Procedure TFrameGrid.grdSQLPrepareCanvas(Sender: TObject; DataCol: Integer;
 Var
   oField: TField;
   oColor: TColor;
-  sColor, sTemp: String;
+  sColor, sTemp, sR, sG, sB: String;
   tsTemp: TTextStyle;
   iLines, iRowHeight: Integer;
 Begin
@@ -1118,6 +1142,17 @@ Begin
         'yellow': oColor := TColor($0080FFFF);
         '': oColor := clNone;
         Else
+          If (Length(sColor) = 7) And (Pos('#', sColor) > 0) Then
+          Begin
+            // Assume RGB format: #4C6F7C
+            // Delphi TColor is $00BBGGRR
+            sR := Copy(sColor, 2, 2);
+            sG := Copy(sColor, 4, 2);
+            sB := Copy(sColor, 6, 2);
+
+            sColor := '$00' + sB + sG + sR;
+          End;
+
           oColor := StringToColorDef(sColor, clNone);
       End;
 

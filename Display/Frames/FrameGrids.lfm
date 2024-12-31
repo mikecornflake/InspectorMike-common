@@ -204,6 +204,13 @@ inherited FrameGrid: TFrameGrid
     OnPopup = pmnuGridPopup
     Left = 40
     Top = 72
+    object mnuURL: TMenuItem
+      Caption = 'Visit URL...'
+      OnClick = mnuURLClick
+    end
+    object mnuSepURL: TMenuItem
+      Caption = '-'
+    end
     object mnuExportToCSV: TMenuItem
       Caption = 'Export to csv'
       OnClick = mnuExportToCSVClick
