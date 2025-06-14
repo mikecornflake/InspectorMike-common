@@ -123,11 +123,14 @@ Var
 Begin
   i := Length(sFile);
 
-  While sFile[i] <> '_' Do
+  While (sFile[i] <> '_') And (sFile[i] <> '-') Do
     Dec(i);
 
   // TODO - add defensive code
-  Result := Copy(sFile, 1, i - 1);
+  If i>= 1 Then
+    Result := Copy(sFile, 1, i - 1)
+  Else
+    Result := sFile;
 End;
 
 Function CustomSort(List: TStringList; Index1, Index2: Integer): Integer;
@@ -141,11 +144,14 @@ Function CustomSort(List: TStringList; Index1, Index2: Integer): Integer;
     iLen := Length(sFile);
     i := iLen;
 
-    While sFile[i] <> '_' Do
+    While (sFile[i] <> '_') And (sFile[i] <> '-') Do
       Dec(i);
 
     // TODO - add defensive code
-    Result := StrToIntDef(Copy(sFile, i + 1, iLen - i), -1);
+    If i>=1 Then
+      Result := StrToIntDef(Copy(sFile, i + 1, iLen - i), -1)
+    Else
+      Result := 0;
   End;
 
 Var
@@ -184,6 +190,7 @@ Begin
 
         FPath := sPath;
 
+        // Try and handle linked files.
         If Pos('_', sFile) > 0 Then
         Begin
           sBaseFile := ExtractBaseFilename(sFile);
@@ -199,8 +206,10 @@ Begin
               oFiles.Add(srTemp.Name);
           End;
           FindClose(srTemp);
-        End
-        Else
+        End;
+
+        // But not all files with _ are numbered...
+        If oFiles.Count=0 Then
           oFiles.Add(Format('%s%s', [sFile, sExt]));
 
         // Custom sort the files
@@ -213,7 +222,8 @@ Begin
         Begin
           FPlaylist := IncludeTrailingBackslash(FTempDir) +
             ChangeFileExt(ExtractFileName(FFilename), '.m3u');
-          If Not FileExists(FPlaylist) Then
+
+          //If Not FileExists(FPlaylist) Then
           Begin
             FPlaylistFile := TStringList.Create;
             Try
