@@ -5,7 +5,10 @@ Unit OSSupport;
 Interface
 
 Uses
-  Classes, SysUtils, UTF8Process, Controls, Forms, LCLType {$IFDEF WINDOWS}, ShellAPI{$ENDIF};
+  Classes, SysUtils, UTF8Process, Controls, Forms, LCLType
+  {$IFDEF WINDOWS}, Windows, ShellAPI{$ENDIF}
+  {$IFDEF UNIX}, BaseUnix {$ENDIF}
+  ;
 
 Procedure LaunchFile(sFilename: String; sParameters: String = '');
 Procedure LaunchDocument(sFilename: String);
@@ -28,6 +31,9 @@ Function ShellDirectoryUnRegister(AAppName: String): Boolean; // Return True if 
 
 Procedure CopyHTMLToClipboard(AHTML: TStringList; ABaseFolder: String = '';
   BAlsoAsText: Boolean = False);
+
+Procedure SetEnvVar(Const Name, Value: String);
+Procedure AddToEnvironmentPath(AFolder: String);
 
 Const
   HTML_STYLE_SHEET =
@@ -347,6 +353,30 @@ Begin
   Finally
     oHTML.Free;
   End;
+End;
+
+Procedure SetEnvVar(Const Name, Value: String);
+Begin
+  {$IFDEF UNIX}
+  // Use FpSetEnv, expects 'NAME=VALUE'
+  FpSetEnv(PChar(Name + '=' + Value));
+  {$ENDIF}
+
+  {$IFDEF WINDOWS}
+  // SetEnvironmentVariableA (ANSI version)
+  SetEnvironmentVariable(PChar(Name), PChar(Value));
+  {$ENDIF}
+End;
+
+Procedure AddToEnvironmentPath(AFolder: String);
+Var
+  sCurrentPath: String;
+Begin
+  sCurrentPath := SysUtils.GetEnvironmentVariable('PATH');
+  If sCurrentPath = '' Then
+    SetEnvVar('PATH', AFolder)
+  Else
+    SetEnvVar('PATH', AFolder + PathSeparator + sCurrentPath);
 End;
 
 Initialization
