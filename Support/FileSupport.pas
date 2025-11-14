@@ -8,7 +8,13 @@ Unit FileSupport;
 Interface
 
 Uses
-  Classes, Graphics, Clipbrd, LCLType, SysUtils, Variants;
+  Classes, Graphics, Clipbrd, LCLType, SysUtils, Variants,
+  {$IFDEF MSWINDOWS}
+  Windows
+  {$ELSE}
+  BaseUnix
+  {$ENDIF}
+  ;
 
 Type
   TRenameSubFolderOption = (rsfLowercase, rsfUppercase, rsfProperCase);
@@ -46,6 +52,10 @@ Function IsTextfile(sExt: String): Boolean;
 Function LoadTextFile(AFilename: String): String;
 Procedure SaveTextFile(AFilename: String; AText: String);
 
+Function GetIOErrorText(code: Integer): String;
+
+Procedure FlushFileStreamToDisk(AStream: TFileStream);
+
 Const
   EXE_DIR = '<EXEDIR>';
   faAnyFilesExcDirs = faAnyFile And Not faDirectory;
@@ -65,6 +75,35 @@ Implementation
 
 Uses
   FileUtil, LazFileUtils, Forms, StrUtils;
+
+Function GetIOErrorText(code: Integer): String;
+Begin
+  Result := 'File I/O Error: ';
+
+  Case code Of
+    2: Result += 'File not found';
+    3: Result += 'Path not found';
+    5: Result += 'Access denied';
+    6: Result += 'Invalid handle';
+    15: Result += 'Drive not ready';
+    103: Result += 'File not open';
+    105: Result += 'File not assigned';
+    106: Result += 'File not open for input';
+    107: Result += 'File not open for output';
+    Else
+      Result += 'Unknown I/O error';
+  End;
+End;
+
+Procedure FlushFileStreamToDisk(AStream: TFileStream);
+Begin
+  {$IFDEF MSWINDOWS}
+  If Not FlushFileBuffers(AStream.Handle) Then
+    Raise Exception.Create('FlushFileBuffers failed: ' + SysErrorMessage(GetLastError));
+  {$ELSE}
+  fpfsync(AStream.Handle);
+  {$ENDIF}
+End;
 
 Function FixOSPathDelimiter(AInput: String): String;
 Begin
@@ -109,6 +148,7 @@ Begin
     Result := sFile;
 End;
 
+// TODO Move to String Support
 Function InArray(AValue: String; AArray: Array Of String): Boolean;
 Var
   sValue: String;
@@ -320,7 +360,7 @@ Begin
     Exit;
 
   If bDestExists And Not bFailIfExists Then
-    DeleteFile(sDestination);
+    SysUtils.DeleteFile(sDestination);
 
   Result := CopyFile(sSource, sDestination);
 End;

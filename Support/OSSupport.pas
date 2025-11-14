@@ -26,7 +26,7 @@ Procedure ClearBusy;
 // Windows routines to register and unregister a program in Explorer Right Click
 Function ShellDirectoryCommand(AAppName: String): String;
 Function ShellDirectoryRegister(AAppName: String; ACommand: String; ACaption: String): Boolean;
-// Return True if success
+  // Return True if success
 Function ShellDirectoryUnRegister(AAppName: String): Boolean; // Return True if success
 
 Procedure CopyHTMLToClipboard(AHTML: TStringList; ABaseFolder: String = '';
@@ -57,10 +57,10 @@ Const
 Implementation
 
 Uses
-  Registry, Process, Clipbrd, StringSupport, FileSupport;
+  Registry, Process, Clipbrd, StringSupport, FileSupport, SyncObjs;
 
 Var
-  iBusy: Integer;
+  LBusy: LongInt = 0;
 
 Procedure LaunchFile(sFilename: String; sParameters: String);
 Var
@@ -217,17 +217,17 @@ End;
 
 Procedure SetBusy;
 Begin
-  Inc(iBusy);
+  InterlockedIncrement(LBusy);
   Application.MainForm.Cursor := crHourglass;
   Screen.Cursor := crHourglass;
 End;
 
 Procedure ClearBusy;
 Begin
-  Dec(iBusy);
-  If iBusy <= 0 Then
+  InterlockedDecrement(LBusy);
+  If LBusy <= 0 Then
   Begin
-    iBusy := 0;
+    LBusy := 0;
 
     Application.MainForm.Cursor := crDefault;
     Screen.Cursor := crDefault;

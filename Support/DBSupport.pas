@@ -8,8 +8,10 @@ Uses
   Classes, Graphics, Clipbrd, LCLType, DB, DBGrids, SysUtils, Variants,
   Menus, BufDataset, StdCtrls;
 
-  { TMemTable }
 Type
+
+{ TMemTable }
+
   TMemTable = Class(TObject)
   Private
     FTable: TBufDataset;

@@ -1,11 +1,12 @@
 Unit StringSupport;
 
-{$mode objfpc}{$H+}
+{$mode ObjFPC}{$H+}
+{$codepage utf8}
 
 Interface
 
 Uses
-  Classes, Graphics, SysUtils;
+  Classes, Graphics, SysUtils, TypInfo;
 
 Type
   TCaseOperation = (coLowercase, coUppercase, coPropercase);
@@ -15,7 +16,7 @@ Function FindReplace(Const ASource, sFind, sReplace: String): String;
 Function FindNextString(Const ASource, sSubstr: String; iStart: Integer): Integer;
 Function YYYYmmddHHmmssToDateTimeDef(ASource: String; dtDefault: TDateTime): TDateTime;
 Function YYYYmmddHHmmssToDateTime(ASource: String): TDateTime;
-Function TextBetween(ASource, sStart, sEnd: String): String;
+Function TextBetween(Const ASource, sStart, sEnd: String): String;
 Function Count(Const sSubstr, ASource: String): Integer;
 Function ExtractField(Const ASource: String; cSeparator: Char; iIndex: Integer): String;
 Function ChangeCase(Const ASource: String; ACaseOperation: TCaseOperation): String;
@@ -23,6 +24,7 @@ Function ChangeCase(Const ASource: String; ACaseOperation: TCaseOperation): Stri
 Function DateToFilename(ADate: TDateTime): String;
 Function TimeToFilename(ATime: TDateTime): String;
 Function DateTimeToFilename(ADateTime: TDateTime): String;
+Function FormatDateTimeAsISO8601(dt: TDateTime): String;
 
 Function IsIn(sSearch: String; Const AValues: Array Of Const): Boolean;
 
@@ -30,6 +32,15 @@ Function IsIn(sSearch: String; Const AValues: Array Of Const): Boolean;
 Procedure AddStringToArray(Var AStringArray: TStringArray; Const AString: String);
 Procedure AddStringsToArray(Var AStringArray: TStringArray; Const AString: TStringArray);
 Function ArrayToString(Const AStrings: TStringArray; ADelimiter: String = ''): String;
+
+// TypInfo Helpers
+Function FieldTypeToString(AType: TTypeKind): String;
+Function StringToFieldType(Const S: String): TTypeKind;
+
+// File Routines
+// TODO: These are duplicates with FileSupport...
+Procedure SaveTextToFile(Const AFileName, AText: String);
+Function LoadTextFromFile(Const AFileName: String): String;
 
 // HTML
 Function ValidateHTML(AInput: String): String;
@@ -58,6 +69,38 @@ Implementation
 Uses
   StrUtils;
 
+Function FormatDateTimeAsISO8601(dt: TDateTime): String;
+Var
+  tzOffset: Integer;
+  tzHours, tzMinutes: Integer;
+  tzSign: String;
+  tzStr: String;
+Begin
+  tzOffset := GetLocalTimeOffset; // in minutes
+  tzHours := Abs(tzOffset) Div 60;
+  tzMinutes := Abs(tzOffset) Mod 60;
+  tzSign := IfThen(tzOffset >= 0, '+', '-');
+  tzStr := Format('%s%.2d:%.2d', [tzSign, tzHours, tzMinutes]);
+
+  Result := FormatDateTime('yyyy-mm-dd', dt) + 'T';
+  Result += FormatDateTime('HH:nn:ss', dt) + tzStr
+End;
+
+Function FieldTypeToString(AType: TTypeKind): String;
+Begin
+  Result := GetEnumName(TypeInfo(TTypeKind), Ord(AType));
+End;
+
+Function StringToFieldType(Const S: String): TTypeKind;
+Var
+  v: Integer;
+Begin
+  v := GetEnumValue(TypeInfo(TTypeKind), S);
+  If v < 0 Then
+    Raise Exception.CreateFmt('Invalid field type name: %s', [S]);
+  Result := TTypeKind(v);
+End;
+
 Function ChangeCase(Const ASource: String; ACaseOperation: TCaseOperation): String;
 Var
   sTemp: String;
@@ -69,7 +112,7 @@ Begin
     coPropercase:
     Begin
       sTemp := Copy(ASource, 1, Length(ASource));
-      Result := AnsiProperCase(sTemp, StdWordDelims);
+      Result := AnsiProperCase(sTemp, StdWordDelims); // TODO Proper case
     End;
   End;
 End;
@@ -109,23 +152,41 @@ Begin
   Result := StringReplace(ASource, sFind, sReplace, [rfReplaceAll, rfIgnoreCase]);
 End;
 
-Function TextBetween(ASource, sStart, sEnd: String): String;
+Function TextBetween(Const ASource, sStart, sEnd: String): String;
 Var
   iStart, iEnd, iLen: Integer;
 Begin
+  If ASource = '' Then
+    Exit('');
+
   iLen := Length(ASource);
 
   If sStart = '' Then
     iStart := 1
   Else
-    iStart := Pos(sStart, ASource) + Length(sStart);
+  Begin
+    iStart := Pos(sStart, ASource);
+
+    If iStart = 0 Then
+      Exit('');
+
+    Inc(iStart, Length(sStart));
+  End;
 
   If sEnd = '' Then
     iEnd := iLen + 1
   Else
-    iEnd := iStart + Pos(sEnd, Copy(ASource, iStart, iLen)) - 1;
+  Begin
+    iEnd := PosEx(sEnd, ASource, iStart);
 
-  Result := Copy(ASource, iStart, (iEnd - iStart));
+    If iEnd = 0 Then
+      iEnd := iLen + 1;
+  End;
+
+  If (iStart >= 1) And (iStart <= iLen) And (iEnd > iStart) Then
+    Result := Copy(ASource, iStart, iEnd - iStart)
+  Else
+    Result := '';
 End;
 
 Function ExtractField(Const ASource: String; cSeparator: Char; iIndex: Integer): String;
@@ -262,6 +323,48 @@ Begin
     Result := Result + sItem + ADelimiter;
 End;
 
+Procedure SaveTextToFile(Const AFileName, AText: String);
+Var
+  oStream: TFileStream;
+  oString: TStringStream;
+Begin
+  // Create a string ostream from your Atext
+  oString := TStringStream.Create(AText, TEncoding.UTF8);
+  Try
+    // Create or overwrite the file
+    oStream := TFileStream.Create(AFileName, fmCreate);
+    Try
+      oStream.CopyFrom(oString, oString.Size);
+    Finally
+      oStream.Free;
+    End;
+  Finally
+    oString.Free;
+  End;
+End;
+
+Function LoadTextFromFile(Const AFileName: String): String;
+Var
+  oStream: TFileStream;
+  oString: TStringStream;
+Begin
+  If Not FileExists(AFileName) Then
+    Exit('');
+  oStream := TFileStream.Create(AFileName, fmOpenRead Or fmShareDenyWrite);
+  Try
+    oString := TStringStream.Create('', TEncoding.UTF8);
+    Try
+      oString.CopyFrom(oStream, oStream.Size);
+      Result := oString.DataString;
+    Finally
+      oString.Free;
+    End;
+  Finally
+    oStream.Free;
+  End;
+End;
+
+// TODO Suspect this is a duplicate
 Function ValidateHTML(AInput: String): String;
 Begin
   Result := AInput;

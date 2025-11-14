@@ -1,5 +1,6 @@
 Unit Logs;
 
+//TODO: Merge the Threadsafe and stability Log code with this
 {$mode ObjFPC}{$H+}
 
 Interface
