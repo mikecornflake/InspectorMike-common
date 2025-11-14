@@ -8,6 +8,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <IncludeFiles Value="..\Display\Forms"/>
         <OtherUnitFiles Value="..\Display\Dialogs;..\Display\Docks;..\Display\Forms;..\Display\Frames"/>
         <UnitOutputDirectory Value="$(TestDir)\lib\$(TargetCPU)-$(TargetOS)\Shared"/>
       </SearchPaths>
@@ -32,14 +33,6 @@
       <Item>
         <Filename Value="..\Display\Docks\DockBase.pas"/>
         <UnitName Value="DockBase"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Display\Forms\FormAbout.lfm"/>
-        <Type Value="LFM"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Display\Forms\FormAbout.pas"/>
-        <UnitName Value="FormAbout"/>
       </Item>
       <Item>
         <Filename Value="..\Display\Forms\FormMain.lfm"/>
@@ -164,6 +157,14 @@
       <Item>
         <Filename Value="..\Display\Docks\DockManagers.pas"/>
         <UnitName Value="DockManagers"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Forms\FormAbout.pas"/>
+        <UnitName Value="FormAbout"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Forms\FormAbout.lfm"/>
+        <Type Value="LFM"/>
       </Item>
     </Files>
     <RequiredPkgs>

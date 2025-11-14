@@ -379,6 +379,4 @@ Begin
     SetEnvVar('PATH', AFolder + PathSeparator + sCurrentPath);
 End;
 
-Initialization
-  iBusy := 0;
 End.

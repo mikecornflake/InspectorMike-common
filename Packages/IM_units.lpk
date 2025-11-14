@@ -8,8 +8,9 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <IncludeFiles Value="..\Support;..\Display\Forms"/>
         <OtherUnitFiles Value="..\Classes;..\Support"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="$(TestDir)\lib\$(TargetCPU)-$(TargetOS)\Shared"/>
       </SearchPaths>
     </CompilerOptions>
     <Version Minor="1" Build="5"/>
@@ -90,8 +91,27 @@
         <Filename Value="..\Support\DialogDBGridColEditor.pas"/>
         <UnitName Value="DialogDBGridColEditor"/>
       </Item>
+      <Item>
+        <Filename Value="..\Classes\ExportersFPVectorial.pas"/>
+        <UnitName Value="ExportersFPVectorial"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Classes\PipelineDisplay.pas"/>
+        <UnitName Value="PipelineDisplay"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\DialogDBGridColEditor.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Support\XMLSupport.pas"/>
+        <UnitName Value="XMLSupport"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="fpvectorialpkg"/>
+      </Item>
       <Item>
         <PackageName Value="TurboPowerIPro"/>
       </Item>
