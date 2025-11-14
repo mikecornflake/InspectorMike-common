@@ -1,6 +1,7 @@
 Unit LazSerialSupport;
 
 {$mode objfpc}{$H+}
+{$codepage utf8}
 
 Interface
 
@@ -12,17 +13,19 @@ Type
   { TLazSerialHelper }
 
   TLazSerialHelper = Class helper For TlazSerial
-  private
-    function GetSettingsAsCommaSep: String;
-    function GetSettingsAsXML: String;
-    procedure SetSettingsAsCommaSep(AValue: String);
-    procedure SetSettingsAsXML(AValue: String);
-    function Settings: TStringArray;
-  public
+  Private
+    Function GetSettingsAsCommaSep: String;
+    Function GetSettingsAsXML: String;
+    Procedure SetSettingsAsCommaSep(AValue: String);
+    Procedure SetSettingsAsXML(AValue: String);
+    Function Settings: TStringArray;
+  Public
     Procedure ReadInifile(AInifile: TInifile; ASection: String);
     Procedure WriteInifile(AInifile: TInifile; ASection: String);
 
     Function WriteLn(AData: String): Integer;
+
+    Function SimpleString: String;
 
     Function ToString: String;
     Property SettingsAsCommaSep: String Read GetSettingsAsCommaSep Write SetSettingsAsCommaSep;
@@ -34,7 +37,7 @@ Implementation
 Uses
   lazserialsetup, StringSupport;
 
-Function TLazSerialHelper.Settings : TStringArray;
+Function TLazSerialHelper.Settings: TStringArray;
 Begin
   Result := nil;
   SetLength(Result, 6);
@@ -45,9 +48,9 @@ Begin
   Result[3] := Format('Parity=%s', [ParityToStr(Parity)]);
   Result[4] := Format('Stop Bits=%s', [StopBitsToStr(StopBits)]);
   Result[5] := Format('Flowcontrol=%s', [FlowControlToStr(FlowControl)]);
-end;
+End;
 
-function TLazSerialHelper.ToString: String;
+Function TLazSerialHelper.ToString: String;
 Var
   arrSettings: TStringArray;
 Begin
@@ -57,7 +60,22 @@ Begin
   Result := FindReplace(Result, '=', ': ');
 End;
 
-function TLazSerialHelper.GetSettingsAsCommaSep: String;
+Function TLazSerialHelper.SimpleString: String;
+Var
+  s: String;
+Begin
+  s := '';
+  s += Device + ',';
+  s += BaudRateToStr(BaudRate) + ',';
+  s += DataBitsToStr(DataBits) + ',';
+  s += ParityToStr(Parity) + ',';
+  s += StopBitsToStr(StopBits) + ',';
+  s += FlowControlToStr(FlowControl);
+
+  Result := s;
+End;
+
+Function TLazSerialHelper.GetSettingsAsCommaSep: String;
 Var
   arrSettings: TStringArray;
 Begin
@@ -66,7 +84,7 @@ Begin
   Result := ArrayToString(arrSettings, ',');
 End;
 
-procedure TLazSerialHelper.SetSettingsAsCommaSep(AValue: String);
+Procedure TLazSerialHelper.SetSettingsAsCommaSep(AValue: String);
 Var
   oTemp: TStringList;
 Begin
@@ -87,39 +105,42 @@ Begin
   End;
 End;
 
-function TLazSerialHelper.GetSettingsAsXML: String;
+Function TLazSerialHelper.GetSettingsAsXML: String;
 Var
   s, sItem: String;
   arrSettings: TStringArray;
-begin
+Begin
   arrSettings := Settings;
 
   s := '<TLazSerial>';
-  For sItem in arrSettings Do
-    s := s + Format('<setting name="%s" value="%s"/>', [ExtractField(sItem, '=', 0), ExtractField(sItem, '=', 1)]);
+  For sItem In arrSettings Do
+    s := s + Format('<setting name="%s" value="%s"/>',
+      [ExtractField(sItem, '=', 0), ExtractField(sItem, '=', 1)]);
   s := s + '</TLazSerial>';
 
   Result := s;
-end;
+End;
 
-procedure TLazSerialHelper.SetSettingsAsXML(AValue: String);
+Procedure TLazSerialHelper.SetSettingsAsXML(AValue: String);
+
   Function GetValue(AName: String): String;
-  var
+  Var
     sTemp: String;
   Begin
-    sTemp := Trim(TextBetween(AValue, '<setting name="'+AName+'"', '/>'));
+    sTemp := Trim(TextBetween(AValue, '<setting name="' + AName + '"', '/>'));
     Result := TextBetween(sTemp, '"', '"');
-  end;
-begin
+  End;
+
+Begin
   Device := GetValue('Serial Port');
   BaudRate := StrToBaudRate(GetValue('Baud Rate'));
   DataBits := StrToDataBits(GetValue('Data Bits'));
   Parity := StrToParity(GetValue('Parity'));
   StopBits := StrToStopBits(GetValue('Stop Bits'));
   FlowControl := StrToFlowControl(GetValue('Flowcontrol'));
-end;
+End;
 
-procedure TLazSerialHelper.ReadInifile(AInifile: TInifile; ASection: String);
+Procedure TLazSerialHelper.ReadInifile(AInifile: TInifile; ASection: String);
 Begin
   Device := AInifile.ReadString(ASection, 'Serial Port', 'COM1');
   BaudRate := StrToBaudRate(AInifile.ReadString(ASection, 'Baud Rate', '9600'));
@@ -129,7 +150,7 @@ Begin
   FlowControl := StrToFlowControl(AInifile.ReadString(ASection, 'Flowcontrol', 'None'));
 End;
 
-procedure TLazSerialHelper.WriteInifile(AInifile: TInifile; ASection: String);
+Procedure TLazSerialHelper.WriteInifile(AInifile: TInifile; ASection: String);
 Begin
   AInifile.WriteString(ASection, 'Serial Port', Device);
   AInifile.WriteString(ASection, 'Baud Rate', BaudRateToStr(BaudRate));
@@ -139,7 +160,7 @@ Begin
   AInifile.WriteString(ASection, 'Flowcontrol', FlowControlToStr(FlowControl));
 End;
 
-function TLazSerialHelper.WriteLn(AData: String): Integer;
+Function TLazSerialHelper.WriteLn(AData: String): Integer;
 Begin
   Result := WriteData(AData + CRLF);
 End;
