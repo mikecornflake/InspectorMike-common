@@ -13,6 +13,8 @@ A more complex package providing an application framework, including dialogs, fr
 
 Where possible, I suggest avoiding this framework unless you're simply hooking into `FormAbout.pas` (easy way to add an About dialog to any project).
 
+- The IM_application package is licensed under the GNU Lesser General Public License version 3 or later (LGPL-3.0-or-later). It provides the application framework (TfrmMain, TfrmPersistent, TfrmMultiDock, Frames, etc.) used by Inspector Mike applications.
+
 ## Changelog
 
 ### [1.1.0] – 2025-11-29
@@ -29,15 +31,14 @@ Where possible, I suggest avoiding this framework unless you're simply hooking i
 
 This repository contains both applications and reusable support units.
 
-- The applications (e.g. FileRenamer2, etc.) are licensed under the  
-  **GNU General Public License, version 3 or later (GPL-3.0-or-later)**.  
-  See `LICENSE`.
-
-- The support units in the `IM_units` package are licensed under the  
+- The support units in the `IM_units` and `IM_application.lpk` packages are licensed under the  
   **GNU Lesser General Public License, version 3 or later (LGPL-3.0-or-later)**.  
   See `LICENSE.LGPL` and the headers in the individual units.
 
-- The unit `WGS84.pas` is based on work originally posted on the  
-  Lazarus Forums by **@stab**, who granted permission to use, modify,  
-  and distribute the code without restriction.  
+- The applications that use the `IM_application.lpk` framework (e.g. FileRenamer2, etc.) each have their own repositories and are licensed under the  
+  **GNU General Public License, version 3 or later (GPL-3.0-or-later)**.  
+  See each `LICENSE`.  
+
+- The unit `WGS84.pas` is based on work originally posted on the Lazarus Forums by **@stab**, who granted permission to use, modify, and distribute the code without restriction.
+  Only minor modifications have been made to the original work.
   It is incorporated here under **LGPL-3.0-or-later**, with attribution.
