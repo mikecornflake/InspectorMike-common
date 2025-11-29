@@ -13,7 +13,19 @@ A more complex package providing an application framework, including dialogs, fr
 
 Where possible, I suggest avoiding this framework unless you're simply hooking into `FormAbout.pas` (easy way to add an About dialog to any project).
 
-## Licensing
+## Changelog
+
+### [1.1.0] – 2025-11-29
+#### Changed
+- Relicensed all support units under LGPL-3.0-or-later.
+- Added licensing headers to all units.
+- Documented provenance and licensing for WGS84.pas.
+
+### [1.0.0] – 2024-01-22
+#### Added
+- Initial migration from SourceForge.
+
+### Licensing
 
 This repository contains both applications and reusable support units.
 
