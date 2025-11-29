@@ -19,25 +19,28 @@ unit WGS84;
     2022-01-13: User @stab distributes via Lazarus Forum
     2022-10-08: Unit fork and upload this copy to Github
     2022-12-07: Worked around Hemisphere oddity in WGS84.pas
-    2025-11-29: Added this header
+    2025-11-29: Added this header & LGPL3.0 license
 
   License
-    Original code distributed by user @stab with no license
+    Original license / permission:
+      The original author released this code as free to use on the
+      Lazarus Forums and granted permission to use, modify and
+      distribute it without restriction. The maintainer retains a copy
+      of this correspondence.
 
-    This file is part of IM_units.lpk.
-
-    This library is free software: you can redistribute it and/or modify it
-    under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or (at
-    your option) any later version.
+    As part of IM_units.lpk, this file is distributed under the terms
+    of the GNU Lesser General Public License as published by the Free
+    Software Foundation, either version 3 of the License, or (at your
+    option) any later version.
 
     This library is distributed in the hope that it will be useful, but
     WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
-    General Public License for more details.
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public License
-    along with this library. If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library. If not, see
+      <https://www.gnu.org/licenses/>.
 
     SPDX-License-Identifier: LGPL-3.0-or-later
 -------------------------------------------------------------------------------}
