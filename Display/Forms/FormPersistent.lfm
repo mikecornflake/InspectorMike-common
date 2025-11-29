@@ -4,5 +4,5 @@ object frmPersistent: TfrmPersistent
   Top = 213
   Width = 312
   Caption = 'frmPersistent'
-  LCLVersion = '1.0.8.0'
+  LCLVersion = '4.99.0.0'
 end

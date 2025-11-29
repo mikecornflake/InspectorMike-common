@@ -5,6 +5,11 @@ Unit FrameHTMLs;
   Unit      : FrameHTMLs.pas
   Description
     Frame for rendering HTML content with hyperlink notifications.
+    Portions of this code were derived from the example code found in
+       lazarus\examples\turbopower_ipro\mainform.pas
+
+    Modifications were either to allow for FOnHyperlink or to fit
+    my personal coding conventions
 
   Source
     Copyright (c) 2025
@@ -36,17 +41,8 @@ Unit FrameHTMLs;
     SPDX-License-Identifier: LGPL-3.0-or-later
 -------------------------------------------------------------------------------}
 
-
-
 {$mode objfpc}{$H+}
 
-(*
-  Portions of this code were derived from the example code found in
-     lazarus\examples\turbopower_ipro\mainform.pas
-
-  Modifications were either to allow for FOnHyperlink or to fit
-  my personal coding conventions
-*)
 Interface
 
 Uses

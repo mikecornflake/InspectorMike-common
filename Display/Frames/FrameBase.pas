@@ -36,8 +36,6 @@ Unit FrameBase;
     SPDX-License-Identifier: LGPL-3.0-or-later
 -------------------------------------------------------------------------------}
 
-
-
 {$mode objfpc}{$H+}
 
 Interface

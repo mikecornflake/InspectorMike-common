@@ -6,6 +6,14 @@ Unit FormPersistent;
   Description
     Base form class that saves and restores settings.
 
+    Forms that descend from here will be able to have their settings saved
+    in a TIniFile...
+
+    Automatic management for Frames descended from FrameBase (just need
+    to override LaodSettings/SaveSettings in Frame)
+
+    This assumes Application.MainForm is descended from TfrmMain in FormMain.pas
+
   Source
     Copyright (c) 2025
     Inspector Mike 2.0 Pty Ltd
@@ -35,18 +43,6 @@ Unit FormPersistent;
 
     SPDX-License-Identifier: LGPL-3.0-or-later
 -------------------------------------------------------------------------------}
-
-
-
-(*
- Forms that descend from here will be able to have their settings saved
- in a TIniFile...
-
- Automatic management for Frames descended from FrameBase (just need
- to override LaodSettings/SaveSettings in Frame)
-
- This assumes Application.MainForm is descended from TfrmMain in FormMain.pas
- *)
 
 {$mode objfpc}{$H+}
 
