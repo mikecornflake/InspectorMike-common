@@ -23,6 +23,6 @@ This repository contains both applications and reusable support units.
   See `LICENSE.LGPL` and the headers in the individual units.
 
 - The unit `WGS84.pas` is based on work originally posted on the
-  Lazarus Forums by `<Author>`, who granted permission to use, modify
+  Lazarus Forums by `@stab`, who granted permission to use, modify
   and distribute the code without restriction. It is incorporated here
   under LGPL-3.0-or-later with attribution.
