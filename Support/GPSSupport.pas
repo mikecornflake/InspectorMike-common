@@ -1,5 +1,44 @@
 Unit GPSSupport;
 
+{-------------------------------------------------------------------------------
+  Package   : IM_units
+  Unit      : GPSSupport.pas
+  Description
+    Helper unit for GPS Operations
+    Works closely with WGS84.pas
+      See https://forum.lazarus.freepascal.org/index.php?topic=57818.msg456377#msg456377
+
+    Currently being migrated to a NMEA String helper unit as GPS is a subset...
+
+  Source
+    Copyright (c) 2025
+    Inspector Mike 2.0 Pty Ltd
+    Mike Thompson (mike.cornflake@gmail.com)
+
+  History
+    2022-10-08: Creation and upload to Github
+    2022-12-07: Worked around Hemisphere oddity in WGS84.pas
+    2025-11-29: Added this header (and fixed minor typo in code)
+
+  License
+    This file is part of IM_units.lpk.
+
+    It is free software: you can redistribute it and/or modify it under the
+    terms of the GNU General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option) any
+    later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: GPL-3.0-or-later
+-------------------------------------------------------------------------------}
+
 {$mode objfpc}{$H+}
 
 Interface
@@ -12,7 +51,7 @@ Uses
 Procedure InitialiseGPS(ALat, ALon: Double); Overload;
 Procedure InitialiseGPS(AFuseau: Integer; ASouthernHemisphere: Boolean); Overload;
 
-Function GetWGS88: TWGS84;
+Function GetWGS84: TWGS84;
 Procedure LatLonToEN(ALat, ALon: Double; Var AEast, ANorth: Double);
 Procedure ENToLatLon(AEast, ANorth: Double; Var ALat, ALon: Double);
 
@@ -47,7 +86,7 @@ Var
   FFuseau: Integer;
   FSouthernHemi: Boolean;
 
-Function GetWGS88: TWGS84;
+Function GetWGS84: TWGS84;
 Begin
   If Not Assigned(FWGS84) Then
   Begin
@@ -79,7 +118,7 @@ Begin
   oLatLon.Lat := ALat;
   oLatLon.Lon := ALon;
 
-  oWGS84 := GetWGS88;
+  oWGS84 := GetWGS84;
   oWGS84.WGS84ToUTM(oLatLon, oUTM{%H-});
 
   FFuseau := oUTM.fuseau;
@@ -104,7 +143,7 @@ Begin
   oUTM.southhemi := FSouthernHemi;
   oUTM.fuseau := FFuseau;
 
-  oWGS84 := GetWGS88;
+  oWGS84 := GetWGS84;
   oWGS84.UTMToWGS84(oUTM, oLatLon{%H-});
 
   ALat := oLatLon.Lat;

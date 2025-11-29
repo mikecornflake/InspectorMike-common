@@ -1,18 +1,62 @@
 unit WGS84;
 
+{-------------------------------------------------------------------------------
+  Package   : IM_units
+  Unit      : WGS84.pas
+  Description
+    Helper unit for WGS84 conversions
+
+  Source
+    Written by: @stab - https://forum.lazarus.freepascal.org/index.php?action=profile;u=4102
+    Upload Post: https://forum.lazarus.freepascal.org/index.php/topic,57818.msg430740.html#msg430740
+
+  Note:
+    Do not use code formatting on this unit.  If user @stab re-releases the code
+    with a license, I intend to respect that licence and want to be able to easily
+    track code modifications between this unit and any newer unit
+
+  History (of this fork)
+    2022-01-13: User @stab distributes via Lazarus Forum
+    2022-10-08: Unit fork and upload this copy to Github
+    2022-12-07: Worked around Hemisphere oddity in WGS84.pas
+    2025-11-29: Added this header
+
+  License
+    Original code distributed by user @stab with no license
+
+    This file is part of IM_units.lpk.
+
+    It is free software: you can redistribute it and/or modify it under the
+    terms of the GNU General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option) any
+    later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: GPL-3.0-or-later
+-------------------------------------------------------------------------------}
+
 {$MODE Delphi}
 
 {
+Mike Thompson
 2022-10-10 Added "IgnoreGeodeticOrientation" to prevent swapping E/N and
            making N negative for southern hemisphere
 
+User @stab
 2013-08-21 Rättat initiering av medelMeridian till '2.5 gon V' om den är angiven
            som '' eller ' '
 2013-07-30 Lagt till initiering av medelMeridian till '2.5 gon V' om den är angiven
            som '' eller ' '
 2011-10-28 Lagt till initiering av medelMeridian till '2.5 gon V' om den inte är angiven
 }
-{$WARN 5024 off : Parameter "$1" not used}
+
 interface
 
 uses

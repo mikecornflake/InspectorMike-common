@@ -1,5 +1,65 @@
 Unit VersionSupport;
 
+{-------------------------------------------------------------------------------
+  Package   : IM_units
+  Unit      : VersionSupport.pas
+  Description
+    Support for extracting Build information for displaying in ie About forms
+
+    Building on the excellent vinfo.pas supplied by Paul Ishenin and available elsewhere on the Lazarus
+    Forums
+      - I hid the TVersionInfo class from the end user to simplify their (mine) number of required Uses...
+      - Added defensive code to TVersionInfo if no build info is compiled into the exe
+      - Deduced GetResourceStrings - works under Linux 64/GTK2 with Lazarus 0.9.30, but fails under
+        Win XP 32bit/Lazarus 0.9.29 - suspecting my install as the lazresexplorer example also fails
+        for me under Lazarus 0.9.29, but works with Lazarus 0.9.30
+
+    Trawled through IDE source code, FPC source code and Lazarus supplied example program lasresexplorer
+    to find the other defines and lookups...
+
+    End user only needs to use VersionSupport - no other units necessary for their project.
+
+    Jedi CodeFormatter seems to fail on the {$I %VARIABLE%} references, so sticking them all in here
+    means end user code can be neatly formatted using Jedi CodeFormatter
+
+    Other interesting includes I picked up in my travels are...
+    //  {$I %HOME%} = User Home Directory
+    //  {$I %FILE%} = Current pas file
+    //  {$I %LINE%} = current line number
+
+    Mike Thompson - mike.cornflake@gmail.com
+    July 24 2011
+
+  Source
+    Copyright (c) 2025
+    Inspector Mike 2.0 Pty Ltd
+    Mike Thompson (mike.cornflake@gmail.com)
+
+  History
+    2011-07-04: Creation. Original local SVN repository lost, but code shared on Lazarus Forum
+    2014-07-05: Uploaded to SourceForge/Package "Shared"
+    2024-01-22: Migrated to Github.  Refactored package to "IM_units"
+    2025-11-29: Added this header
+
+  License
+    This file is part of IM_units.lpk.
+
+    It is free software: you can redistribute it and/or modify it under the
+    terms of the GNU General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option) any
+    later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: GPL-3.0-or-later
+-------------------------------------------------------------------------------}
+
 {$mode objfpc}
 
 Interface

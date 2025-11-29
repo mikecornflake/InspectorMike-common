@@ -1,5 +1,48 @@
 Unit OSSupport;
 
+{-------------------------------------------------------------------------------
+  Package   : IM_units
+  Unit      : OSSupport.pas
+  Description
+    Helper Routines when interacting with the OS
+
+    All the Run/Runex variations from Lazarus Wiki and Forum
+    ShellDirectory code from a Delphi StackOverflow
+    HTML Clipboard was just hard work - poured through MS documentation
+      and StackOverflow, then when I got basis working, spent ages tweaking
+      HTML_STYLE_SHEET
+      This code was originally in StringSupport, refactored here in 2023
+
+  Source
+    Copyright (c) 2025
+    Inspector Mike 2.0 Pty Ltd
+    Mike Thompson (mike.cornflake@gmail.com)
+
+  History
+    ~2008: Creation date unknown, original local SVN repository lost
+    2014-07-05: Uploaded to SourceForge/Package "Shared"
+    2023-10-14: Last commit in SourceForge (moved HTML Clipboard from StringSupport to here)
+    2024-01-22: Migrated to Github.  Refactored package to "IM_units"
+    2025-11-29: Added this header
+
+  License
+    This file is part of IM_units.lpk.
+
+    It is free software: you can redistribute it and/or modify it under the
+    terms of the GNU General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option) any
+    later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: GPL-3.0-or-later
+-------------------------------------------------------------------------------}
 {$mode objfpc}{$H+}
 
 Interface

@@ -1,6 +1,52 @@
 Unit Logs;
 
-//TODO: Merge the Threadsafe and stability Log code with this
+{-------------------------------------------------------------------------------
+  Package   : IM_units
+  Unit      : Logs.pas
+  Description
+    CLI support for xpdf
+
+  Source
+    Copyright (c) 2025
+    Inspector Mike 2.0 Pty Ltd
+    Mike Thompson (mike.cornflake@gmail.com)
+
+  TODO
+    Deprecate this unit
+
+    //TODO: Merge the Threadsafe and stability Log code with this
+
+    I now have several logging units.  This one uses AssignFile,
+    I've noticed that if the app crashes, recent data is not logged
+
+    I'm much happier with the Log file created as part of SerialProcessor
+
+  History
+    ~2008: Creation date unknown, original local SVN repository lost
+           Reference in SourceForge also lost?
+    2024-01-22: Migrated to Github.  Refactored package to "IM_units"
+    2025-11-29: Added this header
+
+  License
+    This file is part of IM_units.lpk.
+
+    It is free software: you can redistribute it and/or modify it under the
+    terms of the GNU General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option) any
+    later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: GPL-3.0-or-later
+-------------------------------------------------------------------------------}
+
+
 {$mode ObjFPC}{$H+}
 
 Interface

@@ -1,5 +1,44 @@
 Unit PipelineDisplay;
 
+{-------------------------------------------------------------------------------
+  Package   : IM_units
+  Unit      : PipelineDisplay.pas
+  Description
+    Visual Component to display KP based data on a Pipeline
+    Based on code from Netlink
+
+  Source
+    Copyright (c) 2025
+    Inspector Mike 2.0 Pty Ltd
+    Mike Thompson (mike.cornflake@gmail.com)
+
+  History
+    ~1997: Original unit - developed at home
+    2019-04-05: Uploaded to SourceForge/Package "Shared"
+                - Part of InspectionSQLReports Pipeline Mode
+    2019-12-03: Last commit in SourceForge
+    2024-01-22: Migrated to Github.  Refactored package to "IM_units"
+    2025-11-29: Added this header
+
+  License
+    This file is part of IM_units.lpk.
+
+    It is free software: you can redistribute it and/or modify it under the
+    terms of the GNU General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option) any
+    later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: GPL-3.0-or-later
+-------------------------------------------------------------------------------}
+
 {$mode objfpc}{$H+}
 
 Interface

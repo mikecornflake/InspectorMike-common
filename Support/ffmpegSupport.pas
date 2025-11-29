@@ -1,5 +1,46 @@
 Unit ffmpegSupport;
 
+{-------------------------------------------------------------------------------
+  Package   : IM_units
+  Unit      : ffmpegSupport.pas
+  Description
+    CLI support for ffmpeg and ffprobe
+
+    ffprobe is a useful implementation.  Example use can be found in FileRenamer2
+
+    My use of ffmpeg is so simple, I mostly just use this unit to find WHERE
+    I've placed ffmpeg.exe...
+
+  Source
+    Copyright (c) 2025
+    Inspector Mike 2.0 Pty Ltd
+    Mike Thompson (mike.cornflake@gmail.com)
+
+  History
+    ~2008: Creation date unknown, original local SVN repository lost
+    2014-07-05: Uploaded to SourceForge/Package "Shared"
+    2021-12-01: Last commit in SourceForge
+    2024-01-22: Migrated to Github.  Refactored package to "IM_units"
+    2025-11-29: Added this header
+
+  License
+    This file is part of IM_units.lpk.
+
+    It is free software: you can redistribute it and/or modify it under the
+    terms of the GNU General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option) any
+    later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: GPL-3.0-or-later
+-------------------------------------------------------------------------------}
 {$mode objfpc}{$H+}
 
 // Running the command line interface itself is so easy I see no
