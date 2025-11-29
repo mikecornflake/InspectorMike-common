@@ -56,6 +56,8 @@ Function GetIOErrorText(code: Integer): String;
 
 Procedure FlushFileStreamToDisk(AStream: TFileStream);
 
+Function UniqueFilename(Const ADir, APrefix, AExt: String; AUseGUID: Boolean = True): String;
+
 Const
   EXE_DIR = '<EXEDIR>';
   faAnyFilesExcDirs = faAnyFile And Not faDirectory;
@@ -103,6 +105,55 @@ Begin
   {$ELSE}
   fpfsync(AStream.Handle);
   {$ENDIF}
+End;
+
+// Based on code from ChatGPT 5.1 on 29 Nov 2025
+// and from GetTempFileName() in osutil.inc (see comment)
+Function UniqueFilename(Const ADir, APrefix, AExt: String; AUseGUID: Boolean = True): String;
+Var
+  GUID: TGUID;
+  sGUID: String;
+  sExt, sDir: String;
+  sFileBase: String;
+  i: Integer;
+Begin
+  // For Threadsafe, MUST use AUseGuid=True
+
+  sExt := AExt;
+  If (sExt <> '') And (sExt[1] <> '.') Then
+    sExt := '.' + sExt;
+
+  If ADir <> '' Then
+    sDir := IncludeTrailingBackslash(ADir)
+  Else
+    sDir := '';
+
+  If (AUseGuid) Or (sDir = '') Then
+  Begin
+    CreateGUID(GUID);
+    sGUID := GUIDToString(GUID);
+    sGUID := StringReplace(sGUID, '{', '', [rfReplaceAll]);
+    sGUID := StringReplace(sGUID, '}', '', [rfReplaceAll]);
+
+    Result := sDir + APrefix + sGUID + sExt;
+  End
+  Else
+  Begin
+    // Logic swiped from osutil.inc  GetTempFileName()
+    // Unfortunately the existing code always used a .tmp extension
+    //  so wasn't useful for use with other extensions
+    // TODO: Submit a patch to fpc...
+    If (APrefix = '') Then
+      sFileBase := 'TMP'
+    Else
+      sFileBase := APrefix;
+
+    i := 0;
+    Repeat
+      Result := Format('%s%s%.5d%s', [sDir, sFileBase, i, sExt]);
+      Inc(i);
+    Until Not (FileExists(Result) Or DirectoryExists(Result));
+  End;
 End;
 
 Function FixOSPathDelimiter(AInput: String): String;
