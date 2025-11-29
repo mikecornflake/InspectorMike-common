@@ -16,7 +16,7 @@ unit WGS84;
     track code modifications between this unit and any newer unit
 
   History (of this fork)
-    2022-01-13: User @stab distributes via Lazarus Forum
+    2022-01-13: Original release by @stab on Lazarus Forum
     2022-10-08: Unit fork and upload this copy to Github
     2022-12-07: Worked around Hemisphere oddity in WGS84.pas
     2025-11-29: Added this header & LGPL3.0 license
