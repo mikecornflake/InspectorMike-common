@@ -58,7 +58,7 @@ Function ProbeFile(sFilename: String): String;
 Implementation
 
 Uses
-  Forms, OSSupport;
+  Forms, OSSupport, FileSupport, FileUtil;
 
 Var
   FnetMCPath: String;
@@ -82,14 +82,16 @@ Begin
 End;
 
 Procedure InitializenetMC;
+Var
+  sApplicationFolder: String;
 Begin
-  FnetMCPath := IncludeTrailingBackslash(Application.Location) + 'netMC';
-  If DirectoryExists(FnetMCPath) Then
-    Exit;
-
-  FnetMCPath := IncludeTrailingBackslash(Application.Location) + '..\netMC';
-  If DirectoryExists(FnetMCPath) Then
-    Exit;
+  If FnetMCPath = '' Then
+  Begin
+    sApplicationFolder := IncludeTrailingBackslash(Application.Location);
+    FnetMCPath := FindFolder([sApplicationFolder, sApplicationFolder +
+      'Apps', sApplicationFolder + '..', sApplicationFolder + '..\Apps'],
+      'netMC', Format('mnet_epkt%s', [GetExeExt]));
+  End;
 
   FnetMCPath := '';
 End;

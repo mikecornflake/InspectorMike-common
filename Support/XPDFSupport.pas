@@ -55,7 +55,7 @@ Procedure InitializeXPDF;
 Implementation
 
 Uses
-  Forms;
+  Forms, FileSupport, FileUtil;
 
 Var
   FXPDFPath: String;
@@ -79,16 +79,16 @@ Begin
 End;
 
 Procedure InitializeXPDF;
+Var
+  sApplicationFolder: String;
 Begin
-  FXPDFPath := IncludeTrailingBackslash(Application.Location) + 'XPDF\bin32';
-  If DirectoryExists(FXPDFPath) Then
-    Exit;
-
-  FXPDFPath := IncludeTrailingBackslash(Application.Location) + '..\XPDF\bin32';
-  If DirectoryExists(FXPDFPath) Then
-    Exit;
-
-  FXPDFPath := '';
+  If FXPDFPath = '' Then
+  Begin
+    sApplicationFolder := IncludeTrailingBackslash(Application.Location);
+    FXPDFPath := FindFolder([sApplicationFolder, sApplicationFolder +
+      'Apps', sApplicationFolder + '..', sApplicationFolder + '..\Apps'],
+      'XPDF\bin32', Format('ffprobe%s', [GetExeExt]));
+  End;
 End;
 
 Initialization

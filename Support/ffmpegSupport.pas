@@ -110,7 +110,7 @@ Const
 Implementation
 
 Uses
-  Forms, StringSupport, FileUtil, OSSupport;
+  Forms, StringSupport, FileUtil, OSSupport, FileSupport;
 
 Var
   FFFmpegPath: String;
@@ -134,25 +134,15 @@ Begin
 End;
 
 Procedure InitializeFFmpeg;
+Var
+  sApplicationFolder: String;
 Begin
   If FFFmpegPath = '' Then
   Begin
-    // By default, use the ffpmeg folder distributed with the app
-    FFFmpegPath := IncludeTrailingBackslash(Application.Location) + 'ffmpeg\bin';
-    If DirectoryExists(FFFmpegPath) Then
-      Exit;
-
-    // Maybe it was installed in the same folder as the app?
-    FFFmpegPath := IncludeTrailingBackslash(Application.Location) + '..\ffmpeg\bin';
-    If DirectoryExists(FFFmpegPath) Then
-      Exit;
-
-    // Oh well, search the evironment PATH for the exe...
-    FFFmpegPath := FindDefaultExecutablePath(Format('ffprobe%s', [GetExeExt]));
-    If DirectoryExists(FFFmpegPath) Then
-      Exit;
-
-    FFFmpegPath := '';
+    sApplicationFolder := IncludeTrailingBackslash(Application.Location);
+    FFFmpegPath := FindFolder([sApplicationFolder, sApplicationFolder +
+      'Apps', sApplicationFolder + '..', sApplicationFolder + '..\Apps'],
+      'ffmpeg\bin', Format('ffprobe%s', [GetExeExt]));
   End;
 End;
 

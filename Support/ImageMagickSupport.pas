@@ -60,7 +60,7 @@ Procedure InitializeImageMagick;
 Implementation
 
 Uses
-  Forms;
+  Forms, FileSupport, FileUtil;
 
 Var
   FImageMagickPath: String;
@@ -84,16 +84,16 @@ Begin
 End;
 
 Procedure InitializeImageMagick;
+Var
+  sApplicationFolder: String;
 Begin
-  FImageMagickPath := IncludeTrailingBackslash(Application.Location) + 'ImageMagick';
-  If DirectoryExists(FImageMagickPath) Then
-    Exit;
-
-  FImageMagickPath := IncludeTrailingBackslash(Application.Location) + '..\ImageMagick';
-  If DirectoryExists(FImageMagickPath) Then
-    Exit;
-
-  FImageMagickPath := '';
+  If FImageMagickPath = '' Then
+  Begin
+    sApplicationFolder := IncludeTrailingBackslash(Application.Location);
+    FImageMagickPath := FindFolder([sApplicationFolder, sApplicationFolder +
+      'Apps', sApplicationFolder + '..', sApplicationFolder + '..\Apps'],
+      'ImageMagick', Format('magick%s', [GetExeExt]));
+  End;
 End;
 
 Initialization
