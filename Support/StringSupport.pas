@@ -80,7 +80,7 @@ Begin
   tzStr := Format('%s%.2d:%.2d', [tzSign, tzHours, tzMinutes]);
 
   Result := FormatDateTime('yyyy-mm-dd', dt) + 'T';
-  Result += FormatDateTime('HH:nn:ss', dt) + tzStr
+  Result += FormatDateTime('HH:nn:ss', dt) + tzStr;
 End;
 
 Function FieldTypeToString(AType: TTypeKind): String;

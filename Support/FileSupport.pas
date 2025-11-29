@@ -25,11 +25,14 @@ Function ExcludeSlash(Const sFolder: String): String;
 Function FileCount(sFolder: String; sFilemask: String; ARecurse: Boolean = False): Integer;
 Function FileSize(sFolder: String; sFilemask: String): Integer;
 Function FileSize(sFilename: String): Integer;
-Function DeleteDirectoryEx(AFolder: String; AFilemask: String = '';  ARemoveEmptyRoot: Boolean = True): Boolean;
+Function DeleteDirectoryEx(AFolder: String; AFilemask: String = '';
+  ARemoveEmptyRoot: Boolean = True): Boolean;
 Function FileRename(ASource, ADestination: String): Boolean;
 Function RenameSubfolders(ARoot: String; AOperation: TRenameSubFolderOption): Boolean;
 Function CopyFileForce(sSource, sDestination: String; bFailIfExists: Boolean = False): Boolean;
 Function IsFileAbsolute(AFilename: String): Boolean;
+
+Function FindFolder(Const ASearchFolders: Array Of String; Const AFolder, AExe: String): String;
 
 // OS Safety
 Function FixOSPathDelimiter(AInput: String): String;
@@ -171,6 +174,37 @@ Begin
   Result := DateTimeToStr(ADateTime, GFilenameDateTimeFormat);
 End;
 
+// Written by ChatGPT 5.1 on 29 Nov 2025
+Function FindFolder(Const ASearchFolders: Array Of String; Const AFolder, AExe: String): String;
+Var
+  i: Integer;
+  sBaseFolder, sCandidateFolder: String;
+Begin
+  Result := '';
+
+  // 1) Try each ASearchFolders folder + AFolder as a direct child
+  For i := Low(ASearchFolders) To High(ASearchFolders) Do
+  Begin
+    sBaseFolder := IncludeTrailingBackslash(ASearchFolders[i]);
+    sCandidateFolder := sBaseFolder + AFolder;
+    If DirectoryExists(sCandidateFolder) Then
+    Begin
+      Result := IncludeTrailingBackslash(ExpandFileName(sCandidateFolder));
+      Exit;
+    End;
+  End;
+
+  // 2) If not found, search %PATH% for AExe
+  If AExe <> '' Then
+  Begin
+    Result := FindDefaultExecutablePath(AExe);
+    If Result <> '' Then
+      Result := IncludeTrailingBackslash(ExtractFileDir(Result))
+    Else
+      Result := ''; // explicit, for clarity
+  End;
+End;
+
 Function FixOSPathDelimiter(AInput: String): String;
 Begin
   {$IFDEF WINDOWS}
@@ -254,7 +288,7 @@ Begin
   Finally
     oStream.Free;
   End;
-end;
+End;
 
 Procedure SaveTextFile(AFilename: String; AText: String);
 Var

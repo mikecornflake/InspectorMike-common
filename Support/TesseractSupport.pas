@@ -100,40 +100,16 @@ Begin
 End;
 
 Procedure InitializeTesseract;
+Var
+  sApplicationFolder: String;
 Begin
   If FTesseractPath = '' Then
   Begin
-    // TODO: This search needs rationalising and adding to FileSupport...
-
-    // By default, use the OCR folder distributed with the app
-    FTesseractPath := ExpandFileName(IncludeTrailingBackslash(Application.Location) +
-      'Tesseract-OCR');
-    If DirectoryExists(FTesseractPath) Then
-      Exit;
-
-    // Maybe it was installed in the Apps folder?
-    FTesseractPath := ExpandFileName(IncludeTrailingBackslash(Application.Location) +
-      'Apps\Tesseract-OCR');
-    If DirectoryExists(FTesseractPath) Then
-      Exit;
-
-    // Maybe it was installed in the same folder as the app?
-    FTesseractPath := ExpandFileName(IncludeTrailingBackslash(Application.Location) +
-      '..\Tesseract-OCR');
-    If DirectoryExists(FTesseractPath) Then
-      Exit;
-
-    // Maybe it was installed in the Apps folder?
-    FTesseractPath := ExpandFileName(IncludeTrailingBackslash(Application.Location) +
-      '..\Apps\Tesseract-OCR');
-    If DirectoryExists(FTesseractPath) Then
-      Exit;
-
-    // Oh well, search the evironment PATH for the exe...
-    FTesseractPath := FindDefaultExecutablePath(Format('tesseract%s', [GetExeExt]));
-
-    If FTesseractPath <> '' Then
-      FTesseractPath := IncludeTrailingBackslash(ExtractFileDir(FTesseractPath));
+    sApplicationFolder := IncludeTrailingBackslash(Application.Location);
+    FTesseractPath := FindFolder([sApplicationFolder,
+      sApplicationFolder + 'Apps', sApplicationFolder + '..',
+      sApplicationFolder + '..\Apps'], 'Tesseract-OCR',
+      Format('tesseract%s', [GetExeExt]));
   End;
 End;
 
