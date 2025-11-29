@@ -25,8 +25,7 @@ Function ExcludeSlash(Const sFolder: String): String;
 Function FileCount(sFolder: String; sFilemask: String; ARecurse: Boolean = False): Integer;
 Function FileSize(sFolder: String; sFilemask: String): Integer;
 Function FileSize(sFilename: String): Integer;
-Function DeleteDirectoryEx(AFolder: String; AFilemask: String = '';
-  ARemoveEmptyRoot: Boolean = True): Boolean;
+Function DeleteDirectoryEx(AFolder: String; AFilemask: String = '';  ARemoveEmptyRoot: Boolean = True): Boolean;
 Function FileRename(ASource, ADestination: String): Boolean;
 Function RenameSubfolders(ARoot: String; AOperation: TRenameSubFolderOption): Boolean;
 Function CopyFileForce(sSource, sDestination: String; bFailIfExists: Boolean = False): Boolean;
@@ -41,22 +40,23 @@ Function ExpandFile(sFile: String): String;
 Function ShrinkFolder(sFolder: String): String;
 Function ShrinkFile(sFile: String): String;
 
-// Array of string helper
-Function InArray(AValue: String; AArray: Array Of String): Boolean;
-
+// Filename Extension helpers
 Function IsImage(sExt: String): Boolean;
 Function IsVideo(sExt: String): Boolean;
 Function IsCSV(sExt: String): Boolean;
 Function IsTextfile(sExt: String): Boolean;
 
+// Text file & routines
 Function LoadTextFile(AFilename: String): String;
 Procedure SaveTextFile(AFilename: String; AText: String);
-
 Function GetIOErrorText(code: Integer): String;
-
 Procedure FlushFileStreamToDisk(AStream: TFileStream);
 
+// Filename generators
 Function UniqueFilename(Const ADir, APrefix, AExt: String; AUseGUID: Boolean = True): String;
+Function DateToFilename(ADate: TDateTime): String;
+Function TimeToFilename(ATime: TDateTime): String;
+Function DateTimeToFilename(ADateTime: TDateTime): String;
 
 Const
   EXE_DIR = '<EXEDIR>';
@@ -76,7 +76,7 @@ Const
 Implementation
 
 Uses
-  FileUtil, LazFileUtils, Forms, StrUtils;
+  FileUtil, LazFileUtils, Forms, StrUtils, StringSupport;
 
 Function GetIOErrorText(code: Integer): String;
 Begin
@@ -156,6 +156,21 @@ Begin
   End;
 End;
 
+Function DateToFilename(ADate: TDateTime): String;
+Begin
+  Result := DateToStr(ADate, GFilenameDateTimeFormat);
+End;
+
+Function TimeToFilename(ATime: TDateTime): String;
+Begin
+  Result := TimeToStr(ATime, GFilenameDateTimeFormat);
+End;
+
+Function DateTimeToFilename(ADateTime: TDateTime): String;
+Begin
+  Result := DateTimeToStr(ADateTime, GFilenameDateTimeFormat);
+End;
+
 Function FixOSPathDelimiter(AInput: String): String;
 Begin
   {$IFDEF WINDOWS}
@@ -200,17 +215,6 @@ Begin
 End;
 
 // TODO Move to String Support
-Function InArray(AValue: String; AArray: Array Of String): Boolean;
-Var
-  sValue: String;
-Begin
-  Result := False;
-
-  For sValue In AArray Do
-    If CompareText(AValue, sValue) = 0 Then
-      exit(True);
-End;
-
 Function IsImage(sExt: String): Boolean;
 Begin
   Result := InArray(Lowercase(sExt), FileExtImage);
@@ -233,33 +237,42 @@ End;
 
 Function LoadTextFile(AFilename: String): String;
 Var
-  oTemp: TStringList;
+  oStream: TFileStream;
+  oString: TStringStream;
 Begin
-  Result := '';
-
-  If FileExists(AFilename) Then
-  Begin
-    oTemp := TStringList.Create;
+  If Not FileExists(AFilename) Then
+    Exit('');
+  oStream := TFileStream.Create(AFilename, fmOpenRead Or fmShareDenyWrite);
+  Try
+    oString := TStringStream.Create('', TEncoding.UTF8);
     Try
-      oTemp.LoadFromFile(AFilename);
-      Result := oTemp.Text;
+      oString.CopyFrom(oStream, oStream.Size);
+      Result := oString.DataString;
     Finally
-      oTemp.Free;
+      oString.Free;
     End;
+  Finally
+    oStream.Free;
   End;
-End;
+end;
 
 Procedure SaveTextFile(AFilename: String; AText: String);
 Var
-  oTemp: TStringList;
+  oStream: TFileStream;
+  oString: TStringStream;
 Begin
-  oTemp := TStringList.Create;
+  // Create a string ostream from your Atext
+  oString := TStringStream.Create(AText, TEncoding.UTF8);
   Try
-    oTemp.Text := AText;
-    ForceDirectory(ExtractFileDir(AFilename));
-    oTemp.SaveToFile(AFilename);
+    // Create or overwrite the file
+    oStream := TFileStream.Create(AFilename, fmCreate);
+    Try
+      oStream.CopyFrom(oString, oString.Size);
+    Finally
+      oStream.Free;
+    End;
   Finally
-    oTemp.Free;
+    oString.Free;
   End;
 End;
 

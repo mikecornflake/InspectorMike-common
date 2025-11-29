@@ -21,26 +21,23 @@ Function Count(Const sSubstr, ASource: String): Integer;
 Function ExtractField(Const ASource: String; cSeparator: Char; iIndex: Integer): String;
 Function ChangeCase(Const ASource: String; ACaseOperation: TCaseOperation): String;
 
-Function DateToFilename(ADate: TDateTime): String;
-Function TimeToFilename(ATime: TDateTime): String;
-Function DateTimeToFilename(ADateTime: TDateTime): String;
+// Date Time helpers
 Function FormatDateTimeAsISO8601(dt: TDateTime): String;
 
-Function IsIn(sSearch: String; Const AValues: Array Of Const): Boolean;
-
-// From fpVectorial
+// TStringArray Routines (From fpVectorial)
 Procedure AddStringToArray(Var AStringArray: TStringArray; Const AString: String);
 Procedure AddStringsToArray(Var AStringArray: TStringArray; Const AString: TStringArray);
 Function ArrayToString(Const AStrings: TStringArray; ADelimiter: String = ''): String;
 
+// Array of String Helpers
+Function InArray(AValue: String; AArray: Array Of String): Boolean;
+
+// Array of Const (parameters) helpers
+Function IsIn(sSearch: String; Const AValues: Array Of Const): Boolean;
+
 // TypInfo Helpers
 Function FieldTypeToString(AType: TTypeKind): String;
 Function StringToFieldType(Const S: String): TTypeKind;
-
-// File Routines
-// TODO: These are duplicates with FileSupport...
-Procedure SaveTextToFile(Const AFileName, AText: String);
-Function LoadTextFromFile(Const AFileName: String): String;
 
 // HTML
 Function ValidateHTML(AInput: String): String;
@@ -194,21 +191,6 @@ Begin
   Result := ExtractWord(iIndex + 1, ASource, [cSeparator]);
 End;
 
-Function DateToFilename(ADate: TDateTime): String;
-Begin
-  Result := DateToStr(ADate, GFilenameDateTimeFormat);
-End;
-
-Function TimeToFilename(ATime: TDateTime): String;
-Begin
-  Result := TimeToStr(ATime, GFilenameDateTimeFormat);
-End;
-
-Function DateTimeToFilename(ADateTime: TDateTime): String;
-Begin
-  Result := DateTimeToStr(ADateTime, GFilenameDateTimeFormat);
-End;
-
 Function IsIn(sSearch: String; Const AValues: Array Of Const): Boolean;
 Var
   i: Integer;
@@ -323,45 +305,15 @@ Begin
     Result := Result + sItem + ADelimiter;
 End;
 
-Procedure SaveTextToFile(Const AFileName, AText: String);
+Function InArray(AValue: String; AArray: Array Of String): Boolean;
 Var
-  oStream: TFileStream;
-  oString: TStringStream;
+  sValue: String;
 Begin
-  // Create a string ostream from your Atext
-  oString := TStringStream.Create(AText, TEncoding.UTF8);
-  Try
-    // Create or overwrite the file
-    oStream := TFileStream.Create(AFileName, fmCreate);
-    Try
-      oStream.CopyFrom(oString, oString.Size);
-    Finally
-      oStream.Free;
-    End;
-  Finally
-    oString.Free;
-  End;
-End;
+  Result := False;
 
-Function LoadTextFromFile(Const AFileName: String): String;
-Var
-  oStream: TFileStream;
-  oString: TStringStream;
-Begin
-  If Not FileExists(AFileName) Then
-    Exit('');
-  oStream := TFileStream.Create(AFileName, fmOpenRead Or fmShareDenyWrite);
-  Try
-    oString := TStringStream.Create('', TEncoding.UTF8);
-    Try
-      oString.CopyFrom(oStream, oStream.Size);
-      Result := oString.DataString;
-    Finally
-      oString.Free;
-    End;
-  Finally
-    oStream.Free;
-  End;
+  For sValue In AArray Do
+    If CompareText(AValue, sValue) = 0 Then
+      exit(True);
 End;
 
 // TODO Suspect this is a duplicate
