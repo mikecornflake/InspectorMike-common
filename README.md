@@ -25,7 +25,7 @@ Where possible, I suggest avoiding this framework unless you're simply hooking i
 #### Added
 - Initial migration from SourceForge.
 
-### Licensing
+## Licensing
 
 This repository contains both applications and reusable support units.
 
