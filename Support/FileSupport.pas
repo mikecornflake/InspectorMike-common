@@ -110,9 +110,9 @@ Const
     ('.mp3', '.wma', '.ogg', '.m4b');
   FileExtImage: Array[1..6] Of String =
     ('.jpg', '.bmp', '.tif', '.png', '.gif', '.jpeg');
-  FileExtVideo: Array[1..12] Of String =
+  FileExtVideo: Array[1..13] Of String =
     ('.mp4', '.mkv', '.wmv', '.avi', '.asf', '.mpg', '.mpeg', '.m4v', '.mov',
-    '.flv', '.pkt', '.vob');
+    '.flv', '.pkt', '.vob', '.webm');
   FileExtCSV: Array[1..3] Of String =
     ('.csv', '.survey', '.txt');
   FileExtText: Array[1..8] Of String =
