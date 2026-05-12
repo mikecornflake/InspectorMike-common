@@ -56,12 +56,41 @@ Uses
 Procedure LaunchFile(sFilename: String; sParameters: String = '');
 Procedure LaunchDocument(sFilename: String);
 
-// run a simple command quietly and return any output to the console
-Function Run(sCommandLine: String): String;
-Function RunEx(sCommandLine: String; oParamaters: TStrings = nil;
-  bRedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
-Function RunEx(sCommandLine: String; arrParameters: Array Of String;
-  bRedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
+// Launch an external application and immediately return control to the caller.
+// This is intended for GUI applications such as VLC, editors, viewers, etc.
+// No output is captured and the launched process is not monitored or waited on.
+//
+// AExecutable  - Full path to the executable to launch
+// AParams      - Command line parameters passed to the executable
+Procedure LaunchExternalTool(Const AExecutable, AParams: String);
+
+// Execute a command line application and capture anything written to stdout.
+// This call blocks until the process exits.
+//
+// IMPORTANT:
+// This routine uses pipes instead of poWaitOnExit to avoid deadlocks when
+// large amounts of output are generated.
+//
+// AExecutable     - Full path to the executable to launch
+// AParameters     - Optional parameter list passed to the executable
+// ARedirectErr    - If True, stderr is redirected to stdout
+// ARunExCallback  - Optional callback triggered while output is being received
+//
+// Returns the captured stdout/stderr text.
+Function RunAndCapture(AExecutable: String; AParamaters: TStrings = nil;
+  ARedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
+
+// Convenience overload of RunAndCapture() that accepts a simple array of
+// command line parameters instead of a TStrings instance.
+//
+// ACommandLine    - Full path to the executable to launch
+// AParamArray     - Array of command line parameters
+// ARedirectErr    - If True, stderr is redirected to stdout
+// ARunExCallback  - Optional callback triggered while output is being received
+//
+// Returns the captured stdout/stderr text.
+Function RunAndCapture(ACommandLine: String; AParamArray: Array Of String;
+  ARedirectErr: Boolean; ARunExCallback: TNotifyEvent): String;
 
 Procedure SetBusy;
 Procedure ClearBusy;
@@ -69,7 +98,7 @@ Procedure ClearBusy;
 // Windows routines to register and unregister a program in Explorer Right Click
 Function ShellDirectoryCommand(AAppName: String): String;
 Function ShellDirectoryRegister(AAppName: String; ACommand: String; ACaption: String): Boolean;
-  // Return True if success
+// Return True if success
 Function ShellDirectoryUnRegister(AAppName: String): Boolean; // Return True if success
 
 Procedure CopyHTMLToClipboard(AHTML: TStringList; ABaseFolder: String = '';
@@ -103,7 +132,7 @@ Uses
   Registry, Process, Clipbrd, StringSupport, FileSupport, SyncObjs;
 
 Var
-  LBusy: LongInt = 0;
+  LBusy: Longint = 0;
 
 Procedure LaunchFile(sFilename: String; sParameters: String);
 Var
@@ -130,32 +159,8 @@ Begin
   {$ENDIF}
 End;
 
-// run a simple command quietly and return any output to the console
-Function Run(sCommandLine: String): String;
-Var
-  oProcess: TProcessUTF8;
-  slOutput: TStringList;
-Begin
-  oProcess := TProcessUTF8.Create(nil);
-  slOutput := TStringList.Create;
-  Try
-    oProcess.CommandLine := sCommandLine;
-
-    oProcess.Options := oProcess.Options + [poNoConsole, poWaitOnExit, poUsePipes];
-
-    oProcess.Execute;
-
-    slOutput.LoadFromStream(oProcess.Output);
-
-    Result := slOutput.Text;
-  Finally
-    slOutput.Free;
-    oProcess.Free;
-  End;
-End;
-
-Function RunEx(sCommandLine: String; oParamaters: TStrings = nil;
-  bRedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
+Function RunAndCapture(AExecutable: String; AParamaters: TStrings = nil;
+  ARedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
 Const
   READ_BYTES = 2048;
 Var
@@ -172,22 +177,22 @@ Begin
   Try
     oProcess := TProcess.Create(nil);
     Try
-      If Assigned(oParamaters) Then
+      If Assigned(AParamaters) Then
       Begin
-        oProcess.Executable := sCommandLine;
+        oProcess.Executable := AExecutable;
 
-        For i := 0 To oParamaters.Count - 1 Do
-          oProcess.Parameters.Add(oParamaters[i]);
+        For i := 0 To AParamaters.Count - 1 Do
+          oProcess.Parameters.Add(AParamaters[i]);
       End
       Else
-        oProcess.CommandLine := sCommandLine;
+        oProcess.CommandLine := AExecutable;
 
       // We cannot use poWaitOnExit here since we don't
       // know the size of the output. On Linux the size of the
       // output pipe is 2 kB; if the output data is more, we
       // need to read the data. This isn't possible since we are
       // waiting. So we get a deadlock here if we use poWaitOnExit.
-      If bRedirectErr Then
+      If ARedirectErr Then
         oProcess.Options := [poNoConsole, poUsePipes, poStderrToOutPut]
       Else
         oProcess.Options := [poNoConsole, poUsePipes];
@@ -241,20 +246,38 @@ Begin
   End;
 End;
 
-Function RunEx(sCommandLine: String; arrParameters: Array Of String;
-  bRedirectErr: Boolean; ARunExCallback: TNotifyEvent): String;
+Function RunAndCapture(ACommandLine: String; AParamArray: Array Of String;
+  ARedirectErr: Boolean; ARunExCallback: TNotifyEvent): String;
 Var
   slParameters: TStringList;
   s: String;
 Begin
   slParameters := TStringList.Create;
   Try
-    For s In arrParameters Do
+    For s In AParamArray Do
       slParameters.Add(s);
 
-    Result := RunEx(sCommandLine, slParameters, bRedirectErr, ARunExCallback);
+    Result := RunAndCapture(ACommandLine, slParameters, ARedirectErr, ARunExCallback);
   Finally
     slParameters.Free;
+  End;
+End;
+
+Procedure LaunchExternalTool(Const AExecutable, AParams: String);
+Var
+  oProcess: TProcess;
+Begin
+  oProcess := TProcess.Create(nil);
+  Try
+    oProcess.Executable := AExecutable;
+
+    // Simple version, preserving your current command-line style
+    oProcess.CommandLine := Format('"%s" %s', [AExecutable, AParams]);
+
+    oProcess.Options := [];
+    oProcess.Execute;
+  Finally
+    oProcess.Free;
   End;
 End;
 

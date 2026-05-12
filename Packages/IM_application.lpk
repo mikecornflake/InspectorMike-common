@@ -3,7 +3,8 @@
   <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="IM_application"/>
-    <Type Value="RunAndDesignTime"/>
+    <Type Value="RunTimeOnly"/>
+    <Author Value="Michael Thompson"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>

@@ -78,6 +78,9 @@ Function StringToFieldType(Const S: String): TTypeKind;
 // HTML
 Function ValidateHTML(AInput: String): String;
 
+// Extract :Parameters to a TStringList
+Procedure ExtractParameters(Const S: String; Params: TStrings);
+
 Type
   CharSet = Set Of Char;
 
@@ -100,7 +103,7 @@ Var
 Implementation
 
 Uses
-  StrUtils;
+  StrUtils, RegExpr;
 
 Function FormatDateTimeAsISO8601(dt: TDateTime): String;
 Var
@@ -368,6 +371,29 @@ Begin
 
   If Trim(Result) = '' Then
     Result := '&nbsp;';
+End;
+
+Procedure ExtractParameters(Const S: String; Params: TStrings);
+Var
+  R: TRegExpr;
+Begin
+  If Not Assigned(Params) Then
+    Exit;
+
+  Params.Clear;
+
+  R := TRegExpr.Create;
+  Try
+    // Match :Name, :Name_123, :_Something, etc.
+    R.Expression := ':[A-Za-z_][A-Za-z0-9_]*';
+
+    If R.Exec(S) Then
+      Repeat
+        Params.Add(R.Match[0]);
+      Until Not R.ExecNext;
+  Finally
+    R.Free;
+  End;
 End;
 
 Initialization

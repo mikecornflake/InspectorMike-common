@@ -93,11 +93,11 @@ Type
     Procedure MoveDock(oDockForm: TdckBase; iCategory: Integer);
     Procedure DeleteDock(oDock: TdckBase);
 
-    Property Dock[iIndex: Integer]: TdckBase read GetDock;
-    Property ActiveDock: TdckBase read GetActiveDock;
-    Property ActiveDockIndex: Integer read GetActiveDockIndex;
-    Property ActivePageControl: TPageControl read GetActivePageControl;
-    Property Categories: TCategoryItems read FCategories;
+    Property Dock[iIndex: Integer]: TdckBase Read GetDock;
+    Property ActiveDock: TdckBase Read GetActiveDock;
+    Property ActiveDockIndex: Integer Read GetActiveDockIndex;
+    Property ActivePageControl: TPageControl Read GetActivePageControl;
+    Property Categories: TCategoryItems Read FCategories;
   End;
 
 Function MultiDockForm: TfrmMultiDock;
@@ -107,7 +107,7 @@ Implementation
 Uses
   Math, DialogDockManager, LCLProc;
 
-{$R *.lfm}
+  {$R *.lfm}
 
 Function MultiDockForm: TfrmMultiDock;
 Begin
@@ -414,7 +414,6 @@ End;
 Procedure TfrmMultiDock.ShowDockManager;
 Var
   oDlgDockManager: TdlgDockManager;
-
 Begin
   oDlgDockManager := TdlgDockManager.Create(Self);
   oDlgDockManager.Categories.Assign(FCategories);

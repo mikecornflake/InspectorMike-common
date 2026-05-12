@@ -528,7 +528,6 @@ Begin
   grdSQL.Invalidate;
 End;
 
-
 Function TFrameGrid.Status(bIncRecount: Boolean): String;
 Begin
   Result := '';

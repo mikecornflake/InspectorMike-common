@@ -53,7 +53,7 @@ Uses
 
 Type
 
-{ TMemTable }
+  { TMemTable }
 
   TMemTable = Class(TObject)
   Private
@@ -72,13 +72,13 @@ Type
 
     Procedure ClearAllRecords;
     Function RecordCount: Integer;
-    Property Active: Boolean read GetActive write SetActive;
+    Property Active: Boolean Read GetActive Write SetActive;
 
     Function HasField(AFieldName: String): Boolean;
 
-    Property Table: TBufDataset read FTable;
+    Property Table: TBufDataset Read FTable;
 
-    Property FieldByName[AFieldName: String]: TField read GetFieldByName; Default;
+    Property FieldByName[AFieldName: String]: TField Read GetFieldByName; Default;
   End;
 
 // Database Routines
