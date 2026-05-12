@@ -101,7 +101,7 @@ Var
   sCommand: String;
 Begin
   sCommand := Format('%s\mnet_epkt.exe "%s"', [netMCPath, sFilename]);
-  Result := RunEx(sCommand);
+  Result := RunAndCapture(sCommand);
 End;
 
 Initialization

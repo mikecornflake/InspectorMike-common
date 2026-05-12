@@ -155,7 +155,7 @@ Begin
   Begin
     sCommand := Format('%s\ffprobe%s -v quiet -show_format -show_streams "%s"',
       [FFmpegPath, GetExeExt, sFilename]);
-    Result := RunEx(sCommand, nil, True);
+    Result := RunAndCapture(sCommand, nil, True);
   End;
 End;
 
@@ -168,7 +168,7 @@ Var
     sCommand := Format('%s\ffmpeg%s -hide_banner -i "%s" -ss %s -frames:v 1 "%s"',
       [FFmpegPath, GetExeExt, sVideo, sFromTime, sThumbnail]);
 
-    sTemp := RunEx(sCommand, nil, True);
+    sTemp := RunAndCapture(sCommand, nil, True);
 
     Result := FileExists(sThumbnail);
   End;

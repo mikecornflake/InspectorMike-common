@@ -175,7 +175,7 @@ Begin
 
     sCommand := Format('"%s" "%s" "%s" %s', [GetTesseractExe, AFilename, sOutputBase, AOptions]);
 
-    RunEx(sCommand, nil, True);
+    RunAndCapture(sCommand, nil, True);
 
     If FileExists(sOutputFile) Then
     Begin

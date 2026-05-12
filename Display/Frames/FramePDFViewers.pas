@@ -231,7 +231,9 @@ Var
   sFile: String;
 Begin
   sFile := fmeImages.Filename;
-  Run(Format('%s\convert.exe "%s" -rotate -90 "%s"', [FImageMagickDir, sFile, sFile]));
+  RunAndCapture(Format('"%s\convert.exe" "%s" -rotate -90 "%s"',
+    [FImageMagickDir, sFile, sFile]));
+
   fmeImages.Filename := '';
   fmeImages.Filename := sFile;
 End;
@@ -241,7 +243,7 @@ Var
   sFile: String;
 Begin
   sFile := fmeImages.Filename;
-  Run(Format('%s\convert.exe "%s" -rotate +90 "%s"', [FImageMagickDir, sFile, sFile]));
+  RunAndCapture(Format('%s\convert.exe "%s" -rotate +90 "%s"', [FImageMagickDir, sFile, sFile]));
   fmeImages.Filename := '';
   fmeImages.Filename := sFile;
 End;
@@ -269,7 +271,7 @@ End;
 
 Procedure TFramePDFViewer.CreateThumbnail(sFile: String; sThumb: String);
 Begin
-  Run(Format('%s\convert.exe "%s" -resize %dx%d "%s"', [FImageMagickDir, sFile,
+  RunAndCapture(Format('%s\convert.exe "%s" -resize %dx%d "%s"', [FImageMagickDir, sFile,
     3 * (ilThumbs.Width - 8), 3 * (ilThumbs.Height - 8), sThumb]));
 End;
 
@@ -467,7 +469,7 @@ Begin
        [FImageMagickDir, FFilename, iPage, sFullFilename]));
 *)
       // Generate the original .ppm file, which TImage won't load (Lazarus bug?)
-      sError := Run(Format('%s\pdftopng.exe -f %d -l %d "%s" "%s\Page"',
+      sError := RunAndCapture(Format('%s\pdftopng.exe -f %d -l %d "%s" "%s\Page"',
         [FXPDFDir, iPage, iPage, FFilename, sDir]));
 
       sError := Trim(sError);
@@ -497,7 +499,7 @@ Var
 Begin
   slInfo := TStringList.Create;
   Try
-    slInfo.Text := Run(Format('%s\pdfinfo.exe "%s"', [XPDFDir, FFilename]));
+    slInfo.Text := RunAndCapture(Format('%s\pdfinfo.exe "%s"', [XPDFDir, FFilename]));
 
     For i := 0 To slInfo.Count - 1 Do
       slInfo[i] := StringReplace(slInfo[i], ': ', '=', [rfIgnoreCase]);
