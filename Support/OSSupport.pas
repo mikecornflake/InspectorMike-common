@@ -8,7 +8,7 @@ Unit OSSupport;
 
     All the Run/Runex variations from Lazarus Wiki and Forum
     ShellDirectory code from a Delphi StackOverflow
-    HTML Clipboard was just hard work - poured through MS documentation
+    HTML Clipboard was just hard work - poured through MS documentation, LCL
       and StackOverflow, then when I got basis working, spent ages tweaking
       HTML_STYLE_SHEET
       This code was originally in StringSupport, refactored here in 2023
@@ -24,6 +24,8 @@ Unit OSSupport;
     2023-10-14: Last commit in SourceForge (moved HTML Clipboard from StringSupport to here)
     2024-01-22: Migrated to Github.  Refactored package to "IM_units"
     2025-11-29: Added this header
+    2026-05-12: BREAKING CHANGE - Renamed Run to LaunchExternalTool & RunEx to RunAndCapture
+
 
   License
     This file is part of IM_units.lpk.
@@ -159,6 +161,24 @@ Begin
   {$ENDIF}
 End;
 
+Procedure LaunchExternalTool(Const AExecutable, AParams: String);
+Var
+  oProcess: TProcess;
+Begin
+  oProcess := TProcess.Create(nil);
+  Try
+    oProcess.Executable := AExecutable;
+
+    // Simple version, preserving your current command-line style
+    oProcess.CommandLine := Format('"%s" %s', [AExecutable, AParams]);
+
+    oProcess.Options := [];
+    oProcess.Execute;
+  Finally
+    oProcess.Free;
+  End;
+End;
+
 Function RunAndCapture(AExecutable: String; AParamaters: TStrings = nil;
   ARedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
 Const
@@ -260,24 +280,6 @@ Begin
     Result := RunAndCapture(ACommandLine, slParameters, ARedirectErr, ARunExCallback);
   Finally
     slParameters.Free;
-  End;
-End;
-
-Procedure LaunchExternalTool(Const AExecutable, AParams: String);
-Var
-  oProcess: TProcess;
-Begin
-  oProcess := TProcess.Create(nil);
-  Try
-    oProcess.Executable := AExecutable;
-
-    // Simple version, preserving your current command-line style
-    oProcess.CommandLine := Format('"%s" %s', [AExecutable, AParams]);
-
-    oProcess.Options := [];
-    oProcess.Execute;
-  Finally
-    oProcess.Free;
   End;
 End;
 
