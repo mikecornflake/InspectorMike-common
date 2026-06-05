@@ -148,14 +148,6 @@
         <UnitName Value="FrameVideoBase"/>
       </Item>
       <Item>
-        <Filename Value="..\Display\Frames\FrameVideoDirectShow.lfm"/>
-        <Type Value="LFM"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Display\Frames\FrameVideoDirectShow.pas"/>
-        <UnitName Value="FrameVideoDirectShow"/>
-      </Item>
-      <Item>
         <Filename Value="..\Display\Docks\DockManagers.pas"/>
         <UnitName Value="DockManagers"/>
       </Item>
@@ -189,9 +181,6 @@
       </Item>
       <Item>
         <PackageName Value="zcomponent"/>
-      </Item>
-      <Item>
-        <PackageName Value="pl_Win_DSPack"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>

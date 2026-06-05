@@ -3,15 +3,15 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
   Width = 468
   ClientHeight = 250
   ClientWidth = 468
-  DesignLeft = 366
-  DesignTop = 116
+  DesignLeft = 461
+  DesignTop = 125
   object lblStatus: TLabel[0]
     Left = 0
     Height = 15
     Top = 201
     Width = 468
     Align = alBottom
-    Caption = 'M'
+    Caption = 'Status:'
     ParentColor = False
   end
   object pnlVideo: TPanel[1]

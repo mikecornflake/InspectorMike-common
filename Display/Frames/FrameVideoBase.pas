@@ -44,40 +44,62 @@ Uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, FrameBase;
 
 Type
-  TTimerEvent = Procedure(Sender: TObject; CurrentPos, Length: Cardinal) Of Object;
+  TVideoTime = Int64; // milliseconds
+
+  TVideoState = (
+    vsEmpty,
+    vsLoading,
+    vsStopped,
+    vsPlaying,
+    vsPaused,
+    vsEnded,
+    vsError
+    );
+
+  TPositionEvent = Procedure(Sender: TObject; PositionMS, DurationMS: TVideoTime) Of Object;
+  TStateEvent = Procedure(Sender: TObject; State: TVideoState) Of Object;
 
   { TfmeVideoBase }
 
   TfmeVideoBase = Class(TfmeBase)
   Protected
     FFilename: String;
-    FOnTimer: TTimerEvent;
+    FOnPosition: TPositionEvent;
+    FOnStateChanged: TStateEvent;
 
-    Function GetPosition: Integer; Virtual;
+    Function GetPosition: TVideoTime; Virtual;
+    Procedure SetPosition(AValue: TVideoTime); Virtual;
+    Function GetDuration: TVideoTime; Virtual;
     Function GetRate: Double; Virtual;
-    Procedure SetFilename(AValue: String); Virtual;
-    Procedure SetPosition(AValue: Integer); Virtual;
     Procedure SetRate(AValue: Double); Virtual;
+    Function GetState: TVideoState; Virtual;
+
+    Procedure DoPosition; Virtual;
+    Procedure DoStateChanged; Virtual;
+
   Public
     Constructor Create(TheOwner: TComponent); Override;
 
+    Function Load(Const AFilename: String): Boolean; Virtual;
     Function Play: Boolean; Virtual;
     Function Pause: Boolean; Virtual;
     Function Resume: Boolean; Virtual;
     Function Stop: Boolean; Virtual;
 
-    Function Paused: Boolean; Virtual;
+    Function CanSeek: Boolean; Virtual;
+    Function CanSetRate: Boolean; Virtual;
+    Function CanGrabBitmap: Boolean; Virtual;
 
-    Function Duration: TDateTime; Virtual;
-
-    Function CanRewind: Boolean; Virtual;
     Function GetBitmap(Bitmap: TBitmap): Boolean; Virtual;
 
-    Property Filename: String read FFilename write SetFilename;
-    Property OnTimer: TTimerEvent read FOnTimer write FOnTimer;
+    Property Filename: String Read FFilename;
+    Property Position: TVideoTime Read GetPosition Write SetPosition;
+    Property Duration: TVideoTime Read GetDuration;
+    Property Rate: Double Read GetRate Write SetRate;
+    Property State: TVideoState Read GetState;
 
-    Property Rate: Double read GetRate write SetRate;
-    Property Position: Integer read GetPosition write SetPosition;
+    Property OnPosition: TPositionEvent Read FOnPosition Write FOnPosition;
+    Property OnStateChanged: TStateEvent Read FOnStateChanged Write FOnStateChanged;
   End;
 
 Implementation
@@ -91,34 +113,56 @@ Begin
   Inherited Create(TheOwner);
 
   FFilename := '';
-  FOnTimer := nil;
+  FOnPosition := nil;
+  FOnStateChanged := nil;
 End;
 
-Function TfmeVideoBase.GetPosition: Integer;
+Function TfmeVideoBase.GetPosition: TVideoTime;
 Begin
   Result := 0;
 End;
 
+Procedure TfmeVideoBase.SetPosition(AValue: TVideoTime);
+Begin
+  // Abstract base: descendant handles seeking.
+End;
+
+Function TfmeVideoBase.GetDuration: TVideoTime;
+Begin
+  Result := -1;
+End;
+
 Function TfmeVideoBase.GetRate: Double;
 Begin
-  Result := 0.0;
-End;
-
-Procedure TfmeVideoBase.SetFilename(AValue: String);
-Begin
-  If FFilename = AValue Then
-    Exit;
-  FFilename := AValue;
-End;
-
-Procedure TfmeVideoBase.SetPosition(AValue: Integer);
-Begin
-
+  Result := 1.0;
 End;
 
 Procedure TfmeVideoBase.SetRate(AValue: Double);
 Begin
+  // Abstract base: descendant handles playback rate.
+End;
 
+Function TfmeVideoBase.GetState: TVideoState;
+Begin
+  Result := vsEmpty;
+End;
+
+Procedure TfmeVideoBase.DoPosition;
+Begin
+  If Assigned(FOnPosition) Then
+    FOnPosition(Self, Position, Duration);
+End;
+
+Procedure TfmeVideoBase.DoStateChanged;
+Begin
+  If Assigned(FOnStateChanged) Then
+    FOnStateChanged(Self, State);
+End;
+
+Function TfmeVideoBase.Load(Const AFilename: String): Boolean;
+Begin
+  FFilename := AFilename;
+  Result := FileExists(AFilename);
 End;
 
 Function TfmeVideoBase.Play: Boolean;
@@ -141,17 +185,17 @@ Begin
   Result := False;
 End;
 
-Function TfmeVideoBase.Paused: Boolean;
+Function TfmeVideoBase.CanSeek: Boolean;
 Begin
   Result := False;
 End;
 
-Function TfmeVideoBase.Duration: TDateTime;
+Function TfmeVideoBase.CanSetRate: Boolean;
 Begin
-  Result := -1;
+  Result := False;
 End;
 
-Function TfmeVideoBase.CanRewind: Boolean;
+Function TfmeVideoBase.CanGrabBitmap: Boolean;
 Begin
   Result := False;
 End;
@@ -161,4 +205,5 @@ Begin
   Result := False;
 End;
 
+End.
 End.

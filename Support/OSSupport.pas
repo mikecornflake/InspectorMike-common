@@ -61,35 +61,35 @@ Procedure LaunchDocument(sFilename: String);
 // Launch an external application and immediately return control to the caller.
 // This is intended for GUI applications such as VLC, editors, viewers, etc.
 // No output is captured and the launched process is not monitored or waited on.
-//
+
 // AExecutable  - Full path to the executable to launch
 // AParams      - Command line parameters passed to the executable
 Procedure LaunchExternalTool(Const AExecutable, AParams: String);
 
 // Execute a command line application and capture anything written to stdout.
 // This call blocks until the process exits.
-//
+
 // IMPORTANT:
 // This routine uses pipes instead of poWaitOnExit to avoid deadlocks when
 // large amounts of output are generated.
-//
+
 // AExecutable     - Full path to the executable to launch
 // AParameters     - Optional parameter list passed to the executable
 // ARedirectErr    - If True, stderr is redirected to stdout
 // ARunExCallback  - Optional callback triggered while output is being received
-//
+
 // Returns the captured stdout/stderr text.
 Function RunAndCapture(AExecutable: String; AParamaters: TStrings = nil;
   ARedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
 
 // Convenience overload of RunAndCapture() that accepts a simple array of
 // command line parameters instead of a TStrings instance.
-//
+
 // ACommandLine    - Full path to the executable to launch
 // AParamArray     - Array of command line parameters
 // ARedirectErr    - If True, stderr is redirected to stdout
 // ARunExCallback  - Optional callback triggered while output is being received
-//
+
 // Returns the captured stdout/stderr text.
 Function RunAndCapture(ACommandLine: String; AParamArray: Array Of String;
   ARedirectErr: Boolean; ARunExCallback: TNotifyEvent): String;

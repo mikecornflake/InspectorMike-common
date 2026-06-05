@@ -11,7 +11,7 @@ uses
   DockBase, FormMain, FormMultiDock, FormPersistent, FrameBase, FrameCSVs, 
   FrameGrids, FrameImages, FramePDFViewers, FrameRelatedVideos, 
   FrameVideoPlayers, FrameHTMLs, DialogSQLFilter, DialogDockManager, 
-  FrameVideoBase, FrameVideoDirectShow, DockManagers, FormAbout;
+  FrameVideoBase, DockManagers, FormAbout;
 
 implementation
 

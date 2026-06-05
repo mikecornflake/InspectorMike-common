@@ -60,6 +60,9 @@ Function ChangeCase(Const ASource: String; ACaseOperation: TCaseOperation): Stri
 // Date Time helpers
 Function FormatDateTimeAsISO8601(dt: TDateTime): String;
 
+// File Helpers
+Function BuildPathFromParts(AParts: TStringList; ACount: Integer): String;
+
 // TStringArray Routines (From fpVectorial)
 Procedure AddStringToArray(Var AStringArray: TStringArray; Const AString: String);
 Procedure AddStringsToArray(Var AStringArray: TStringArray; Const AString: TStringArray);
@@ -317,6 +320,21 @@ Begin
   End
   Else
     Raise Exception.Create(ASource + ' is invalid date time format');
+End;
+
+Function BuildPathFromParts(AParts: TStringList; ACount: Integer): String;
+Var
+  i: Integer;
+Begin
+  Result := '';
+
+  For i := 0 To ACount - 1 Do
+  Begin
+    If Result <> '' Then
+      Result := Result + PathDelim;
+
+    Result := Result + AParts[i];
+  End;
 End;
 
 Procedure AddStringToArray(Var AStringArray: TStringArray; Const AString: String);

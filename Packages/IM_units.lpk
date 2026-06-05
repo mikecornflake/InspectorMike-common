@@ -108,6 +108,10 @@
         <Filename Value="..\Support\XMLSupport.pas"/>
         <UnitName Value="XMLSupport"/>
       </Item>
+      <Item>
+        <Filename Value="..\Support\LibmpvSupport.pas"/>
+        <UnitName Value="LibmpvSupport"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
