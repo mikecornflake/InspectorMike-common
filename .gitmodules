@@ -1,0 +1,3 @@
+[submodule "external/UW_MPVPlayer"]
+	path = external/UW_MPVPlayer
+	url = https://github.com/URUWorks/UW_MPVPlayer.git
