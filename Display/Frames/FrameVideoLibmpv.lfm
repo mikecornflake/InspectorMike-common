@@ -1,0 +1,6 @@
+inherited Frame1: TFrame1
+  Width = 320
+  LCLVersion = '4.99.0.0'
+  DesignLeft = 329
+  DesignTop = 145
+end

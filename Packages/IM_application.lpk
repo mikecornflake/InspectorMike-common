@@ -9,7 +9,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="..\Display\Forms"/>
+        <IncludeFiles Value="..\Display\Forms;..\Display\Frames"/>
         <OtherUnitFiles Value="..\Display\Dialogs;..\Display\Docks;..\Display\Forms;..\Display\Frames"/>
         <UnitOutputDirectory Value="$(TestDir)\lib\$(TargetCPU)-$(TargetOS)\Shared"/>
       </SearchPaths>
@@ -157,6 +157,14 @@
       </Item>
       <Item>
         <Filename Value="..\Display\Forms\FormAbout.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameVideoLibmpv.pas"/>
+        <UnitName Value="FrameVideoLibmpv"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameVideoLibmpv.lfm"/>
         <Type Value="LFM"/>
       </Item>
     </Files>

@@ -115,6 +115,9 @@
     </Files>
     <RequiredPkgs>
       <Item>
+        <PackageName Value="UWMPVPlayer"/>
+      </Item>
+      <Item>
         <PackageName Value="fpvectorialpkg"/>
       </Item>
       <Item>

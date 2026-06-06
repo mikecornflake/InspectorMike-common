@@ -12,7 +12,7 @@ uses
   FileSupport, GPSSupport, ImageMagickSupport, LazSerialSupport, netMCSupport, 
   OSSupport, StringSupport, TesseractSupport, VersionSupport, WGS84, 
   XPDFSupport, DialogDBGridColEditor, ExportersFPVectorial, PipelineDisplay, 
-  XMLSupport;
+  XMLSupport, LibmpvSupport;
 
 implementation
 
