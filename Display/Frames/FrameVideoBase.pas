@@ -73,6 +73,8 @@ Type
     Function GetRate: Double; Virtual;
     Procedure SetRate(AValue: Double); Virtual;
     Function GetState: TVideoState; Virtual;
+    Function GetMuted: Boolean; Virtual;
+    Procedure SetMuted(AValue: Boolean); Virtual;
 
     Procedure DoPosition; Virtual;
     Procedure DoStateChanged; Virtual;
@@ -95,6 +97,7 @@ Type
     Property Filename: String Read FFilename;
     Property Position: TVideoTime Read GetPosition Write SetPosition;
     Property Duration: TVideoTime Read GetDuration;
+    Property Muted: Boolean Read GetMuted Write SetMuted;
     Property Rate: Double Read GetRate Write SetRate;
     Property State: TVideoState Read GetState;
 
@@ -108,7 +111,7 @@ Implementation
 
 { TfmeVideoBase }
 
-Constructor TfmeVideoBase.Create(TheOwner: TComponent);
+constructor TfmeVideoBase.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
@@ -117,90 +120,100 @@ Begin
   FOnStateChanged := nil;
 End;
 
-Function TfmeVideoBase.GetPosition: TVideoTime;
+function TfmeVideoBase.GetPosition: TVideoTime;
 Begin
   Result := 0;
 End;
 
-Procedure TfmeVideoBase.SetPosition(AValue: TVideoTime);
+procedure TfmeVideoBase.SetPosition(AValue: TVideoTime);
 Begin
   // Abstract base: descendant handles seeking.
 End;
 
-Function TfmeVideoBase.GetDuration: TVideoTime;
+function TfmeVideoBase.GetDuration: TVideoTime;
 Begin
   Result := -1;
 End;
 
-Function TfmeVideoBase.GetRate: Double;
+function TfmeVideoBase.GetRate: Double;
 Begin
   Result := 1.0;
 End;
 
-Procedure TfmeVideoBase.SetRate(AValue: Double);
+procedure TfmeVideoBase.SetRate(AValue: Double);
 Begin
   // Abstract base: descendant handles playback rate.
 End;
 
-Function TfmeVideoBase.GetState: TVideoState;
+function TfmeVideoBase.GetState: TVideoState;
 Begin
   Result := vsEmpty;
 End;
 
-Procedure TfmeVideoBase.DoPosition;
+function TfmeVideoBase.GetMuted: Boolean;
+begin
+  Result := False;
+end;
+
+procedure TfmeVideoBase.SetMuted(AValue: Boolean);
+begin
+  //Descendant handles muting
+end;
+
+procedure TfmeVideoBase.DoPosition;
 Begin
   If Assigned(FOnPosition) Then
     FOnPosition(Self, Position, Duration);
 End;
 
-Procedure TfmeVideoBase.DoStateChanged;
+procedure TfmeVideoBase.DoStateChanged;
 Begin
   If Assigned(FOnStateChanged) Then
     FOnStateChanged(Self, State);
 End;
 
-Function TfmeVideoBase.Load(Const AFilename: String): Boolean;
+function TfmeVideoBase.Load(const AFilename: String): Boolean;
 Begin
   FFilename := AFilename;
   Result := FileExists(AFilename);
 End;
 
-Function TfmeVideoBase.Play: Boolean;
+function TfmeVideoBase.Play: Boolean;
 Begin
   Result := False;
 End;
 
-Function TfmeVideoBase.Pause: Boolean;
+function TfmeVideoBase.Pause: Boolean;
 Begin
   Result := False;
 End;
 
-Function TfmeVideoBase.Resume: Boolean;
+function TfmeVideoBase.Resume: Boolean;
 Begin
   Result := False;
 End;
 
-Function TfmeVideoBase.Stop: Boolean;
+function TfmeVideoBase.Stop: Boolean;
 Begin
   Result := False;
 End;
 
-Function TfmeVideoBase.CanSeek: Boolean;
+function TfmeVideoBase.CanSeek: Boolean;
 Begin
   Result := False;
 End;
 
-Function TfmeVideoBase.CanSetRate: Boolean;
+function TfmeVideoBase.CanSetRate: Boolean;
 Begin
   Result := False;
 End;
 
-Function TfmeVideoBase.CanGrabBitmap: Boolean;
+function TfmeVideoBase.CanGrabBitmap: Boolean;
 Begin
   Result := False;
 End;
 
-Function TfmeVideoBase.GetBitmap(Bitmap: TBitmap): Boolean;
+function TfmeVideoBase.GetBitmap(Bitmap: TBitmap): Boolean;
 Begin
   Result := False;
 End;

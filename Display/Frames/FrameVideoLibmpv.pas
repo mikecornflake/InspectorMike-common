@@ -16,6 +16,7 @@ Type
   Private
     FmpvPlayer: TMPVPlayer;
     FState: TVideoState;
+    FMuted: Boolean;
 
     Procedure SetState(AValue: TVideoState);
 
@@ -33,7 +34,8 @@ Type
     Function GetRate: Double; Override;
     Procedure SetRate(AValue: Double); Override;
     Function GetState: TVideoState; Override;
-
+    Function GetMuted: Boolean; Override;
+    Procedure SetMuted(AValue: Boolean); Override;
   Public
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
@@ -55,15 +57,16 @@ Implementation
 Uses
   LibmpvSupport;
 
-{$R *.lfm}
+  {$R *.lfm}
 
-{ TfmeVideoLibmpv }
+  { TfmeVideoLibmpv }
 
 Constructor TfmeVideoLibmpv.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
   FState := vsEmpty;
+  FMuted := False;
 
   FmpvPlayer := TMPVPlayer.Create(Self);
   FmpvPlayer.Parent := Self;
@@ -140,6 +143,19 @@ End;
 Function TfmeVideoLibmpv.GetState: TVideoState;
 Begin
   Result := FState;
+End;
+
+Function TfmeVideoLibmpv.GetMuted: Boolean;
+Begin
+  Result := FMuted;
+End;
+
+Procedure TfmeVideoLibmpv.SetMuted(AValue: Boolean);
+Begin
+  FMuted := AValue;
+
+  If Assigned(FmpvPlayer) And FmpvPlayer.IsMediaLoaded Then
+    FmpvPlayer.SetAudioMute(FMuted);
 End;
 
 Function TfmeVideoLibmpv.Load(Const AFilename: String): Boolean;
@@ -237,6 +253,8 @@ End;
 
 Procedure TfmeVideoLibmpv.mpvFileLoaded(Sender: TObject);
 Begin
+  FmpvPlayer.SetAudioMute(FMuted);
+
   DoPosition;
   SetState(vsPaused);
 End;

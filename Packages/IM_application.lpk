@@ -10,7 +10,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="..\Display\Forms;..\Display\Frames"/>
-        <OtherUnitFiles Value="..\Display\Dialogs;..\Display\Docks;..\Display\Forms;..\Display\Frames"/>
+        <OtherUnitFiles Value="..\Display\Dialogs;..\Display\Docks;..\Display\Forms;..\Display\Frames;..\Classes"/>
         <UnitOutputDirectory Value="$(TestDir)\lib\$(TargetCPU)-$(TargetOS)\Shared"/>
       </SearchPaths>
       <Linking>
@@ -166,6 +166,18 @@
       <Item>
         <Filename Value="..\Display\Frames\FrameVideoLibmpv.lfm"/>
         <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameSyncedVideo.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Display\Frames\FrameSyncedVideo.pas"/>
+        <UnitName Value="FrameSyncedVideo"/>
+      </Item>
+      <Item>
+        <Filename Value="..\Classes\VideoGridLayout.pas"/>
+        <UnitName Value="VideoGridLayout"/>
       </Item>
     </Files>
     <RequiredPkgs>

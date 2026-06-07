@@ -1,0 +1,10 @@
+Inherited Frame2: TFrame2
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  LCLVersion = '4.99.0.0'
+  TabOrder = 0
+  DesignLeft = 329
+  DesignTop = 145
+end
