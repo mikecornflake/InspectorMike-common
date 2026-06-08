@@ -6,7 +6,7 @@ Interface
 
 Uses
   Classes, SysUtils, Forms, Controls, Graphics,
-  FrameVideoBase, MPVPlayer;
+  FrameVideoBase, MPVPlayer, ExtCtrls;
 
 Type
 
@@ -17,6 +17,12 @@ Type
     FmpvPlayer: TMPVPlayer;
     FState: TVideoState;
     FMuted: Boolean;
+
+    FLoadWatchdog: TTimer;
+    FLoadFinalised: Boolean;
+
+    Procedure LoadWatchdogTimer(Sender: TObject);
+    Procedure FinaliseLoadedState;
 
     Procedure SetState(AValue: TVideoState);
 
@@ -70,6 +76,7 @@ Begin
 
   FmpvPlayer := TMPVPlayer.Create(Self);
   FmpvPlayer.Parent := Self;
+  FmpvPlayer.AutoSize := False;
   FmpvPlayer.Align := alClient;
 
   FmpvPlayer.AutoStartPlayback := False;
@@ -86,6 +93,13 @@ Begin
   FmpvPlayer.OnPause := @mpvPause;
   FmpvPlayer.OnStop := @mpvStop;
   FmpvPlayer.OnTimeChanged := @mpvTimeChanged;
+
+  FLoadFinalised := False;
+
+  FLoadWatchdog := TTimer.Create(Self);
+  FLoadWatchdog.Enabled := False;
+  FLoadWatchdog.Interval := 100;
+  FLoadWatchdog.OnTimer := @LoadWatchdogTimer;
 End;
 
 Destructor TfmeVideoLibmpv.Destroy;
@@ -96,7 +110,35 @@ Begin
       FmpvPlayer.Close(True);
   End;
 
+  FreeAndNil(FmpvPlayer);
+  FreeAndNil(FLoadWatchdog);
+
   Inherited Destroy;
+End;
+
+Procedure TfmeVideoLibmpv.FinaliseLoadedState;
+Begin
+  If FLoadFinalised Then
+    Exit;
+
+  If Not FmpvPlayer.IsMediaLoaded Then
+    Exit;
+
+  FLoadFinalised := True;
+  FLoadWatchdog.Enabled := False;
+
+  FmpvPlayer.SetAudioMute(FMuted);
+
+  If FmpvPlayer.IsPlaying Then
+    FmpvPlayer.Pause;
+
+  DoPosition;
+  SetState(vsPaused);
+End;
+
+Procedure TfmeVideoLibmpv.LoadWatchdogTimer(Sender: TObject);
+Begin
+  FinaliseLoadedState;
 End;
 
 Procedure TfmeVideoLibmpv.SetState(AValue: TVideoState);
@@ -187,8 +229,12 @@ Begin
     Exit;
   End;
 
+  FLoadFinalised := False;
   SetState(vsLoading);
+
   FmpvPlayer.Play(FFilename);
+
+  FLoadWatchdog.Enabled := True;
 
   Result := True;
 End;
@@ -218,6 +264,9 @@ End;
 Function TfmeVideoLibmpv.Stop: Boolean;
 Begin
   Result := False;
+
+  FLoadWatchdog.Enabled := False;
+  FLoadFinalised := False;
 
   If FmpvPlayer.IsMediaLoaded Then
   Begin
@@ -253,15 +302,13 @@ End;
 
 Procedure TfmeVideoLibmpv.mpvFileLoaded(Sender: TObject);
 Begin
-  FmpvPlayer.SetAudioMute(FMuted);
-
-  DoPosition;
-  SetState(vsPaused);
+  FinaliseLoadedState;
 End;
 
 Procedure TfmeVideoLibmpv.mpvPlay(Sender: TObject);
 Begin
-  SetState(vsPlaying);
+  If FLoadFinalised Then
+    SetState(vsPlaying);
 End;
 
 Procedure TfmeVideoLibmpv.mpvPause(Sender: TObject);

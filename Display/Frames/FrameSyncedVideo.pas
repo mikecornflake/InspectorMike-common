@@ -21,6 +21,8 @@ Type
     FSyncTimer: TTimer;
     FSyncSeekThresholdMS: TVideoTime;
     FStartTime: TDateTime;
+    FReadyToPlay: Boolean;
+    FAutoPlayWhenLoaded: Boolean;
 
     Procedure SetState(AValue: TVideoState);
     Procedure SetMaster(AValue: TfmeVideoBase);
@@ -30,7 +32,11 @@ Type
     Function GetEndTime: TDateTime;
 
     Procedure MasterPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
-    Procedure MasterStateChanged(Sender: TObject; AState: TVideoState);
+    Procedure VideoStateChanged(Sender: TObject; AState: TVideoState);
+
+    Function LoadedVideoCount: Integer;
+    Function AllVideosLoaded: Boolean;
+    Procedure CheckAllVideosLoaded;
 
     Procedure SyncTimerTimer(Sender: TObject);
     Procedure SyncVideos;
@@ -68,6 +74,8 @@ Type
     Property CurrentTime: TDateTime Read GetCurrentTime Write SetCurrentTime;
     Property EndTime: TDateTime Read GetEndTime;
 
+    Property AutoPlayWhenLoaded: Boolean Read FAutoPlayWhenLoaded Write FAutoPlayWhenLoaded;
+
     Property SyncSeekThresholdMS: TVideoTime Read FSyncSeekThresholdMS Write FSyncSeekThresholdMS;
   End;
 
@@ -90,6 +98,8 @@ Begin
 
   FStartTime := 0;
   FSyncSeekThresholdMS := 1000;
+  FReadyToPlay := False;
+  FAutoPlayWhenLoaded := True;
 
   FSyncTimer := TTimer.Create(Self);
   FSyncTimer.Enabled := False;
@@ -123,27 +133,25 @@ Begin
     Exit;
 
   If Assigned(FMaster) Then
-  Begin
     FMaster.OnPosition := nil;
-    FMaster.OnStateChanged := nil;
-  End;
 
   FMaster := AValue;
 
   If Assigned(FMaster) Then
   Begin
     FMaster.OnPosition := @MasterPosition;
-    FMaster.OnStateChanged := @MasterStateChanged;
-    SetState(FMaster.State);
 
     For i := 0 To FVideos.Count - 1 Do
       FVideos[i].Muted := FVideos[i] <> FMaster;
+
+    SetState(FMaster.State);
   End
   Else
     SetState(vsEmpty);
 
   DoPosition;
 End;
+
 Function TfmeSyncedVideo.AddVideo(AVideo: TfmeVideoBase): Integer;
 Begin
   Result := -1;
@@ -153,6 +161,8 @@ Begin
 
   Result := FVideos.Add(AVideo);
 
+  AVideo.OnStateChanged := @VideoStateChanged;
+
   If Not Assigned(FMaster) Then
     Master := AVideo;
 
@@ -160,7 +170,15 @@ Begin
 End;
 
 Procedure TfmeSyncedVideo.ClearVideos;
+Var
+  i: Integer;
 Begin
+  For i := 0 To FVideos.Count - 1 Do
+  Begin
+    FVideos[i].OnPosition := nil;
+    FVideos[i].OnStateChanged := nil;
+  End;
+
   Master := nil;
   FVideos.Clear;
   SetState(vsEmpty);
@@ -248,8 +266,6 @@ End;
 
 Function TfmeSyncedVideo.Load(Const AFilename: String): Boolean;
 Begin
-  // For synced video, loading individual files should usually be handled
-  // by the owner before AddVideo, or by a later LoadSet method.
   FFilename := AFilename;
   Result := False;
 End;
@@ -260,13 +276,15 @@ Var
 Begin
   Result := FVideos.Count > 0;
 
+  FReadyToPlay := False;
+
   For i := 0 To FVideos.Count - 1 Do
     Result := FVideos[i].Play And Result;
 
   If Result Then
   Begin
-    SetState(vsPlaying);
-    FSyncTimer.Enabled := True;
+    SetState(vsLoading);
+    FSyncTimer.Enabled := False;
   End;
 End;
 
@@ -345,11 +363,83 @@ Begin
   DoPosition;
 End;
 
-Procedure TfmeSyncedVideo.MasterStateChanged(Sender: TObject; AState: TVideoState);
+Function TfmeSyncedVideo.LoadedVideoCount: Integer;
+Var
+  i: Integer;
 Begin
-  SetState(AState);
+  Result := 0;
 
-  FSyncTimer.Enabled := AState = vsPlaying;
+  For i := 0 To FVideos.Count - 1 Do
+    If FVideos[i].State = vsPaused Then
+      Inc(Result);
+End;
+
+Function TfmeSyncedVideo.AllVideosLoaded: Boolean;
+Begin
+  Result :=
+    (FVideos.Count > 0) And (LoadedVideoCount = FVideos.Count);
+End;
+
+Procedure TfmeSyncedVideo.CheckAllVideosLoaded;
+Begin
+  If AllVideosLoaded Then
+  Begin
+    FReadyToPlay := True;
+    DoPosition;
+
+    If FAutoPlayWhenLoaded Then
+      Resume
+    Else
+    Begin
+      FSyncTimer.Enabled := False;
+      SetState(vsPaused);
+    End;
+  End
+  Else
+    SetState(vsLoading);
+End;
+
+Procedure TfmeSyncedVideo.VideoStateChanged(Sender: TObject; AState: TVideoState);
+Begin
+  Case AState Of
+    vsLoading:
+      SetState(vsLoading);
+
+    vsError:
+    Begin
+      FSyncTimer.Enabled := False;
+      SetState(vsError);
+    End;
+
+    vsPlaying:
+    Begin
+      If FReadyToPlay Then
+      Begin
+        SetState(vsPlaying);
+        FSyncTimer.Enabled := True;
+      End
+      Else
+      Begin
+        SetState(vsLoading);
+        FSyncTimer.Enabled := False;
+      End;
+    End;
+
+    vsPaused, vsStopped:
+      CheckAllVideosLoaded;
+
+    vsEnded:
+    Begin
+      FSyncTimer.Enabled := False;
+      SetState(vsEnded);
+    End;
+
+    vsEmpty:
+    Begin
+      FSyncTimer.Enabled := False;
+      SetState(vsEmpty);
+    End;
+  End;
 End;
 
 Procedure TfmeSyncedVideo.SyncTimerTimer(Sender: TObject);
