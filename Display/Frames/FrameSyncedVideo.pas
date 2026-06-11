@@ -6,15 +6,15 @@ Interface
 
 Uses
   Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, FGL,
-  FrameVideoBase;
+  FrameVideoBase, VideoGridLayout;
 
 Type
-  TfmeVideoBaseList = Specialize TFPGObjectList<TfmeVideoBase>;
-
   { TfmeSyncedVideo }
 
   TfmeSyncedVideo = Class(TfmeVideoBase)
+    Procedure FrameResize(Sender: TObject);
   Private
+    FPlaybackClass: TfmeVideoBaseClass;
     FVideos: TfmeVideoBaseList;
     FMaster: TfmeVideoBase;
     FState: TVideoState;
@@ -23,6 +23,7 @@ Type
     FStartTime: TDateTime;
     FReadyToPlay: Boolean;
     FAutoPlayWhenLoaded: Boolean;
+    FLayout: TVideoGridLayout;
 
     Procedure SetState(AValue: TVideoState);
     Procedure SetMaster(AValue: TfmeVideoBase);
@@ -53,8 +54,9 @@ Type
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
 
-    Function AddVideo(AVideo: TfmeVideoBase): Integer;
     Procedure ClearVideos;
+
+    Procedure Layout(ARows, ACols: Integer; ASequence: TVideoLayoutSequence);
 
     Function Load(Const AFilename: String): Boolean; Override;
     Function Play: Boolean; Override;
@@ -77,6 +79,8 @@ Type
     Property AutoPlayWhenLoaded: Boolean Read FAutoPlayWhenLoaded Write FAutoPlayWhenLoaded;
 
     Property SyncSeekThresholdMS: TVideoTime Read FSyncSeekThresholdMS Write FSyncSeekThresholdMS;
+
+    Property PlaybackClass: TfmeVideoBaseClass Read FPlaybackClass Write FPlaybackClass;
   End;
 
 Implementation
@@ -92,9 +96,12 @@ Constructor TfmeSyncedVideo.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
-  FVideos := TfmeVideoBaseList.Create(False); // Does NOT own videos.
+  FVideos := TfmeVideoBaseList.Create(True); // Does own videos.
   FMaster := nil;
   FState := vsEmpty;
+
+  // End user will have to provide an active class
+  FPlaybackClass := nil;
 
   FStartTime := 0;
   FSyncSeekThresholdMS := 1000;
@@ -105,6 +112,13 @@ Begin
   FSyncTimer.Enabled := False;
   FSyncTimer.Interval := 500;
   FSyncTimer.OnTimer := @SyncTimerTimer;
+
+  FLayout := TVideoGridLayout.Create(Self);
+  FLayout.RowCount := 2;
+  FLayout.ColCount := 1;
+  FLayout.Sequence := vlsLeftToRightThenDown;
+  FLayout.PanelMargin := 0;
+  FLayout.CellSpacing := 0;
 End;
 
 Destructor TfmeSyncedVideo.Destroy;
@@ -112,8 +126,16 @@ Begin
   FSyncTimer.Enabled := False;
   ClearVideos;
   FreeAndNil(FVideos);
+  FreeAndNil(FLayout);
+  FreeAndNil(FSyncTimer);
 
   Inherited Destroy;
+End;
+
+Procedure TfmeSyncedVideo.FrameResize(Sender: TObject);
+Begin
+  If Assigned(FLayout) Then
+    FLayout.LayoutVideos(FVideos);
 End;
 
 Procedure TfmeSyncedVideo.SetState(AValue: TVideoState);
@@ -152,21 +174,12 @@ Begin
   DoPosition;
 End;
 
-Function TfmeSyncedVideo.AddVideo(AVideo: TfmeVideoBase): Integer;
+Procedure TfmeSyncedVideo.Layout(ARows, ACols: Integer; ASequence: TVideoLayoutSequence);
 Begin
-  Result := -1;
-
-  If Not Assigned(AVideo) Then
-    Exit;
-
-  Result := FVideos.Add(AVideo);
-
-  AVideo.OnStateChanged := @VideoStateChanged;
-
-  If Not Assigned(FMaster) Then
-    Master := AVideo;
-
-  AVideo.Muted := AVideo <> FMaster;
+  FLayout.RowCount := ARows;
+  FLayout.ColCount := ACols;
+  FLayout.Sequence := ASequence;
+  FLayout.LayoutVideos(FVideos);
 End;
 
 Procedure TfmeSyncedVideo.ClearVideos;
@@ -265,11 +278,36 @@ Begin
 End;
 
 Function TfmeSyncedVideo.Load(Const AFilename: String): Boolean;
+Var
+  oVideo: TfmeVideoBase;
 Begin
-  FFilename := AFilename;
   Result := False;
-End;
 
+  If Not Assigned(FPlaybackClass) Then
+    Exit;
+
+  oVideo := FPlaybackClass.Create(Nil);
+  oVideo.Parent := Self;
+  oVideo.OnStateChanged := @VideoStateChanged;
+
+  FVideos.Add(oVideo);
+
+  If FVideos.Count > (FLayout.RowCount * FLayout.ColCount) Then
+    FLayout.ColCount := FLayout.ColCount + 1;
+
+  If Not Assigned(FMaster) Then
+  Begin
+    FFilename := AFilename;
+    Master := oVideo;
+  End;
+
+  oVideo.Muted := oVideo <> FMaster;
+
+  Result := oVideo.Load(AFilename);
+
+
+  FLayout.LayoutVideos(FVideos);
+End;
 Function TfmeSyncedVideo.Play: Boolean;
 Var
   i: Integer;
@@ -279,7 +317,12 @@ Begin
   FReadyToPlay := False;
 
   For i := 0 To FVideos.Count - 1 Do
+  Begin
+    If FVideos[i].State = vsEmpty Then
+      Continue;
+
     Result := FVideos[i].Play And Result;
+  End;
 
   If Result Then
   Begin
@@ -385,6 +428,7 @@ Begin
   If AllVideosLoaded Then
   Begin
     FReadyToPlay := True;
+    FLayout.LayoutVideos(FVideos);
     DoPosition;
 
     If FAutoPlayWhenLoaded Then

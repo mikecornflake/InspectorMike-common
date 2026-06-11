@@ -6,7 +6,7 @@ Interface
 
 Uses
   Classes, SysUtils, Controls, ExtCtrls,
-  FrameVideoBase, FrameSyncedVideo;
+  FrameVideoBase;
 
 Type
   TVideoLayoutSequence = (

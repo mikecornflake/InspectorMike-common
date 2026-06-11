@@ -89,6 +89,7 @@ Begin
     FmpvPlayer.Parent := Self;
     FmpvPlayer.AutoSize := False;
     FmpvPlayer.Align := alClient;
+    FmpvPlayer.Color := clGray;
 
     FmpvPlayer.AutoStartPlayback := False;
     FmpvPlayer.AutoLoadSubtitle := False;
@@ -145,6 +146,7 @@ Begin
   FLoadWatchdog.Enabled := False;
 
   FmpvPlayer.SetAudioMute(FMuted);
+  FmpvPlayer.Color := clBlack;
 
   If FmpvPlayer.IsPlaying Then
     FmpvPlayer.Pause;
