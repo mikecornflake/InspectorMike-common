@@ -9,9 +9,8 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="..\Display\Forms;..\Display\Frames"/>
-        <OtherUnitFiles Value="..\Display\Dialogs;..\Display\Docks;..\Display\Forms;..\Display\Frames;..\Classes"/>
-        <UnitOutputDirectory Value="$(TestDir)\lib\$(TargetCPU)-$(TargetOS)\Shared"/>
+        <OtherUnitFiles Value="..\Display\Dialogs;..\Display\Docks;..\Display\Forms;..\Display\Frames"/>
+        <UnitOutputDirectory Value="$(TestDir)\lib\$(TargetCPU)-$(TargetOS)\IM_applications"/>
       </SearchPaths>
       <Linking>
         <Debugging>
@@ -176,7 +175,7 @@
         <UnitName Value="FrameSyncedVideo"/>
       </Item>
       <Item>
-        <Filename Value="..\Classes\VideoGridLayout.pas"/>
+        <Filename Value="..\Display\Frames\VideoGridLayout.pas"/>
         <UnitName Value="VideoGridLayout"/>
       </Item>
     </Files>

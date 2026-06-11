@@ -41,7 +41,8 @@ Unit FrameVideoBase;
 Interface
 
 Uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, FrameBase;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  FrameBase;
 
 Type
   TVideoTime = Int64; // milliseconds
@@ -218,5 +219,4 @@ Begin
   Result := False;
 End;
 
-End.
 End.

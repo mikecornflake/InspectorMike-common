@@ -9,9 +9,8 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="..\Support;..\Display\Forms"/>
         <OtherUnitFiles Value="..\Classes;..\Support"/>
-        <UnitOutputDirectory Value="$(TestDir)\lib\$(TargetCPU)-$(TargetOS)\Shared"/>
+        <UnitOutputDirectory Value="$(TestDir)\lib\$(TargetCPU)-$(TargetOS)\IM_units"/>
       </SearchPaths>
     </CompilerOptions>
     <Version Minor="1" Build="5"/>
