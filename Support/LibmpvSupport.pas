@@ -10,7 +10,7 @@ Uses
 Function LibmpvAvailable: Boolean;
 Function LibmpvFile: String;
 Procedure SetLibmpvFile(AValue: String);
-Procedure InitializeLibmpv;
+Function InitializeLibmpv: Integer;
 
 Implementation
 
@@ -38,10 +38,17 @@ Begin
     FLibmpvFile := '';
 End;
 
-Procedure InitializeLibmpv;
+Function InitializeLibmpv: Integer;
 Var
   sApplicationFolder, sTemp: String;
 Begin
+  Result := MPV_ERROR_SUCCESS;
+
+  If IsLibMPV_Loaded Then
+    Exit;
+
+  Result := MPV_ERROR_GENERIC;
+
   If (FLibmpvFile = '') Then
   Begin
     // TODO Linux
@@ -54,9 +61,11 @@ Begin
   End;
 
   If (FLibmpvFile <> '') And FileExists(FLibmpvFile) Then
-    Load_libMPV(FLibmpvFile)
+    Result := Load_libMPV(FLibmpvFile)
   Else
+  Begin
     FLibmpvFile := '';
+  End;
 End;
 
 End.

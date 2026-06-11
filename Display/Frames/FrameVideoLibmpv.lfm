@@ -1,6 +1,20 @@
-inherited Frame1: TFrame1
-  Width = 320
-  LCLVersion = '4.99.0.0'
-  DesignLeft = 329
-  DesignTop = 145
+inherited fmeVideoLibmpv: TfmeVideoLibmpv
+  object lblMsg: TLabel[0]
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 312
+    Align = alClient
+    Alignment = taCenter
+    Color = clMaroon
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -15
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Layout = tlCenter
+    ParentColor = False
+    ParentFont = False
+    Transparent = False
+  end
 end

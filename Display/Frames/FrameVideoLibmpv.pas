@@ -6,20 +6,21 @@ Interface
 
 Uses
   Classes, SysUtils, Forms, Controls, Graphics,
-  FrameVideoBase, MPVPlayer, ExtCtrls;
+  FrameVideoBase, MPVPlayer, ExtCtrls, StdCtrls;
 
 Type
 
   { TfmeVideoLibmpv }
 
   TfmeVideoLibmpv = Class(TfmeVideoBase)
+    lblMsg: TLabel;
   Private
     FmpvPlayer: TMPVPlayer;
     FState: TVideoState;
     FMuted: Boolean;
 
     FLoadWatchdog: TTimer;
-    FLoadFinalised: Boolean;
+    FLoadMediaFinalised: Boolean;
 
     Procedure LoadWatchdogTimer(Sender: TObject);
     Procedure FinaliseLoadedState;
@@ -60,10 +61,10 @@ Type
 
 Implementation
 
+{$R *.lfm}
+
 Uses
   LibmpvSupport;
-
-  {$R *.lfm}
 
   { TfmeVideoLibmpv }
 
@@ -71,30 +72,43 @@ Constructor TfmeVideoLibmpv.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
-  FState := vsEmpty;
-  FMuted := False;
+  If InitializeLibmpv <> 0 Then
+  Begin
+    lblMsg.Visible := True;
+    lblMsg.Caption := 'libmpv-2.dll not found';
 
-  FmpvPlayer := TMPVPlayer.Create(Self);
-  FmpvPlayer.Parent := Self;
-  FmpvPlayer.AutoSize := False;
-  FmpvPlayer.Align := alClient;
+    FmpvPlayer := nil;
 
-  FmpvPlayer.AutoStartPlayback := False;
-  FmpvPlayer.AutoLoadSubtitle := False;
-  FmpvPlayer.KeepAspect := True;
-  FmpvPlayer.NoAudioDisplay := False;
-  FmpvPlayer.RendererMode := rmEmbedding;
-  FmpvPlayer.RenderFailAction := rfNone;
-  FmpvPlayer.LogLevel := llStatus;
+    FState := vsError;
+  End
+  Else
+  Begin
+    lblMsg.Visible := False;
 
-  FmpvPlayer.OnStartFile := @mpvStartFile;
-  FmpvPlayer.OnFileLoaded := @mpvFileLoaded;
-  FmpvPlayer.OnPlay := @mpvPlay;
-  FmpvPlayer.OnPause := @mpvPause;
-  FmpvPlayer.OnStop := @mpvStop;
-  FmpvPlayer.OnTimeChanged := @mpvTimeChanged;
+    FmpvPlayer := TMPVPlayer.Create(Self);
+    FmpvPlayer.Parent := Self;
+    FmpvPlayer.AutoSize := False;
+    FmpvPlayer.Align := alClient;
 
-  FLoadFinalised := False;
+    FmpvPlayer.AutoStartPlayback := False;
+    FmpvPlayer.AutoLoadSubtitle := False;
+    FmpvPlayer.KeepAspect := True;
+    FmpvPlayer.NoAudioDisplay := False;
+    FmpvPlayer.RendererMode := rmEmbedding;
+    FmpvPlayer.RenderFailAction := rfNone;
+    FmpvPlayer.LogLevel := llStatus;
+
+    FmpvPlayer.OnStartFile := @mpvStartFile;
+    FmpvPlayer.OnFileLoaded := @mpvFileLoaded;
+    FmpvPlayer.OnPlay := @mpvPlay;
+    FmpvPlayer.OnPause := @mpvPause;
+    FmpvPlayer.OnStop := @mpvStop;
+    FmpvPlayer.OnTimeChanged := @mpvTimeChanged;
+
+    FState := vsEmpty;
+  End;
+
+  FLoadMediaFinalised := False;
 
   FLoadWatchdog := TTimer.Create(Self);
   FLoadWatchdog.Enabled := False;
@@ -118,13 +132,16 @@ End;
 
 Procedure TfmeVideoLibmpv.FinaliseLoadedState;
 Begin
-  If FLoadFinalised Then
+  If Not Assigned(FmpvPlayer) Then
+    Exit;
+
+  If FLoadMediaFinalised Then
     Exit;
 
   If Not FmpvPlayer.IsMediaLoaded Then
     Exit;
 
-  FLoadFinalised := True;
+  FLoadMediaFinalised := True;
   FLoadWatchdog.Enabled := False;
 
   FmpvPlayer.SetAudioMute(FMuted);
@@ -152,15 +169,18 @@ End;
 
 Function TfmeVideoLibmpv.GetPosition: TVideoTime;
 Begin
+  Result := 0;
+
+  If Not Assigned(FmpvPlayer) Then
+    Exit;
+
   If Assigned(FmpvPlayer) And FmpvPlayer.IsMediaLoaded Then
-    Result := FmpvPlayer.GetMediaPosInMs
-  Else
-    Result := 0;
+    Result := FmpvPlayer.GetMediaPosInMs;
 End;
 
 Procedure TfmeVideoLibmpv.SetPosition(AValue: TVideoTime);
 Begin
-  If CanSeek Then
+  If CanSeek And Assigned(FmpvPlayer) Then
     FmpvPlayer.SeekInMs(AValue);
 End;
 
@@ -175,10 +195,15 @@ End;
 Function TfmeVideoLibmpv.GetRate: Double;
 Begin
   Result := 1.0; // TODO: wire to mpv speed property if needed.
+
+  If Not Assigned(FmpvPlayer) Then
+    Exit;
 End;
 
 Procedure TfmeVideoLibmpv.SetRate(AValue: Double);
 Begin
+  If Not Assigned(FmpvPlayer) Then
+    Exit;
   // TODO: wire to mpv speed property if needed.
 End;
 
@@ -202,6 +227,11 @@ End;
 
 Function TfmeVideoLibmpv.Load(Const AFilename: String): Boolean;
 Begin
+  Result := False;
+
+  If Not Assigned(FmpvPlayer) Then
+    Exit;
+
   Result := Inherited Load(AFilename);
 
   If Not Result Then
@@ -220,16 +250,13 @@ Function TfmeVideoLibmpv.Play: Boolean;
 Begin
   Result := False;
 
-  If FFilename = '' Then
-    Exit;
-
-  If Not FileExists(FFilename) Then
+  If Not Assigned(FmpvPlayer) Or (FFilename = '') Or (Not FileExists(FFilename)) Then
   Begin
     SetState(vsError);
     Exit;
   End;
 
-  FLoadFinalised := False;
+  FLoadMediaFinalised := False;
   SetState(vsLoading);
 
   FmpvPlayer.Play(FFilename);
@@ -243,6 +270,9 @@ Function TfmeVideoLibmpv.Pause: Boolean;
 Begin
   Result := False;
 
+  If Not Assigned(FmpvPlayer) Then
+    Exit;
+
   If FmpvPlayer.IsMediaLoaded And FmpvPlayer.IsPlaying Then
   Begin
     FmpvPlayer.Pause;
@@ -253,6 +283,9 @@ End;
 Function TfmeVideoLibmpv.Resume: Boolean;
 Begin
   Result := False;
+
+  If Not Assigned(FmpvPlayer) Then
+    Exit;
 
   If FmpvPlayer.IsMediaLoaded And FmpvPlayer.IsPaused Then
   Begin
@@ -265,8 +298,11 @@ Function TfmeVideoLibmpv.Stop: Boolean;
 Begin
   Result := False;
 
+  If Not Assigned(FmpvPlayer) Then
+    Exit;
+
   FLoadWatchdog.Enabled := False;
-  FLoadFinalised := False;
+  FLoadMediaFinalised := False;
 
   If FmpvPlayer.IsMediaLoaded Then
   Begin
@@ -282,16 +318,19 @@ End;
 
 Function TfmeVideoLibmpv.CanSetRate: Boolean;
 Begin
+  // TODO
   Result := False;
 End;
 
 Function TfmeVideoLibmpv.CanGrabBitmap: Boolean;
 Begin
+  //TODO
   Result := False;
 End;
 
 Function TfmeVideoLibmpv.GetBitmap(Bitmap: TBitmap): Boolean;
 Begin
+  //TODO
   Result := False;
 End;
 
@@ -307,7 +346,7 @@ End;
 
 Procedure TfmeVideoLibmpv.mpvPlay(Sender: TObject);
 Begin
-  If FLoadFinalised Then
+  If FLoadMediaFinalised Then
     SetState(vsPlaying);
 End;
 
@@ -325,8 +364,5 @@ Procedure TfmeVideoLibmpv.mpvTimeChanged(ASender: TObject; AParam: Integer);
 Begin
   DoPosition;
 End;
-
-Initialization
-  InitializeLibmpv;
 
 End.
