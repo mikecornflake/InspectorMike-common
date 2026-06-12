@@ -1,5 +1,48 @@
 Unit FrameVideoLibmpv;
 
+{-------------------------------------------------------------------------------
+  Package   : IM_application
+  Unit      : FrameVideoLibmpv.pas
+  Description
+    LibMPV-based implementation of TfmeVideoBase.
+
+    Provides video playback, seeking, rate control, frame capture and
+    playback state monitoring using the MPV media engine.
+
+  Source
+    Copyright (c) 2026
+    Inspector Mike 2.0 Pty Ltd
+    Mike Thompson (mike.cornflake@gmail.com)
+
+  History
+    2026-06-01: Initial MPV playback prototype.
+    2026-06-12: Refactored as a TfmeVideoBase descendant and integrated
+                into the common video playback framework.
+                Added state management, loading watchdog, playback
+                notifications and synchronisation support.
+                Initial framework implementation generated with
+                assistance from OpenAI ChatGPT GPT-5.5 and reviewed
+                by Mike Thompson.
+
+  License
+    This file is part of IM_application.lpk.
+
+    This library is free software: you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or (at
+    your option) any later version.
+
+    This library is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+    General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library. If not, see <https://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: LGPL-3.0-or-later
+-------------------------------------------------------------------------------}
+
 {$mode ObjFPC}{$H+}
 
 Interface

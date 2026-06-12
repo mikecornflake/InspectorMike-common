@@ -1,5 +1,46 @@
 Unit VideoGridLayout;
 
+{-------------------------------------------------------------------------------
+  Package   : IM_application
+  Unit      : VideoGridLayout.pas
+  Description
+    Layout manager for arranging multiple video playback frames within
+    a parent control.
+
+    Supports configurable row and column counts, spacing, margins and
+    alternative placement sequences for multi-channel video review.
+
+  Source
+    Copyright (c) 2026
+    Inspector Mike 2.0 Pty Ltd
+    Mike Thompson (mike.cornflake@gmail.com)
+
+  History
+    2026-06-12: Initial implementation.
+                Extracted from FrameSyncedVideo to separate playback
+                logic from presentation layout responsibilities.
+                Initial implementation generated with assistance from
+                OpenAI ChatGPT GPT-5.5 and reviewed by Mike Thompson.
+
+  License
+    This file is part of IM_application.lpk.
+
+    This library is free software: you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or (at
+    your option) any later version.
+
+    This library is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+    General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library. If not, see <https://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: LGPL-3.0-or-later
+-------------------------------------------------------------------------------}
+
 {$mode objfpc}{$H+}
 
 Interface

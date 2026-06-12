@@ -60,8 +60,8 @@ Type
     Constructor Create;
     Destructor Destroy; Override;
 
-    Property MultilineGridDefaults: Boolean read FMultilineGridDefaults
-      write SetMultilineGridDefaults;
+    Property MultilineGridDefaults: Boolean Read FMultilineGridDefaults
+      Write SetMultilineGridDefaults;
   End;
 
   { TfrmMain }
@@ -116,12 +116,12 @@ Type
     Procedure LoadLocalSettings(oInifile: TIniFile); Virtual;
     Procedure SaveLocalSettings(oInifile: TIniFile); Virtual;
 
-    Property Options: TOptions read FOptions;
+    Property Options: TOptions Read FOptions;
 
-    Property Progress: Integer read FProgress write SetProgress;
-    Property Status: String read GetStatus write SetStatus;
+    Property Progress: Integer Read FProgress Write SetProgress;
+    Property Status: String Read GetStatus Write SetStatus;
 
-    Property Busy: Boolean read GetBusy write SetBusy;
+    Property Busy: Boolean Read GetBusy Write SetBusy;
   End;
 
 Function MainForm: TfrmMain;

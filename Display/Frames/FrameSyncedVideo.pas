@@ -1,5 +1,48 @@
 Unit FrameSyncedVideo;
 
+{-------------------------------------------------------------------------------
+  Package   : IM_application
+  Unit      : FrameSyncedVideo.pas
+  Description
+    Multi-channel video playback frame that synchronises multiple
+    TfmeVideoBase descendants and presents them as a single logical
+    video player.
+
+    Supports master/slave synchronisation, time-based seeking,
+    configurable grid layouts and mixed playback engine implementations.
+
+  Source
+    Copyright (c) 2026
+    Inspector Mike 2.0 Pty Ltd
+    Mike Thompson (mike.cornflake@gmail.com)
+
+  History
+    2026-06-12: Initial implementation.
+                Designed as a composite TfmeVideoBase descendant allowing
+                multiple video engines to be synchronised and controlled
+                through a single playback interface.
+                Initial implementation generated with assistance from
+                OpenAI ChatGPT GPT-5.5 and reviewed by Mike Thompson.
+
+  License
+    This file is part of IM_application.lpk.
+
+    This library is free software: you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or (at
+    your option) any later version.
+
+    This library is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+    General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library. If not, see <https://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: LGPL-3.0-or-later
+-------------------------------------------------------------------------------}
+
 {$mode objfpc}{$H+}
 
 Interface
