@@ -13,7 +13,7 @@ object frmMain: TfrmMain
   object pbMain: TProgressBar
     Left = 0
     Height = 23
-    Top = 257
+    Top = 276
     Width = 487
     Align = alBottom
     TabOrder = 0
@@ -22,7 +22,7 @@ object frmMain: TfrmMain
   object sbMain: TStatusBar
     Left = 0
     Height = 23
-    Top = 280
+    Top = 299
     Width = 487
     Panels = <>
   end

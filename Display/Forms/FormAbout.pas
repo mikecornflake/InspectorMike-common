@@ -54,6 +54,7 @@ Type
     btnOK: TButton;
     Label3: TLabel;
     Label4: TLabel;
+    lblHTMLLabel2: TLabel;
     lblSDKs: TLabel;
     lblImageMagick: TLabel;
     lblXPDF1: TLabel;

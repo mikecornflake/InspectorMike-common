@@ -8,10 +8,10 @@ object frmAbout: TfrmAbout
   Caption = 'About'
   ClientHeight = 454
   ClientWidth = 736
+  Position = poMainFormCenter
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poMainFormCenter
-  LCLVersion = '2.1.0.0'
   object imgAbout: TImage
     Left = 8
     Height = 438
@@ -4880,21 +4880,21 @@ object frmAbout: TfrmAbout
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     ModalResult = 1
-    OnClick = btnOKClick
     TabOrder = 0
+    OnClick = btnOKClick
   end
   object pcAbout: TPageControl
     Left = 195
     Height = 350
     Top = 56
     Width = 532
-    ActivePage = tsCredits
+    ActivePage = tsAbout
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -13
     Font.Pitch = fpFixed
     Font.Quality = fqDraft
     ParentFont = False
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     object tsAbout: TTabSheet
       Caption = 'About'
@@ -4922,9 +4922,9 @@ object frmAbout: TfrmAbout
         ParentFont = False
       end
       object lblHTMLLabel: TLabel
-        Left = 18
+        Left = 280
         Height = 15
-        Top = 295
+        Top = 296
         Width = 208
         Anchors = [akLeft, akBottom]
         Caption = 'http://mikecornflake.blogspot.com.au/'
@@ -4959,6 +4959,20 @@ object frmAbout: TfrmAbout
         Font.Style = [fsBold]
         ParentColor = False
         ParentFont = False
+      end
+      object lblHTMLLabel2: TLabel
+        Left = 18
+        Height = 15
+        Top = 296
+        Width = 187
+        Anchors = [akLeft, akBottom]
+        Caption = 'https://github.com/mikecornflake/'
+        Font.Color = clBlue
+        ParentColor = False
+        ParentFont = False
+        OnMouseDown = URLLabelMouseDown
+        OnMouseEnter = URLLabelMouseEnter
+        OnMouseLeave = URLLabelMouseLeave
       end
     end
     object tsCredits: TTabSheet
@@ -5053,7 +5067,7 @@ object frmAbout: TfrmAbout
         Left = 25
         Height = 15
         Top = 205
-        Width = 123
+        Width = 122
         Anchors = [akLeft, akBottom]
         Caption = 'Other SDKs and Tools:'
         Font.Style = [fsBold]
@@ -5090,14 +5104,14 @@ object frmAbout: TfrmAbout
     end
     object tsReadme: TTabSheet
       Caption = 'Readme'
-      ClientHeight = 278
-      ClientWidth = 435
+      ClientHeight = 320
+      ClientWidth = 524
       TabVisible = False
       object memReadme: TMemo
         Left = 0
-        Height = 278
+        Height = 320
         Top = 0
-        Width = 435
+        Width = 524
         Align = alClient
         Font.CharSet = ANSI_CHARSET
         Font.Height = -13
@@ -5120,14 +5134,14 @@ object frmAbout: TfrmAbout
     end
     object tsLicence: TTabSheet
       Caption = 'Licence'
-      ClientHeight = 278
-      ClientWidth = 435
+      ClientHeight = 320
+      ClientWidth = 524
       TabVisible = False
       object memLicence: TMemo
         Left = 0
-        Height = 278
+        Height = 320
         Top = 0
-        Width = 435
+        Width = 524
         Align = alClient
         Font.CharSet = ANSI_CHARSET
         Font.Height = -13
@@ -5143,13 +5157,13 @@ object frmAbout: TfrmAbout
     end
     object tsImageMagick: TTabSheet
       Caption = 'ImageMagick'
-      ClientHeight = 278
-      ClientWidth = 435
+      ClientHeight = 320
+      ClientWidth = 524
       object memImageMagick: TMemo
         Left = 0
-        Height = 278
+        Height = 320
         Top = 0
-        Width = 435
+        Width = 524
         Align = alClient
         Font.CharSet = ANSI_CHARSET
         Font.Height = -13
