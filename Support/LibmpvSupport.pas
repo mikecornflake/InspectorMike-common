@@ -1,5 +1,12 @@
 Unit LibmpvSupport;
 
+//libmpv-2.dll
+//Version: 0.41.0-697-g13a3e3ad0
+//Source: mpv project (https://mpv.io)
+//Windows build: Shinchiro developer build
+//License: See mpv Copyright and License files
+
+
 {$mode objfpc}{$H+}
 
 Interface

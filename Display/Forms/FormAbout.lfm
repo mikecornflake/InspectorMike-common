@@ -4888,13 +4888,13 @@ object frmAbout: TfrmAbout
     Height = 350
     Top = 56
     Width = 532
-    ActivePage = tsAbout
+    ActivePage = tsMPV
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -13
     Font.Pitch = fpFixed
     Font.Quality = fqDraft
     ParentFont = False
-    TabIndex = 0
+    TabIndex = 7
     TabOrder = 1
     object tsAbout: TTabSheet
       Caption = 'About'
@@ -5202,6 +5202,48 @@ object frmAbout: TfrmAbout
     object tsFFMPEG: TTabSheet
       Caption = 'FFmpeg'
       TabVisible = False
+    end
+    object tsMPV: TTabSheet
+      Caption = 'MPV (dll)'
+      ClientHeight = 320
+      ClientWidth = 524
+      TabVisible = False
+      object lblHTMLLabel3: TLabel
+        Left = 16
+        Height = 15
+        Top = 16
+        Width = 197
+        Anchors = [akLeft, akBottom]
+        Caption = 'https://github.com/mpv-player/mpv'
+        Font.Color = clBlue
+        ParentColor = False
+        ParentFont = False
+        OnMouseDown = URLLabelMouseDown
+        OnMouseEnter = URLLabelMouseEnter
+        OnMouseLeave = URLLabelMouseLeave
+      end
+      object memMPV: TMemo
+        Left = 24
+        Height = 272
+        Top = 40
+        Width = 488
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Color = clActiveBorder
+        Lines.Strings = (
+          'libmpv-2.dll can be built with different license models, either GPL-2 or LGPL-2.1'
+          ''
+          'For my testing, I used the following:'
+          ''
+          '- Version: 0.41.0-697-g13a3e3ad0'
+          '- Source: mpv project (https://mpv.io)'
+          '- Windows build: Shinchiro developer build'
+          '- License: See mpv Copyright and License files'
+          ''
+          'If you are using a dll shipped with an Inspector Mike application, it will likely be this one.'
+        )
+        ReadOnly = True
+        TabOrder = 0
+      end
     end
   end
 end

@@ -55,6 +55,7 @@ Type
     Label3: TLabel;
     Label4: TLabel;
     lblHTMLLabel2: TLabel;
+    lblHTMLLabel3: TLabel;
     lblSDKs: TLabel;
     lblImageMagick: TLabel;
     lblXPDF1: TLabel;
@@ -63,6 +64,7 @@ Type
     lblHTMLLabel7: TLabel;
     lblXPDF3: TLabel;
     memImageMagick: TMemo;
+    memMPV: TMemo;
     memXPDF: TMemo;
     memReadme: TMemo;
     pcAbout: TPageControl;
@@ -74,6 +76,7 @@ Type
     lblHTMLLabel1: TLabel;
     memLicence: TMemo;
     memAbout: TMemo;
+    tsMPV: TTabSheet;
     tsFFMPEG: TTabSheet;
     tsImageMagick: TTabSheet;
     tsXPDF: TTabSheet;
@@ -100,7 +103,8 @@ Procedure ShowAbout;
 Implementation
 
 Uses
-  LCLIntf, VersionSupport, XPDFSupport, ImageMagickSupport, ffmpegSupport, OSSupport;
+  LCLIntf, VersionSupport,
+  XPDFSupport, ImageMagickSupport, ffmpegSupport, OSSupport, LibmpvSupport;
 
 {$R *.lfm}
 
@@ -185,6 +189,8 @@ Begin
     tsFFMPEG.TabVisible := False;
     fmeFFmpeg := nil;
   End;
+
+  tsMPV.TabVisible := LibmpvAvailable;
 
   lblSDKs.Visible := lblImageMagick.Visible Or lblXPDF1.Visible;
 
