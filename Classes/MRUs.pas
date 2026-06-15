@@ -9,6 +9,10 @@ Unit MRUs;
   TODO
     This isn't working.  Not sure why, and stopped using it.  Still a good idea
     so lef the unit around
+    UPDATE June 2026: This is testing fine.  Previous failure might have been
+      because IM_Applications.MainForm.SaveGlobalSettings was modified to only run if --configure was
+      called.   If you use IM_Applications.MainForm, you can bypass the
+      --configure with FAlwaysSaveSettings:=True in FormCreate;
 
   Source
     Copyright (c) 2025
@@ -20,6 +24,7 @@ Unit MRUs;
     2014-07-05: Uploaded to SourceForge/Package "Shared"
     2024-01-22: Migrated to Github.  Added to refactored package "IM_units"
     2025-11-29: Added this header.
+    2026-06-15: Confirmed MRU working fine as part of SimpleVideoPlayer
 
   License
     This file is part of IM_units.lpk.
