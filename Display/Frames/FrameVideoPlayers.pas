@@ -53,7 +53,6 @@ Type
     pnlVideo: TPanel;
     tbVideo: TToolBar;
     ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     ToolButton4: TToolButton;
     btnRewind: TToolButton;
@@ -118,7 +117,7 @@ Type
 Implementation
 
 Uses
-  OSSupport, FormMain, Math, Clipbrd;
+  OSSupport, Math, Clipbrd;
 
   {$R *.lfm}
 
@@ -131,7 +130,7 @@ Begin
   fmeVideo := nil;
   FPlaybackClass := nil;
   FFilename := '';
-  FAutoplay := False;
+  FAutoplay := True;
   FLastImageFolder := '';
   FOnStop := nil;
 
@@ -239,7 +238,6 @@ Begin
     Result := fmeVideo.Load(FFilename);
 
   lblStatus.Caption := Format('File: %s', [FFilename]);
-  MainForm.Status := Format('File: %s', [FFilename]);
 
   If FileExists(FFilename) And FAutoplay And Assigned(fmeVideo) Then
     fmeVideo.Play;
@@ -446,13 +444,11 @@ Begin
         End;
 
         lblStatus.Caption := 'Saved ' + sSaveFile;
-        MainForm.Status := 'Saved ' + sSaveFile;
       End;
     End
     Else
     Begin
       lblStatus.Caption := 'Failed to grab image';
-      MainForm.Status := 'Failed to grab image';
     End;
   Finally
     oBitmap.Free;

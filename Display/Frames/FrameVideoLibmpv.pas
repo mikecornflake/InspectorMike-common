@@ -283,6 +283,7 @@ End;
 
 Function TfmeVideoLibmpv.Load(Const AFilename: String): Boolean;
 Begin
+  FVideoFileCount := 0;
   Result := False;
 
   If Not Assigned(FmpvPlayer) Then
@@ -299,6 +300,7 @@ Begin
   If FmpvPlayer.IsMediaLoaded Then
     FmpvPlayer.Stop;
 
+  FVideoFileCount := 1;
   SetState(vsStopped);
 End;
 
