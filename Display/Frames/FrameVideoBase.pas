@@ -94,6 +94,8 @@ Type
     Function Pause: Boolean; Virtual;
     Function Resume: Boolean; Virtual;
     Function Stop: Boolean; Virtual;
+    Function Clear: Boolean; Virtual;
+
 
     Function CanSeek: Boolean; Virtual;
     Function CanSetRate: Boolean; Virtual;
@@ -127,6 +129,8 @@ Begin
   FFilename := '';
   FOnPosition := nil;
   FOnStateChanged := nil;
+
+  // Each descendent should set this when files are correctly loaded.
   FVideoFileCount := 0;
 End;
 
@@ -184,8 +188,6 @@ End;
 
 Function TfmeVideoBase.Load(Const AFilename: String): Boolean;
 Begin
-  FVideoFileCount := 1;
-
   FFilename := AFilename;
   Result := FileExists(AFilename);
 End;
@@ -208,6 +210,12 @@ End;
 Function TfmeVideoBase.Stop: Boolean;
 Begin
   Result := False;
+End;
+
+Function TfmeVideoBase.Clear: Boolean;
+Begin
+  FFilename := '';
+  Result := True;
 End;
 
 Function TfmeVideoBase.CanSeek: Boolean;

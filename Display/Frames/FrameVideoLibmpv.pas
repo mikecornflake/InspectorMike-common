@@ -97,6 +97,7 @@ Type
     Function Pause: Boolean; Override;
     Function Resume: Boolean; Override;
     Function Stop: Boolean; Override;
+    Function Clear: Boolean; Override;
 
     Function CanSeek: Boolean; Override;
     Function CanSetRate: Boolean; Override;
@@ -299,6 +300,22 @@ Begin
     FmpvPlayer.Stop;
 
   SetState(vsStopped);
+End;
+
+Function TfmeVideoLibmpv.Clear: Boolean;
+Begin
+  Result := Inherited Clear;
+
+  Result := Result And Assigned(FMPVPlayer);
+
+  If Not Result Then
+    Exit;
+
+  FMPVPlayer.mpv_command_(['stop']);
+
+  FFilename := '';
+  FVideoFileCount := 0;
+  SetState(vsEmpty);
 End;
 
 Function TfmeVideoLibmpv.Play: Boolean;

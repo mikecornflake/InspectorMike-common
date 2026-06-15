@@ -73,9 +73,9 @@ Type
 
     Procedure RefreshUI; Override;
 
-    Property Filename: String read FFilename write SetFilename;
-    Property TempDir: String read FTempDir write FTempDir;
-    Property Playlist: String read FPlaylist;
+    Property Filename: String Read FFilename Write SetFilename;
+    Property TempDir: String Read FTempDir Write FTempDir;
+    Property Playlist: String Read FPlaylist;
   End;
 
 Implementation
@@ -163,7 +163,7 @@ Begin
     Dec(i);
 
   // TODO - add defensive code
-  If i>= 1 Then
+  If i >= 1 Then
     Result := Copy(sFile, 1, i - 1)
   Else
     Result := sFile;
@@ -184,7 +184,7 @@ Function CustomSort(List: TStringList; Index1, Index2: Integer): Integer;
       Dec(i);
 
     // TODO - add defensive code
-    If i>=1 Then
+    If i >= 1 Then
       Result := StrToIntDef(Copy(sFile, i + 1, iLen - i), -1)
     Else
       Result := 0;
@@ -206,14 +206,13 @@ Var
   oFiles: TStringList;
   FPlaylistFile: TStringList;
   i: Integer;
-
 Begin
   If FFilename <> AValue Then
   Begin
     FFilename := AValue;
 
     If AValue = '' Then
-      fmeVideoPlayer.Load('')    // TODO Does this still work???
+      fmeVideoPlayer.Clear
     Else
     Begin
       // Find all related video files
@@ -245,7 +244,7 @@ Begin
         End;
 
         // But not all files with _ are numbered...
-        If oFiles.Count=0 Then
+        If oFiles.Count = 0 Then
           oFiles.Add(Format('%s%s', [sFile, sExt]));
 
         // Custom sort the files
@@ -284,7 +283,7 @@ Begin
         lbRelatedDblClick(lbRelated);
       End
       Else
-        fmeVideoPlayer.Load('');  // TODO Does this still work?
+        fmeVideoPlayer.Clear;
     End;
 
     RefreshUI;
