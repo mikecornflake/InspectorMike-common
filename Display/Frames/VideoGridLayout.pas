@@ -74,7 +74,7 @@ Type
   Public
     Constructor Create(AParent: TWinControl);
 
-    Procedure LayoutVideos(AVideos: TfmeVideoBaseList);
+    Procedure LayoutVideos(AVideos: TfmeVideoBaseList; AVideoCountLimit: Integer = -1);
     Procedure ClearParent;
 
     Property Parent: TWinControl Read FParent Write FParent;
@@ -140,7 +140,8 @@ Begin
   End;
 End;
 
-Procedure TVideoGridLayout.LayoutVideos(AVideos: TfmeVideoBaseList);
+Procedure TVideoGridLayout.LayoutVideos(AVideos: TfmeVideoBaseList;
+  AVideoCountLimit: Integer = -1);
 Var
   i: Integer;
   Row: Integer;
@@ -162,6 +163,9 @@ Begin
   If (FRowCount < 1) Or (FColCount < 1) Then
     Exit;
 
+  If (AVideoCountLimit = -1) Or (AVideoCountLimit > AVideos.Count) Then
+    AVideoCountLimit := AVideos.Count;
+
   WorkW :=
     FParent.ClientWidth - (FPanelMargin * 2) - (FCellSpacing * (FColCount - 1));
 
@@ -174,7 +178,7 @@ Begin
   CellW := WorkW Div FColCount;
   CellH := WorkH Div FRowCount;
 
-  For i := 0 To AVideos.Count - 1 Do
+  For i := 0 To AVideoCountLimit - 1 Do
   Begin
     If i >= FRowCount * FColCount Then
       Break;

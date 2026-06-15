@@ -208,7 +208,7 @@ Begin
   Begin
     FMaster.OnPosition := @MasterPosition;
 
-    For i := 0 To FVideos.Count - 1 Do
+    For i := 0 To FVideoFileCount - 1 Do
       FVideos[i].Muted := FVideos[i] <> FMaster;
 
     SetState(FMaster.State);
@@ -230,22 +230,20 @@ End;
 Procedure TfmeSyncedVideo.ClearVideos;
 Var
   i: Integer;
+  oVideo: TfmeVideoBase;
 Begin
-  For i := 0 To FVideos.Count - 1 Do
+  For oVideo In FVideos Do
   Begin
-    FVideos[i].Pause;
-    FVideos[i].Stop;
-    FVideos[i].Load('');
-    FVideos[i].Visible := False;
+    // Unload Video
+    oVideo.Clear;
 
-    //FVideos[i].OnPosition := nil;
-    //FVideos[i].OnStateChanged := nil;
+    // Hide video frame
+    oVideo.Visible := False;
   End;
 
   Master := nil;
   FFilename := '';
   FVideoFileCount := 0;
-  //FVideos.Clear;
   SetState(vsEmpty);
 End;
 
@@ -261,7 +259,7 @@ Procedure TfmeSyncedVideo.SetPosition(AValue: TVideoTime);
 Var
   i: Integer;
 Begin
-  For i := 0 To FVideos.Count - 1 Do
+  For i := 0 To FVideoFileCount - 1 Do
     If FVideos[i].CanSeek Then
       FVideos[i].Position := AValue;
 
@@ -288,7 +286,7 @@ Procedure TfmeSyncedVideo.SetRate(AValue: Double);
 Var
   i: Integer;
 Begin
-  For i := 0 To FVideos.Count - 1 Do
+  For i := 0 To FVideoFileCount - 1 Do
     If FVideos[i].CanSetRate Then
       FVideos[i].Rate := AValue;
 End;
@@ -354,7 +352,7 @@ Begin
     FVideos.Add(oVideo);
   End;
 
-  If FVideos.Count > (FLayout.RowCount * FLayout.ColCount) Then
+  If FVideoFileCount > (FLayout.RowCount * FLayout.ColCount) Then
     FLayout.ColCount := FLayout.ColCount + 1;
 
   If Not Assigned(FMaster) Then
@@ -367,14 +365,14 @@ Begin
 
   Result := oVideo.Load(AFilename);
 
-  FLayout.LayoutVideos(FVideos);
+  FLayout.LayoutVideos(FVideos, FVideoFileCount);
 End;
 
 Function TfmeSyncedVideo.Play: Boolean;
 Var
   i: Integer;
 Begin
-  Result := FVideos.Count > 0;
+  Result := FVideoFileCount > 0;
 
   FReadyToPlay := False;
 
@@ -400,7 +398,7 @@ Function TfmeSyncedVideo.Pause: Boolean;
 Var
   i: Integer;
 Begin
-  Result := FVideos.Count > 0;
+  Result := FVideoFileCount > 0;
 
   FSyncTimer.Enabled := False;
 
@@ -415,8 +413,7 @@ Function TfmeSyncedVideo.Resume: Boolean;
 Var
   i: Integer;
 Begin
-  // TODO ISNT WORKING
-  Result := FVideos.Count > 0;
+  Result := FVideoFileCount > 0;
 
   For i := 0 To FVideoFileCount - 1 Do
     Result := FVideos[i].Resume And Result;
@@ -432,7 +429,7 @@ Function TfmeSyncedVideo.Stop: Boolean;
 Var
   i: Integer;
 Begin
-  Result := FVideos.Count > 0;
+  Result := FVideoFileCount > 0;
 
   FSyncTimer.Enabled := False;
 
@@ -586,7 +583,7 @@ Begin
 
   MasterPos := FMaster.Position;
 
-  For i := 0 To FVideos.Count - 1 Do
+  For i := 0 To FVideoFileCount - 1 Do
   Begin
     Slave := FVideos[i];
 

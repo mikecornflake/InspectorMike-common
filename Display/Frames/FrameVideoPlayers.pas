@@ -100,6 +100,7 @@ Type
 
     Procedure RefreshUI; Override;
     Function Load(Const AFilename: String): Boolean;
+    Function Clear: Boolean;
     Procedure Pause;
 
     Property Filename: String Read GetFilename;
@@ -244,6 +245,14 @@ Begin
     fmeVideo.Play;
 
   RefreshUI;
+End;
+
+Function TFrameVideoPlayer.Clear: Boolean;
+Begin
+  If Assigned(fmeVideo) Then
+    Result := fmeVideo.Clear
+  Else
+    Result := True;
 End;
 
 Procedure TFrameVideoPlayer.Pause;
