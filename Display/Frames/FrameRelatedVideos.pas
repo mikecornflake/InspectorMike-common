@@ -123,9 +123,9 @@ Begin
     Exit;
 
   If (lbRelated.SelCount = 0) Then
-    fmeVideoPlayer.Filename := FPath + lbRelated.Items[0]
+    fmeVideoPlayer.Load(FPath + lbRelated.Items[0])
   Else
-    fmeVideoPlayer.Filename := FPath + GetSelected;
+    fmeVideoPlayer.Load(FPath + GetSelected);
 End;
 
 Procedure TFrameRelatedVideo.OnStop(Sender: TObject);
@@ -141,7 +141,7 @@ Begin
     If (i <> -1) And (i < lbRelated.Count - 1) Then
     Begin
       lbRelated.ItemIndex := i + 1;
-      fmeVideoPlayer.Filename := FPath + lbRelated.Items[lbRelated.ItemIndex];
+      fmeVideoPlayer.Load(FPath + lbRelated.Items[lbRelated.ItemIndex]);
     End;
   End;
 End;
@@ -213,7 +213,7 @@ Begin
     FFilename := AValue;
 
     If AValue = '' Then
-      fmeVideoPlayer.Filename := ''
+      fmeVideoPlayer.Load('')    // TODO Does this still work???
     Else
     Begin
       // Find all related video files
@@ -284,7 +284,7 @@ Begin
         lbRelatedDblClick(lbRelated);
       End
       Else
-        fmeVideoPlayer.Filename := '';
+        fmeVideoPlayer.Load('');  // TODO Does this still work?
     End;
 
     RefreshUI;

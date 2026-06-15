@@ -97,11 +97,11 @@ Type
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
 
-    Procedure ClearVideos;
-
     Procedure Layout(ARows, ACols: Integer; ASequence: TVideoLayoutSequence);
 
+    Procedure ClearVideos;
     Function Load(Const AFilename: String): Boolean; Override;
+
     Function Play: Boolean; Override;
     Function Pause: Boolean; Override;
     Function Resume: Boolean; Override;
@@ -162,6 +162,8 @@ Begin
   FLayout.Sequence := vlsLeftToRightThenDown;
   FLayout.PanelMargin := 0;
   FLayout.CellSpacing := 0;
+
+  FVideoFileCount := 0;
 End;
 
 Destructor TfmeSyncedVideo.Destroy;
@@ -231,12 +233,19 @@ Var
 Begin
   For i := 0 To FVideos.Count - 1 Do
   Begin
-    FVideos[i].OnPosition := nil;
-    FVideos[i].OnStateChanged := nil;
+    FVideos[i].Pause;
+    FVideos[i].Stop;
+    FVideos[i].Load('');
+    FVideos[i].Visible := False;
+
+    //FVideos[i].OnPosition := nil;
+    //FVideos[i].OnStateChanged := nil;
   End;
 
   Master := nil;
-  FVideos.Clear;
+  FFilename := '';
+  FVideoFileCount := 0;
+  //FVideos.Clear;
   SetState(vsEmpty);
 End;
 
@@ -329,11 +338,21 @@ Begin
   If Not Assigned(FPlaybackClass) Then
     Exit;
 
-  oVideo := FPlaybackClass.Create(Nil);
-  oVideo.Parent := Self;
-  oVideo.OnStateChanged := @VideoStateChanged;
+  FVideoFileCount += 1;
 
-  FVideos.Add(oVideo);
+  If FVideoFileCount <= FVideos.Count Then
+  Begin
+    oVideo := FVideos[FVideoFileCount - 1];
+    oVideo.Visible := True;
+  End
+  Else
+  Begin
+    oVideo := FPlaybackClass.Create(nil);
+    oVideo.Parent := Self;
+    oVideo.OnStateChanged := @VideoStateChanged;
+
+    FVideos.Add(oVideo);
+  End;
 
   If FVideos.Count > (FLayout.RowCount * FLayout.ColCount) Then
     FLayout.ColCount := FLayout.ColCount + 1;
@@ -348,9 +367,9 @@ Begin
 
   Result := oVideo.Load(AFilename);
 
-
   FLayout.LayoutVideos(FVideos);
 End;
+
 Function TfmeSyncedVideo.Play: Boolean;
 Var
   i: Integer;
@@ -381,7 +400,9 @@ Begin
   Result := FVideos.Count > 0;
 
   For i := 0 To FVideos.Count - 1 Do
-    Result := FVideos[i].Pause And Result;
+    // WORKAROUND WHILE PAUSE ISN'T WORKING
+    FVideos[i].Pause;
+  //Result := FVideos[i].Pause And Result;
 
   If Result Then
   Begin
@@ -394,6 +415,7 @@ Function TfmeSyncedVideo.Resume: Boolean;
 Var
   i: Integer;
 Begin
+  // TODO ISNT WORKING
   Result := FVideos.Count > 0;
 
   For i := 0 To FVideos.Count - 1 Do

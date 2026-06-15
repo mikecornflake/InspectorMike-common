@@ -1,14 +1,12 @@
 inherited FrameVideoPlayer: TFrameVideoPlayer
   Height = 250
-  Width = 468
   ClientHeight = 250
-  ClientWidth = 468
   DesignLeft = 461
   DesignTop = 125
   object lblStatus: TLabel[0]
     Left = 0
-    Height = 15
-    Top = 201
+    Height = 25
+    Top = 153
     Width = 468
     Align = alBottom
     Caption = 'Status:'
@@ -16,7 +14,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
   end
   object pnlVideo: TPanel[1]
     Left = 0
-    Height = 201
+    Height = 153
     Top = 0
     Width = 468
     Align = alClient
@@ -26,7 +24,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
   object pnlToolbar: TPanel[2]
     Left = 0
     Height = 34
-    Top = 216
+    Top = 178
     Width = 468
     Align = alBottom
     BevelOuter = bvNone
@@ -35,9 +33,9 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     TabOrder = 1
     OnResize = pnlToolbarResize
     object tbVideo: TToolBar
-      Left = 67
+      Left = 55
       Top = 1
-      Width = 373
+      Width = 396
       Align = alNone
       Anchors = [akBottom]
       AutoSize = True
@@ -89,14 +87,14 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
         Style = tbsSeparator
       end
       object ToolButton2: TToolButton
-        Left = 281
+        Left = 287
         Height = 32
         Top = 0
         Caption = 'ToolButton2'
         Style = tbsSeparator
       end
       object btnOpenInExplorer: TToolButton
-        Left = 289
+        Left = 295
         Hint = 'Open In Explorer'
         Top = 0
         Caption = 'btnOpenInExplorer'
@@ -113,15 +111,15 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
         Style = tbsSeparator
       end
       object lblTime: TLabel
-        Left = 333
-        Height = 15
+        Left = 339
+        Height = 25
         Top = 0
-        Width = 40
+        Width = 57
         Caption = 'lblTime'
         ParentColor = False
       end
       object ToolButton4: TToolButton
-        Left = 325
+        Left = 331
         Height = 32
         Top = 0
         Caption = 'ToolButton4'
@@ -168,7 +166,18 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
     end
   end
-  object ilToolbar: TImageList[3]
+  object trackVideo: TTrackBar[3]
+    Left = 0
+    Height = 38
+    Top = 212
+    Width = 468
+    Position = 0
+    OnChange = trackVideoChange
+    Align = alBottom
+    TabOrder = 2
+    OnMouseDown = trackVideoMouseDown
+  end
+  object ilToolbar: TImageList[4]
     Height = 32
     Width = 32
     Left = 88
@@ -440,7 +449,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       FFC2F68AF13DF13F6D03C702FCEFCD78FF2F6BED38BB
     }
   end
-  object pmnuGrab: TPopupMenu[4]
+  object pmnuGrab: TPopupMenu[5]
     Left = 160
     Top = 32
     object mnuGrabVideoFolder: TMenuItem
@@ -460,7 +469,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       OnClick = mnuGrabClick
     end
   end
-  object dlgSaveLocation: TSelectDirectoryDialog[5]
+  object dlgSaveLocation: TSelectDirectoryDialog[6]
     Left = 88
     Top = 93
   end

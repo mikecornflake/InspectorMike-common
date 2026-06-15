@@ -86,6 +86,8 @@ Type
     Function GetState: TVideoState; Override;
     Function GetMuted: Boolean; Override;
     Procedure SetMuted(AValue: Boolean); Override;
+
+    Procedure SetVisible(Value: Boolean); Override;
   Public
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
@@ -268,6 +270,14 @@ Begin
 
   If Assigned(FmpvPlayer) And FmpvPlayer.IsMediaLoaded Then
     FmpvPlayer.SetAudioMute(FMuted);
+End;
+
+Procedure TfmeVideoLibmpv.SetVisible(Value: Boolean);
+Begin
+  Inherited SetVisible(Value);
+
+  If Assigned(FmpvPlayer) Then
+    FmpvPlayer.Visible := Value;
 End;
 
 Function TfmeVideoLibmpv.Load(Const AFilename: String): Boolean;

@@ -72,6 +72,7 @@ Type
     FFilename: String;
     FOnPosition: TPositionEvent;
     FOnStateChanged: TStateEvent;
+    FVideoFileCount: Integer;
 
     Function GetPosition: TVideoTime; Virtual;
     Procedure SetPosition(AValue: TVideoTime); Virtual;
@@ -109,6 +110,8 @@ Type
 
     Property OnPosition: TPositionEvent Read FOnPosition Write FOnPosition;
     Property OnStateChanged: TStateEvent Read FOnStateChanged Write FOnStateChanged;
+
+    Property VideoFileCount: Integer Read FVideoFileCount;
   End;
 
 Implementation
@@ -124,6 +127,7 @@ Begin
   FFilename := '';
   FOnPosition := nil;
   FOnStateChanged := nil;
+  FVideoFileCount := 0;
 End;
 
 Function TfmeVideoBase.GetPosition: TVideoTime;
@@ -180,6 +184,8 @@ End;
 
 Function TfmeVideoBase.Load(Const AFilename: String): Boolean;
 Begin
+  FVideoFileCount := 1;
+
   FFilename := AFilename;
   Result := FileExists(AFilename);
 End;

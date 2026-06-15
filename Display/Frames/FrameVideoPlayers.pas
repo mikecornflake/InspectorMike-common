@@ -60,6 +60,7 @@ Type
     btnFastForward: TToolButton;
     btnStepBack: TToolButton;
     btnStepForward: TToolButton;
+    trackVideo: TTrackBar;
     Procedure btnFastForwardClick(Sender: TObject);
     Procedure btnGrabClick(Sender: TObject);
     Procedure btnOpenInExplorerClick(Sender: TObject);
@@ -70,6 +71,9 @@ Type
     Procedure mnuGrabClick(Sender: TObject);
     Procedure pnlToolbarResize(Sender: TObject);
     Procedure btnStepBackClick(Sender: TObject);
+    procedure trackVideoChange(Sender: TObject);
+    procedure trackVideoMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   Private
     FAutoplay: Boolean;
     FFilename: String;
@@ -78,10 +82,13 @@ Type
     FPlaybackClass: TfmeVideoBaseClass;
     fmeVideo: TfmeVideoBase;
 
+    FUpdatingTracker: Boolean;
+    FLastSeekTick: QWord;
+
     Function EnsurePlaybackFrame: Boolean;
     Function GetFilename: String;
     Function GetShowLabel: Boolean;
-    Procedure SetFilename(AValue: String);
+    Function GetVideoFileCount: Integer;
     Procedure SetPlaybackClass(AValue: TfmeVideoBaseClass);
     Procedure SetShowLabel(AValue: Boolean);
 
@@ -92,14 +99,19 @@ Type
     Destructor Destroy; Override;
 
     Procedure RefreshUI; Override;
+    Function Load(Const AFilename: String): Boolean;
     Procedure Pause;
 
-    Property Filename: String Read GetFilename Write SetFilename;
+    Property Filename: String Read GetFilename;
     Property PlaybackClass: TfmeVideoBaseClass Read FPlaybackClass Write SetPlaybackClass;
 
     Property Autoplay: Boolean Read FAutoplay Write FAutoplay;
     Property ShowLabel: Boolean Read GetShowLabel Write SetShowLabel;
     Property OnStop: TNotifyEvent Read FOnStop Write FOnStop;
+
+    Property PlaybackFrame: TfmeVideoBase Read fmeVideo;
+
+    Property VideFileCount: Integer Read GetVideoFileCount;
   End;
 
 Implementation
@@ -125,6 +137,13 @@ Begin
   lblStatus.Caption := '';
   lblTime.Caption := '';
 
+  FUpdatingTracker := False;
+  FLastSeekTick := 0;
+
+  trackVideo.Min := 0;
+  trackVideo.Max := 0;
+  trackVideo.Position := 0;
+
   RefreshUI;
 End;
 
@@ -144,10 +163,11 @@ Begin
   If Not Assigned(FPlaybackClass) Then
     Exit(False);
 
-  fmeVideo := FPlaybackClass.Create(Self);
+  fmeVideo := FPlaybackClass.Create(pnlVideo);
   fmeVideo.Parent := pnlVideo;
   fmeVideo.Name := 'fmeVideo';
   fmeVideo.Align := alClient;
+
   fmeVideo.OnPosition := @VideoPosition;
   fmeVideo.OnStateChanged := @VideoStateChanged;
 
@@ -180,21 +200,26 @@ Begin
   Inherited RefreshUI;
 
   bHasEngine := Assigned(fmeVideo);
-  bHasFile := FileExists(FFilename);
+  bHasFile := bHasEngine And (fmeVideo.VideoFileCount > 0);
   bCanSeek := bHasEngine And fmeVideo.CanSeek;
   bCanRate := bHasEngine And fmeVideo.CanSetRate;
   bCanGrab := bHasEngine And fmeVideo.CanGrabBitmap;
 
-  pnlToolbar.Visible := bHasFile;
+  // TODO Replac with COunt
+  //pnlToolbar.Visible := bHasFile;
 
-  btnPlay.Enabled := bHasEngine And bHasFile And (fmeVideo.State In [vsStopped, vsPaused, vsEnded]);
-  btnPause.Enabled := bHasEngine And bHasFile And (fmeVideo.State = vsPlaying);
+  btnPlay.Enabled := bHasEngine And bHasFile;
+  //And (fmeVideo.State In [vsStopped, vsPaused, vsEnded]);
+  btnPause.Enabled := bHasEngine And bHasFile;
+  //And (fmeVideo.State = vsPlaying);
   btnStepBack.Enabled := bCanSeek;
   btnStepForward.Enabled := bCanSeek;
   btnFastForward.Enabled := bCanRate;
   btnRewind.Enabled := bCanRate;
   btnGrab.Enabled := bCanGrab;
   btnOpenInExplorer.Enabled := bHasFile;
+
+  trackVideo.Enabled := bHasEngine And bCanSeek;
 
   If bHasEngine Then
   Begin
@@ -204,6 +229,25 @@ Begin
       btnFastForward.Hint :=
         Format('Play faster: Current rate %.1f times normal', [fmeVideo.Rate]);
   End;
+End;
+
+Function TFrameVideoPlayer.Load(Const AFilename: String): Boolean;
+Begin
+  FLastImageFolder := '';
+  FFilename := AFilename;
+
+  Result := False;
+
+  If EnsurePlaybackFrame Then
+    Result := fmeVideo.Load(FFilename);
+
+  lblStatus.Caption := Format('File: %s', [FFilename]);
+  MainForm.Status := Format('File: %s', [FFilename]);
+
+  If FileExists(FFilename) And FAutoplay And Assigned(fmeVideo) Then
+    fmeVideo.Play;
+
+  RefreshUI;
 End;
 
 Procedure TFrameVideoPlayer.Pause;
@@ -224,10 +268,12 @@ Begin
     If fmeVideo.State In [vsEmpty, vsStopped, vsEnded, vsError] Then
       fmeVideo.Load(FFilename);
 
-    If fmeVideo.State = vsPaused Then
-      fmeVideo.Resume
-    Else
-      fmeVideo.Play;
+    // TODO WORKAROUND WHILE PAUSE STATE NOT WORKING
+    fmeVideo.Play;
+    //If fmeVideo.State = vsPaused Then
+    //  fmeVideo.Resume
+    //Else
+    //  fmeVideo.Play;
   End;
 
   RefreshUI;
@@ -237,10 +283,12 @@ Procedure TFrameVideoPlayer.btnPauseClick(Sender: TObject);
 Begin
   If Assigned(fmeVideo) Then
   Begin
-    If fmeVideo.State = vsPaused Then
-      fmeVideo.Resume
-    Else If fmeVideo.State = vsPlaying Then
-      fmeVideo.Pause;
+    // TODO WORKAROUND WHILE PAUSE STATE NOT WORKING
+    fmeVideo.Pause;
+    //If fmeVideo.State = vsPaused Then
+    //  fmeVideo.Resume
+    //Else If fmeVideo.State = vsPlaying Then
+    //  fmeVideo.Pause;
   End;
 
   RefreshUI;
@@ -274,6 +322,52 @@ Begin
 
   RefreshUI;
 End;
+
+procedure TFrameVideoPlayer.trackVideoChange(Sender: TObject);
+begin
+  If FUpdatingTracker Then
+    Exit;
+
+  If Not Assigned(fmeVideo) Then
+    Exit;
+
+  If Not fmeVideo.CanSeek Then
+    Exit;
+
+  If (FLastSeekTick <> 0) And (GetTickCount64 - FLastSeekTick < 200) Then
+    Exit;
+
+  FLastSeekTick := GetTickCount64;
+
+  fmeVideo.Position := trackVideo.Position;
+end;
+
+procedure TFrameVideoPlayer.trackVideoMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+Var
+  NewPos: Integer;
+begin
+  FLastSeekTick := 0;
+
+  If Button <> mbLeft Then
+    Exit;
+
+  If trackVideo.Max <= trackVideo.Min Then
+    Exit;
+
+  NewPos :=
+    trackVideo.Min + Round((X / trackVideo.ClientWidth) * (trackVideo.Max - trackVideo.Min));
+
+  If NewPos < trackVideo.Min Then
+    NewPos := trackVideo.Min
+  Else If NewPos > trackVideo.Max Then
+    NewPos := trackVideo.Max;
+
+  trackVideo.Position := NewPos;
+
+  If Assigned(fmeVideo) And fmeVideo.CanSeek Then
+    fmeVideo.Position := NewPos;
+end;
 
 Procedure TFrameVideoPlayer.btnStepForwardClick(Sender: TObject);
 Begin
@@ -389,26 +483,17 @@ Begin
   Result := FFilename;
 End;
 
-Procedure TFrameVideoPlayer.SetFilename(AValue: String);
-Begin
-  FLastImageFolder := '';
-  FFilename := AValue;
-
-  If EnsurePlaybackFrame Then
-    fmeVideo.Load(FFilename);
-
-  lblStatus.Caption := Format('File: %s', [FFilename]);
-  MainForm.Status := Format('File: %s', [FFilename]);
-
-  If FileExists(FFilename) And FAutoplay And Assigned(fmeVideo) Then
-    fmeVideo.Play;
-
-  RefreshUI;
-End;
-
 Function TFrameVideoPlayer.GetShowLabel: Boolean;
 Begin
   Result := lblStatus.Visible;
+End;
+
+Function TFrameVideoPlayer.GetVideoFileCount: Integer;
+Begin
+  If Assigned(fmeVideo) Then
+    Result := fmeVideo.VideoFileCount
+  Else
+    Result := 0;
 End;
 
 Procedure TFrameVideoPlayer.SetShowLabel(AValue: Boolean);
@@ -427,6 +512,23 @@ Procedure TFrameVideoPlayer.VideoPosition(Sender: TObject; PositionMS, DurationM
   End;
 
 Begin
+  FUpdatingTracker := True;
+  Try
+    If DurationMS > 0 Then
+      trackVideo.Max := DurationMS
+    Else
+      trackVideo.Max := 0;
+
+    If PositionMS < 0 Then
+      trackVideo.Position := 0
+    Else If PositionMS > trackVideo.Max Then
+      trackVideo.Position := trackVideo.Max
+    Else
+      trackVideo.Position := PositionMS;
+  Finally
+    FUpdatingTracker := False;
+  End;
+
   lblTime.Caption := ToTime(PositionMS) + LineEnding + ToTime(DurationMS);
 End;
 
