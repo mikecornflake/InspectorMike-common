@@ -224,7 +224,7 @@ Begin
   FLayout.RowCount := ARows;
   FLayout.ColCount := ACols;
   FLayout.Sequence := ASequence;
-  FLayout.LayoutVideos(FVideos);
+  FLayout.LayoutVideos(FVideos, FVideoFileCount);
 End;
 
 Procedure TfmeSyncedVideo.ClearVideos;
