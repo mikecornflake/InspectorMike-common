@@ -71,8 +71,8 @@ Type
     Procedure mnuGrabClick(Sender: TObject);
     Procedure pnlToolbarResize(Sender: TObject);
     Procedure btnStepBackClick(Sender: TObject);
-    procedure trackVideoChange(Sender: TObject);
-    procedure trackVideoMouseDown(Sender: TObject; Button: TMouseButton;
+    Procedure trackVideoChange(Sender: TObject);
+    Procedure trackVideoMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   Private
     FAutoplay: Boolean;
@@ -111,7 +111,7 @@ Type
 
     Property PlaybackFrame: TfmeVideoBase Read fmeVideo;
 
-    Property VideFileCount: Integer Read GetVideoFileCount;
+    Property VideoFileCount: Integer Read GetVideoFileCount;
   End;
 
 Implementation
@@ -205,13 +205,9 @@ Begin
   bCanRate := bHasEngine And fmeVideo.CanSetRate;
   bCanGrab := bHasEngine And fmeVideo.CanGrabBitmap;
 
-  // TODO Replac with COunt
-  //pnlToolbar.Visible := bHasFile;
-
-  btnPlay.Enabled := bHasEngine And bHasFile;
-  //And (fmeVideo.State In [vsStopped, vsPaused, vsEnded]);
-  btnPause.Enabled := bHasEngine And bHasFile;
-  //And (fmeVideo.State = vsPlaying);
+  btnPlay.Enabled := bHasEngine And bHasFile And (fmeVideo.State In
+    [vsStopped, vsPaused, vsEnded]);
+  btnPause.Enabled := bHasEngine And bHasFile And (fmeVideo.State = vsPlaying);
   btnStepBack.Enabled := bCanSeek;
   btnStepForward.Enabled := bCanSeek;
   btnFastForward.Enabled := bCanRate;
@@ -268,12 +264,10 @@ Begin
     If fmeVideo.State In [vsEmpty, vsStopped, vsEnded, vsError] Then
       fmeVideo.Load(FFilename);
 
-    // TODO WORKAROUND WHILE PAUSE STATE NOT WORKING
-    fmeVideo.Play;
-    //If fmeVideo.State = vsPaused Then
-    //  fmeVideo.Resume
-    //Else
-    //  fmeVideo.Play;
+    If fmeVideo.State = vsPaused Then
+      fmeVideo.Resume
+    Else
+      fmeVideo.Play;
   End;
 
   RefreshUI;
@@ -283,12 +277,10 @@ Procedure TFrameVideoPlayer.btnPauseClick(Sender: TObject);
 Begin
   If Assigned(fmeVideo) Then
   Begin
-    // TODO WORKAROUND WHILE PAUSE STATE NOT WORKING
-    fmeVideo.Pause;
-    //If fmeVideo.State = vsPaused Then
-    //  fmeVideo.Resume
-    //Else If fmeVideo.State = vsPlaying Then
-    //  fmeVideo.Pause;
+    If fmeVideo.State = vsPaused Then
+      fmeVideo.Resume
+    Else If fmeVideo.State = vsPlaying Then
+      fmeVideo.Pause;
   End;
 
   RefreshUI;
@@ -323,8 +315,8 @@ Begin
   RefreshUI;
 End;
 
-procedure TFrameVideoPlayer.trackVideoChange(Sender: TObject);
-begin
+Procedure TFrameVideoPlayer.trackVideoChange(Sender: TObject);
+Begin
   If FUpdatingTracker Then
     Exit;
 
@@ -340,13 +332,13 @@ begin
   FLastSeekTick := GetTickCount64;
 
   fmeVideo.Position := trackVideo.Position;
-end;
+End;
 
-procedure TFrameVideoPlayer.trackVideoMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+Procedure TFrameVideoPlayer.trackVideoMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
 Var
   NewPos: Integer;
-begin
+Begin
   FLastSeekTick := 0;
 
   If Button <> mbLeft Then
@@ -367,7 +359,7 @@ begin
 
   If Assigned(fmeVideo) And fmeVideo.CanSeek Then
     fmeVideo.Position := NewPos;
-end;
+End;
 
 Procedure TFrameVideoPlayer.btnStepForwardClick(Sender: TObject);
 Begin

@@ -5,18 +5,18 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
   DesignTop = 125
   object lblStatus: TLabel[0]
     Left = 0
-    Height = 25
-    Top = 153
-    Width = 468
+    Height = 15
+    Top = 163
+    Width = 312
     Align = alBottom
     Caption = 'Status:'
     ParentColor = False
   end
   object pnlVideo: TPanel[1]
     Left = 0
-    Height = 153
+    Height = 163
     Top = 0
-    Width = 468
+    Width = 312
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
@@ -25,17 +25,17 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     Left = 0
     Height = 34
     Top = 178
-    Width = 468
+    Width = 312
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 34
-    ClientWidth = 468
+    ClientWidth = 312
     TabOrder = 1
     OnResize = pnlToolbarResize
     object tbVideo: TToolBar
-      Left = 55
+      Left = -17
       Top = 1
-      Width = 396
+      Width = 373
       Align = alNone
       Anchors = [akBottom]
       AutoSize = True
@@ -87,14 +87,14 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
         Style = tbsSeparator
       end
       object ToolButton2: TToolButton
-        Left = 287
+        Left = 281
         Height = 32
         Top = 0
         Caption = 'ToolButton2'
         Style = tbsSeparator
       end
       object btnOpenInExplorer: TToolButton
-        Left = 295
+        Left = 289
         Hint = 'Open In Explorer'
         Top = 0
         Caption = 'btnOpenInExplorer'
@@ -111,15 +111,15 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
         Style = tbsSeparator
       end
       object lblTime: TLabel
-        Left = 339
-        Height = 25
+        Left = 333
+        Height = 15
         Top = 0
-        Width = 57
+        Width = 40
         Caption = 'lblTime'
         ParentColor = False
       end
       object ToolButton4: TToolButton
-        Left = 331
+        Left = 325
         Height = 32
         Top = 0
         Caption = 'ToolButton4'
@@ -170,7 +170,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     Left = 0
     Height = 38
     Top = 212
-    Width = 468
+    Width = 312
     Position = 0
     OnChange = trackVideoChange
     Align = alBottom

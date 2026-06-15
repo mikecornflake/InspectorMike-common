@@ -383,7 +383,10 @@ Begin
     If FVideos[i].State = vsEmpty Then
       Continue;
 
-    Result := FVideos[i].Play And Result;
+    If FVideos[i].State = vsPaused Then
+      Result := FVideos[i].Resume And Result
+    Else
+      Result := FVideos[i].Play And Result;
   End;
 
   If Result Then
