@@ -378,7 +378,7 @@ Begin
 
   FReadyToPlay := False;
 
-  For i := 0 To FVideos.Count - 1 Do
+  For i := 0 To FVideoFileCount - 1 Do
   Begin
     If FVideos[i].State = vsEmpty Then
       Continue;
@@ -402,16 +402,13 @@ Var
 Begin
   Result := FVideos.Count > 0;
 
-  For i := 0 To FVideos.Count - 1 Do
-    // WORKAROUND WHILE PAUSE ISN'T WORKING
-    FVideos[i].Pause;
-  //Result := FVideos[i].Pause And Result;
+  FSyncTimer.Enabled := False;
+
+  For i := 0 To FVideoFileCount - 1 Do
+    Result := FVideos[i].Pause And Result;
 
   If Result Then
-  Begin
-    FSyncTimer.Enabled := False;
     SetState(vsPaused);
-  End;
 End;
 
 Function TfmeSyncedVideo.Resume: Boolean;
@@ -421,7 +418,7 @@ Begin
   // TODO ISNT WORKING
   Result := FVideos.Count > 0;
 
-  For i := 0 To FVideos.Count - 1 Do
+  For i := 0 To FVideoFileCount - 1 Do
     Result := FVideos[i].Resume And Result;
 
   If Result Then
@@ -439,7 +436,7 @@ Begin
 
   FSyncTimer.Enabled := False;
 
-  For i := 0 To FVideos.Count - 1 Do
+  For i := 0 To FVideoFileCount - 1 Do
     Result := FVideos[i].Stop And Result;
 
   If Result Then
@@ -480,7 +477,7 @@ Var
 Begin
   Result := 0;
 
-  For i := 0 To FVideos.Count - 1 Do
+  For i := 0 To FVideoFileCount - 1 Do
     If FVideos[i].State = vsPaused Then
       Inc(Result);
 End;
@@ -488,7 +485,7 @@ End;
 Function TfmeSyncedVideo.AllVideosLoaded: Boolean;
 Begin
   Result :=
-    (FVideos.Count > 0) And (LoadedVideoCount = FVideos.Count);
+    (FVideoFileCount > 0) And (LoadedVideoCount = FVideoFileCount);
 End;
 
 Procedure TfmeSyncedVideo.CheckAllVideosLoaded;
@@ -537,8 +534,22 @@ Begin
       End;
     End;
 
-    vsPaused, vsStopped:
-      CheckAllVideosLoaded;
+    vsPaused:
+    Begin
+      If Not FReadyToPlay Then
+        CheckAllVideosLoaded
+      Else
+      Begin
+        FSyncTimer.Enabled := False;
+        SetState(vsPaused);
+      End;
+    End;
+
+    vsStopped:
+    Begin
+      FSyncTimer.Enabled := False;
+      SetState(vsStopped);
+    End;
 
     vsEnded:
     Begin
