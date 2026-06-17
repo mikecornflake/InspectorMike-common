@@ -65,7 +65,6 @@ Type
     FSyncSeekThresholdMS: TVideoTime;
     FStartTime: TDateTime;
     FReadyToPlay: Boolean;
-    FAutoPlayWhenLoaded: Boolean;
     FLayout: TVideoGridLayout;
 
     Procedure SetState(AValue: TVideoState);
@@ -81,6 +80,7 @@ Type
     Function LoadedVideoCount: Integer;
     Function AllVideosLoaded: Boolean;
     Procedure CheckAllVideosLoaded;
+    procedure UpdateStateFromChildren;
 
     Procedure SyncTimerTimer(Sender: TObject);
     Procedure SyncVideos;
@@ -93,6 +93,7 @@ Type
     Procedure SetRate(AValue: Double); Override;
     Function GetState: TVideoState; Override;
 
+    Procedure SetAutoplay(AValue: Boolean); Override;
   Public
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
@@ -118,8 +119,6 @@ Type
     Property StartTime: TDateTime Read FStartTime Write FStartTime;
     Property CurrentTime: TDateTime Read GetCurrentTime Write SetCurrentTime;
     Property EndTime: TDateTime Read GetEndTime;
-
-    Property AutoPlayWhenLoaded: Boolean Read FAutoPlayWhenLoaded Write FAutoPlayWhenLoaded;
 
     Property SyncSeekThresholdMS: TVideoTime Read FSyncSeekThresholdMS Write FSyncSeekThresholdMS;
 
@@ -149,7 +148,7 @@ Begin
   FStartTime := 0;
   FSyncSeekThresholdMS := 1000;
   FReadyToPlay := False;
-  FAutoPlayWhenLoaded := True;
+  FAutoPlay := False;
 
   FSyncTimer := TTimer.Create(Self);
   FSyncTimer.Enabled := False;
@@ -244,6 +243,7 @@ Begin
   Master := nil;
   FFilename := '';
   FVideoFileCount := 0;
+  FReadyToPlay := False;
   SetState(vsEmpty);
 End;
 
@@ -296,6 +296,58 @@ Begin
   Result := FState;
 End;
 
+Procedure TfmeSyncedVideo.SetAutoplay(AValue: Boolean);
+Var
+  fmeVideo: TfmeVideoBase;
+Begin
+  Inherited SetAutoplay(AValue);
+
+  For fmeVideo In FVideos Do
+  Begin
+    fmeVideo.Autoplay := AValue;
+  End;
+End;
+
+Procedure TfmeSyncedVideo.UpdateStateFromChildren;
+Var
+  i: Integer;
+  bAnyPlaying: Boolean;
+  bAnyPaused: Boolean;
+  bAnyLoading: Boolean;
+  bAnyError: Boolean;
+  fmeVideo: TfmeVideoBase;
+Begin
+  bAnyPlaying := False;
+  bAnyPaused := False;
+  bAnyLoading := False;
+  bAnyError := False;
+
+  For i := 0 To FVideoFileCount - 1 Do
+  Begin
+    fmeVideo := FVideos[i];
+
+    Case fmeVideo.State Of
+      vsPlaying: bAnyPlaying := True;
+      vsPaused:  bAnyPaused := True;
+      vsLoading: bAnyLoading := True;
+      vsError:   bAnyError := True;
+    End;
+  End;
+
+  If bAnyError Then
+    SetState(vsError)
+  Else If bAnyPlaying Then
+    SetState(vsPlaying)
+  Else If bAnyLoading Then
+    SetState(vsLoading)
+  Else If bAnyPaused Then
+    SetState(vsPaused)
+  Else If FVideoFileCount > 0 Then
+    SetState(vsStopped)
+  Else
+    SetState(vsEmpty);
+End;
+
 Function TfmeSyncedVideo.GetCurrentTime: TDateTime;
 Begin
   If FStartTime = 0 Then
@@ -342,12 +394,14 @@ Begin
   Begin
     oVideo := FVideos[FVideoFileCount - 1];
     oVideo.Visible := True;
+    oVideo.Autoplay := FAutoplay;
   End
   Else
   Begin
     oVideo := FPlaybackClass.Create(nil);
     oVideo.Parent := Self;
     oVideo.OnStateChanged := @VideoStateChanged;
+    oVideo.Autoplay := FAutoplay;
 
     FVideos.Add(oVideo);
   End;
@@ -389,8 +443,9 @@ Begin
 
   If Result Then
   Begin
-    SetState(vsLoading);
-    FSyncTimer.Enabled := False;
+    FReadyToPlay := True;
+    SetState(vsPlaying);
+    FSyncTimer.Enabled := True;
   End;
 End;
 
@@ -475,7 +530,7 @@ Begin
   Result := 0;
 
   For i := 0 To FVideoFileCount - 1 Do
-    If FVideos[i].State = vsPaused Then
+    If FVideos[i].HasVideo Then
       Inc(Result);
 End;
 
@@ -493,8 +548,11 @@ Begin
     FLayout.LayoutVideos(FVideos);
     DoPosition;
 
-    If FAutoPlayWhenLoaded Then
-      Resume
+    If FAutoPlay Then
+    Begin
+      FSyncTimer.Enabled := True;
+      SetState(vsPlaying);
+    End
     Else
     Begin
       FSyncTimer.Enabled := False;
@@ -519,15 +577,12 @@ Begin
 
     vsPlaying:
     Begin
-      If FReadyToPlay Then
+      If Not FReadyToPlay Then
+        CheckAllVideosLoaded
+      Else
       Begin
         SetState(vsPlaying);
         FSyncTimer.Enabled := True;
-      End
-      Else
-      Begin
-        SetState(vsLoading);
-        FSyncTimer.Enabled := False;
       End;
     End;
 
@@ -538,7 +593,7 @@ Begin
       Else
       Begin
         FSyncTimer.Enabled := False;
-        SetState(vsPaused);
+        UpdateStateFromChildren;
       End;
     End;
 
