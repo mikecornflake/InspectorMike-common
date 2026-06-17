@@ -202,7 +202,7 @@ Begin
   Inherited RefreshUI;
 
   bHasEngine := Assigned(fmeVideo);
-  bHasFile := bHasEngine And (fmeVideo.VideoFileCount > 0);
+  bHasFile := bHasEngine And fmeVideo.HasVideo;
   bCanSeek := bHasEngine And fmeVideo.CanSeek;
   bCanRate := bHasEngine And fmeVideo.CanSetRate;
   bCanGrab := bHasEngine And fmeVideo.CanGrabBitmap;

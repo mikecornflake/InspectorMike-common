@@ -100,6 +100,7 @@ Type
     Function Stop: Boolean; Virtual;
     Function Clear: Boolean; Virtual;
 
+    Function HasVideo: Boolean; Virtual;
 
     Function CanSeek: Boolean; Virtual;
     Function CanSetRate: Boolean; Virtual;
@@ -228,6 +229,11 @@ Function TfmeVideoBase.Clear: Boolean;
 Begin
   FFilename := '';
   Result := True;
+End;
+
+Function TfmeVideoBase.HasVideo: Boolean;
+Begin
+  Result := FVideoFileCount > 0;
 End;
 
 Function TfmeVideoBase.CanSeek: Boolean;
