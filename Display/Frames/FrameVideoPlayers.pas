@@ -269,9 +269,6 @@ Begin
     If fmeVideo.Rate <> 1 Then
       fmeVideo.Rate := 1;
 
-    If fmeVideo.State In [vsEmpty, vsStopped, vsEnded, vsError] Then
-      fmeVideo.Load(FFilename);
-
     If fmeVideo.State = vsPaused Then
       fmeVideo.Resume
     Else

@@ -194,6 +194,7 @@ Begin
 
   FmpvPlayer.SetAudioMute(FMuted);
   FmpvPlayer.Color := clBlack;
+  FVideoFileCount := 1;
 
   DoPosition;
 
@@ -286,30 +287,20 @@ End;
 Function TfmeVideoLibmpv.Load(Const AFilename: String): Boolean;
 Begin
   Result := False;
-  FVideoFileCount := 0;
+
   FLoadMediaFinalised := False;
-  FLoadWatchdog.Enabled := False;
 
-  If Not Assigned(FmpvPlayer) Then
-    Exit;
-
-  If FmpvPlayer.IsMediaLoaded Then
-    FmpvPlayer.Stop;
+  If Assigned(FmpvPlayer) Then
+    FmpvPlayer.AutoStartPlayback := Autoplay;
 
   Result := Inherited Load(AFilename);
 
   If Not Result Then
-  Begin
-    SetState(vsError);
     Exit;
-  End;
 
-  FVideoFileCount := 1;
-
-  If Autoplay Then
-    Result := Play
-  Else
-    SetState(vsStopped);
+  SetState(vsLoading);
+  FmpvPlayer.Play(AFilename);
+  FLoadWatchdog.Enabled := True;
 End;
 
 Function TfmeVideoLibmpv.Clear: Boolean;
@@ -337,6 +328,8 @@ Begin
     SetState(vsError);
     Exit;
   End;
+
+  FmpvPlayer.AutoStartPlayback := True;
 
   FLoadMediaFinalised := False;
   SetState(vsLoading);
