@@ -4888,13 +4888,13 @@ object frmAbout: TfrmAbout
     Height = 350
     Top = 56
     Width = 532
-    ActivePage = tsMPV
+    ActivePage = tsReadme
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -13
     Font.Pitch = fpFixed
     Font.Quality = fqDraft
     ParentFont = False
-    TabIndex = 7
+    TabIndex = 2
     TabOrder = 1
     object tsAbout: TTabSheet
       Caption = 'About'
@@ -5213,7 +5213,6 @@ object frmAbout: TfrmAbout
         Height = 15
         Top = 16
         Width = 197
-        Anchors = [akLeft, akBottom]
         Caption = 'https://github.com/mpv-player/mpv'
         Font.Color = clBlue
         ParentColor = False

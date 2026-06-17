@@ -106,7 +106,7 @@ Uses
   LCLIntf, VersionSupport,
   XPDFSupport, ImageMagickSupport, ffmpegSupport, OSSupport, LibmpvSupport;
 
-{$R *.lfm}
+  {$R *.lfm}
 
 Procedure ShowAbout;
 Var
@@ -130,16 +130,31 @@ Begin
   sFolder := IncludeTrailingBackslash(ExtractFilePath(Application.ExeName));
   pcAbout.ActivePage := tsAbout;
 
+  If FileExists(sFolder + 'AboutGraphic.png') Then
+  Begin
+    imgAbout.Picture.LoadFromFile(sFolder + 'AboutGraphic.png');
+  End;
+
   If FileExists(sFolder + 'licence.txt') Then
   Begin
     tsLicence.TabVisible := True;
     memLicence.Lines.LoadFromFile(sFolder + 'licence.txt');
+  End
+  Else If FileExists(sFolder + 'licence') Then
+  Begin
+    tsLicence.TabVisible := True;
+    memLicence.Lines.LoadFromFile(sFolder + 'licence');
   End;
 
   If FileExists(sFolder + 'readme.txt') Then
   Begin
     tsReadme.TabVisible := True;
     memReadme.Lines.LoadFromFile(sFolder + 'readme.txt');
+  End
+  Else If FileExists(sFolder + 'readme.md') Then
+  Begin
+    tsReadme.TabVisible := True;
+    memReadme.Lines.LoadFromFile(sFolder + 'readme.md');
   End;
 
   If (ImageMagickAvailable) And (FileExists(ImageMagickPath + '\License.txt')) Then
@@ -221,6 +236,7 @@ Begin
   If Assigned(fmeFFmpeg) Then
     FreeAndNil(fmeFFmpeg);
 End;
+
 
 Procedure TfrmAbout.btnOKClick(Sender: TObject);
 Begin
