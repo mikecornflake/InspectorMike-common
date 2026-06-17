@@ -68,11 +68,15 @@ Type
   { TfmeVideoBase }
 
   TfmeVideoBase = Class(TfmeBase)
+  Private
   Protected
     FFilename: String;
     FOnPosition: TPositionEvent;
     FOnStateChanged: TStateEvent;
     FVideoFileCount: Integer;
+    FAutoplay: Boolean;
+
+    Procedure SetAutoplay(AValue: Boolean); Virtual;
 
     Function GetPosition: TVideoTime; Virtual;
     Procedure SetPosition(AValue: TVideoTime); Virtual;
@@ -110,6 +114,8 @@ Type
     Property Rate: Double Read GetRate Write SetRate;
     Property State: TVideoState Read GetState;
 
+    Property Autoplay: Boolean Read FAutoplay Write SetAutoplay;
+
     Property OnPosition: TPositionEvent Read FOnPosition Write FOnPosition;
     Property OnStateChanged: TStateEvent Read FOnStateChanged Write FOnStateChanged;
 
@@ -126,12 +132,18 @@ Constructor TfmeVideoBase.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
+  FAutoplay := False;
   FFilename := '';
   FOnPosition := nil;
   FOnStateChanged := nil;
 
   // Each descendent should set this when files are correctly loaded.
   FVideoFileCount := 0;
+End;
+
+Procedure TfmeVideoBase.SetAutoplay(AValue: Boolean);
+Begin
+  FAutoplay := AValue;
 End;
 
 Function TfmeVideoBase.GetPosition: TVideoTime;

@@ -78,6 +78,7 @@ Type
     Procedure mpvTimeChanged(ASender: TObject; AParam: Integer);
 
   Protected
+    Procedure SetAutoplay(AValue: Boolean); Override;
     Function GetPosition: TVideoTime; Override;
     Procedure SetPosition(AValue: TVideoTime); Override;
     Function GetDuration: TVideoTime; Override;
@@ -194,11 +195,12 @@ Begin
   FmpvPlayer.SetAudioMute(FMuted);
   FmpvPlayer.Color := clBlack;
 
-  If FmpvPlayer.IsPlaying Then
-    FmpvPlayer.Pause;
-
   DoPosition;
-  SetState(vsPaused);
+
+  If Autoplay Then
+    SetState(vsPlaying)
+  Else
+    SetState(vsPaused);
 End;
 
 Procedure TfmeVideoLibmpv.LoadWatchdogTimer(Sender: TObject);
@@ -283,11 +285,16 @@ End;
 
 Function TfmeVideoLibmpv.Load(Const AFilename: String): Boolean;
 Begin
-  FVideoFileCount := 0;
   Result := False;
+  FVideoFileCount := 0;
+  FLoadMediaFinalised := False;
+  FLoadWatchdog.Enabled := False;
 
   If Not Assigned(FmpvPlayer) Then
     Exit;
+
+  If FmpvPlayer.IsMediaLoaded Then
+    FmpvPlayer.Stop;
 
   Result := Inherited Load(AFilename);
 
@@ -297,11 +304,12 @@ Begin
     Exit;
   End;
 
-  If FmpvPlayer.IsMediaLoaded Then
-    FmpvPlayer.Stop;
-
   FVideoFileCount := 1;
-  SetState(vsStopped);
+
+  If Autoplay Then
+    Result := Play
+  Else
+    SetState(vsStopped);
 End;
 
 Function TfmeVideoLibmpv.Clear: Boolean;
@@ -437,6 +445,14 @@ End;
 Procedure TfmeVideoLibmpv.mpvTimeChanged(ASender: TObject; AParam: Integer);
 Begin
   DoPosition;
+End;
+
+Procedure TfmeVideoLibmpv.SetAutoplay(AValue: Boolean);
+Begin
+  Inherited SetAutoplay(AValue);
+
+  If Assigned(FmpvPlayer) Then
+    FmpvPlayer.AutoStartPlayback := AValue;
 End;
 
 End.

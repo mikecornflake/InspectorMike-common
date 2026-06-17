@@ -88,6 +88,7 @@ Type
     Function GetFilename: String;
     Function GetShowLabel: Boolean;
     Function GetVideoFileCount: Integer;
+    Procedure SetAutoplay(AValue: Boolean);
     Procedure SetPlaybackClass(AValue: TfmeVideoBaseClass);
     Procedure SetShowLabel(AValue: Boolean);
 
@@ -105,7 +106,7 @@ Type
     Property Filename: String Read GetFilename;
     Property PlaybackClass: TfmeVideoBaseClass Read FPlaybackClass Write SetPlaybackClass;
 
-    Property Autoplay: Boolean Read FAutoplay Write FAutoplay;
+    Property Autoplay: Boolean Read FAutoplay Write SetAutoplay;
     Property ShowLabel: Boolean Read GetShowLabel Write SetShowLabel;
     Property OnStop: TNotifyEvent Read FOnStop Write FOnStop;
 
@@ -167,6 +168,7 @@ Begin
   fmeVideo.Parent := pnlVideo;
   fmeVideo.Name := 'fmeVideo';
   fmeVideo.Align := alClient;
+  fmeVideo.Autoplay := FAutoplay;
 
   fmeVideo.OnPosition := @VideoPosition;
   fmeVideo.OnStateChanged := @VideoStateChanged;
@@ -235,13 +237,12 @@ Begin
   Result := False;
 
   If EnsurePlaybackFrame Then
+  Begin
+    fmeVideo.Autoplay := FAutoplay;
     Result := fmeVideo.Load(FFilename);
+  End;
 
   lblStatus.Caption := Format('File: %s', [FFilename]);
-
-  If FileExists(FFilename) And FAutoplay And Assigned(fmeVideo) Then
-    fmeVideo.Play;
-
   RefreshUI;
 End;
 
@@ -491,6 +492,14 @@ Begin
     Result := fmeVideo.VideoFileCount
   Else
     Result := 0;
+End;
+
+Procedure TFrameVideoPlayer.SetAutoplay(AValue: Boolean);
+Begin
+  FAutoplay := AValue;
+
+  If Assigned(fmeVideo) Then
+    fmeVideo.Autoplay := FAutoplay;
 End;
 
 Procedure TFrameVideoPlayer.SetShowLabel(AValue: Boolean);
