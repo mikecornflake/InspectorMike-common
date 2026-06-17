@@ -80,7 +80,7 @@ Type
     Function LoadedVideoCount: Integer;
     Function AllVideosLoaded: Boolean;
     Procedure CheckAllVideosLoaded;
-    procedure UpdateStateFromChildren;
+    Procedure UpdateStateFromChildren;
 
     Procedure SyncTimerTimer(Sender: TObject);
     Procedure SyncVideos;
@@ -100,7 +100,12 @@ Type
 
     Procedure Layout(ARows, ACols: Integer; ASequence: TVideoLayoutSequence);
 
-    Procedure ClearVideos;
+    Procedure ClearUnloadedVideoFrames;
+    Procedure ClearVideoCount;
+
+    Procedure BeginLoadVideos;
+    Procedure EndLoadVideos;
+
     Function Load(Const AFilename: String): Boolean; Override;
 
     Function Play: Boolean; Override;
@@ -168,7 +173,6 @@ End;
 Destructor TfmeSyncedVideo.Destroy;
 Begin
   FSyncTimer.Enabled := False;
-  ClearVideos;
   FreeAndNil(FVideos);
   FreeAndNil(FLayout);
   FreeAndNil(FSyncTimer);
@@ -226,13 +230,15 @@ Begin
   FLayout.LayoutVideos(FVideos, FVideoFileCount);
 End;
 
-Procedure TfmeSyncedVideo.ClearVideos;
+Procedure TfmeSyncedVideo.ClearUnloadedVideoFrames;
 Var
   i: Integer;
   oVideo: TfmeVideoBase;
 Begin
-  For oVideo In FVideos Do
+  For i := FVideoFileCount To FVideos.Count - 1 Do
   Begin
+    oVideo := FVideos[i];
+
     // Unload Video
     oVideo.Clear;
 
@@ -240,6 +246,12 @@ Begin
     oVideo.Visible := False;
   End;
 
+  If (FVideoFileCount = 0) Then
+    ClearVideoCount;
+End;
+
+Procedure TfmeSyncedVideo.ClearVideoCount;
+Begin
   Master := nil;
   FFilename := '';
   FVideoFileCount := 0;
@@ -328,9 +340,9 @@ Begin
 
     Case fmeVideo.State Of
       vsPlaying: bAnyPlaying := True;
-      vsPaused:  bAnyPaused := True;
+      vsPaused: bAnyPaused := True;
       vsLoading: bAnyLoading := True;
-      vsError:   bAnyError := True;
+      vsError: bAnyError := True;
     End;
   End;
 
@@ -419,7 +431,7 @@ Begin
 
   Result := oVideo.Load(AFilename);
 
-  FLayout.LayoutVideos(FVideos, FVideoFileCount);
+  //FLayout.LayoutVideos(FVideos, FVideoFileCount);
 End;
 
 Function TfmeSyncedVideo.Play: Boolean;
@@ -567,7 +579,10 @@ Procedure TfmeSyncedVideo.VideoStateChanged(Sender: TObject; AState: TVideoState
 Begin
   Case AState Of
     vsLoading:
-      SetState(vsLoading);
+    Begin
+      If Not FReadyToPlay Then
+        SetState(vsLoading);
+    End;
 
     vsError:
     Begin
@@ -657,6 +672,21 @@ Begin
     If DriftMS > FSyncSeekThresholdMS Then
       Slave.Position := MasterPos;
   End;
+End;
+
+Procedure TfmeSyncedVideo.BeginLoadVideos;
+Begin
+  FSyncTimer.Enabled := False;
+  FReadyToPlay := False;
+  ClearVideoCount;
+  SetState(vsLoading);
+End;
+
+Procedure TfmeSyncedVideo.EndLoadVideos;
+Begin
+  ClearUnloadedVideoFrames;
+  FLayout.LayoutVideos(FVideos, FVideoFileCount);
+  CheckAllVideosLoaded;
 End;
 
 End.
