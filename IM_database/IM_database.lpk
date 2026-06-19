@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="IM_database"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="src\Display\Dialogs;src\Display\Frames"/>
+        <OtherUnitFiles Value="src\Classes;src\Support;src\Display\Dialogs;src\Display\Frames"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files>
+      <Item>
+        <Filename Value="src\Classes\Exporters.pas"/>
+        <UnitName Value="Exporters"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Classes\ExportersFPVectorial.pas"/>
+        <UnitName Value="ExportersFPVectorial"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\DBSupport.pas"/>
+        <UnitName Value="DBSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Dialogs\DialogDBGridColEditor.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Dialogs\DialogDBGridColEditor.pas"/>
+        <UnitName Value="DialogDBGridColEditor"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Dialogs\DialogSQLFilter.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Dialogs\DialogSQLFilter.pas"/>
+        <UnitName Value="DialogSQLFilter"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameCSVs.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameCSVs.pas"/>
+        <UnitName Value="FrameCSVs"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameGrids.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameGrids.pas"/>
+        <UnitName Value="FrameGrids"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="zcomponent"/>
+      </Item>
+      <Item>
+        <PackageName Value="IM_forms"/>
+      </Item>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
+      <Item>
+        <PackageName Value="fpvectorialpkg"/>
+      </Item>
+      <Item>
+        <PackageName Value="IM_units"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCLBase"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

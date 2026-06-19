@@ -3,122 +3,90 @@
   <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="IM_units"/>
-    <Type Value="RunTimeOnly"/>
-    <Author Value="Michael Thompson"/>
+    <Type Value="RunAndDesignTime"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="..\Classes;..\Support"/>
-        <UnitOutputDirectory Value="$(TestDir)\lib\$(TargetCPU)-$(TargetOS)\IM_units"/>
+        <OtherUnitFiles Value="src\Classes;src\Support"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
       </SearchPaths>
     </CompilerOptions>
-    <Version Minor="1" Build="5"/>
     <Files>
       <Item>
-        <Filename Value="..\Classes\Settings.pas"/>
-        <UnitName Value="Settings"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Classes\Exporters.pas"/>
-        <UnitName Value="Exporters"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Classes\Logs.pas"/>
+        <Filename Value="src\Classes\Logs.pas"/>
         <UnitName Value="Logs"/>
       </Item>
       <Item>
-        <Filename Value="..\Classes\MRUs.pas"/>
+        <Filename Value="src\Classes\MRUs.pas"/>
         <UnitName Value="MRUs"/>
       </Item>
       <Item>
-        <Filename Value="..\Support\ControlsSupport.pas"/>
-        <UnitName Value="ControlsSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\DBSupport.pas"/>
-        <UnitName Value="DBSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\ffmpegSupport.pas"/>
-        <UnitName Value="ffmpegSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\FileSupport.pas"/>
-        <UnitName Value="FileSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\GPSSupport.pas"/>
-        <UnitName Value="GPSSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\ImageMagickSupport.pas"/>
-        <UnitName Value="ImageMagickSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\LazSerialSupport.pas"/>
-        <UnitName Value="LazSerialSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\netMCSupport.pas"/>
-        <UnitName Value="netMCSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\OSSupport.pas"/>
-        <UnitName Value="OSSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\StringSupport.pas"/>
-        <UnitName Value="StringSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\TesseractSupport.pas"/>
-        <UnitName Value="TesseractSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\VersionSupport.pas"/>
-        <UnitName Value="VersionSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\WGS84.pas"/>
-        <UnitName Value="WGS84"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\XPDFSupport.pas"/>
-        <UnitName Value="XPDFSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Support\DialogDBGridColEditor.pas"/>
-        <UnitName Value="DialogDBGridColEditor"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Classes\ExportersFPVectorial.pas"/>
-        <UnitName Value="ExportersFPVectorial"/>
-      </Item>
-      <Item>
-        <Filename Value="..\Classes\PipelineDisplay.pas"/>
+        <Filename Value="src\Classes\PipelineDisplay.pas"/>
         <UnitName Value="PipelineDisplay"/>
       </Item>
       <Item>
-        <Filename Value="..\Support\DialogDBGridColEditor.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="src\Classes\Settings.pas"/>
+        <UnitName Value="Settings"/>
       </Item>
       <Item>
-        <Filename Value="..\Support\XMLSupport.pas"/>
+        <Filename Value="src\Support\ControlsSupport.pas"/>
+        <UnitName Value="ControlsSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\ffmpegSupport.pas"/>
+        <UnitName Value="ffmpegSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\FileSupport.pas"/>
+        <UnitName Value="FileSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\GPSSupport.pas"/>
+        <UnitName Value="GPSSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\ImageMagickSupport.pas"/>
+        <UnitName Value="ImageMagickSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\LibmpvSupport.pas"/>
+        <UnitName Value="LibmpvSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\netMCSupport.pas"/>
+        <UnitName Value="netMCSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\OSSupport.pas"/>
+        <UnitName Value="OSSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\StringSupport.pas"/>
+        <UnitName Value="StringSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\TesseractSupport.pas"/>
+        <UnitName Value="TesseractSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\VersionSupport.pas"/>
+        <UnitName Value="VersionSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\WGS84.pas"/>
+        <UnitName Value="WGS84"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\XMLSupport.pas"/>
         <UnitName Value="XMLSupport"/>
       </Item>
       <Item>
-        <Filename Value="..\Support\LibmpvSupport.pas"/>
-        <UnitName Value="LibmpvSupport"/>
+        <Filename Value="src\Support\XPDFSupport.pas"/>
+        <UnitName Value="XPDFSupport"/>
       </Item>
     </Files>
     <RequiredPkgs>
-      <Item>
-        <PackageName Value="LazSerialPort"/>
-      </Item>
-      <Item>
-        <PackageName Value="fpvectorialpkg"/>
-      </Item>
       <Item>
         <PackageName Value="LCLBase"/>
       </Item>

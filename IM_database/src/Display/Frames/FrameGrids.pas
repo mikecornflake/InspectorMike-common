@@ -203,7 +203,7 @@ Type
 Implementation
 
 Uses
-  DialogSQLFilter, DialogDBGridColEditor, DBSupport, StringSupport, OSSupport, FormMain,
+  DialogSQLFilter, DialogDBGridColEditor, DBSupport, StringSupport, OSSupport,
   sqldb,
   BufDataset,
   Clipbrd,
@@ -510,8 +510,9 @@ Begin
   If FUseMultilineDefaults = AValue Then Exit;
   FUseMultilineDefaults := AValue;
 
-  If AValue Then
-    AllowMultiline := MainForm.Options.MultilineGridDefaults;
+  // TODO Untangle this...
+  //If AValue Then
+  //  AllowMultiline := MainForm.Options.MultilineGridDefaults;
 
   grdSQL.Invalidate;
 End;

@@ -8,12 +8,17 @@ unit IM_units;
 interface
 
 uses
-  Settings, Exporters, Logs, MRUs, ControlsSupport, DBSupport, ffmpegSupport, 
-  FileSupport, GPSSupport, ImageMagickSupport, LazSerialSupport, netMCSupport, 
+  Logs, MRUs, PipelineDisplay, Settings, ControlsSupport, ffmpegSupport, 
+  FileSupport, GPSSupport, ImageMagickSupport, LibmpvSupport, netMCSupport, 
   OSSupport, StringSupport, TesseractSupport, VersionSupport, WGS84, 
-  XPDFSupport, DialogDBGridColEditor, ExportersFPVectorial, PipelineDisplay, 
-  XMLSupport, LibmpvSupport;
+  XMLSupport, XPDFSupport, LazarusPackageIntf;
 
 implementation
 
+procedure Register;
+begin
+end;
+
+initialization
+  RegisterPackage('IM_units', @Register);
 end.
