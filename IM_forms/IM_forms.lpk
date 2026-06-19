@@ -10,7 +10,7 @@
       <SearchPaths>
         <IncludeFiles Value="src\Display\Forms;src\Display\Frames"/>
         <OtherUnitFiles Value="src\Display\Forms;src\Display\Frames"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
     <Files>
@@ -30,8 +30,30 @@
         <Filename Value="src\Display\Frames\FrameBase.pas"/>
         <UnitName Value="FrameBase"/>
       </Item>
+      <Item>
+        <Filename Value="src\Display\Forms\FormAbout.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Forms\FormAbout.pas"/>
+        <UnitName Value="FormAbout"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Forms\FormMain.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Forms\FormMain.pas"/>
+        <UnitName Value="FormMain"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="IM_units"/>
+      </Item>
+      <Item>
+        <PackageName Value="IM_forms.TurboPowerIPro"/>
+      </Item>
       <Item>
         <PackageName Value="LCLBase"/>
       </Item>
