@@ -104,15 +104,17 @@ Type
     Function SettingsFileGlobal: String;
 
     Procedure RefreshUI; Virtual;
-  Public
-    Constructor Create(AOwner: TComponent); Override;
-    Destructor Destroy; Override;
 
+    // Stored in ini file with exe - what folders to load etc
     Procedure LoadGlobalSettings(oInifile: TIniFile); Virtual;
     Procedure SaveGlobalSettings(oInifile: TIniFile); Virtual;
 
+    // Stored in %appdata% - Recommended for persisting user UI preferences
     Procedure LoadLocalSettings(oInifile: TIniFile); Virtual;
     Procedure SaveLocalSettings(oInifile: TIniFile); Virtual;
+  Public
+    Constructor Create(AOwner: TComponent); Override;
+    Destructor Destroy; Override;
 
     Property Options: TOptions Read FOptions;
 
