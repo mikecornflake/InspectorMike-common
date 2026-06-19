@@ -21,6 +21,7 @@ Unit FrameHTMLs;
     2014-07-05: Uploaded to SourceForge/Package "Shared"
     2024-01-22: Migrated to Github.  Refactored package to "IM_application"
     2025-11-29: Added LGPL-3.0-or-later license header
+    2026-06-19: Refactoring before splitting packages
 
   License
     This file is part of IM_application.lpk.
@@ -78,14 +79,43 @@ Type
 
     // If you don't want hyperlinks to be active, then assign
     // a handler here, and do nothing in your handler
-    Property OnHyperlink: THyperlinkEvent read FOnHyperlink write FOnHyperlink;
+    Property OnHyperlink: THyperlinkEvent Read FOnHyperlink Write FOnHyperlink;
   End;
+
+// TurboPowerPro Routines
+Procedure SetHTML(AIpHtmlPanel: TIpHtmlPanel; AHTML: String);
 
 Implementation
 
 {$R *.lfm}
 
 Uses IpHtmlNodes;  // leave in, even if compiler tells you this isn't used
+
+Procedure SetHTML(AIpHtmlPanel: TIpHtmlPanel; AHTML: String);
+Var
+  oHTML: TIpHtml;
+  oStream: TStringStream;
+Begin
+  oStream := TStringStream.Create(AHTML);
+  Try
+    Try
+      oHTML := TIpHtml.Create; // Beware: Will be freed automatically by htmlPanel
+
+      oStream.Position := 0;
+      oHTML.LoadFromStream(oStream);
+
+      oStream.Position := 0;
+
+      AIpHtmlPanel.SetHtml(oHTML);
+    Except
+      On E: Exception Do
+        MessageDlg('Unable to open HTML' + #13 + 'Error: ' + E.Message,
+          mtError, [mbCancel], 0);
+    End;
+  Finally
+    oStream.Free;
+  End;
+End;
 
 Constructor TFrameHTML.Create(TheOwner: TComponent);
 Begin

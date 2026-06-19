@@ -114,16 +114,10 @@
     </Files>
     <RequiredPkgs>
       <Item>
-        <PackageName Value="UWMPVPlayer"/>
+        <PackageName Value="LazSerialPort"/>
       </Item>
       <Item>
         <PackageName Value="fpvectorialpkg"/>
-      </Item>
-      <Item>
-        <PackageName Value="TurboPowerIPro"/>
-      </Item>
-      <Item>
-        <PackageName Value="LazSerialPort"/>
       </Item>
       <Item>
         <PackageName Value="LCLBase"/>

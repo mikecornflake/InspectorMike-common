@@ -1,11 +1,41 @@
 Unit LibmpvSupport;
 
-//libmpv-2.dll
-//Version: 0.41.0-697-g13a3e3ad0
-//Source: mpv project (https://mpv.io)
-//Windows build: Shinchiro developer build
-//License: See mpv Copyright and License files
+{-------------------------------------------------------------------------------
+  Package   : IM_units
+  Unit      : LazSerialSupport.pas
+  Description
+    My first Class Helper
 
+    Helper unit for LazSerial.pas
+
+  Source
+    Copyright (c) 2026
+    Inspector Mike 2.0 Pty Ltd
+    Mike Thompson (mike.cornflake@gmail.com)
+
+  History
+    2026-06-05: Creation and upload to Githib InspectorMike-Common
+                   as part of  IM_common.lpk
+    2026-06-19: Added this header & refactored
+
+  License
+    This file is part of IM_units.lpk.
+
+    This library is free software: you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or (at
+    your option) any later version.
+
+    This library is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+    General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this library. If not, see <https://www.gnu.org/licenses/>.
+
+    SPDX-License-Identifier: LGPL-3.0-or-later
+-------------------------------------------------------------------------------}
 
 {$mode objfpc}{$H+}
 
@@ -15,64 +45,59 @@ Uses
   Classes, SysUtils;
 
 Function LibmpvAvailable: Boolean;
-Function LibmpvFile: String;
-Procedure SetLibmpvFile(AValue: String);
-Function InitializeLibmpv: Integer;
+Function LibmpvDLL: String;
+Procedure SetLibmpvDLL(AValue: String);
+Function FindLibmpvDLL: Boolean;
 
 Implementation
 
 Uses
-  Forms, OSSupport, FileSupport, FileUtil, libMPV.Client;
+  Forms, OSSupport, FileSupport, FileUtil;
 
 Var
-  FLibmpvFile: String;
+  FLibmpvDLL: String;
 
 Function LibmpvAvailable: Boolean;
 Begin
-  Result := (FLibmpvFile <> '') And FileExists(FLibmpvFile);
+  Result := (FLibmpvDLL <> '') And FileExists(FLibmpvDLL);
 End;
 
-Function LibmpvFile: String;
+Function LibmpvDLL: String;
 Begin
-  Result := FLibmpvFile;
+  Result := FLibmpvDLL;
 End;
 
-Procedure SetLibmpvFile(AValue: String);
+Procedure SetLibmpvDLL(AValue: String);
 Begin
   If FileExists(AValue) Then
-    FLibmpvFile := AValue
+    FLibmpvDLL := AValue
   Else
-    FLibmpvFile := '';
+    FLibmpvDLL := '';
 End;
 
-Function InitializeLibmpv: Integer;
+Function FindLibmpvDLL: Boolean;
 Var
   sApplicationFolder, sTemp: String;
 Begin
-  Result := MPV_ERROR_SUCCESS;
+  Result := (FLibmpvDLL <> '') And FileExists(FLibmpvDLL);
 
-  If IsLibMPV_Loaded Then
+  If Result Then
     Exit;
 
-  Result := MPV_ERROR_GENERIC;
+  // TODO Linux
+  sApplicationFolder := IncludeTrailingBackslash(Application.Location);
+  sTemp := FindFolder([sApplicationFolder, sApplicationFolder + 'Apps',
+    sApplicationFolder + '..', sApplicationFolder + '..\Apps'], 'mpv', 'libmpv-2.dll');
 
-  If (FLibmpvFile = '') Then
-  Begin
-    // TODO Linux
-    sApplicationFolder := IncludeTrailingBackslash(Application.Location);
-    sTemp := FindFolder([sApplicationFolder, sApplicationFolder + 'Apps',
-      sApplicationFolder + '..', sApplicationFolder + '..\Apps'], 'mpv', 'libmpv-2.dll');
+  If DirectoryExists(sTemp) Then
+    FLibmpvDLL := IncludeSlash(sTemp) + 'libmpv-2.dll';
 
-    If DirectoryExists(sTemp) Then
-      FLibmpvFile := IncludeSlash(sTemp) + 'libmpv-2.dll';
-  End;
+  Result := (FLibmpvDLL <> '') And FileExists(FLibmpvDLL);
 
-  If (FLibmpvFile <> '') And FileExists(FLibmpvFile) Then
-    Result := Load_libMPV(FLibmpvFile)
+  If Result Then
+    Exit
   Else
-  Begin
-    FLibmpvFile := '';
-  End;
+    FLibmpvDLL := '';
 End;
 
 End.

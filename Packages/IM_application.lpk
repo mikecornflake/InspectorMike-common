@@ -181,10 +181,10 @@
     </Files>
     <RequiredPkgs>
       <Item>
-        <PackageName Value="IM_units"/>
+        <PackageName Value="UWMPVPlayer"/>
       </Item>
       <Item>
-        <PackageName Value="LazSerialPort"/>
+        <PackageName Value="IM_units"/>
       </Item>
       <Item>
         <PackageName Value="cryptini"/>

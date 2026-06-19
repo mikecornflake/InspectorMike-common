@@ -111,7 +111,7 @@ Implementation
 {$R *.lfm}
 
 Uses
-  LibmpvSupport;
+  LibmpvSupport, libMPV.Client;
 
   { TfmeVideoLibmpv }
 
@@ -119,7 +119,7 @@ Constructor TfmeVideoLibmpv.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
-  If InitializeLibmpv <> 0 Then
+  If Not FindLibmpvDLL Then
   Begin
     lblMsg.Visible := True;
     lblMsg.Caption := 'libmpv-2.dll not found';
@@ -130,6 +130,9 @@ Begin
   End
   Else
   Begin
+    If Not IsLibMPV_Loaded Then
+      Load_libMPV(LibmpvSupport.LibmpvDLL);
+
     lblMsg.Visible := False;
 
     FmpvPlayer := TMPVPlayer.Create(Self);
