@@ -49,7 +49,7 @@ Type
 
   { TFrameCSV }
 
-  TFrameCSV = Class(TfmeBase)
+  TFrameCSV = Class(TFrameBase)
     dsCSV: TDatasource;
     grdCSV: TDBGrid;
     DBNavigator1: TDBNavigator;

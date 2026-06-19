@@ -75,7 +75,7 @@ Type
   Public
     Constructor Create(AParent: TWinControl);
 
-    Procedure LayoutVideos(AVideos: TfmeVideoBaseList; AVideoCountLimit: Integer = -1);
+    Procedure LayoutVideos(AVideos: TFrameVideoBaseList; AVideoCountLimit: Integer = -1);
     Procedure ClearParent;
 
     Property Parent: TWinControl Read FParent Write FParent;
@@ -141,7 +141,7 @@ Begin
   End;
 End;
 
-Procedure TVideoGridLayout.LayoutVideos(AVideos: TfmeVideoBaseList;
+Procedure TVideoGridLayout.LayoutVideos(AVideos: TFrameVideoBaseList;
   AVideoCountLimit: Integer = -1);
 Var
   i: Integer;
@@ -153,7 +153,7 @@ Var
   TopPos: Integer;
   WorkW: Integer;
   WorkH: Integer;
-  Video: TfmeVideoBase;
+  Video: TFrameVideoBase;
 Begin
   If Not Assigned(FParent) Then
     Exit;

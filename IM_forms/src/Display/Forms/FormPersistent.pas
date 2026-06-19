@@ -103,8 +103,8 @@ Procedure TfrmPersistent.RefreshUI;
       Begin
         oControl := TWinControl(AControl.Controls[i]);
 
-        If oControl Is TfmeBase Then
-          TfmeBase(oControl).RefreshUI;
+        If oControl Is TFrameBase Then
+          TFrameBase(oControl).RefreshUI;
 
         If Assigned(oControl) Then
           RefreshUIChildren(oControl);
@@ -140,8 +140,8 @@ Procedure TfrmPersistent.LoadSettings(oInifile: TIniFile);
       Begin
         oControl := TWinControl(AControl.Controls[i]);
 
-        If oControl Is TfmeBase Then
-          TfmeBase(oControl).LoadSettings(oInifile);
+        If oControl Is TFrameBase Then
+          TFrameBase(oControl).LoadSettings(oInifile);
 
         If Assigned(oControl) Then
           LoadSettingsChildren(oControl);
@@ -164,8 +164,8 @@ Procedure TfrmPersistent.SaveSettings(oInifile: TIniFile);
       Begin
         oControl := TWinControl(AControl.Controls[i]);
 
-        If oControl Is TfmeBase Then
-          TfmeBase(oControl).SaveSettings(oInifile);
+        If oControl Is TFrameBase Then
+          TFrameBase(oControl).SaveSettings(oInifile);
 
         If Assigned(oControl) Then
           SaveSettingsChildren(oControl);

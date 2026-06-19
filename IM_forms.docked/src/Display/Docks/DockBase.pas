@@ -137,8 +137,8 @@ Procedure TdckBase.Open;
       Begin
         oWinControl := TWinControl(oControl);
 
-        If oWinControl Is TfmeBase Then
-          TfmeBase(oWinControl).Open;
+        If oWinControl Is TFrameBase Then
+          TFrameBase(oWinControl).Open;
 
         If Assigned(oWinControl) Then
           OpenChildren(oWinControl);
@@ -167,8 +167,8 @@ Procedure TdckBase.Close;
       Begin
         oWinControl := TWinControl(oControl);
 
-        If oWinControl Is TfmeBase Then
-          TfmeBase(oWinControl).Close;
+        If oWinControl Is TFrameBase Then
+          TFrameBase(oWinControl).Close;
 
         If Assigned(oWinControl) Then
           CloseChildren(oWinControl);

@@ -49,7 +49,7 @@ Type
 
   { TFramePDFViewer }
 
-  TFramePDFViewer = Class(TfmeBase)
+  TFramePDFViewer = Class(TFrameBase)
     btnInfo: TToolButton;
     ilThumbs: TImageList;
     ilToolbar: TImageList;

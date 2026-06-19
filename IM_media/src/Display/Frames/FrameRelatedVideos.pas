@@ -43,13 +43,13 @@ Interface
 
 Uses
   Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, FrameBase, FrameVideoPlayers;
+  StdCtrls, FrameBase, FrameVideoPlayer;
 
 Type
 
   { TFrameRelatedVideo }
 
-  TFrameRelatedVideo = Class(TfmeBase)
+  TFrameRelatedVideo = Class(TFrameBase)
     lblRelatedTitle: TLabel;
     lbRelated: TListBox;
     pnlRelated: TPanel;

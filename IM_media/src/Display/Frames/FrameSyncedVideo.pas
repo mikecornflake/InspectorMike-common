@@ -5,7 +5,7 @@ Unit FrameSyncedVideo;
   Unit      : FrameSyncedVideo.pas
   Description
     Multi-channel video playback frame that synchronises multiple
-    TfmeVideoBase descendants and presents them as a single logical
+    TFrameVideoBase descendants and presents them as a single logical
     video player.
 
     Supports master/slave synchronisation, time-based seeking,
@@ -18,7 +18,7 @@ Unit FrameSyncedVideo;
 
   History
     2026-06-12: Initial implementation.
-                Designed as a composite TfmeVideoBase descendant allowing
+                Designed as a composite TFrameVideoBase descendant allowing
                 multiple video engines to be synchronised and controlled
                 through a single playback interface.
                 Initial implementation generated with assistance from
@@ -45,7 +45,7 @@ Unit FrameSyncedVideo;
 -------------------------------------------------------------------------------}
 
 {$mode objfpc}{$H+}
-
+{$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 Interface
 
 Uses
@@ -53,14 +53,14 @@ Uses
   FrameVideoBase, VideoGridLayout;
 
 Type
-  { TfmeSyncedVideo }
+  { TFrameSyncedVideo }
 
-  TfmeSyncedVideo = Class(TfmeVideoBase)
+  TFrameSyncedVideo = Class(TFrameVideoBase)
     Procedure FrameResize(Sender: TObject);
   Private
-    FPlaybackClass: TfmeVideoBaseClass;
-    FVideos: TfmeVideoBaseList;
-    FMaster: TfmeVideoBase;
+    FPlaybackClass: TFrameVideoBaseClass;
+    FVideos: TFrameVideoBaseList;
+    FMaster: TFrameVideoBase;
     FState: TVideoState;
     FSyncTimer: TTimer;
     FSyncSeekThresholdMS: TVideoTime;
@@ -69,7 +69,7 @@ Type
     FLayout: TVideoGridLayout;
 
     Procedure SetState(AValue: TVideoState);
-    Procedure SetMaster(AValue: TfmeVideoBase);
+    Procedure SetMaster(AValue: TFrameVideoBase);
 
     Function GetCurrentTime: TDateTime;
     Procedure SetCurrentTime(AValue: TDateTime);
@@ -119,8 +119,8 @@ Type
     Function CanGrabBitmap: Boolean; Override;
     Function GetBitmap(Bitmap: TBitmap): Boolean; Override;
 
-    Property Videos: TfmeVideoBaseList Read FVideos;
-    Property Master: TfmeVideoBase Read FMaster Write SetMaster;
+    Property Videos: TFrameVideoBaseList Read FVideos;
+    Property Master: TFrameVideoBase Read FMaster Write SetMaster;
 
     Property StartTime: TDateTime Read FStartTime Write FStartTime;
     Property CurrentTime: TDateTime Read GetCurrentTime Write SetCurrentTime;
@@ -128,23 +128,23 @@ Type
 
     Property SyncSeekThresholdMS: TVideoTime Read FSyncSeekThresholdMS Write FSyncSeekThresholdMS;
 
-    Property PlaybackClass: TfmeVideoBaseClass Read FPlaybackClass Write FPlaybackClass;
+    Property PlaybackClass: TFrameVideoBaseClass Read FPlaybackClass Write FPlaybackClass;
   End;
 
 Implementation
 
 Uses
-  DateUtils, Math;
+  DateUtils;
 
   {$R *.lfm}
 
-  { TfmeSyncedVideo }
+  { TFrameSyncedVideo }
 
-Constructor TfmeSyncedVideo.Create(TheOwner: TComponent);
+Constructor TFrameSyncedVideo.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
-  FVideos := TfmeVideoBaseList.Create(True); // Does own videos.
+  FVideos := TFrameVideoBaseList.Create(True); // Does own videos.
   FMaster := nil;
   FState := vsEmpty;
 
@@ -171,7 +171,7 @@ Begin
   FVideoFileCount := 0;
 End;
 
-Destructor TfmeSyncedVideo.Destroy;
+Destructor TFrameSyncedVideo.Destroy;
 Begin
   FSyncTimer.Enabled := False;
   FreeAndNil(FVideos);
@@ -181,13 +181,13 @@ Begin
   Inherited Destroy;
 End;
 
-Procedure TfmeSyncedVideo.FrameResize(Sender: TObject);
+Procedure TFrameSyncedVideo.FrameResize(Sender: TObject);
 Begin
   If Assigned(FLayout) Then
     FLayout.LayoutVideos(FVideos);
 End;
 
-Procedure TfmeSyncedVideo.SetState(AValue: TVideoState);
+Procedure TFrameSyncedVideo.SetState(AValue: TVideoState);
 Begin
   If FState = AValue Then
     Exit;
@@ -196,7 +196,7 @@ Begin
   DoStateChanged;
 End;
 
-Procedure TfmeSyncedVideo.SetMaster(AValue: TfmeVideoBase);
+Procedure TFrameSyncedVideo.SetMaster(AValue: TFrameVideoBase);
 Var
   i: Integer;
 Begin
@@ -223,7 +223,7 @@ Begin
   DoPosition;
 End;
 
-Procedure TfmeSyncedVideo.Layout(ARows, ACols: Integer; ASequence: TVideoLayoutSequence);
+Procedure TFrameSyncedVideo.Layout(ARows, ACols: Integer; ASequence: TVideoLayoutSequence);
 Begin
   FLayout.RowCount := ARows;
   FLayout.ColCount := ACols;
@@ -231,10 +231,10 @@ Begin
   FLayout.LayoutVideos(FVideos, FVideoFileCount);
 End;
 
-Procedure TfmeSyncedVideo.ClearUnloadedVideoFrames;
+Procedure TFrameSyncedVideo.ClearUnloadedVideoFrames;
 Var
   i: Integer;
-  oVideo: TfmeVideoBase;
+  oVideo: TFrameVideoBase;
 Begin
   For i := FVideoFileCount To FVideos.Count - 1 Do
   Begin
@@ -251,7 +251,7 @@ Begin
     ClearVideoCount;
 End;
 
-Procedure TfmeSyncedVideo.ClearVideoCount;
+Procedure TFrameSyncedVideo.ClearVideoCount;
 Begin
   Master := nil;
   FFilename := '';
@@ -260,7 +260,7 @@ Begin
   SetState(vsEmpty);
 End;
 
-Function TfmeSyncedVideo.GetPosition: TVideoTime;
+Function TFrameSyncedVideo.GetPosition: TVideoTime;
 Begin
   If Assigned(FMaster) Then
     Result := FMaster.Position
@@ -268,7 +268,7 @@ Begin
     Result := 0;
 End;
 
-Procedure TfmeSyncedVideo.SetPosition(AValue: TVideoTime);
+Procedure TFrameSyncedVideo.SetPosition(AValue: TVideoTime);
 Var
   i: Integer;
 Begin
@@ -279,7 +279,7 @@ Begin
   DoPosition;
 End;
 
-Function TfmeSyncedVideo.GetDuration: TVideoTime;
+Function TFrameSyncedVideo.GetDuration: TVideoTime;
 Begin
   If Assigned(FMaster) Then
     Result := FMaster.Duration
@@ -287,7 +287,7 @@ Begin
     Result := -1;
 End;
 
-Function TfmeSyncedVideo.GetRate: Double;
+Function TFrameSyncedVideo.GetRate: Double;
 Begin
   If Assigned(FMaster) Then
     Result := FMaster.Rate
@@ -295,7 +295,7 @@ Begin
     Result := 1.0;
 End;
 
-Procedure TfmeSyncedVideo.SetRate(AValue: Double);
+Procedure TFrameSyncedVideo.SetRate(AValue: Double);
 Var
   i: Integer;
 Begin
@@ -304,14 +304,14 @@ Begin
       FVideos[i].Rate := AValue;
 End;
 
-Function TfmeSyncedVideo.GetState: TVideoState;
+Function TFrameSyncedVideo.GetState: TVideoState;
 Begin
   Result := FState;
 End;
 
-Procedure TfmeSyncedVideo.SetAutoplay(AValue: Boolean);
+Procedure TFrameSyncedVideo.SetAutoplay(AValue: Boolean);
 Var
-  fmeVideo: TfmeVideoBase;
+  fmeVideo: TFrameVideoBase;
 Begin
   Inherited SetAutoplay(AValue);
 
@@ -321,14 +321,14 @@ Begin
   End;
 End;
 
-Procedure TfmeSyncedVideo.UpdateStateFromChildren;
+Procedure TFrameSyncedVideo.UpdateStateFromChildren;
 Var
   i: Integer;
   bAnyPlaying: Boolean;
   bAnyPaused: Boolean;
   bAnyLoading: Boolean;
   bAnyError: Boolean;
-  fmeVideo: TfmeVideoBase;
+  fmeVideo: TFrameVideoBase;
 Begin
   bAnyPlaying := False;
   bAnyPaused := False;
@@ -361,7 +361,7 @@ Begin
     SetState(vsEmpty);
 End;
 
-Function TfmeSyncedVideo.GetCurrentTime: TDateTime;
+Function TFrameSyncedVideo.GetCurrentTime: TDateTime;
 Begin
   If FStartTime = 0 Then
     Result := 0
@@ -369,7 +369,7 @@ Begin
     Result := FStartTime + (Position / MSecsPerDay);
 End;
 
-Procedure TfmeSyncedVideo.SetCurrentTime(AValue: TDateTime);
+Procedure TFrameSyncedVideo.SetCurrentTime(AValue: TDateTime);
 Var
   OffsetMS: TVideoTime;
 Begin
@@ -384,7 +384,7 @@ Begin
   Position := OffsetMS;
 End;
 
-Function TfmeSyncedVideo.GetEndTime: TDateTime;
+Function TFrameSyncedVideo.GetEndTime: TDateTime;
 Begin
   If (FStartTime = 0) Or (Duration < 0) Then
     Result := 0
@@ -392,9 +392,9 @@ Begin
     Result := FStartTime + (Duration / MSecsPerDay);
 End;
 
-Function TfmeSyncedVideo.Load(Const AFilename: String): Boolean;
+Function TFrameSyncedVideo.Load(Const AFilename: String): Boolean;
 Var
-  oVideo: TfmeVideoBase;
+  oVideo: TFrameVideoBase;
 Begin
   Result := False;
 
@@ -435,7 +435,7 @@ Begin
   //FLayout.LayoutVideos(FVideos, FVideoFileCount);
 End;
 
-Function TfmeSyncedVideo.Play: Boolean;
+Function TFrameSyncedVideo.Play: Boolean;
 Var
   i: Integer;
 Begin
@@ -462,7 +462,7 @@ Begin
   End;
 End;
 
-Function TfmeSyncedVideo.Pause: Boolean;
+Function TFrameSyncedVideo.Pause: Boolean;
 Var
   i: Integer;
 Begin
@@ -477,7 +477,7 @@ Begin
     SetState(vsPaused);
 End;
 
-Function TfmeSyncedVideo.Resume: Boolean;
+Function TFrameSyncedVideo.Resume: Boolean;
 Var
   i: Integer;
 Begin
@@ -493,7 +493,7 @@ Begin
   End;
 End;
 
-Function TfmeSyncedVideo.Stop: Boolean;
+Function TFrameSyncedVideo.Stop: Boolean;
 Var
   i: Integer;
 Begin
@@ -508,22 +508,22 @@ Begin
     SetState(vsStopped);
 End;
 
-Function TfmeSyncedVideo.CanSeek: Boolean;
+Function TFrameSyncedVideo.CanSeek: Boolean;
 Begin
   Result := Assigned(FMaster) And FMaster.CanSeek;
 End;
 
-Function TfmeSyncedVideo.CanSetRate: Boolean;
+Function TFrameSyncedVideo.CanSetRate: Boolean;
 Begin
   Result := Assigned(FMaster) And FMaster.CanSetRate;
 End;
 
-Function TfmeSyncedVideo.CanGrabBitmap: Boolean;
+Function TFrameSyncedVideo.CanGrabBitmap: Boolean;
 Begin
   Result := Assigned(FMaster) And FMaster.CanGrabBitmap;
 End;
 
-Function TfmeSyncedVideo.GetBitmap(Bitmap: TBitmap): Boolean;
+Function TFrameSyncedVideo.GetBitmap(Bitmap: TBitmap): Boolean;
 Begin
   If Assigned(FMaster) Then
     Result := FMaster.GetBitmap(Bitmap)
@@ -531,12 +531,12 @@ Begin
     Result := False;
 End;
 
-Procedure TfmeSyncedVideo.MasterPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
+Procedure TFrameSyncedVideo.MasterPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
 Begin
   DoPosition;
 End;
 
-Function TfmeSyncedVideo.LoadedVideoCount: Integer;
+Function TFrameSyncedVideo.LoadedVideoCount: Integer;
 Var
   i: Integer;
 Begin
@@ -547,13 +547,13 @@ Begin
       Inc(Result);
 End;
 
-Function TfmeSyncedVideo.AllVideosLoaded: Boolean;
+Function TFrameSyncedVideo.AllVideosLoaded: Boolean;
 Begin
   Result :=
     (FVideoFileCount > 0) And (LoadedVideoCount = FVideoFileCount);
 End;
 
-Procedure TfmeSyncedVideo.CheckAllVideosLoaded;
+Procedure TFrameSyncedVideo.CheckAllVideosLoaded;
 Begin
   If AllVideosLoaded Then
   Begin
@@ -576,7 +576,7 @@ Begin
     SetState(vsLoading);
 End;
 
-Procedure TfmeSyncedVideo.VideoStateChanged(Sender: TObject; AState: TVideoState);
+Procedure TFrameSyncedVideo.VideoStateChanged(Sender: TObject; AState: TVideoState);
 Begin
   Case AState Of
     vsLoading:
@@ -633,18 +633,18 @@ Begin
   End;
 End;
 
-Procedure TfmeSyncedVideo.SyncTimerTimer(Sender: TObject);
+Procedure TFrameSyncedVideo.SyncTimerTimer(Sender: TObject);
 Begin
   SyncVideos;
 End;
 
-Procedure TfmeSyncedVideo.SyncVideos;
+Procedure TFrameSyncedVideo.SyncVideos;
 Var
   i: Integer;
   MasterPos: TVideoTime;
   SlavePos: TVideoTime;
   DriftMS: TVideoTime;
-  Slave: TfmeVideoBase;
+  Slave: TFrameVideoBase;
 Begin
   If Not Assigned(FMaster) Then
     Exit;
@@ -675,7 +675,7 @@ Begin
   End;
 End;
 
-Procedure TfmeSyncedVideo.BeginLoadVideos;
+Procedure TFrameSyncedVideo.BeginLoadVideos;
 Begin
   FSyncTimer.Enabled := False;
   FReadyToPlay := False;
@@ -683,7 +683,7 @@ Begin
   SetState(vsLoading);
 End;
 
-Procedure TfmeSyncedVideo.EndLoadVideos;
+Procedure TFrameSyncedVideo.EndLoadVideos;
 Begin
   ClearUnloadedVideoFrames;
   FLayout.LayoutVideos(FVideos, FVideoFileCount);

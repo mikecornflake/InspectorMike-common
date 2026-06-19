@@ -47,9 +47,9 @@ Uses
 
 Type
 
-  { TfmeBase }
+  { TFrameBase }
 
-  TfmeBase = Class(TFrame)
+  TFrameBase = Class(TFrame)
   Protected
     FParentForm: TfrmPersistent;
     FFullIdentKey: String;
@@ -76,9 +76,9 @@ Implementation
 
 {$R *.lfm}
 
-{ TfmeBase }
+{ TFrameBase }
 
-Function TfmeBase.GetSettingsKey: String;
+Function TFrameBase.GetSettingsKey: String;
 Begin
   If Assigned(FParentForm) Then
     Result := FParentForm.SettingsKey
@@ -86,7 +86,7 @@ Begin
     Result := Name;
 End;
 
-Function TfmeBase.GetFullIdentKey: String;
+Function TFrameBase.GetFullIdentKey: String;
 
   Function ParentFullIdentKey(oComponent: TComponent): String;
   Var
@@ -97,7 +97,7 @@ Function TfmeBase.GetFullIdentKey: String;
 
     If (oParent = nil) Or (oParent Is TfrmPersistent) Then
       Result := ''
-    Else If oParent Is TfmeBase Then
+    Else If oParent Is TFrameBase Then
     Begin
       s := ParentFullIdentKey(oParent);
       If (s = '') Then
@@ -125,7 +125,7 @@ Begin
   Result := FFullIdentKey;
 End;
 
-Constructor TfmeBase.Create(TheOwner: TComponent);
+Constructor TFrameBase.Create(TheOwner: TComponent);
 
   Function FindParentForm(oComponent: TComponent): TfrmPersistent;
   Begin
@@ -146,27 +146,27 @@ Begin
   FParentForm := FindParentForm(TheOwner);
 End;
 
-Procedure TfmeBase.RefreshUI;
+Procedure TFrameBase.RefreshUI;
 Begin
 
 End;
 
-Procedure TfmeBase.LoadSettings(oInifile: TIniFile);
+Procedure TFrameBase.LoadSettings(oInifile: TIniFile);
 Begin
 
 End;
 
-Procedure TfmeBase.SaveSettings(oInifile: TIniFile);
+Procedure TFrameBase.SaveSettings(oInifile: TIniFile);
 Begin
 
 End;
 
-Procedure TfmeBase.Open;
+Procedure TFrameBase.Open;
 Begin
 
 End;
 
-Procedure TfmeBase.Close;
+Procedure TFrameBase.Close;
 Begin
 
 End;

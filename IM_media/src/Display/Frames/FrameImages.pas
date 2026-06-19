@@ -50,7 +50,7 @@ Type
 
   { TFrameImage }
 
-  TFrameImage = Class(TfmeBase)
+  TFrameImage = Class(TFrameBase)
     imgImage: TImage;
     lblStatus: TLabel;
     MenuItem1: TMenuItem;

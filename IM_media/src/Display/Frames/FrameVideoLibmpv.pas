@@ -4,7 +4,7 @@ Unit FrameVideoLibmpv;
   Package   : IM_media
   Unit      : FrameVideoLibmpv.pas
   Description
-    LibMPV-based implementation of TfmeVideoBase.
+    LibMPV-based implementation of TFrameVideoBase.
 
     Provides video playback, seeking, rate control, frame capture and
     playback state monitoring using the MPV media engine.
@@ -16,7 +16,7 @@ Unit FrameVideoLibmpv;
 
   History
     2026-06-01: Initial MPV playback prototype.
-    2026-06-12: Refactored as a TfmeVideoBase descendant and integrated
+    2026-06-12: Refactored as a TFrameVideoBase descendant and integrated
                 into the common video playback framework.
                 Added state management, loading watchdog, playback
                 notifications and synchronisation support.
@@ -45,7 +45,7 @@ Unit FrameVideoLibmpv;
 -------------------------------------------------------------------------------}
 
 {$mode ObjFPC}{$H+}
-
+{$WARN 5024 off : Parameter "$1" not used}
 Interface
 
 Uses
@@ -54,9 +54,9 @@ Uses
 
 Type
 
-  { TfmeVideoLibmpv }
+  { TFrameVideoLibmpv }
 
-  TfmeVideoLibmpv = Class(TfmeVideoBase)
+  TFrameVideoLibmpv = Class(TFrameVideoBase)
     lblMsg: TLabel;
   Private
     FmpvPlayer: TMPVPlayer;
@@ -114,9 +114,9 @@ Implementation
 Uses
   LibmpvSupport, libMPV.Client;
 
-  { TfmeVideoLibmpv }
+  { TFrameVideoLibmpv }
 
-Constructor TfmeVideoLibmpv.Create(TheOwner: TComponent);
+Constructor TFrameVideoLibmpv.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
@@ -168,7 +168,7 @@ Begin
   FLoadWatchdog.OnTimer := @LoadWatchdogTimer;
 End;
 
-Destructor TfmeVideoLibmpv.Destroy;
+Destructor TFrameVideoLibmpv.Destroy;
 Begin
   If Assigned(FmpvPlayer) Then
   Begin
@@ -182,7 +182,7 @@ Begin
   Inherited Destroy;
 End;
 
-Procedure TfmeVideoLibmpv.FinaliseLoadedState;
+Procedure TFrameVideoLibmpv.FinaliseLoadedState;
 Begin
   If Not Assigned(FmpvPlayer) Then
     Exit;
@@ -208,12 +208,12 @@ Begin
     SetState(vsPaused);
 End;
 
-Procedure TfmeVideoLibmpv.LoadWatchdogTimer(Sender: TObject);
+Procedure TFrameVideoLibmpv.LoadWatchdogTimer(Sender: TObject);
 Begin
   FinaliseLoadedState;
 End;
 
-Procedure TfmeVideoLibmpv.SetState(AValue: TVideoState);
+Procedure TFrameVideoLibmpv.SetState(AValue: TVideoState);
 Begin
   If FState = AValue Then
     Exit;
@@ -222,7 +222,7 @@ Begin
   DoStateChanged;
 End;
 
-Function TfmeVideoLibmpv.GetPosition: TVideoTime;
+Function TFrameVideoLibmpv.GetPosition: TVideoTime;
 Begin
   Result := 0;
 
@@ -233,13 +233,13 @@ Begin
     Result := FmpvPlayer.GetMediaPosInMs;
 End;
 
-Procedure TfmeVideoLibmpv.SetPosition(AValue: TVideoTime);
+Procedure TFrameVideoLibmpv.SetPosition(AValue: TVideoTime);
 Begin
   If CanSeek And Assigned(FmpvPlayer) Then
     FmpvPlayer.SeekInMs(AValue);
 End;
 
-Function TfmeVideoLibmpv.GetDuration: TVideoTime;
+Function TFrameVideoLibmpv.GetDuration: TVideoTime;
 Begin
   If Assigned(FmpvPlayer) And FmpvPlayer.IsMediaLoaded Then
     Result := FmpvPlayer.GetMediaLenInMs
@@ -247,7 +247,7 @@ Begin
     Result := -1;
 End;
 
-Function TfmeVideoLibmpv.GetRate: Double;
+Function TFrameVideoLibmpv.GetRate: Double;
 Begin
   Result := 1.0; // TODO: wire to mpv speed property if needed.
 
@@ -255,24 +255,24 @@ Begin
     Exit;
 End;
 
-Procedure TfmeVideoLibmpv.SetRate(AValue: Double);
+Procedure TFrameVideoLibmpv.SetRate(AValue: Double);
 Begin
   If Not Assigned(FmpvPlayer) Then
     Exit;
   // TODO: wire to mpv speed property if needed.
 End;
 
-Function TfmeVideoLibmpv.GetState: TVideoState;
+Function TFrameVideoLibmpv.GetState: TVideoState;
 Begin
   Result := FState;
 End;
 
-Function TfmeVideoLibmpv.GetMuted: Boolean;
+Function TFrameVideoLibmpv.GetMuted: Boolean;
 Begin
   Result := FMuted;
 End;
 
-Procedure TfmeVideoLibmpv.SetMuted(AValue: Boolean);
+Procedure TFrameVideoLibmpv.SetMuted(AValue: Boolean);
 Begin
   FMuted := AValue;
 
@@ -280,7 +280,7 @@ Begin
     FmpvPlayer.SetAudioMute(FMuted);
 End;
 
-Procedure TfmeVideoLibmpv.SetVisible(Value: Boolean);
+Procedure TFrameVideoLibmpv.SetVisible(Value: Boolean);
 Begin
   Inherited SetVisible(Value);
 
@@ -288,7 +288,7 @@ Begin
     FmpvPlayer.Visible := Value;
 End;
 
-Function TfmeVideoLibmpv.Load(Const AFilename: String): Boolean;
+Function TFrameVideoLibmpv.Load(Const AFilename: String): Boolean;
 Begin
   Result := False;
 
@@ -307,7 +307,7 @@ Begin
   FLoadWatchdog.Enabled := True;
 End;
 
-Function TfmeVideoLibmpv.Clear: Boolean;
+Function TFrameVideoLibmpv.Clear: Boolean;
 Begin
   Result := Inherited Clear;
 
@@ -323,7 +323,7 @@ Begin
   SetState(vsEmpty);
 End;
 
-Function TfmeVideoLibmpv.Play: Boolean;
+Function TFrameVideoLibmpv.Play: Boolean;
 Begin
   Result := False;
 
@@ -345,7 +345,7 @@ Begin
   Result := True;
 End;
 
-Function TfmeVideoLibmpv.Pause: Boolean;
+Function TFrameVideoLibmpv.Pause: Boolean;
 Begin
   Result := False;
 
@@ -359,7 +359,7 @@ Begin
   End;
 End;
 
-Function TfmeVideoLibmpv.Resume: Boolean;
+Function TFrameVideoLibmpv.Resume: Boolean;
 Begin
   Result := False;
 
@@ -373,7 +373,7 @@ Begin
   End;
 End;
 
-Function TfmeVideoLibmpv.Stop: Boolean;
+Function TFrameVideoLibmpv.Stop: Boolean;
 Begin
   Result := False;
 
@@ -390,61 +390,61 @@ Begin
   End;
 End;
 
-Function TfmeVideoLibmpv.CanSeek: Boolean;
+Function TFrameVideoLibmpv.CanSeek: Boolean;
 Begin
   Result := Assigned(FmpvPlayer) And FmpvPlayer.IsMediaLoaded;
 End;
 
-Function TfmeVideoLibmpv.CanSetRate: Boolean;
+Function TFrameVideoLibmpv.CanSetRate: Boolean;
 Begin
   // TODO
   Result := False;
 End;
 
-Function TfmeVideoLibmpv.CanGrabBitmap: Boolean;
+Function TFrameVideoLibmpv.CanGrabBitmap: Boolean;
 Begin
   //TODO
   Result := False;
 End;
 
-Function TfmeVideoLibmpv.GetBitmap(Bitmap: TBitmap): Boolean;
+Function TFrameVideoLibmpv.GetBitmap(Bitmap: TBitmap): Boolean;
 Begin
   //TODO
   Result := False;
 End;
 
-Procedure TfmeVideoLibmpv.mpvStartFile(Sender: TObject);
+Procedure TFrameVideoLibmpv.mpvStartFile(Sender: TObject);
 Begin
   SetState(vsLoading);
 End;
 
-Procedure TfmeVideoLibmpv.mpvFileLoaded(Sender: TObject);
+Procedure TFrameVideoLibmpv.mpvFileLoaded(Sender: TObject);
 Begin
   FinaliseLoadedState;
 End;
 
-Procedure TfmeVideoLibmpv.mpvPlay(Sender: TObject);
+Procedure TFrameVideoLibmpv.mpvPlay(Sender: TObject);
 Begin
   If FLoadMediaFinalised Then
     SetState(vsPlaying);
 End;
 
-Procedure TfmeVideoLibmpv.mpvPause(Sender: TObject);
+Procedure TFrameVideoLibmpv.mpvPause(Sender: TObject);
 Begin
   SetState(vsPaused);
 End;
 
-Procedure TfmeVideoLibmpv.mpvStop(Sender: TObject);
+Procedure TFrameVideoLibmpv.mpvStop(Sender: TObject);
 Begin
   SetState(vsStopped);
 End;
 
-Procedure TfmeVideoLibmpv.mpvTimeChanged(ASender: TObject; AParam: Integer);
+Procedure TFrameVideoLibmpv.mpvTimeChanged(ASender: TObject; AParam: Integer);
 Begin
   DoPosition;
 End;
 
-Procedure TfmeVideoLibmpv.SetAutoplay(AValue: Boolean);
+Procedure TFrameVideoLibmpv.SetAutoplay(AValue: Boolean);
 Begin
   Inherited SetAutoplay(AValue);
 

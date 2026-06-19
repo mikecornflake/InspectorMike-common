@@ -9,7 +9,7 @@ interface
 
 uses
   VideoGridLayout, FrameImages, FramePDFViewers, FrameRelatedVideos, 
-  FrameSyncedVideo, FrameVideoPlayers, FrameVideoLibmpv, FrameVideoBase, 
+  FrameSyncedVideo, FrameVideoPlayer, FrameVideoLibmpv, FrameVideoBase,
   LazarusPackageIntf;
 
 implementation

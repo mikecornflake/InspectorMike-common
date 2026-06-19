@@ -1,10 +1,10 @@
-Unit FrameVideoPlayers;
+Unit FrameVideoPlayer;
 
 {-------------------------------------------------------------------------------
   Package   : IM_media
-  Unit      : FrameVideoPlayers.pas
+  Unit      : FrameVideoPlayer.pas
   Description
-    Toolbar-driven video player frame hosting a TfmeVideoBase playback engine.
+    Toolbar-driven video player frame hosting a TFrameVideoBase playback engine.
 
   Source
     Copyright (c) 2026
@@ -16,7 +16,7 @@ Unit FrameVideoPlayers;
     2014-07-05: Uploaded to SourceForge/Package "Shared"
     2024-01-22: Migrated to Github. Refactored package to "IM_application"
     2025-11-29: Added LGPL-3.0-or-later license header
-    2026-06-12: Refactored by OpenAI ChatGPT (GPT-5.5) from DirectShow host to TfmeVideoBase playback host
+    2026-06-12: Refactored by OpenAI ChatGPT (GPT-5.5) from DirectShow host to TFrameVideoBase playback host
     2026-06-19: Refactored into split InspectorMike package structure
 
   License
@@ -37,7 +37,7 @@ Type
 
   { TFrameVideoPlayer }
 
-  TFrameVideoPlayer = Class(TfmeBase)
+  TFrameVideoPlayer = Class(TFrameBase)
     btnGrab: TToolButton;
     btnOpenInExplorer: TToolButton;
     btnPause: TToolButton;
@@ -79,8 +79,8 @@ Type
     FFilename: String;
     FLastImageFolder: String;
     FOnStop: TNotifyEvent;
-    FPlaybackClass: TfmeVideoBaseClass;
-    fmeVideo: TfmeVideoBase;
+    FPlaybackClass: TFrameVideoBaseClass;
+    fmeVideo: TFrameVideoBase;
 
     FUpdatingTracker: Boolean;
     FLastSeekTick: QWord;
@@ -90,7 +90,7 @@ Type
     Function GetShowLabel: Boolean;
     Function GetVideoFileCount: Integer;
     Procedure SetAutoplay(AValue: Boolean);
-    Procedure SetPlaybackClass(AValue: TfmeVideoBaseClass);
+    Procedure SetPlaybackClass(AValue: TFrameVideoBaseClass);
     Procedure SetShowLabel(AValue: Boolean);
 
     Procedure VideoPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
@@ -105,13 +105,13 @@ Type
     Procedure Pause;
 
     Property Filename: String Read GetFilename;
-    Property PlaybackClass: TfmeVideoBaseClass Read FPlaybackClass Write SetPlaybackClass;
+    Property PlaybackClass: TFrameVideoBaseClass Read FPlaybackClass Write SetPlaybackClass;
 
     Property Autoplay: Boolean Read FAutoplay Write SetAutoplay;
     Property ShowLabel: Boolean Read GetShowLabel Write SetShowLabel;
     Property OnStop: TNotifyEvent Read FOnStop Write FOnStop;
 
-    Property PlaybackFrame: TfmeVideoBase Read fmeVideo;
+    Property PlaybackFrame: TFrameVideoBase Read fmeVideo;
 
     Property VideoFileCount: Integer Read GetVideoFileCount;
   End;
@@ -180,7 +180,7 @@ Begin
   Result := True;
 End;
 
-Procedure TFrameVideoPlayer.SetPlaybackClass(AValue: TfmeVideoBaseClass);
+Procedure TFrameVideoPlayer.SetPlaybackClass(AValue: TFrameVideoBaseClass);
 Begin
   If FPlaybackClass = AValue Then
     Exit;

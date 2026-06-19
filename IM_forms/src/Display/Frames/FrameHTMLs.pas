@@ -56,7 +56,7 @@ Type
 
   { TFrameHTML }
 
-  TFrameHTML = Class(TfmeBase)
+  TFrameHTML = Class(TFrameBase)
     htmlPanel: TIpHtmlPanel;
     Procedure htmlPanelHotClick(Sender: TObject);
   Private

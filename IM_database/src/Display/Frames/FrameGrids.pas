@@ -53,7 +53,7 @@ Type
 
   { TFrameGrid }
 
-  TFrameGrid = Class(TfmeBase)
+  TFrameGrid = Class(TFrameBase)
     btnClearFilter: TToolButton;
     btnShowFilterDlg: TToolButton;
     btnShowFilterList: TToolButton;
