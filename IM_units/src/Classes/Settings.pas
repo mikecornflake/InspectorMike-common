@@ -1,5 +1,7 @@
 Unit Settings;
 
+// TODO IS THIS DEPRECATED?
+
 {-------------------------------------------------------------------------------
   Package   : IM_units
   Unit      : Settings.pas
