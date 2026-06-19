@@ -63,9 +63,9 @@ Type
       Write SetMultilineGridDefaults;
   End;
 
-  { TfrmMain }
+  { TFormMain }
 
-  TfrmMain = Class(TForm)
+  TFormMain = Class(TForm)
     ilImages: TImageList;
     mnuMultilineGridsFalse: TMenuItem;
     mnuMultilineGrids: TMenuItem;
@@ -125,7 +125,7 @@ Type
     Property Busy: Boolean Read GetBusy Write SetBusy;
   End;
 
-Function MainForm: TfrmMain;
+Function MainForm: TFormMain;
 
 Implementation
 
@@ -134,13 +134,13 @@ Uses
 
   {$R *.lfm}
 
-Function MainForm: TfrmMain;
+Function MainForm: TFormMain;
 Begin
-  If Assigned(Application.MainForm) And (Application.MainForm Is TfrmMain) Then
-    Result := TfrmMain(Application.MainForm)
+  If Assigned(Application.MainForm) And (Application.MainForm Is TFormMain) Then
+    Result := TFormMain(Application.MainForm)
   Else
     Raise Exception.Create(
-      'FormMainBase.MainForm is only for apps where MainForm is a TfrmMain descendent');
+      'FormMainBase.MainForm is only for apps where MainForm is a TFormMain descendent');
 End;
 
 { TOptions }
@@ -163,7 +163,7 @@ Begin
   Inherited Destroy;
 End;
 
-Constructor TfrmMain.Create(AOwner: TComponent);
+Constructor TFormMain.Create(AOwner: TComponent);
 Begin
   Inherited Create(AOwner);
 
@@ -178,20 +178,20 @@ Begin
   FOptions := TOptions.Create;
 End;
 
-Destructor TfrmMain.Destroy;
+Destructor TFormMain.Destroy;
 Begin
   FreeAndNil(FOptions);
 
   Inherited Destroy;
 End;
 
-Procedure TfrmMain.FormActivate(Sender: TObject);
+Procedure TFormMain.FormActivate(Sender: TObject);
 Begin
   If Not FSettingsLoaded Then
     DoLoadSettings;
 End;
 
-Procedure TfrmMain.FormCloseQuery(Sender: TObject; Var CanClose: Boolean);
+Procedure TFormMain.FormCloseQuery(Sender: TObject; Var CanClose: Boolean);
 Begin
   ApplicationClosing(CanClose);
 
@@ -206,13 +206,13 @@ Begin
   DoSaveLocalSettings;
 End;
 
-Procedure TfrmMain.mnuAboutClick(Sender: TObject);
+Procedure TFormMain.mnuAboutClick(Sender: TObject);
 Begin
   ShowAbout;
 End;
 
 
-Procedure TfrmMain.mnuMultilineGridsValueClick(Sender: TObject);
+Procedure TFormMain.mnuMultilineGridsValueClick(Sender: TObject);
 Begin
   FOptions.MultilineGridDefaults := Not FOptions.MultilineGridDefaults;
 
@@ -221,7 +221,7 @@ Begin
   RefreshUI;
 End;
 
-Procedure TfrmMain.DoLoadSettings;
+Procedure TFormMain.DoLoadSettings;
 Var
   oInifile: TIniFile;
 Begin
@@ -249,7 +249,7 @@ Begin
   RefreshUI;
 End;
 
-Procedure TfrmMain.DoSaveGlobalSettings;
+Procedure TFormMain.DoSaveGlobalSettings;
 Var
   sFilename: String;
 
@@ -296,7 +296,7 @@ Begin
     InnerSaveSettings;
 End;
 
-Procedure TfrmMain.DoSaveLocalSettings;
+Procedure TFormMain.DoSaveLocalSettings;
 Var
   oInifile: TIniFile;
 Begin
@@ -318,22 +318,22 @@ Begin
 
 End;
 
-Procedure TfrmMain.LoadGlobalSettings(oInifile: TIniFile);
+Procedure TFormMain.LoadGlobalSettings(oInifile: TIniFile);
 Begin
 
 End;
 
-Procedure TfrmMain.SaveGlobalSettings(oInifile: TIniFile);
+Procedure TFormMain.SaveGlobalSettings(oInifile: TIniFile);
 Begin
 
 End;
 
-Procedure TfrmMain.UpdateOptions(FFormOption: TFormOptions);
+Procedure TFormMain.UpdateOptions(FFormOption: TFormOptions);
 Begin
 
 End;
 
-Procedure TfrmMain.LoadLocalSettings(oInifile: TIniFile);
+Procedure TFormMain.LoadLocalSettings(oInifile: TIniFile);
 Var
   iLeft, iWidth, iTop, iHeight: Integer;
 Begin
@@ -352,7 +352,7 @@ Begin
     Application.MainForm.WindowState := wsNormal;
 End;
 
-Procedure TfrmMain.SaveLocalSettings(oInifile: TIniFile);
+Procedure TFormMain.SaveLocalSettings(oInifile: TIniFile);
 Begin
   oInifile.WriteBool(Name, 'Maximised', Application.MainForm.WindowState = wsMaximized);
 
@@ -365,7 +365,7 @@ Begin
   End;
 End;
 
-Procedure TfrmMain.SetBusy(Const AValue: Boolean);
+Procedure TFormMain.SetBusy(Const AValue: Boolean);
 Var
   i: Integer;
 Begin
@@ -394,7 +394,7 @@ Begin
   End;
 End;
 
-Procedure TfrmMain.SetProgress(AValue: Integer);
+Procedure TFormMain.SetProgress(AValue: Integer);
 Begin
   If FProgress = AValue Then
     exit;
@@ -404,39 +404,39 @@ Begin
   pbMain.Position := AValue;
 End;
 
-Procedure TfrmMain.SetStatus(AValue: String);
+Procedure TFormMain.SetStatus(AValue: String);
 Begin
   sbMain.SimpleText := AValue;
   sbMain.Update;
 End;
 
-Function TfrmMain.SettingsFileLocal: String;
+Function TFormMain.SettingsFileLocal: String;
 Begin
   Result := IncludeSlash(GetAppConfigDir(False)) + 'Settings.ini';
 End;
 
-Function TfrmMain.SettingsFileGlobal: String;
+Function TFormMain.SettingsFileGlobal: String;
 Begin
   Result := ChangeFileExt(Application.Exename, '.ini');
 End;
 
-Procedure TfrmMain.RefreshUI;
+Procedure TFormMain.RefreshUI;
 Begin
   mnuMultilineGridsTrue.Checked := FOptions.MultilineGridDefaults;
   mnuMultilineGridsFalse.Checked := Not FOptions.MultilineGridDefaults;
 End;
 
-Function TfrmMain.GetBusy: Boolean;
+Function TFormMain.GetBusy: Boolean;
 Begin
   Result := FBusy > 0;
 End;
 
-Function TfrmMain.GetStatus: String;
+Function TFormMain.GetStatus: String;
 Begin
   Result := sbMain.SimpleText;
 End;
 
-Procedure TfrmMain.ApplicationClosing(Var CanClose: Boolean);
+Procedure TFormMain.ApplicationClosing(Var CanClose: Boolean);
 Begin
 
 End;

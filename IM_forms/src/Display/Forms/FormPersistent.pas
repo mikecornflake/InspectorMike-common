@@ -12,7 +12,7 @@ Unit FormPersistent;
     Automatic management for Frames descended from FrameBase (just need
     to override LaodSettings/SaveSettings in Frame)
 
-    This assumes Application.MainForm is descended from TfrmMain in FormMain.pas
+    This assumes Application.MainForm is descended from TFormMain in FormMain.pas
 
   Source
     Copyright (c) 2026

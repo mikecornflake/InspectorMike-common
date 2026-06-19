@@ -51,7 +51,7 @@ Type
 
   { TfrmMultiDock }
 
-  TfrmMultiDock = Class(TfrmMain)
+  TfrmMultiDock = Class(TFormMain)
     ilDocks: TImageList;
     memDebug2: TMemo;
     pcMain: TPageControl;
@@ -116,7 +116,7 @@ Begin
     Result := TfrmMultiDock(Application.MainForm)
   Else
     Raise Exception.Create(
-      'FormMainBase.MainForm is only for apps where MainForm is a TfrmMain descendent');
+      'FormMainBase.MainForm is only for apps where MainForm is a TFormMain descendent');
 End;
 
 Constructor TfrmMultiDock.Create(AOwner: TComponent);
