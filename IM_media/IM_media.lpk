@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="IM_media"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="src\Display\Frames"/>
+        <OtherUnitFiles Value="src\Classes;src\Display\Frames"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files>
+      <Item>
+        <Filename Value="src\Classes\VideoGridLayout.pas"/>
+        <UnitName Value="VideoGridLayout"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameImages.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameImages.pas"/>
+        <UnitName Value="FrameImages"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FramePDFViewers.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FramePDFViewers.pas"/>
+        <UnitName Value="FramePDFViewers"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameRelatedVideos.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameRelatedVideos.pas"/>
+        <UnitName Value="FrameRelatedVideos"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameSyncedVideo.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameSyncedVideo.pas"/>
+        <UnitName Value="FrameSyncedVideo"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameVideoPlayers.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameVideoPlayers.pas"/>
+        <UnitName Value="FrameVideoPlayers"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameVideoLibmpv.pas"/>
+        <UnitName Value="FrameVideoLibmpv"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameVideoLibmpv.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameVideoBase.pas"/>
+        <UnitName Value="FrameVideoBase"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameVideoBase.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="UWMPVPlayer"/>
+      </Item>
+      <Item>
+        <PackageName Value="IM_forms"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

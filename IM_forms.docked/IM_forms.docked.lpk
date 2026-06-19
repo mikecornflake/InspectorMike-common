@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="IM_forms.docked"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="src\Display\Dialogs;src\Display\Docks;src\Display\Forms"/>
+        <OtherUnitFiles Value="src\Classes;src\Display\Dialogs;src\Display\Docks;src\Display\Forms"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files>
+      <Item>
+        <Filename Value="src\Classes\DockManagers.pas"/>
+        <UnitName Value="DockManagers"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Dialogs\DialogDockManager.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Dialogs\DialogDockManager.pas"/>
+        <UnitName Value="DialogDockManager"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Docks\DockBase.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Docks\DockBase.pas"/>
+        <UnitName Value="DockBase"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Forms\FormMultiDock.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Forms\FormMultiDock.pas"/>
+        <UnitName Value="FormMultiDock"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="IM_forms"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

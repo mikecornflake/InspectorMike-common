@@ -2,13 +2,14 @@
   This source is only used to compile and install the package.
  }
 
-unit IM_forms;
+unit IM_media;
 
 {$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  FormPersistent, FrameBase, FormAbout, FormMain, FrameHTMLs, 
+  VideoGridLayout, FrameImages, FramePDFViewers, FrameRelatedVideos, 
+  FrameSyncedVideo, FrameVideoPlayers, FrameVideoLibmpv, FrameVideoBase, 
   LazarusPackageIntf;
 
 implementation
@@ -18,5 +19,5 @@ begin
 end;
 
 initialization
-  RegisterPackage('IM_forms', @Register);
+  RegisterPackage('IM_media', @Register);
 end.

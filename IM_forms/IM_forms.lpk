@@ -46,13 +46,21 @@
         <Filename Value="src\Display\Forms\FormMain.pas"/>
         <UnitName Value="FormMain"/>
       </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameHTMLs.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameHTMLs.pas"/>
+        <UnitName Value="FrameHTMLs"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
-        <PackageName Value="IM_units"/>
+        <PackageName Value="TurboPowerIPro"/>
       </Item>
       <Item>
-        <PackageName Value="IM_forms.TurboPowerIPro"/>
+        <PackageName Value="IM_units"/>
       </Item>
       <Item>
         <PackageName Value="LCLBase"/>
