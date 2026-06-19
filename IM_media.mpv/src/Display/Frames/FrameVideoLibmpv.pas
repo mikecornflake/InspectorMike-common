@@ -112,7 +112,7 @@ Implementation
 {$R *.lfm}
 
 Uses
-  LibmpvSupport, libMPV.Client;
+  LibmpvSupport, libMPV.Client, VideoEngineFactory;
 
   { TFrameVideoLibmpv }
 
@@ -451,5 +451,8 @@ Begin
   If Assigned(FmpvPlayer) Then
     FmpvPlayer.AutoStartPlayback := AValue;
 End;
+
+initialization
+  TVideoEngineFactory.RegisterEngine('libmpv', TFrameVideoLibmpv);
 
 End.

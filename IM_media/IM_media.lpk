@@ -64,14 +64,6 @@
         <UnitName Value="FrameVideoPlayer"/>
       </Item>
       <Item>
-        <Filename Value="src\Display\Frames\FrameVideoLibmpv.pas"/>
-        <UnitName Value="FrameVideoLibmpv"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Display\Frames\FrameVideoLibmpv.lfm"/>
-        <Type Value="LFM"/>
-      </Item>
-      <Item>
         <Filename Value="src\Display\Frames\FrameVideoBase.pas"/>
         <UnitName Value="FrameVideoBase"/>
       </Item>
@@ -79,11 +71,12 @@
         <Filename Value="src\Display\Frames\FrameVideoBase.lfm"/>
         <Type Value="LFM"/>
       </Item>
+      <Item>
+        <Filename Value="src\Classes\VideoEngineFactory.pas"/>
+        <UnitName Value="VideoEngineFactory"/>
+      </Item>
     </Files>
     <RequiredPkgs>
-      <Item>
-        <PackageName Value="UWMPVPlayer"/>
-      </Item>
       <Item>
         <PackageName Value="IM_forms"/>
       </Item>

@@ -2,15 +2,13 @@
   This source is only used to compile and install the package.
  }
 
-unit IM_media;
+unit IM_media.mpv;
 
 {$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  VideoGridLayout, FrameImages, FramePDFViewers, FrameRelatedVideos, 
-  FrameSyncedVideo, FrameVideoPlayer, FrameVideoBase, 
-  VideoEngineFactory, LazarusPackageIntf;
+  FrameVideoLibmpv, LazarusPackageIntf;
 
 implementation
 
@@ -19,5 +17,5 @@ begin
 end;
 
 initialization
-  RegisterPackage('IM_media', @Register);
+  RegisterPackage('IM_media.mpv', @Register);
 end.

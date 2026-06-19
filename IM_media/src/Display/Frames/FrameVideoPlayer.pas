@@ -79,7 +79,7 @@ Type
     FFilename: String;
     FLastImageFolder: String;
     FOnStop: TNotifyEvent;
-    FPlaybackClass: TFrameVideoBaseClass;
+    FVideoEngineClass: TFrameVideoBaseClass;
     fmeVideo: TFrameVideoBase;
 
     FUpdatingTracker: Boolean;
@@ -90,7 +90,7 @@ Type
     Function GetShowLabel: Boolean;
     Function GetVideoFileCount: Integer;
     Procedure SetAutoplay(AValue: Boolean);
-    Procedure SetPlaybackClass(AValue: TFrameVideoBaseClass);
+    Procedure SetVideoEngineClass(AValue: TFrameVideoBaseClass);
     Procedure SetShowLabel(AValue: Boolean);
 
     Procedure VideoPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
@@ -105,7 +105,7 @@ Type
     Procedure Pause;
 
     Property Filename: String Read GetFilename;
-    Property PlaybackClass: TFrameVideoBaseClass Read FPlaybackClass Write SetPlaybackClass;
+    Property VideoEngineClass: TFrameVideoBaseClass Read FVideoEngineClass Write SetVideoEngineClass;
 
     Property Autoplay: Boolean Read FAutoplay Write SetAutoplay;
     Property ShowLabel: Boolean Read GetShowLabel Write SetShowLabel;
@@ -130,7 +130,7 @@ Begin
   Inherited Create(TheOwner);
 
   fmeVideo := nil;
-  FPlaybackClass := nil;
+  FVideoEngineClass := nil;
   FFilename := '';
   FAutoplay := True;
   FLastImageFolder := '';
@@ -162,10 +162,10 @@ Begin
   If Result Then
     Exit;
 
-  If Not Assigned(FPlaybackClass) Then
+  If Not Assigned(FVideoEngineClass) Then
     Exit(False);
 
-  fmeVideo := FPlaybackClass.Create(pnlVideo);
+  fmeVideo := FVideoEngineClass.Create(pnlVideo);
   fmeVideo.Parent := pnlVideo;
   fmeVideo.Name := 'fmeVideo';
   fmeVideo.Align := alClient;
@@ -180,13 +180,13 @@ Begin
   Result := True;
 End;
 
-Procedure TFrameVideoPlayer.SetPlaybackClass(AValue: TFrameVideoBaseClass);
+Procedure TFrameVideoPlayer.SetVideoEngineClass(AValue: TFrameVideoBaseClass);
 Begin
-  If FPlaybackClass = AValue Then
+  If FVideoEngineClass = AValue Then
     Exit;
 
   FreeAndNil(fmeVideo);
-  FPlaybackClass := AValue;
+  FVideoEngineClass := AValue;
 
   EnsurePlaybackFrame;
 

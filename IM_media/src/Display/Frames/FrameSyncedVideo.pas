@@ -58,7 +58,7 @@ Type
   TFrameSyncedVideo = Class(TFrameVideoBase)
     Procedure FrameResize(Sender: TObject);
   Private
-    FPlaybackClass: TFrameVideoBaseClass;
+    FVideoEngineClass: TFrameVideoBaseClass;
     FVideos: TFrameVideoBaseList;
     FMaster: TFrameVideoBase;
     FState: TVideoState;
@@ -128,7 +128,7 @@ Type
 
     Property SyncSeekThresholdMS: TVideoTime Read FSyncSeekThresholdMS Write FSyncSeekThresholdMS;
 
-    Property PlaybackClass: TFrameVideoBaseClass Read FPlaybackClass Write FPlaybackClass;
+    Property VideoEngineClass: TFrameVideoBaseClass Read FVideoEngineClass Write FVideoEngineClass;
   End;
 
 Implementation
@@ -149,7 +149,7 @@ Begin
   FState := vsEmpty;
 
   // End user will have to provide an active class
-  FPlaybackClass := nil;
+  FVideoEngineClass := nil;
 
   FStartTime := 0;
   FSyncSeekThresholdMS := 1000;
@@ -398,7 +398,7 @@ Var
 Begin
   Result := False;
 
-  If Not Assigned(FPlaybackClass) Then
+  If Not Assigned(FVideoEngineClass) Then
     Exit;
 
   FVideoFileCount += 1;
@@ -411,7 +411,7 @@ Begin
   End
   Else
   Begin
-    oVideo := FPlaybackClass.Create(nil);
+    oVideo := FVideoEngineClass.Create(nil);
     oVideo.Parent := Self;
     oVideo.OnStateChanged := @VideoStateChanged;
     oVideo.Autoplay := FAutoplay;
