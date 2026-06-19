@@ -1,8 +1,0 @@
-object frmPersistent: TfrmPersistent
-  Left = 308
-  Height = 240
-  Top = 213
-  Width = 312
-  Caption = 'frmPersistent'
-  LCLVersion = '4.99.0.0'
-end

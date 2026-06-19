@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CONFIG>
-  <Lazarus Version="4.99"/>
-  <Compiler Value="B:\Apps\Dev\lazarus_trunk\fpc\bin\x86_64-win64\fpc.exe" Date="1764326964"/>
-  <Params Value="-MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -Fisrc\Display\Forms -Fisrc\Display\Frames -Fu. -Fusrc\Display\Forms -Fusrc\Display\Frames -FuB:\Apps\Dev\lazarus_trunk\lazarus\packager\units\x86_64-win64 -FuB:\Apps\Dev\lazarus_trunk\lazarus\components\lazutils\lib\x86_64-win64 -FuB:\Apps\Dev\lazarus_trunk\lazarus\components\freetype\lib\x86_64-win64 -FuB:\Apps\Dev\lazarus_trunk\lazarus\lcl\units\x86_64-win64 -Fu..\IM_units\lib\x86_64-win64 -FuB:\Apps\Dev\lazarus_trunk\lazarus\lcl\units\x86_64-win64\win32 -FuB:\Apps\Dev\lazarus_trunk\lazarus\components\cairocanvas\lib\x86_64-win64\win32 -FuB:\Apps\Dev\lazarus_trunk\lazarus\components\printers\lib\x86_64-win64\win32 -FuB:\Apps\Dev\lazarus_trunk\lazarus\components\turbopower_ipro\units\x86_64-win64\win32 -Fu..\IM_forms.TurboPowerIPro\lib\x86_64-win64 -FUlib\x86_64-win64 -dLCL -dLCLwin32 IM_forms.pas"/>
-</CONFIG>
