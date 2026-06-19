@@ -8,7 +8,7 @@ Unit XMLSupport;
     persistence of objects via settings)
 
   Source
-    Copyright (c) 2025
+    Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
 
@@ -16,6 +16,7 @@ Unit XMLSupport;
     2025-11-01: Creation and upload Github.  Refactored package to "IM_units"
     2025-11-06: Code review with ChatGPT 5.0 (copilot)
     2025-11-29: Added this header
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
     This file is part of IM_units.lpk.

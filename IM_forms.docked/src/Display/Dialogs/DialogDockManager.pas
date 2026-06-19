@@ -1,13 +1,13 @@
 Unit DialogDockManager;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_application
+  Package   : IM_forms.docked
   Unit      : DialogDockManager.pas
   Description
     Dialog for organising dock categories and entries.
 
   Source
-    Copyright (c) 2025
+    Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
 
@@ -16,9 +16,10 @@ Unit DialogDockManager;
     2014-07-05: Uploaded to SourceForge/Package "Shared"
     2024-01-22: Migrated to Github.  Refactored package to "IM_application"
     2025-11-29: Added LGPL-3.0-or-later license header
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_application.lpk.
+    This file is part of IM_forms.docked.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by

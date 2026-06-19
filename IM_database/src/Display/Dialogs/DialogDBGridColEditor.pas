@@ -1,22 +1,23 @@
 Unit DialogDBGridColEditor;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_units
+  Package   : IM_database
   Unit      : DialogDBGridColEditor.pas
   Description
     Dialog to allow TDBGrid columns to be shown/hidden/reordered
 
   Source
-    Copyright (c) 2025
+    Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
 
   History
     2024-04-27: Creation & uploaded to Github
     2025-11-29: Added this header
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_units.lpk.
+    This file is part of IM_database.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by

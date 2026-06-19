@@ -20,6 +20,7 @@ unit WGS84;
     2022-10-08: Unit fork and upload this copy to Github
     2022-12-07: Worked around Hemisphere oddity in WGS84.pas
     2025-11-29: Added this header & LGPL3.0 license
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
     Original license / permission:

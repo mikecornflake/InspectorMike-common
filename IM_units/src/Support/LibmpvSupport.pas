@@ -17,6 +17,7 @@ Unit LibmpvSupport;
     2026-06-05: Creation and upload to Githib InspectorMike-Common
                    as part of  IM_common.lpk
     2026-06-19: Added this header & refactored
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
     This file is part of IM_units.lpk.

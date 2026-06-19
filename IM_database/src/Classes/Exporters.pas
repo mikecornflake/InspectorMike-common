@@ -1,7 +1,7 @@
 Unit Exporters;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_units
+  Package   : IM_database
   Unit      : Exporters.pas
   Description
     Framework to allow report generation from SQL DB engines
@@ -12,7 +12,7 @@ Unit Exporters;
     HTML Exporter is used as the Copy To Clipboard on all fmeGrids
 
   Source
-    Copyright (c) 2025
+    Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
 
@@ -22,9 +22,10 @@ Unit Exporters;
     2023-12-05: Last commit in SourceForge (adding CSV Exporter to all grids)
     2024-01-22: Migrated to Github.  Added to refactored package "IM_units"
     2025-11-29: Added this header
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_units.lpk.
+    This file is part of IM_database.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by

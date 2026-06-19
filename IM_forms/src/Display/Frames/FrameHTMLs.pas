@@ -1,7 +1,7 @@
 Unit FrameHTMLs;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_application
+  Package   : IM_forms
   Unit      : FrameHTMLs.pas
   Description
     Frame for rendering HTML content with hyperlink notifications.
@@ -12,7 +12,7 @@ Unit FrameHTMLs;
     my personal coding conventions
 
   Source
-    Copyright (c) 2025
+    Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
 
@@ -22,9 +22,10 @@ Unit FrameHTMLs;
     2024-01-22: Migrated to Github.  Refactored package to "IM_application"
     2025-11-29: Added LGPL-3.0-or-later license header
     2026-06-19: Refactoring before splitting packages
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_application.lpk.
+    This file is part of IM_forms.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by

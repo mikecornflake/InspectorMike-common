@@ -10,7 +10,7 @@ Unit ControlsSupport;
     Is this still used anywhere?  If not, delete.
 
   Source
-    Copyright (c) 2025
+    Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
 
@@ -20,6 +20,7 @@ Unit ControlsSupport;
                 - No further commits
     2024-01-22: Migrated to Github.  Refactored package to "IM_units"
     2025-11-29: Added this header
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
     This file is part of IM_units.lpk.

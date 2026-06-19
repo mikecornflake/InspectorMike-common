@@ -1,7 +1,7 @@
 Unit ExportersFPVectorial;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_units
+  Package   : IM_database
   Unit      : ExportersFPVectorial.pas
   Description
     Exporter that uses FPVectorial to export to .docx and .odt directly.
@@ -11,9 +11,10 @@ Unit ExportersFPVectorial;
     2014-07-05: Uploaded to SourceForge/Package "Shared"
     2024-01-22: Migrated to Github.  Refactored package to "IM_units"
     2025-11-29: Added this header
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_units.lpk.
+    This file is part of IM_database.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by

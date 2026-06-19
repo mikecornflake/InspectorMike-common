@@ -1,7 +1,7 @@
 Unit FrameVideoLibmpv;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_application
+  Package   : IM_media
   Unit      : FrameVideoLibmpv.pas
   Description
     LibMPV-based implementation of TfmeVideoBase.
@@ -23,9 +23,10 @@ Unit FrameVideoLibmpv;
                 Initial framework implementation generated with
                 assistance from OpenAI ChatGPT GPT-5.5 and reviewed
                 by Mike Thompson.
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_application.lpk.
+    This file is part of IM_media.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by

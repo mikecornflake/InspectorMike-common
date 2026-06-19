@@ -11,7 +11,7 @@ Unit GPSSupport;
     Currently being migrated to a NMEA String helper unit as GPS is a subset...
 
   Source
-    Copyright (c) 2025
+    Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
 
@@ -19,6 +19,7 @@ Unit GPSSupport;
     2022-10-08: Creation and upload to Github
     2022-12-07: Worked around Hemisphere oddity in WGS84.pas
     2025-11-29: Added this header (and fixed minor typo in code)
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
     This file is part of IM_units.lpk.

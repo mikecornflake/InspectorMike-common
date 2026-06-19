@@ -15,7 +15,7 @@ Unit MRUs;
       --configure with FAlwaysSaveSettings:=True in FormCreate;
 
   Source
-    Copyright (c) 2025
+    Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
 
@@ -25,6 +25,7 @@ Unit MRUs;
     2024-01-22: Migrated to Github.  Added to refactored package "IM_units"
     2025-11-29: Added this header.
     2026-06-15: Confirmed MRU working fine as part of SimpleVideoPlayer
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
     This file is part of IM_units.lpk.

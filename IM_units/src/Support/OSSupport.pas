@@ -14,7 +14,7 @@ Unit OSSupport;
       This code was originally in StringSupport, refactored here in 2023
 
   Source
-    Copyright (c) 2025
+    Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
 
@@ -25,7 +25,7 @@ Unit OSSupport;
     2024-01-22: Migrated to Github.  Refactored package to "IM_units"
     2025-11-29: Added this header
     2026-05-12: BREAKING CHANGE - Renamed Run to LaunchExternalTool & RunEx to RunAndCapture
-
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
     This file is part of IM_units.lpk.

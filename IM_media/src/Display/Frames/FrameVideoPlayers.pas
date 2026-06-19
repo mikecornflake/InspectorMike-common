@@ -1,13 +1,13 @@
 Unit FrameVideoPlayers;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_application
+  Package   : IM_media
   Unit      : FrameVideoPlayers.pas
   Description
     Toolbar-driven video player frame hosting a TfmeVideoBase playback engine.
 
   Source
-    Copyright (c) 2025-2026
+    Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
 
@@ -17,9 +17,10 @@ Unit FrameVideoPlayers;
     2024-01-22: Migrated to Github. Refactored package to "IM_application"
     2025-11-29: Added LGPL-3.0-or-later license header
     2026-06-12: Refactored by OpenAI ChatGPT (GPT-5.5) from DirectShow host to TfmeVideoBase playback host
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_application.lpk.
+    This file is part of IM_media.lpk.
 
     SPDX-License-Identifier: LGPL-3.0-or-later
 -------------------------------------------------------------------------------}

@@ -1,7 +1,7 @@
 Unit LazSerialSupport;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_units
+  Package   : IM_units.LazSerial
   Unit      : LazSerialSupport.pas
   Description
     My first Class Helper
@@ -9,7 +9,7 @@ Unit LazSerialSupport;
     Helper unit for LazSerial.pas
 
   Source
-    Copyright (c) 2025
+    Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
 
@@ -18,9 +18,10 @@ Unit LazSerialSupport;
     2024-01-22: Migrated to Github.  Refactored package to "IM_units"
     2025-11-06: Added XML helper
     2025-11-29: Added this header
+    2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_units.lpk.
+    This file is part of IM_units.LazSerial.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by
