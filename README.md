@@ -17,11 +17,14 @@ Base forms, smart about form, persistent forms, common frames, and shared form i
 ### IM_forms.docked.lpk
 Docking-related forms, dialogs, and dock manager support. Depends on `IM_forms`.
 
+### IM_forms.media.lpk
+Media-related frames and support classes, including image, PDF, video, and synchronised video playback.
+
+### IM_forms.media.mpv.lpk
+A frame that handles video playback using libmpv-2.dll and it's wrapper by URUWorks (License MPL-2.0).
+
 ### IM_database.lpk
 Database helpers, export framework, SQL filtering dialogs, CSV/grid frames, and DBGrid support.
-
-### IM_media.lpk
-Media-related frames and support classes, including image, PDF, video, and synchronised video playback.
 
 The IM_application package is licensed under **LGPL-3.0-or-later** and provides the application framework components (TfrmMain, TfrmPersistent, TfrmMultiDock, Frames, etc.) used by InspectorMike applications.
 
@@ -42,6 +45,9 @@ This repository contains both reusable support units and application-level code.
 - The unit `WGS84.pas` is based on work originally posted on the Lazarus Forums by **@stab**, who granted permission to use, modify, and distribute the code without restriction.  
   Only minor modifications have been made to the original work.  
   It is incorporated here under **LGPL-3.0-or-later**, with attribution.
+
+- Package `UWMPVPlayer` is released under **MPL-2.0**, with attribution.
+  Available from: https://github.com/URUWorks/UW_MPVPlayer
 
 ---
 
