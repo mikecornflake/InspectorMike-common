@@ -2,7 +2,7 @@
 <CONFIG>
   <Package Version="5">
     <PathDelim Value="\"/>
-    <Name Value="IM_media.mpv"/>
+    <Name Value="IM_forms.media.mpv"/>
     <Type Value="RunAndDesignTime"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -23,7 +23,7 @@
         <PackageName Value="UWMPVPlayer"/>
       </Item>
       <Item>
-        <PackageName Value="IM_media"/>
+        <PackageName Value="IM_forms.media"/>
       </Item>
       <Item>
         <PackageName Value="FCL"/>

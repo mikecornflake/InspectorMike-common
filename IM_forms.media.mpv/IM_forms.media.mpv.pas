@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit IM_media.mpv;
+unit IM_forms.media.mpv;
 
 {$warn 5023 off : no warning about unused units}
 interface
@@ -17,5 +17,5 @@ begin
 end;
 
 initialization
-  RegisterPackage('IM_media.mpv', @Register);
+  RegisterPackage('IM_forms.media.mpv', @Register);
 end.

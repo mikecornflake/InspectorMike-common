@@ -1,7 +1,7 @@
 Unit FrameVideoLibmpv;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_media.mpv
+  Package   : IM_forms.media.mpv
   Unit      : FrameVideoLibmpv.pas
   Description
     LibMPV-based implementation of TFrameVideoBase.
@@ -26,7 +26,7 @@ Unit FrameVideoLibmpv;
     2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_media.mpv.lpk.
+    This file is part of IM_forms.media.mpv.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by

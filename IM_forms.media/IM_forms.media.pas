@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit IM_media;
+unit IM_forms.media;
 
 {$warn 5023 off : no warning about unused units}
 interface
@@ -19,5 +19,5 @@ begin
 end;
 
 initialization
-  RegisterPackage('IM_media', @Register);
+  RegisterPackage('IM_forms.media', @Register);
 end.

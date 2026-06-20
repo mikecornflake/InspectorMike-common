@@ -2,7 +2,7 @@
 <CONFIG>
   <Package Version="5">
     <PathDelim Value="\"/>
-    <Name Value="IM_media"/>
+    <Name Value="IM_forms.media"/>
     <Type Value="RunAndDesignTime"/>
     <CompilerOptions>
       <Version Value="11"/>

@@ -1,7 +1,7 @@
 Unit VideoGridLayout;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_media
+  Package   : IM_forms.media
   Unit      : VideoGridLayout.pas
   Description
     Layout manager for arranging multiple video playback frames within
@@ -24,7 +24,7 @@ Unit VideoGridLayout;
     2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_media.lpk.
+    This file is part of IM_forms.media.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by

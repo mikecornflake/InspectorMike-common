@@ -1,7 +1,7 @@
 Unit VideoEngineFactory;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_media
+  Package   : IM_forms.media
   Unit      : VideoEngineFactory.pas
   Description
     Factory to create registered Video Engines (ie mpv, vlc or mplayer etc).
@@ -15,7 +15,7 @@ Unit VideoEngineFactory;
     2026-06-19: Created by ChatGPT 5.5 with direction from Mike Thompson
 
   License
-    This file is part of IM_media.lpk.
+    This file is part of IM_forms.media.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by

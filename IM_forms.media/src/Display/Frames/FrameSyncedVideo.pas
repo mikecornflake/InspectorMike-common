@@ -1,7 +1,7 @@
 Unit FrameSyncedVideo;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_media
+  Package   : IM_forms.media
   Unit      : FrameSyncedVideo.pas
   Description
     Multi-channel video playback frame that synchronises multiple
@@ -26,7 +26,7 @@ Unit FrameSyncedVideo;
     2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_media.lpk.
+    This file is part of IM_forms.media.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by

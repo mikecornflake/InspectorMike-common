@@ -1,7 +1,7 @@
 Unit FrameVideoPlayer;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_media
+  Package   : IM_forms.media
   Unit      : FrameVideoPlayer.pas
   Description
     Toolbar-driven video player frame hosting a TFrameVideoBase playback engine.
@@ -20,7 +20,7 @@ Unit FrameVideoPlayer;
     2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_media.lpk.
+    This file is part of IM_forms.media.lpk.
 
     SPDX-License-Identifier: LGPL-3.0-or-later
 -------------------------------------------------------------------------------}
