@@ -8,10 +8,10 @@ unit IM_units;
 interface
 
 uses
-  Logs, MRUs, PipelineDisplay, Settings, ffmpegSupport, FileSupport, 
-  GPSSupport, ImageMagickSupport, LibmpvSupport, netMCSupport, OSSupport, 
-  StringSupport, TesseractSupport, VersionSupport, WGS84, XMLSupport, 
-  XPDFSupport, LazarusPackageIntf;
+  Logs, MRUs, Settings, ffmpegSupport, FileSupport, GPSSupport, 
+  ImageMagickSupport, LibmpvSupport, netMCSupport, OSSupport, StringSupport, 
+  TesseractSupport, VersionSupport, WGS84, XMLSupport, XPDFSupport, 
+  LazarusPackageIntf;
 
 implementation
 

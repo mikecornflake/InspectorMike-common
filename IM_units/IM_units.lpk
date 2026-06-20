@@ -22,10 +22,6 @@
         <UnitName Value="MRUs"/>
       </Item>
       <Item>
-        <Filename Value="src\Classes\PipelineDisplay.pas"/>
-        <UnitName Value="PipelineDisplay"/>
-      </Item>
-      <Item>
         <Filename Value="src\Classes\Settings.pas"/>
         <UnitName Value="Settings"/>
       </Item>
