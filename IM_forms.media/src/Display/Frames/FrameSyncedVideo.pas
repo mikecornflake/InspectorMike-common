@@ -234,9 +234,12 @@ End;
 Procedure TFrameSyncedVideo.ClearUnloadedVideoFrames;
 Var
   fmeVideo: TFrameVideoBase;
+  i: Integer;
 Begin
-  For fmeVideo in FVideos Do
+  For i := FVideoFileCount To FVideos.Count - 1 Do
   Begin
+    fmeVideo := FVideos[i];
+
     // Unload Video
     fmeVideo.Clear;
 
@@ -309,11 +312,15 @@ End;
 Procedure TFrameSyncedVideo.SetAutoplay(AValue: Boolean);
 Var
   fmeVideo: TFrameVideoBase;
+  i: Integer;
 Begin
   Inherited SetAutoplay(AValue);
 
-  For fmeVideo In FVideos Do
+  For i := 0 To FVideos.Count - 1 Do
+  Begin
+    fmeVideo := FVideos[i];
     fmeVideo.Autoplay := AValue;
+  end;
 End;
 
 Procedure TFrameSyncedVideo.UpdateStateFromChildren;
