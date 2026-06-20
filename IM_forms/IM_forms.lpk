@@ -9,7 +9,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="src\Display\Forms;src\Display\Frames"/>
-        <OtherUnitFiles Value="src\Display\Forms;src\Display\Frames;src\Classes"/>
+        <OtherUnitFiles Value="src\Display\Forms;src\Display\Frames;src\Classes;src\Support"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
@@ -57,6 +57,10 @@
       <Item>
         <Filename Value="src\Display\Frames\FrameHTMLs.pas"/>
         <UnitName Value="FrameHTMLs"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\ControlsSupport.pas"/>
+        <UnitName Value="ControlsSupport"/>
       </Item>
     </Files>
     <RequiredPkgs>

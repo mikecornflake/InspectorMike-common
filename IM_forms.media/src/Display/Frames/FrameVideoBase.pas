@@ -43,7 +43,7 @@ Interface
 
 Uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  FrameBase, fgl;
+  FrameBase, ControlsSupport;
 
 Type
   TVideoTime = Int64; // milliseconds
@@ -64,7 +64,16 @@ Type
   TFrameVideoBase = Class;
 
   TFrameVideoBaseClass = Class Of TFrameVideoBase;
-  TFrameVideoBaseList = Specialize TFPGObjectList<TFrameVideoBase>;
+
+  { TFrameVideoBaseList }
+
+  TFrameVideoBaseList = Class(TControlList)
+  Public
+    Function GetVideo(Index: Integer): TFrameVideoBase;
+    Procedure AddVideo(AVideo: TFrameVideoBase);
+
+    Property Videos[Index: Integer]: TFrameVideoBase Read GetVideo; Default;
+  End;
 
   { TFrameVideoBase }
 
@@ -255,6 +264,18 @@ End;
 Function TFrameVideoBase.GetBitmap(Bitmap: TBitmap): Boolean;
 Begin
   Result := False;
+End;
+
+{ TFrameVideoBaseList }
+
+Function TFrameVideoBaseList.GetVideo(Index: Integer): TFrameVideoBase;
+Begin
+  Result := TFrameVideoBase(Inherited Items[Index]);
+End;
+
+Procedure TFrameVideoBaseList.AddVideo(AVideo: TFrameVideoBase);
+Begin
+  Inherited Add(AVideo);
 End;
 
 End.

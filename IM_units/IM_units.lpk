@@ -9,7 +9,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <OtherUnitFiles Value="src\Classes;src\Support"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
     <Files>
@@ -28,10 +28,6 @@
       <Item>
         <Filename Value="src\Classes\Settings.pas"/>
         <UnitName Value="Settings"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Support\ControlsSupport.pas"/>
-        <UnitName Value="ControlsSupport"/>
       </Item>
       <Item>
         <Filename Value="src\Support\ffmpegSupport.pas"/>

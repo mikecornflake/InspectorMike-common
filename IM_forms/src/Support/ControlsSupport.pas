@@ -1,7 +1,7 @@
 Unit ControlsSupport;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_units
+  Package   : IM_forms
   Unit      : ControlsSupport.pas
   Description
     Helper routines for visual controls
@@ -23,7 +23,7 @@ Unit ControlsSupport;
     2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_units.lpk.
+    This file is part of IM_forms.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by
@@ -45,7 +45,10 @@ Unit ControlsSupport;
 Interface
 
 Uses
-  Classes, Graphics, ComCtrls, SysUtils;
+  Classes, Graphics, ComCtrls, SysUtils, fgl, Controls;
+
+Type
+  TControlList = Specialize TFPGObjectList<TControl>;
 
 // Treeview routines
 Function SelectNode(oTree: TCustomTreeView; sLocation, sDelimiter: String): Boolean;
@@ -63,7 +66,6 @@ Function SelectNode(oTree: TCustomTreeView; sLocation, sDelimiter: String): Bool
     sNode: String;
     oTemp: TTreeNode;
     bLast: Boolean;
-
   Begin
     If Assigned(oNode) Then
     Begin
@@ -97,7 +99,6 @@ Function SelectNode(oTree: TCustomTreeView; sLocation, sDelimiter: String): Bool
 Var
   oNode: TTreeNode;
   sNode: String;
-
 Begin
   // Good ol' recursion - it's been a while...
 

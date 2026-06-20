@@ -47,15 +47,13 @@ Unit ControlGridLayout;
 Interface
 
 Uses
-  Classes, SysUtils, Controls, ExtCtrls, fgl;
+  Classes, SysUtils, Controls, ExtCtrls, ControlsSupport;
 
 Type
   TControlLayoutSequence = (
     clsLeftToRightThenDown,
     clsTopToBottomThenRight
     );
-
-  TControlList = Specialize TFPGObjectList<TControl>;
 
   { TControlGridLayout }
 
@@ -76,7 +74,7 @@ Type
   Public
     Constructor Create(AParent: TWinControl);
 
-    Procedure LayoutControls(AControls: TFPSList; AControlCountLimit: Integer = -1);
+    Procedure LayoutControls(AControls: TControlList; AControlCountLimit: Integer = -1);
 
     Property Parent: TWinControl Read FParent Write FParent;
 
@@ -141,7 +139,7 @@ Begin
   End;
 End;
 
-Procedure TControlGridLayout.LayoutControls(AControls: TFPSList; AControlCountLimit: Integer = -1);
+Procedure TControlGridLayout.LayoutControls(AControls: TControlList; AControlCountLimit: Integer = -1);
 Var
   i: Integer;
   Row: Integer;
@@ -166,6 +164,9 @@ Begin
   If (AControlCountLimit < 0) Or (AControlCountLimit > AControls.Count) Then
     AControlCountLimit := AControls.Count;
 
+  If AControlCountLimit=0 Then
+    Exit;
+
   If AControlCountLimit > (FRowCount * FColCount) Then
     AControlCountLimit := FRowCount * FColCount;
 
@@ -181,8 +182,13 @@ Begin
 
   For i := 0 To AControlCountLimit - 1 Do
   Begin
-    If (AControls[i] = nil) Or Not (TObject(AControls[i]) Is TControl) Then
-      Raise Exception.CreateFmt('TControlGridLayout.LayoutControls: Item %d in control list is not a TControl', [i]);
+    If AControls[i] = nil Then
+      Raise Exception.CreateFmt('Item %d is nil', [i]);
+
+    If Not (TObject(AControls[i]) Is TControl) Then
+      Raise Exception.CreateFmt(
+        'Item %d is %s, not TControl',
+        [i, TObject(AControls[i]).ClassName]);
 
     oControl := TControl(AControls[i]);
 
