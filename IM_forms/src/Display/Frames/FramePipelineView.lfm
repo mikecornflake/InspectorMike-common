@@ -1,0 +1,226 @@
+inherited FramePipelineView: TFramePipelineView
+  Height = 325
+  Width = 769
+  ClientHeight = 325
+  ClientWidth = 769
+  DesignLeft = 374
+  DesignTop = 320
+  object ScrollBar: TScrollBar[0]
+    Left = 0
+    Height = 17
+    Top = 285
+    Width = 769
+    Align = alBottom
+    Max = 200
+    Min = -5
+    PageSize = 0
+    TabOrder = 0
+    OnChange = ScrollBarChange
+  end
+  object sbPipelineDisplay: TStatusBar[1]
+    Left = 0
+    Height = 23
+    Top = 302
+    Width = 769
+    Panels = <    
+      item
+        Text = 'Records: 0000'
+        Width = 85
+      end    
+      item
+        Text = 'Max KP:000.000'
+        Width = 100
+      end    
+      item
+        Text = 'Min KP:000.000'
+        Width = 100
+      end>
+    SimplePanel = False
+  end
+  object pnlPipelineDisplay: TPanel[2]
+    Left = 0
+    Height = 259
+    Top = 26
+    Width = 769
+    Align = alClient
+    BevelOuter = bvNone
+    Caption = 'pnlPipelineDisplay'
+    TabOrder = 2
+  end
+  object tbPipelineDisplay: TToolBar[3]
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 769
+    Images = ilPipelineDisplay
+    List = True
+    ShowCaptions = True
+    TabOrder = 3
+    object btnZoomOut: TToolButton
+      Left = 1
+      Top = 2
+      Action = acZoomOut
+    end
+    object btnZoomIn: TToolButton
+      Left = 85
+      Top = 2
+      Action = acZoomIn
+    end
+    object btnZoomExtents: TToolButton
+      Left = 159
+      Top = 2
+      Action = acZoomExtents
+    end
+    object ToolButton1: TToolButton
+      Left = 259
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
+    end
+    object btnRange: TToolButton
+      Left = 267
+      Top = 2
+      Caption = 'Set Range'
+      DropdownMenu = mnuRange
+      Style = tbsButtonDrop
+    end
+  end
+  object acPipelineDisplay: TActionList[4]
+    Images = ilPipelineDisplay
+    Left = 48
+    Top = 64
+    object acZoomIn: TAction
+      Category = 'Zoom'
+      Caption = 'Zoom In'
+      ImageIndex = 1
+      OnExecute = acZoomInExecute
+    end
+    object acZoomOut: TAction
+      Category = 'Zoom'
+      Caption = 'Zoom Out'
+      ImageIndex = 2
+      OnExecute = acZoomOutExecute
+    end
+    object acZoomExtents: TAction
+      Category = 'Zoom'
+      Caption = 'Reset Bounds'
+      ImageIndex = 0
+      OnExecute = acZoomExtentsExecute
+    end
+    object acCopyToClipboard: TAction
+      Caption = 'Copy to Clipboard'
+      OnExecute = acCopyToClipboardExecute
+    end
+  end
+  object ilPipelineDisplay: TImageList[5]
+    Left = 104
+    Top = 120
+    Bitmap = {
+      4C7A030000001000000010000000800500000000000078DAED956B50945518C7
+      99A84F367DE95B338D36D3456B726C74D23111016972B226534BB2CBD4683939
+      59A14DB52BC20AEC7251B9692EA28897094450412E2EA0D880A5C0AA210B212C
+      BB805C96EBDED80516F975DE37D701CC66F64BD387CECC33EF9CCBEF799E73CE
+      F33F6F99FA7574B1A194AB575219B30CBF8734694E5A23AD2D138C3406F849FD
+      FE8A1FD0ED0E94C6166A0F6A8FFD9496C25493C6A439694D7FC5F7B20F2F5FAE
+      0E45171D446FC9B7E8221773C3606466BBD16094E7FACBB6CB7124C6CB5F5487
+      E0EFEFBF4817B9943E5D3845CA5769CFFB0AF3996D749CDF414F99421E93E674
+      914BE41C2FAA83EFF3527F6FF2C1ACABFA468A77BE8A5EFB2EE3432646FB9B70
+      987FC1F1473EFAF475C2C762AEEA0DEC4BDE2FEFA54213FAC43DDE2F21712F6E
+      0F22EE36C687CD8C5A0C38CD17B1DFCEC7D69089551F87F57A1236BB8D3D8909
+      DE33F6F7F2F11A0DA313D07A62036303CD32EB309EC3D1720C47532A764332D6
+      BADDB8C72141137BFF8EBCBC3A36168770603AF531CE8E2A39AEC48E18B58C76
+      1EC1DD9E81D390887D640C4D6CF4037C74AC86BE2107DD1714D89B4E613364CA
+      712596E11C3C7DC771B56560B10CA2898E7A800FFF4E5150525E4549C4127156
+      EB45AE1A91730AA322AEC44E741D62A0EB26C5E78B488D8F99C65FD2ACE4B147
+      1F9D53A67A8D7EDD76D9C750ED3E6CD7637035EDC165CCA0BF43CFAD5B0DA876
+      456034DC607152CD03F563290DA75CB58C3345E5184D9DB477F608EBA6A5D5C4
+      D9B3678950FE88AEB418ABE50E15AD1656A4D630AD7E850F7FFF47167DFD6D78
+      51C44E053B153FC816A15410A1F89E2307533973F20899971B3963811529BFCA
+      7CD97DFD8472591324E53547AA8F9916A02A667B6625CFE4C127C5E6DCD07B7C
+      F8DA97367DF9D6DC8F24DBB1F6C54D7E0F6F0BDF50E5B12A2A9755BBF398B77A
+      F3C7F7CEFF7161B3EED9E37EFFDCA6E634CB7B7FDE1674401F1D905AE75E9A52
+      87D7A4BE34FE77CEA6F2CB93AF756D293052D837895E4CD44D227F0B2D9348E3
+      D2FCC3F8C0A4DFBA54D5BD5C1B76D27C4143E7D135DC39F91EDD391F60AC4AA3
+      C6E622AAAA0769DD4C3E24A93A7A737E3355830E4C59EF63D39F6062D88467A0
+      1197F912D6DA03E2DDF886AA61379BF29A91D64FE503132A474FB4DFC550A2F9
+      8B75F6303164203E6CB6A8DF22ECF58718AE5660BE718CE3A609A4F553F980B8
+      4B1438E04ED61AC6FB9AB83BDC2834534BF2A7F3C07216F7ED0338EB13715FFB
+      9173560888BB38ADFE97ABCBC819869E9FDF6762B049C49D23B3FB3F5F40D2A7
+      2F1317F63CE3262D9E5B31640FC072B56E1ABF22E60227FBA12F7723EE369DC8
+      B9588E2BB18C8862B39FE26E7726DC8EE7782F04C6944EE383A28BC7F61AC6A8
+      AF4CC37A2501DBAD744645CE525C89C5791A7A0FD36E2A24B1DEC58AA802FB54
+      7EE937E9191B8FD691D536C2405938B62B4A46C47EC7CD5A26A5B816F186DC49
+      27CBE4222CE33782E32A66BE1F4F05EFCAEFDB72AE95F416370DB559786A154C
+      1A62A1259E36632187DADC7C71BA91757B756C6D80A0E46A66D4DFFC9088DCBE
+      0D195751D6B9D0885F486C2BA885296B9C8469AB095095125601055DB04D5C51
+      48EA5566D4FFFC655B930F87ECCC190B569E225899235B8832DBFE4664364F66
+      C0D359B0B11274E21E8252AECCE4E5BD087B6586CE1648DFB755D93C7514E6E5
+      C367A5E67CAFFE7D680B574765F366640EAB54D3F4EF938FFFBAFEFF28D5D091
+      F90E9D27D60BFD87F9AC7F6BDD71C6075B71F7DCC4692CC75AB3DF27FD7B1CDD
+      B87BAF33D25E8143FA7FFFAEF549FF9EC1063CBDD578BA4A18EBC8C1DD9CE693
+      FEE336CC26F1C367D9F3D10BE23B57F49FF349FF6EF379115768BE4B14DBD0CF
+      60CBF149FFD67A2D8E8624DCA6434C0C9C0447AE6FFA1767E5B8198FAB250D4F
+      6786CCFAAAFF71A1FFBB0DFFEBFFDFD0FF9F829E886A
+    }
+  end
+  object pmPipelineDisplay: TPopupMenu[6]
+    Images = ilPipelineDisplay
+    Left = 320
+    Top = 120
+    object pmnuZoomIn: TMenuItem
+      Action = acZoomIn
+    end
+    object pmnuZoomOut: TMenuItem
+      Action = acZoomOut
+    end
+    object pmnuZoomExtents: TMenuItem
+      Action = acZoomExtents
+    end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object pmnuCopyToClipboard: TMenuItem
+      Action = acCopyToClipboard
+    end
+  end
+  object tmrScroll: TTimer[7]
+    Interval = 500
+    OnTimer = tmrScrollTimer
+    Left = 248
+    Top = 48
+  end
+  object mnuRange: TPopupMenu[8]
+    Left = 277
+    Top = 48
+    object mnu50m: TMenuItem
+      Tag = 50
+      Caption = '50m'
+      OnClick = mnuRangeClick
+    end
+    object mnu100m: TMenuItem
+      Tag = 100
+      Caption = '100m'
+      OnClick = mnuRangeClick
+    end
+    object mnu500m: TMenuItem
+      Tag = 500
+      Caption = '500m'
+      OnClick = mnuRangeClick
+    end
+    object mnu1km: TMenuItem
+      Tag = 1000
+      Caption = '1km'
+      OnClick = mnuRangeClick
+    end
+    object mnu2km: TMenuItem
+      Tag = 2000
+      Caption = '2km'
+      OnClick = mnuRangeClick
+    end
+    object mnuZoomExtents2: TMenuItem
+      Caption = 'Full Extents'
+      OnClick = acZoomExtentsExecute
+    end
+  end
+end

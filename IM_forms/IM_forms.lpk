@@ -70,6 +70,18 @@
         <Filename Value="src\Display\Wizards\WizardBase.pas"/>
         <UnitName Value="WizardBase"/>
       </Item>
+      <Item>
+        <Filename Value="src\Classes\PipelineEventMap.pas"/>
+        <UnitName Value="PipelineEventMap"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FramePipelineView.pas"/>
+        <UnitName Value="FramePipelineView"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FramePipelineView.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
