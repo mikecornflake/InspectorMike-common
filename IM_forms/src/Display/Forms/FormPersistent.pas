@@ -55,9 +55,9 @@ Uses
 
 Type
 
-  { TfrmPersistent }
+  { TFormPersistent}
 
-  TfrmPersistent = Class(TForm)
+  TFormPersistent= Class(TForm)
   Private
     FRefreshUIing: Boolean;
   Protected
@@ -81,9 +81,9 @@ Uses
 
 {$R *.lfm}
 
-{ TfrmPersistent }
+{ TFormPersistent}
 
-Constructor TfrmPersistent.Create(TheOwner: TComponent);
+Constructor TFormPersistent.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
@@ -91,7 +91,7 @@ Begin
   FRefreshUIing := False;
 End;
 
-Procedure TfrmPersistent.RefreshUI;
+Procedure TFormPersistent.RefreshUI;
 
   Procedure RefreshUIChildren(AControl: TWinControl);
   Var
@@ -123,12 +123,12 @@ Begin
   End;
 End;
 
-Function TfrmPersistent.GetSettingsKey: String;
+Function TFormPersistent.GetSettingsKey: String;
 Begin
   Result := FKey;
 End;
 
-Procedure TfrmPersistent.LoadSettings(oInifile: TIniFile);
+Procedure TFormPersistent.LoadSettings(oInifile: TIniFile);
 
   Procedure LoadSettingsChildren(AControl: TWinControl);
   Var
@@ -152,7 +152,7 @@ Begin
   LoadSettingsChildren(Self);
 End;
 
-Procedure TfrmPersistent.SaveSettings(oInifile: TIniFile);
+Procedure TFormPersistent.SaveSettings(oInifile: TIniFile);
 
   Procedure SaveSettingsChildren(AControl: TWinControl);
   Var

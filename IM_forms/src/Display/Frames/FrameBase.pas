@@ -51,7 +51,7 @@ Type
 
   TFrameBase = Class(TFrame)
   Protected
-    FParentForm: TfrmPersistent;
+    FParentForm: TFormPersistent;
     FFullIdentKey: String;
     Function GetFullIdentKey: String; Virtual;
     Function GetSettingsKey: String; Virtual;
@@ -67,7 +67,7 @@ Type
     Procedure Open; Virtual;
     Procedure Close; Virtual;
 
-    Property ParentForm: TfrmPersistent read FParentForm write FParentForm;
+    Property ParentForm: TFormPersistentread FParentForm write FParentForm;
     Property SettingsKey: String read GetSettingsKey;
     Property FullIdentKey: String read GetFullIdentKey;
   End;
@@ -95,7 +95,7 @@ Function TFrameBase.GetFullIdentKey: String;
   Begin
     oParent := oComponent.Owner;
 
-    If (oParent = nil) Or (oParent Is TfrmPersistent) Then
+    If (oParent = nil) Or (oParent Is TFormPersistent) Then
       Result := ''
     Else If oParent Is TFrameBase Then
     Begin
@@ -127,12 +127,12 @@ End;
 
 Constructor TFrameBase.Create(TheOwner: TComponent);
 
-  Function FindParentForm(oComponent: TComponent): TfrmPersistent;
+  Function FindParentForm(oComponent: TComponent): TFormPersistent;
   Begin
     If Assigned(oComponent) Then
     Begin
-      If oComponent Is TfrmPersistent Then
-        Result := TfrmPersistent(oComponent)
+      If oComponent Is TFormPersistentThen
+        Result := TFormPersistent(oComponent)
       Else
         Result := FindParentForm(oComponent.Owner);
     End

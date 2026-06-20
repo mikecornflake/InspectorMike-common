@@ -49,7 +49,7 @@ Type
 
   { TdckBase }
 
-  TdckBase = Class(TfrmPersistent)
+  TdckBase = Class(TFormPersistent)
   Private
     FImageIndex: Integer;
   Protected

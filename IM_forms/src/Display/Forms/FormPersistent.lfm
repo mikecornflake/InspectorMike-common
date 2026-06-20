@@ -1,4 +1,4 @@
-object frmPersistent: TfrmPersistent
+object frmPersistent: TFormPersistent
   Left = 308
   Height = 240
   Top = 213
