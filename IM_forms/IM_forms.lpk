@@ -9,11 +9,15 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="src\Display\Forms;src\Display\Frames"/>
-        <OtherUnitFiles Value="src\Display\Forms;src\Display\Frames"/>
+        <OtherUnitFiles Value="src\Display\Forms;src\Display\Frames;src\Classes"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
     <Files>
+      <Item>
+        <Filename Value="src\Classes\ControlGridLayout.pas"/>
+        <UnitName Value="ControlGridLayout"/>
+      </Item>
       <Item>
         <Filename Value="src\Display\Forms\FormPersistent.lfm"/>
         <Type Value="LFM"/>

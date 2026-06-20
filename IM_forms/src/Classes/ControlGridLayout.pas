@@ -1,11 +1,11 @@
-Unit VideoGridLayout;
+Unit ControlGridLayout;
 
 {-------------------------------------------------------------------------------
   Package   : IM_forms.media
-  Unit      : VideoGridLayout.pas
+  Unit      : ControlGridLayout.pas
   Description
-    Layout manager for arranging multiple video playback frames within
-    a parent control.
+    Layout manager developed for arranging multiple video playback frames within
+    a parent control, but which can work with any controls.
 
     Supports configurable row and column counts, spacing, margins and
     alternative placement sequences for multi-channel video review.
@@ -47,23 +47,24 @@ Unit VideoGridLayout;
 Interface
 
 Uses
-  Classes, SysUtils, Controls, ExtCtrls,
-  FrameVideoBase;
+  Classes, SysUtils, Controls, ExtCtrls, fgl;
 
 Type
-  TVideoLayoutSequence = (
-    vlsLeftToRightThenDown,
-    vlsTopToBottomThenRight
+  TControlLayoutSequence = (
+    clsLeftToRightThenDown,
+    clsTopToBottomThenRight
     );
 
-  { TVideoGridLayout }
+  TControlList = Specialize TFPGObjectList<TControl>;
 
-  TVideoGridLayout = Class
+  { TControlGridLayout }
+
+  TControlGridLayout = Class
   Private
     FParent: TWinControl;
     FRowCount: Integer;
     FColCount: Integer;
-    FSequence: TVideoLayoutSequence;
+    FSequence: TControlLayoutSequence;
     FPanelMargin: Integer;
     FCellSpacing: Integer;
 
@@ -75,15 +76,14 @@ Type
   Public
     Constructor Create(AParent: TWinControl);
 
-    Procedure LayoutVideos(AVideos: TFrameVideoBaseList; AVideoCountLimit: Integer = -1);
-    Procedure ClearParent;
+    Procedure LayoutControls(AControls: TControlList; AControlCountLimit: Integer = -1);
 
     Property Parent: TWinControl Read FParent Write FParent;
 
     Property RowCount: Integer Read FRowCount Write SetRowCount;
     Property ColCount: Integer Read FColCount Write SetColCount;
 
-    Property Sequence: TVideoLayoutSequence Read FSequence Write FSequence;
+    Property Sequence: TControlLayoutSequence Read FSequence Write FSequence;
 
     Property PanelMargin: Integer Read FPanelMargin Write FPanelMargin;
     Property CellSpacing: Integer Read FCellSpacing Write FCellSpacing;
@@ -91,21 +91,21 @@ Type
 
 Implementation
 
-{ TVideoGridLayout }
+{ TControlGridLayout }
 
-Constructor TVideoGridLayout.Create(AParent: TWinControl);
+Constructor TControlGridLayout.Create(AParent: TWinControl);
 Begin
   Inherited Create;
 
   FParent := AParent;
   FRowCount := 1;
   FColCount := 1;
-  FSequence := vlsLeftToRightThenDown;
+  FSequence := clsLeftToRightThenDown;
   FPanelMargin := 0;
   FCellSpacing := 4;
 End;
 
-Procedure TVideoGridLayout.SetRowCount(AValue: Integer);
+Procedure TControlGridLayout.SetRowCount(AValue: Integer);
 Begin
   If AValue < 1 Then
     AValue := 1;
@@ -113,7 +113,7 @@ Begin
   FRowCount := AValue;
 End;
 
-Procedure TVideoGridLayout.SetColCount(AValue: Integer);
+Procedure TControlGridLayout.SetColCount(AValue: Integer);
 Begin
   If AValue < 1 Then
     AValue := 1;
@@ -121,16 +121,16 @@ Begin
   FColCount := AValue;
 End;
 
-Procedure TVideoGridLayout.GetCellPosition(AIndex: Integer; Out ARow, ACol: Integer);
+Procedure TControlGridLayout.GetCellPosition(AIndex: Integer; Out ARow, ACol: Integer);
 Begin
   Case FSequence Of
-    vlsLeftToRightThenDown:
+    clsLeftToRightThenDown:
     Begin
       ARow := AIndex Div FColCount;
       ACol := AIndex Mod FColCount;
     End;
 
-    vlsTopToBottomThenRight:
+    clsTopToBottomThenRight:
     Begin
       ARow := AIndex Mod FRowCount;
       ACol := AIndex Div FRowCount;
@@ -141,8 +141,8 @@ Begin
   End;
 End;
 
-Procedure TVideoGridLayout.LayoutVideos(AVideos: TFrameVideoBaseList;
-  AVideoCountLimit: Integer = -1);
+Procedure TControlGridLayout.LayoutControls(AControls: TControlList;
+  AControlCountLimit: Integer = -1);
 Var
   i: Integer;
   Row: Integer;
@@ -153,25 +153,23 @@ Var
   TopPos: Integer;
   WorkW: Integer;
   WorkH: Integer;
-  Video: TFrameVideoBase;
+  oControl: TControl;
 Begin
   If Not Assigned(FParent) Then
     Exit;
 
-  If Not Assigned(AVideos) Then
+  If Not Assigned(AControls) Then
     Exit;
 
   If (FRowCount < 1) Or (FColCount < 1) Then
     Exit;
 
-  If (AVideoCountLimit = -1) Or (AVideoCountLimit > AVideos.Count) Then
-    AVideoCountLimit := AVideos.Count;
+  If (AControlCountLimit = -1) Or (AControlCountLimit > AControls.Count) Then
+    AControlCountLimit := AControls.Count;
 
-  WorkW :=
-    FParent.ClientWidth - (FPanelMargin * 2) - (FCellSpacing * (FColCount - 1));
+  WorkW := FParent.ClientWidth - (FPanelMargin * 2) - (FCellSpacing * (FColCount - 1));
 
-  WorkH :=
-    FParent.ClientHeight - (FPanelMargin * 2) - (FCellSpacing * (FRowCount - 1));
+  WorkH := FParent.ClientHeight - (FPanelMargin * 2) - (FCellSpacing * (FRowCount - 1));
 
   If (WorkW <= 0) Or (WorkH <= 0) Then
     Exit;
@@ -179,14 +177,14 @@ Begin
   CellW := WorkW Div FColCount;
   CellH := WorkH Div FRowCount;
 
-  For i := 0 To AVideoCountLimit - 1 Do
+  For i := 0 To AControlCountLimit - 1 Do
   Begin
     If i >= FRowCount * FColCount Then
       Break;
 
-    Video := AVideos[i];
+    oControl := AControls[i];
 
-    If Not Assigned(Video) Then
+    If Not Assigned(oControl) Then
       Continue;
 
     GetCellPosition(i, Row, Col);
@@ -194,22 +192,11 @@ Begin
     LeftPos := FPanelMargin + (Col * (CellW + FCellSpacing));
     TopPos := FPanelMargin + (Row * (CellH + FCellSpacing));
 
-    Video.Parent := FParent;
-    Video.Align := alNone;
-    Video.SetBounds(LeftPos, TopPos, CellW, CellH);
-    Video.Visible := True;
+    oControl.Parent := FParent;
+    oControl.Align := alNone;
+    oControl.SetBounds(LeftPos, TopPos, CellW, CellH);
+    oControl.Visible := True;
   End;
-End;
-
-Procedure TVideoGridLayout.ClearParent;
-Var
-  i: Integer;
-Begin
-  If Not Assigned(FParent) Then
-    Exit;
-
-  For i := FParent.ControlCount - 1 Downto 0 Do
-    FParent.Controls[i].Parent := nil;
 End;
 
 End.

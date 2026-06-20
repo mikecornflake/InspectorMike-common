@@ -67,7 +67,7 @@ Type
     Procedure Open; Virtual;
     Procedure Close; Virtual;
 
-    Property ParentForm: TFormPersistentread FParentForm write FParentForm;
+    Property ParentForm: TFormPersistent read FParentForm write FParentForm;
     Property SettingsKey: String read GetSettingsKey;
     Property FullIdentKey: String read GetFullIdentKey;
   End;
@@ -131,7 +131,7 @@ Constructor TFrameBase.Create(TheOwner: TComponent);
   Begin
     If Assigned(oComponent) Then
     Begin
-      If oComponent Is TFormPersistentThen
+      If oComponent Is TFormPersistent Then
         Result := TFormPersistent(oComponent)
       Else
         Result := FindParentForm(oComponent.Owner);

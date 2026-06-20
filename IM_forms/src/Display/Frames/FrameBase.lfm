@@ -1,4 +1,4 @@
-object fmeBase: TFrameBase
+object FrameBase: TFrameBase
   Left = 0
   Height = 240
   Top = 0

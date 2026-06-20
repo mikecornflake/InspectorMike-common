@@ -8,7 +8,7 @@ unit IM_forms;
 interface
 
 uses
-  FormPersistent, FrameBase, FormAbout, FormMain, FrameHTMLs, 
+  ControlGridLayout, FormPersistent, FrameBase, FormAbout, FormMain, FrameHTMLs, 
   LazarusPackageIntf;
 
 implementation

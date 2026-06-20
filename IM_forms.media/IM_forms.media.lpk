@@ -20,10 +20,6 @@
     </CompilerOptions>
     <Files>
       <Item>
-        <Filename Value="src\Classes\VideoGridLayout.pas"/>
-        <UnitName Value="VideoGridLayout"/>
-      </Item>
-      <Item>
         <Filename Value="src\Display\Frames\FrameImages.lfm"/>
         <Type Value="LFM"/>
       </Item>
