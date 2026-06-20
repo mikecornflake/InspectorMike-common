@@ -59,7 +59,7 @@ Type
     Procedure FrameResize(Sender: TObject);
   Private
     FVideoEngineClass: TFrameVideoBaseClass;
-    FVideos: TControlList;
+    FVideos: TFrameVideoBaseList;
     FMaster: TFrameVideoBase;
     FState: TVideoState;
     FSyncTimer: TTimer;
@@ -119,7 +119,7 @@ Type
     Function CanGrabBitmap: Boolean; Override;
     Function GetBitmap(Bitmap: TBitmap): Boolean; Override;
 
-    Property Videos: TControlList Read FVideos;
+    Property Videos: TFrameVideoBaseList Read FVideos;
     Property Master: TFrameVideoBase Read FMaster Write SetMaster;
 
     Property StartTime: TDateTime Read FStartTime Write FStartTime;
@@ -144,7 +144,7 @@ Constructor TFrameSyncedVideo.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
-  FVideos := TControlList.Create(True); // Does own videos.
+  FVideos := TFrameVideoBaseList.Create(True); // Does own videos.
   FMaster := nil;
   FState := vsEmpty;
 
@@ -213,7 +213,7 @@ Begin
     FMaster.OnPosition := @MasterPosition;
 
     For i := 0 To FVideoFileCount - 1 Do
-      TFrameVideoBase(FVideos[i]).Muted := FVideos[i] <> FMaster;
+      FVideos[i].Muted := FVideos[i] <> FMaster;
 
     SetState(FMaster.State);
   End
@@ -233,18 +233,15 @@ End;
 
 Procedure TFrameSyncedVideo.ClearUnloadedVideoFrames;
 Var
-  i: Integer;
-  oVideo: TFrameVideoBase;
+  fmeVideo: TFrameVideoBase;
 Begin
-  For i := FVideoFileCount To FVideos.Count - 1 Do
+  For fmeVideo in FVideos Do
   Begin
-    oVideo := TFrameVideoBase(FVideos[i]);
-
     // Unload Video
-    oVideo.Clear;
+    fmeVideo.Clear;
 
     // Hide video frame
-    oVideo.Visible := False;
+    fmeVideo.Visible := False;
   End;
 
   If (FVideoFileCount = 0) Then
@@ -273,8 +270,8 @@ Var
   i: Integer;
 Begin
   For i := 0 To FVideoFileCount - 1 Do
-    If TFrameVideoBase(FVideos[i]).CanSeek Then
-      TFrameVideoBase(FVideos[i]).Position := AValue;
+    If FVideos[i].CanSeek Then
+      FVideos[i].Position := AValue;
 
   DoPosition;
 End;
@@ -300,8 +297,8 @@ Var
   i: Integer;
 Begin
   For i := 0 To FVideoFileCount - 1 Do
-    If TFrameVideoBase(FVideos[i]).CanSetRate Then
-      TFrameVideoBase(FVideos[i]).Rate := AValue;
+    If FVideos[i].CanSetRate Then
+      FVideos[i].Rate := AValue;
 End;
 
 Function TFrameSyncedVideo.GetState: TVideoState;
@@ -312,18 +309,11 @@ End;
 Procedure TFrameSyncedVideo.SetAutoplay(AValue: Boolean);
 Var
   fmeVideo: TFrameVideoBase;
-  oControl: TControl;
 Begin
   Inherited SetAutoplay(AValue);
 
-  For oControl In FVideos Do
-  Begin
-    If oControl is TFrameVideoBase Then
-    Begin
-      fmeVideo := TFrameVideoBase(oControl);
-      fmeVideo.Autoplay := AValue;
-    end;
-  End;
+  For fmeVideo In FVideos Do
+    fmeVideo.Autoplay := AValue;
 End;
 
 Procedure TFrameSyncedVideo.UpdateStateFromChildren;
@@ -342,7 +332,7 @@ Begin
 
   For i := 0 To FVideoFileCount - 1 Do
   Begin
-    fmeVideo := TFrameVideoBase(FVideos[i]);
+    fmeVideo := FVideos[i];
 
     Case fmeVideo.State Of
       vsPlaying: bAnyPlaying := True;
@@ -399,7 +389,7 @@ End;
 
 Function TFrameSyncedVideo.Load(Const AFilename: String): Boolean;
 Var
-  oVideo: TFrameVideoBase;
+  fmeVideo: TFrameVideoBase;
 Begin
   Result := False;
 
@@ -410,18 +400,18 @@ Begin
 
   If FVideoFileCount <= FVideos.Count Then
   Begin
-    oVideo := TFrameVideoBase(FVideos[FVideoFileCount - 1]);
-    oVideo.Visible := True;
-    oVideo.Autoplay := FAutoplay;
+    fmeVideo := FVideos[FVideoFileCount - 1];
+    fmeVideo.Visible := True;
+    fmeVideo.Autoplay := FAutoplay;
   End
   Else
   Begin
-    oVideo := FVideoEngineClass.Create(nil);
-    oVideo.Parent := Self;
-    oVideo.OnStateChanged := @VideoStateChanged;
-    oVideo.Autoplay := FAutoplay;
+    fmeVideo := FVideoEngineClass.Create(nil);
+    fmeVideo.Parent := Self;
+    fmeVideo.OnStateChanged := @VideoStateChanged;
+    fmeVideo.Autoplay := FAutoplay;
 
-    FVideos.Add(oVideo);
+    FVideos.Add(fmeVideo);
   End;
 
   If FVideoFileCount > (FLayout.RowCount * FLayout.ColCount) Then
@@ -430,12 +420,12 @@ Begin
   If Not Assigned(FMaster) Then
   Begin
     FFilename := AFilename;
-    Master := oVideo;
+    Master := fmeVideo;
   End;
 
-  oVideo.Muted := oVideo <> FMaster;
+  fmeVideo.Muted := fmeVideo <> FMaster;
 
-  Result := oVideo.Load(AFilename);
+  Result := fmeVideo.Load(AFilename);
 
   //FLayout.LayoutControls(FVideos, FVideoFileCount);
 End;
@@ -450,13 +440,13 @@ Begin
 
   For i := 0 To FVideoFileCount - 1 Do
   Begin
-    If TFrameVideoBase(FVideos[i]).State = vsEmpty Then
+    If FVideos[i].State = vsEmpty Then
       Continue;
 
-    If TFrameVideoBase(FVideos[i]).State = vsPaused Then
-      Result := TFrameVideoBase(FVideos[i]).Resume And Result
+    If FVideos[i].State = vsPaused Then
+      Result := FVideos[i].Resume And Result
     Else
-      Result := TFrameVideoBase(FVideos[i]).Play And Result;
+      Result := FVideos[i].Play And Result;
   End;
 
   If Result Then
@@ -476,7 +466,7 @@ Begin
   FSyncTimer.Enabled := False;
 
   For i := 0 To FVideoFileCount - 1 Do
-    Result := TFrameVideoBase(FVideos[i]).Pause And Result;
+    Result := FVideos[i].Pause And Result;
 
   If Result Then
     SetState(vsPaused);
@@ -489,7 +479,7 @@ Begin
   Result := FVideoFileCount > 0;
 
   For i := 0 To FVideoFileCount - 1 Do
-    Result := TFrameVideoBase(FVideos[i]).Resume And Result;
+    Result := FVideos[i].Resume And Result;
 
   If Result Then
   Begin
@@ -507,7 +497,7 @@ Begin
   FSyncTimer.Enabled := False;
 
   For i := 0 To FVideoFileCount - 1 Do
-    Result := TFrameVideoBase(FVideos[i]).Stop And Result;
+    Result := FVideos[i].Stop And Result;
 
   If Result Then
     SetState(vsStopped);
@@ -548,7 +538,7 @@ Begin
   Result := 0;
 
   For i := 0 To FVideoFileCount - 1 Do
-    If TFrameVideoBase(FVideos[i]).HasVideo Then
+    If FVideos[i].HasVideo Then
       Inc(Result);
 End;
 
@@ -661,7 +651,7 @@ Begin
 
   For i := 0 To FVideoFileCount - 1 Do
   Begin
-    Slave := TFrameVideoBase(FVideos[i]);
+    Slave := FVideos[i];
 
     If Slave = FMaster Then
       Continue;

@@ -1,7 +1,7 @@
 Unit ControlGridLayout;
 
 {-------------------------------------------------------------------------------
-  Package   : IM_forms.media
+  Package   : IM_forms
   Unit      : ControlGridLayout.pas
   Description
     Layout manager developed for arranging multiple video playback frames within
@@ -24,7 +24,7 @@ Unit ControlGridLayout;
     2026-06-19: Refactored into split InspectorMike package structure
 
   License
-    This file is part of IM_forms.media.lpk.
+    This file is part of IM_forms.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by
@@ -76,7 +76,7 @@ Type
   Public
     Constructor Create(AParent: TWinControl);
 
-    Procedure LayoutControls(AControls: TControlList; AControlCountLimit: Integer = -1);
+    Procedure LayoutControls(AControls: TFPSList; AControlCountLimit: Integer = -1);
 
     Property Parent: TWinControl Read FParent Write FParent;
 
@@ -141,8 +141,7 @@ Begin
   End;
 End;
 
-Procedure TControlGridLayout.LayoutControls(AControls: TControlList;
-  AControlCountLimit: Integer = -1);
+Procedure TControlGridLayout.LayoutControls(AControls: TFPSList; AControlCountLimit: Integer = -1);
 Var
   i: Integer;
   Row: Integer;
@@ -164,8 +163,11 @@ Begin
   If (FRowCount < 1) Or (FColCount < 1) Then
     Exit;
 
-  If (AControlCountLimit = -1) Or (AControlCountLimit > AControls.Count) Then
+  If (AControlCountLimit < 0) Or (AControlCountLimit > AControls.Count) Then
     AControlCountLimit := AControls.Count;
+
+  If AControlCountLimit > (FRowCount * FColCount) Then
+    AControlCountLimit := FRowCount * FColCount;
 
   WorkW := FParent.ClientWidth - (FPanelMargin * 2) - (FCellSpacing * (FColCount - 1));
 
@@ -179,10 +181,10 @@ Begin
 
   For i := 0 To AControlCountLimit - 1 Do
   Begin
-    If i >= FRowCount * FColCount Then
-      Break;
+    If (AControls[i] = nil) Or Not (TObject(AControls[i]) Is TControl) Then
+      Raise Exception.CreateFmt('TControlGridLayout.LayoutControls: Item %d in control list is not a TControl', [i]);
 
-    oControl := AControls[i];
+    oControl := TControl(AControls[i]);
 
     If Not Assigned(oControl) Then
       Continue;
