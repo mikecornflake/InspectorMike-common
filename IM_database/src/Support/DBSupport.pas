@@ -123,14 +123,6 @@ Procedure Populate(ACombobox: TCombobox; ADataset: TDataset; AField: String;
 // Export routine
 Procedure ExportDatasetToCSV(ADataset: TDataset; Const AFileName: String);
 
-// SQL Helper Functions
-Function DeleteSQL(ATable: String; FKeyFields: TStringList; ADataset: TDataset): String;
-Function InsertSQL(ATable: String; ADataset: TDataset): String;
-Function InsertSQLWhereNotExists(ATable: String; ADataset: TDataset;
-  AOracle: Boolean = True): String;
-Function ValidateSQL(AInput: String; AQuoted: Boolean = True; AOracle: Boolean = True): String;
-Function FormatSQL(ASQL: String; Const AValues: Array Of Const): String;
-
 Type
   TBoolType = (btYesNo, btTrueFalse);
 
@@ -141,7 +133,7 @@ Const
 Implementation
 
 Uses
-  StringSupport, OSSupport, Math, sqldb, typinfo, {$IFDEF ZEOS}ZAbstractRODataset, {$ENDIF}Forms;
+  StringSupport, FileSupport, OSSupport, Math, sqldb, typinfo, {$IFDEF ZEOS}ZAbstractRODataset, {$ENDIF}Forms;
 
   { TMemTable }
 
@@ -273,174 +265,6 @@ Begin
   End;
 End;
 
-Function DeleteSQL(ATable: String; FKeyFields: TStringList; ADataset: TDataset): String;
-Var
-  i: Integer;
-  sWhere: String;
-  sField, sValue: String;
-Begin
-  sWhere := '';
-
-  For i := 0 To FKeyFields.Count - 1 Do
-  Begin
-    sField := FKeyFields.Names[i];
-    sValue := Trim(DBSupport.Value(ADataset, sField));
-
-    sWhere := sWhere + Format('%s=''%s''', [sField, sValue]);
-
-    If i <> FKeyFields.Count - 1 Then
-      sWhere := sWhere + ' AND ';
-  End;
-
-  Result := Format('DELETE FROM %s WHERE %s; ', [ATable, sWhere]);
-End;
-
-Function InsertSQL(ATable: String; ADataset: TDataset): String;
-Var
-  sNames: String;
-  sValues: String;
-  i: Integer;
-  oField: TField;
-Begin
-  sNames := '';
-  sValues := '';
-  Result := '';
-
-  If ADataset.Active Then
-  Begin
-    For i := 0 To ADataset.FieldCount - 1 Do
-    Begin
-      oField := ADataset.Fields[i];
-
-      If oField.Visible Then
-      Begin
-        sNames := sNames + oField.FieldName;
-
-        If oField.IsNull Then
-          sValues := sValues + 'NULL'
-        Else
-          sValues := sValues + QuotedStr(oField.AsString);
-
-        sNames := sNames + ', ';
-        sValues := sValues + ', ';
-      End;
-    End;
-
-    If Length(sNames) > 2 Then
-    Begin
-      sNames := Copy(sNames, 1, Length(sNames) - 2);
-      sValues := Copy(sValues, 1, Length(sValues) - 2);
-      Result := Format('INSERT INTO %s (%s) VALUES (%s); ', [ATable, sNames, sValues]);
-    End;
-  End;
-End;
-
-// DANEGEROUS - Requires the ADataset fields to be in exactly the correct order
-Function InsertSQLWhereNotExists(ATable: String; ADataset: TDataset; AOracle: Boolean): String;
-Var
-  sWhere: String;
-  sValues: String;
-  i: Integer;
-  oField: TField;
-Begin
-  sWhere := '';
-  sValues := '';
-  Result := '';
-
-  If ADataset.Active Then
-  Begin
-    For i := 0 To ADataset.FieldCount - 1 Do
-    Begin
-      oField := ADataset.Fields[i];
-
-      If oField.Visible Then
-      Begin
-
-        If oField.IsNull Then
-        Begin
-          sWhere := sWhere + Format('%s IS NULL', [oField.FieldName]);
-          sValues := sValues + 'NULL';
-        End
-        Else
-        Begin
-          sWhere := sWhere + Format('%s=%s', [oField.FieldName, QuotedStr(oField.AsString)]);
-          sValues := sValues + QuotedStr(oField.AsString);
-        End;
-
-        sWhere := sWhere + ' AND ';
-        sValues := sValues + ', ';
-      End;
-    End;
-
-    If Length(sWhere) > 5 Then
-    Begin
-      sWhere := Copy(sWhere, 1, Length(sWhere) - 5);
-      sValues := Copy(sValues, 1, Length(sValues) - 2);
-
-      If AOracle Then
-        Result := Format(
-          'INSERT INTO %s SELECT %s FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM %s WHERE %s); ',
-          [ATable, sValues, ATable, sWhere])
-      Else
-        Result := Format('INSERT INTO %s SELECT %s WHERE NOT EXISTS (SELECT 1 FROM %s WHERE %s); ',
-          [ATable, sValues, ATable, sWhere]);
-    End;
-  End;
-End;
-
-Function ValidateSQL(AInput: String; AQuoted: Boolean = True; AOracle: Boolean = True): String;
-Begin
-  Result := TrimChars(AInput, [' ', #0, #13, #10]);
-
-  // Don't quote known functions...
-  If (Pos('TO_', UpperCase(AInput)) = 0) And (Pos('SEQ_', UpperCase(AInput)) = 0) Then
-  Begin
-    If (AQuoted) And (Uppercase(Result) <> 'NULL') Then
-      Result := QuotedStr(Result);
-
-    If AOracle Then
-      Result := FindReplace(Result, #10, '''||CHR(10)||''');
-
-    Result := FindReplace(Result, #13, '');
-  End;
-End;
-
-Function FormatSQL(ASQL: String; Const AValues: Array Of Const): String;
-Var
-  arrStrings: Array Of String;
-  arrArgs: Array Of TVarRec;
-  i: Integer;
-Begin
-  // Need arrStrings.  vAnsistring is a pointer, so the processing
-  // being performed doesn't increase RefCount.  Storing the result
-  // in the temp array of strings ensures the result doesn't get cleared
-  // until after we leave scope
-  SetLength(arrStrings{%H-}, Length(AValues));
-  SetLength(arrArgs{%H-}, Length(AValues));
-
-  For i := Low(AValues) To High(AValues) Do
-  Begin
-    arrArgs[i] := AValues[i];
-
-    If (AValues[i].vType = vtAnsiString) Then
-    Begin
-      arrStrings[i] := ValidateSQL(Ansistring(AValues[i].vAnsiString), True, True);
-      arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
-      arrArgs[i].vType := vtAnsiString;
-    End
-    Else
-    If (AValues[i].vType = vtChar) Then
-    Begin
-      // Chars will need to be converted to strings as the result will be quoted
-      arrStrings[i] := ValidateSQL(AValues[i].vChar, True, True);
-      arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
-      arrArgs[i].vType := vtAnsiString;
-    End;
-  End;
-
-  Result := Format(ASQL, arrArgs);
-End;
-
 Procedure Populate(ACombobox: TCombobox; ADataset: TDataset; AField: String;
   AInsertBlank: Boolean = False);
 Begin
@@ -499,7 +323,6 @@ Function ValueAsFloat(oDataset: TDataset; sField: String; ADefault: Extended): E
 Begin
   Result := StrToFloatDef(Value(ODataset, sField, ''), ADefault);
 End;
-
 
 Procedure InitialiseDBGrid(oGrid: TDBGrid; oDataset: TDataset; bHideIDs: Boolean = False);
 Var
@@ -943,58 +766,81 @@ Begin
   AResultAscending := Pos('__IdxA', sIndexName) > 0;
 
   //Set the index
-  SetStrProp(DataSet, 'sIndexName', sIndexName);
+  SetStrProp(DataSet, 'IndexName', sIndexName);
 End;
 
+// Should be RFC4180 compliant
+// https://www.rfc-editor.org/info/rfc4180/
 Procedure ExportDatasetToCSV(ADataset: TDataset; Const AFileName: String);
 Var
   oFile: TFileStream;
   oField: TField;
-  oRow: TStringList;
   oBookmark: TBookmark;
   sRow: String;
+  bFirst: Boolean;
+
+  Function CSVCell(Const S: String): String;
+  Begin
+    Result := StringReplace(S, '"', '""', [rfReplaceAll]);
+
+    If (Pos(',', S) > 0) Or (Pos('"', S) > 0) Or (Pos(#13, S) > 0) Or
+      (Pos(#10, S) > 0) Then
+      Result := '"' + Result + '"';
+  End;
+
+  Procedure AddCSVCell(Const S: String);
+  Begin
+    If Not bFirst Then
+      sRow := sRow + ',';
+
+    sRow := sRow + CSVCell(S);
+    bFirst := False;
+  End;
+
+  Procedure WriteRow;
+  Begin
+    sRow := sRow + #13#10;
+    WriteStringUTF8(oFile, sRow);
+  End;
+
 Begin
-  // Create a TStringList to store values for each row
-  oRow := TStringList.Create;
-
   SetBusy;
-  // Create a TFileStream to write to the CSV file
-  oFile := TFileStream.Create(AFilename, fmCreate);
   Try
-    // Write header line with oField names
-    For oField In ADataset.Fields Do
-      oRow.Add(Format('%s', [oField.FieldName]));
-
-    sRow := oRow.CommaText + LineEnding;
-    oFile.WriteBuffer(Pointer(sRow)^, Length(sRow));
-
-    oBookmark := ADataset.Bookmark;
-    ADataset.DisableControls;
+    oFile := TFileStream.Create(AFileName, fmCreate);
     Try
-      // Loop through the ADataset and write each row to the CSV file
-      ADataset.First;
-      While Not ADataset.EOF Do
-      Begin
-        oRow.Clear;
-        For oField In ADataset.Fields Do
-          oRow.Add(Format('%s', [oField.AsString]));
+      oFile.WriteBuffer(UTF8BOM, SizeOf(UTF8BOM));
 
-        sRow := oRow.CommaText + LineEnding;
-        oFile.WriteBuffer(Pointer(sRow)^, Length(sRow));
+      sRow := '';
+      bFirst := True;
+      For oField In ADataset.Fields Do
+        AddCSVCell(oField.FieldName);
+      WriteRow;
 
-        ADataset.Next;
+      oBookmark := ADataset.Bookmark;
+      ADataset.DisableControls;
+      Try
+        ADataset.First;
+        While Not ADataset.EOF Do
+        Begin
+          sRow := '';
+          bFirst := True;
+
+          For oField In ADataset.Fields Do
+            AddCSVCell(oField.AsString);
+
+          WriteRow;
+          ADataset.Next;
+        End;
+      Finally
+        ADataset.GotoBookmark(oBookmark);
+        ADataset.FreeBookmark(oBookmark);
+        ADataset.EnableControls;
       End;
     Finally
-      ADataset.GotoBookmark(oBookmark);
-      ADataset.FreeBookmark(oBookmark);
-      ADataset.EnableControls;
+      oFile.Free;
     End;
-
   Finally
-    // Free resources
     ClearBusy;
-    oRow.Free;
-    oFile.Free;
   End;
 End;
 

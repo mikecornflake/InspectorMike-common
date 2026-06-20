@@ -9,7 +9,7 @@ interface
 
 uses
   ControlGridLayout, FormPersistent, FrameBase, FormAbout, FormMain, 
-  FrameHTMLs, ControlsSupport, LazarusPackageIntf;
+  FrameHTMLs, ControlsSupport, WizardBase, LazarusPackageIntf;
 
 implementation
 

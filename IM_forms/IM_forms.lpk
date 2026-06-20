@@ -8,8 +8,8 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="src\Display\Forms;src\Display\Frames"/>
-        <OtherUnitFiles Value="src\Display\Forms;src\Display\Frames;src\Classes;src\Support"/>
+        <IncludeFiles Value="src\Display\Forms;src\Display\Frames;src\Display\Wizards"/>
+        <OtherUnitFiles Value="src\Display\Forms;src\Display\Frames;src\Classes;src\Support;src\Display\Wizards"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
@@ -61,6 +61,14 @@
       <Item>
         <Filename Value="src\Support\ControlsSupport.pas"/>
         <UnitName Value="ControlsSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Wizards\WizardBase.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Wizards\WizardBase.pas"/>
+        <UnitName Value="WizardBase"/>
       </Item>
     </Files>
     <RequiredPkgs>

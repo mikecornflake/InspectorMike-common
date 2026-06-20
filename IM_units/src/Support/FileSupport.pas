@@ -97,6 +97,7 @@ Function LoadTextFile(AFilename: String): String;
 Procedure SaveTextFile(AFilename: String; AText: String);
 Function GetIOErrorText(code: Integer): String;
 Procedure FlushFileStreamToDisk(AStream: TFileStream);
+Procedure WriteStringUTF8(AStream: TStream; Const S: String);
 
 // Filename generators
 Function UniqueFilename(Const ADir, APrefix, AExt: String; AUseGUID: Boolean = True): String;
@@ -118,6 +119,9 @@ Const
     ('.csv', '.survey', '.txt');
   FileExtText: Array[1..8] Of String =
     ('.txt', '.lua', '.pas', '.c', '.me', '.1st', '.ini', '.alias');
+
+  // First few bytes of any UTF8 text file
+  UTF8BOM: Array[0..2] Of Byte = ($EF, $BB, $BF);
 
 Implementation
 
@@ -151,6 +155,15 @@ Begin
   {$ELSE}
   fpfsync(AStream.Handle);
   {$ENDIF}
+End;
+
+Procedure WriteStringUTF8(AStream: TStream; Const S: String);
+Var
+  sUTF8: UTF8String;
+Begin
+  sUTF8 := UTF8Encode(S);
+  If Length(sUTF8) > 0 Then
+    AStream.WriteBuffer(sUTF8[1], Length(sUTF8));
 End;
 
 // Based on code from ChatGPT 5.1 on 29 Nov 2025

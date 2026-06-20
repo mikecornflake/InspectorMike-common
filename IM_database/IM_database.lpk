@@ -12,6 +12,11 @@
         <OtherUnitFiles Value="src\Classes;src\Support;src\Display\Dialogs;src\Display\Frames"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx5024="True"/>
+        </CompilerMessages>
+      </Other>
     </CompilerOptions>
     <Files>
       <Item>
@@ -57,6 +62,10 @@
       <Item>
         <Filename Value="src\Display\Frames\FrameGrids.pas"/>
         <UnitName Value="FrameGrids"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\SQLSupport.pas"/>
+        <UnitName Value="SQLSupport"/>
       </Item>
     </Files>
     <RequiredPkgs>
