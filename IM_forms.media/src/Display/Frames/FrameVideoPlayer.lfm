@@ -3,6 +3,8 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
   Width = 642
   ClientHeight = 250
   ClientWidth = 642
+  TabStop = True
+  OnMouseEnter = pnlVideoMouseEnter
   DesignLeft = 461
   DesignTop = 125
   object lblStatus: TLabel[0]
@@ -23,6 +25,8 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     BevelOuter = bvNone
     PopupMenu = pmnuPlayer
     TabOrder = 0
+    TabStop = True
+    OnMouseEnter = pnlVideoMouseEnter
     OnMouseWheel = pnlVideoMouseWheel
   end
   object pnlToolbar: TPanel[2]
@@ -470,6 +474,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       Category = 'Playback'
       Caption = 'Reset playback rate to normal'
       ImageIndex = 0
+      ShortCut = 82
       OnExecute = actResetRateExecute
     end
     object actPlay: TAction
@@ -500,12 +505,14 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       Category = 'Playback'
       Caption = 'actStepBack'
       ImageIndex = 1
+      ShortCut = 37
       OnExecute = actStepBackClick
     end
     object actStepForward: TAction
       Category = 'Playback'
       Caption = 'actStepForward'
       ImageIndex = 2
+      ShortCut = 39
       OnExecute = actStepForwardClick
     end
   end

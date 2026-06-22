@@ -86,6 +86,7 @@ Type
     Procedure mnuGrabClick(Sender: TObject);
     Procedure pnlToolbarResize(Sender: TObject);
     Procedure actStepBackClick(Sender: TObject);
+    procedure pnlVideoMouseEnter(Sender: TObject);
     Procedure pnlVideoMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; Var Handled: Boolean);
     Procedure trackVideoChange(Sender: TObject);
@@ -265,7 +266,6 @@ Begin
   Else
     actPlayPause.ImageIndex:=0;//play
 
-
   btnGrab.Enabled := bCanGrab;
   btnOpenInExplorer.Enabled := bHasFile;
 
@@ -410,6 +410,12 @@ Begin
     fmeVideo.Position := Max(0, fmeVideo.Position - StepDelta);
   End;
 End;
+
+procedure TFrameVideoPlayer.pnlVideoMouseEnter(Sender: TObject);
+begin
+  If pnlVideo.CanFocus Then
+    pnlVideo.SetFocus;
+end;
 
 Procedure TFrameVideoPlayer.actStepForwardClick(Sender: TObject);
 Begin
