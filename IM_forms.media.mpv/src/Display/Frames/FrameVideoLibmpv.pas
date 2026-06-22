@@ -94,7 +94,8 @@ Type
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
 
-    Function Load(Const AFilename: String): Boolean; Override;
+    Function Load(Const AFilename: String; AChannel: String = '';
+      AStartDateTime: TDateTime = 0): Boolean; Override;
     Function Play: Boolean; Override;
     Function Pause: Boolean; Override;
     Function Resume: Boolean; Override;
@@ -103,8 +104,10 @@ Type
 
     Function CanSeek: Boolean; Override;
     Function CanSetRate: Boolean; Override;
-    Function CanGrabBitmap: Boolean; Override;
-    Function GetBitmap(Bitmap: TBitmap): Boolean; Override;
+
+    Function CanGrabFrame: Boolean; Override;
+    Function SaveFrameToFile(Const AFilename: String): Boolean; Override;
+    Function CopyFrameToClipboard: Boolean; Override;
   End;
 
 Implementation
@@ -289,7 +292,8 @@ Begin
     FmpvPlayer.Visible := Value;
 End;
 
-Function TFrameVideoLibmpv.Load(Const AFilename: String): Boolean;
+Function TFrameVideoLibmpv.Load(Const AFilename: String; AChannel: String;
+  AStartDateTime: TDateTime): Boolean;
 Begin
   Result := False;
 
@@ -298,7 +302,7 @@ Begin
   If Assigned(FmpvPlayer) Then
     FmpvPlayer.AutoStartPlayback := Autoplay;
 
-  Result := Inherited Load(AFilename);
+  Result := Inherited Load(AFilename, AChannel, AStartDateTime);
 
   If Not Result Then
     Exit;
@@ -401,16 +405,26 @@ Begin
   Result := True;
 End;
 
-Function TFrameVideoLibmpv.CanGrabBitmap: Boolean;
+Function TFrameVideoLibmpv.CanGrabFrame: Boolean;
 Begin
-  //TODO
-  Result := False;
+  Result := True;
 End;
 
-Function TFrameVideoLibmpv.GetBitmap(Bitmap: TBitmap): Boolean;
+Function TFrameVideoLibmpv.SaveFrameToFile(Const AFilename: String): Boolean;
 Begin
-  //TODO
   Result := False;
+
+  If Not Assigned(FmpvPlayer) Then
+    Exit;
+
+  FmpvPlayer.ScreenshotToFile(AFilename, smVideo);
+
+  Result := FileExists(AFilename);
+End;
+
+Function TFrameVideoLibmpv.CopyFrameToClipboard: Boolean;
+Begin
+  // False;
 End;
 
 Procedure TFrameVideoLibmpv.mpvStartFile(Sender: TObject);

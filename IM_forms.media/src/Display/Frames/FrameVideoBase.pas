@@ -79,12 +79,16 @@ Type
 
   TFrameVideoBase = Class(TFrameBase)
   Private
+    Function GetPositionAsTime: TDateTime;
+    Procedure SetPositionAsTime(AValue: TDateTime);
   Protected
     FFilename: String;
     FOnPosition: TPositionEvent;
     FOnStateChanged: TStateEvent;
     FVideoFileCount: Integer;
     FAutoplay: Boolean;
+    FChannel: String;
+    FStartDateTime: TDateTime;
 
     Procedure SetAutoplay(AValue: Boolean); Virtual;
 
@@ -103,29 +107,41 @@ Type
   Public
     Constructor Create(TheOwner: TComponent); Override;
 
-    Function Load(Const AFilename: String): Boolean; Virtual;
+    Function Load(Const AFilename: String; AChannel: String = '';
+      AStartDateTime: TDateTime = 0): Boolean; Virtual;
     Function Play: Boolean; Virtual;
     Function Pause: Boolean; Virtual;
     Function Resume: Boolean; Virtual;
     Function Stop: Boolean; Virtual;
     Function Clear: Boolean; Virtual;
+    Property Autoplay: Boolean Read FAutoplay Write SetAutoplay;
 
     Function HasVideo: Boolean; Virtual;
+    Function EndTime: TDateTime;
 
     Function CanSeek: Boolean; Virtual;
     Function CanSetRate: Boolean; Virtual;
-    Function CanGrabBitmap: Boolean; Virtual;
 
-    Function GetBitmap(Bitmap: TBitmap): Boolean; Virtual;
+    Function CanGrabFrame: Boolean; Virtual;
+    Function SaveFrameToFile(Const AFilename: String): Boolean; Virtual;
+    Function CopyFrameToClipboard: Boolean; Virtual;
 
     Property Filename: String Read FFilename;
-    Property Position: TVideoTime Read GetPosition Write SetPosition;
-    Property Duration: TVideoTime Read GetDuration;
     Property Muted: Boolean Read GetMuted Write SetMuted;
+
     Property Rate: Double Read GetRate Write SetRate;
     Property State: TVideoState Read GetState;
 
-    Property Autoplay: Boolean Read FAutoplay Write SetAutoplay;
+    //Optional: The name of the camera used to record video.
+    //  i.e. "Front Door", "Centre", "Port" etc
+    Property Channel: String Read FChannel Write FChannel;
+
+    // These two are in TVideoTime i.e. milliseconds
+    Property Position: TVideoTime Read GetPosition Write SetPosition;
+    Property Duration: TVideoTime Read GetDuration;
+
+    Property StartDateTime: TDateTime Read FStartDateTime Write FStartDateTime;
+    Property PositionAsTime: TDateTime Read GetPositionAsTime Write SetPositionAsTime;
 
     Property OnPosition: TPositionEvent Read FOnPosition Write FOnPosition;
     Property OnStateChanged: TStateEvent Read FOnStateChanged Write FOnStateChanged;
@@ -137,7 +153,10 @@ Implementation
 
 {$R *.lfm}
 
-{ TFrameVideoBase }
+Uses
+  DateUtils, Math;
+
+  { TFrameVideoBase }
 
 Constructor TFrameVideoBase.Create(TheOwner: TComponent);
 Begin
@@ -147,9 +166,36 @@ Begin
   FFilename := '';
   FOnPosition := nil;
   FOnStateChanged := nil;
+  FChannel := '';
+  FStartDateTime := 0;
 
   // Each descendent should set this when files are correctly loaded.
   FVideoFileCount := 0;
+End;
+
+Function TFrameVideoBase.GetPositionAsTime: TDateTime;
+Begin
+  Result := FStartDateTime;
+
+  If VideoFileCount > 0 Then
+    Result := FStartDateTime + (Position / MSecsPerDay);
+End;
+
+Procedure TFrameVideoBase.SetPositionAsTime(AValue: TDateTime);
+Var
+  iPosition: TVideoTime;
+Begin
+  If VideoFileCount = 0 Then
+    Exit;
+
+  iPosition := Round((AValue - FStartDateTime) * MSecsPerDay);
+
+  Position := EnsureRange(iPosition, 0, Duration);
+End;
+
+Function TFrameVideoBase.EndTime: TDateTime;
+Begin
+  Result := FStartDateTime + (Duration / MSecsPerDay);
 End;
 
 Procedure TFrameVideoBase.SetAutoplay(AValue: Boolean);
@@ -209,9 +255,13 @@ Begin
     FOnStateChanged(Self, State);
 End;
 
-Function TFrameVideoBase.Load(Const AFilename: String): Boolean;
+Function TFrameVideoBase.Load(Const AFilename: String; AChannel: String;
+  AStartDateTime: TDateTime): Boolean;
 Begin
   FFilename := AFilename;
+  FStartDateTime := AStartDateTime;
+  FChannel := AChannel;
+
   Result := FileExists(AFilename);
 
   ShowHint := Result;
@@ -262,12 +312,17 @@ Begin
   Result := False;
 End;
 
-Function TFrameVideoBase.CanGrabBitmap: Boolean;
+Function TFrameVideoBase.CanGrabFrame: Boolean;
 Begin
   Result := False;
 End;
 
-Function TFrameVideoBase.GetBitmap(Bitmap: TBitmap): Boolean;
+Function TFrameVideoBase.SaveFrameToFile(Const AFilename: String): Boolean;
+Begin
+  Result := False;
+End;
+
+Function TFrameVideoBase.CopyFrameToClipboard: Boolean;
 Begin
   Result := False;
 End;

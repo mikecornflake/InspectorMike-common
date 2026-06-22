@@ -107,7 +107,8 @@ Type
     Procedure BeginLoadVideos;
     Procedure EndLoadVideos;
 
-    Function Load(Const AFilename: String): Boolean; Override;
+    Function Load(Const AFilename: String; AChannel: String = '';
+      AStartDateTime: TDateTime = 0): Boolean; Override;
 
     Function Play: Boolean; Override;
     Function Pause: Boolean; Override;
@@ -116,8 +117,10 @@ Type
 
     Function CanSeek: Boolean; Override;
     Function CanSetRate: Boolean; Override;
-    Function CanGrabBitmap: Boolean; Override;
-    Function GetBitmap(Bitmap: TBitmap): Boolean; Override;
+
+    Function CanGrabFrame: Boolean; Override;
+    Function SaveFrameToFile(Const AFilename: String): Boolean; Override;
+    Function CopyFrameToClipboard: Boolean; Override;
 
     Property Videos: TFrameVideoBaseList Read FVideos;
     Property Master: TFrameVideoBase Read FMaster Write SetMaster;
@@ -130,6 +133,9 @@ Type
 
     Property VideoEngineClass: TFrameVideoBaseClass Read FVideoEngineClass Write FVideoEngineClass;
   End;
+
+Const
+  MULTI_CHANNEL_NAME: String = '<channel>';
 
 Implementation
 
@@ -169,6 +175,8 @@ Begin
   FLayout.CellSpacing := 0;
 
   FVideoFileCount := 0;
+
+  FChannel := MULTI_CHANNEL_NAME;
 End;
 
 Destructor TFrameSyncedVideo.Destroy;
@@ -320,7 +328,7 @@ Begin
   Begin
     fmeVideo := FVideos[i];
     fmeVideo.Autoplay := AValue;
-  end;
+  End;
 End;
 
 Procedure TFrameSyncedVideo.UpdateStateFromChildren;
@@ -394,7 +402,8 @@ Begin
     Result := FStartTime + (Duration / MSecsPerDay);
 End;
 
-Function TFrameSyncedVideo.Load(Const AFilename: String): Boolean;
+Function TFrameSyncedVideo.Load(Const AFilename: String; AChannel: String;
+  AStartDateTime: TDateTime): Boolean;
 Var
   fmeVideo: TFrameVideoBase;
 Begin
@@ -426,13 +435,13 @@ Begin
 
   If Not Assigned(FMaster) Then
   Begin
-    FFilename := AFilename;
+    Inherited Load(AFilename, MULTI_CHANNEL_NAME, AStartDateTime);
     Master := fmeVideo;
   End;
 
   fmeVideo.Muted := fmeVideo <> FMaster;
 
-  Result := fmeVideo.Load(AFilename);
+  Result := fmeVideo.Load(AFilename, AChannel, AStartDateTime);
 
   //FLayout.LayoutControls(FVideos, FVideoFileCount);
 End;
@@ -520,17 +529,38 @@ Begin
   Result := Assigned(FMaster) And FMaster.CanSetRate;
 End;
 
-Function TFrameSyncedVideo.CanGrabBitmap: Boolean;
+Function TFrameSyncedVideo.CanGrabFrame: Boolean;
 Begin
-  Result := Assigned(FMaster) And FMaster.CanGrabBitmap;
+  Result := Assigned(FMaster) And FMaster.CanGrabFrame;
 End;
 
-Function TFrameSyncedVideo.GetBitmap(Bitmap: TBitmap): Boolean;
+Function TFrameSyncedVideo.SaveFrameToFile(Const AFilename: String): Boolean;
+Var
+  sFile, sExt: String;
+  fmeVideo: TFrameVideoBase;
+  i: Integer;
 Begin
-  If Assigned(FMaster) Then
-    Result := FMaster.GetBitmap(Bitmap)
-  Else
-    Result := False;
+  Result := FVideoFileCount > 0;
+
+  For i := 0 To FVideoFileCount - 1 Do
+  Begin
+    fmeVideo := TFrameVideobase(FVideos[i]);
+
+    sExt := ExtractFileExt(AFilename);
+
+    If sExt = '' Then
+      sFile := IncludeTrailingBackslash(AFilename) +
+        Trim(FormatDateTime('yyyymmdd hhnnss', fmeVideo.StartDateTime) + ' ' + fmeVideo.Channel) + '.png'
+    Else
+      sFile := AFilename.Replace(MULTI_CHANNEL_NAME, fmeVideo.Channel);
+
+    Result := Result And FVideos[i].SaveFrameToFile(sFile);
+  End;
+End;
+
+Function TFrameSyncedVideo.CopyFrameToClipboard: Boolean;
+Begin
+  Result := Assigned(FMaster) And FMaster.CanGrabFrame;
 End;
 
 Procedure TFrameSyncedVideo.MasterPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);

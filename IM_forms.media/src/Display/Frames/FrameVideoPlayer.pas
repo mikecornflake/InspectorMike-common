@@ -86,7 +86,7 @@ Type
     Procedure mnuGrabClick(Sender: TObject);
     Procedure pnlToolbarResize(Sender: TObject);
     Procedure actStepBackClick(Sender: TObject);
-    procedure pnlVideoMouseEnter(Sender: TObject);
+    Procedure pnlVideoMouseEnter(Sender: TObject);
     Procedure pnlVideoMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; Var Handled: Boolean);
     Procedure trackVideoChange(Sender: TObject);
@@ -119,7 +119,8 @@ Type
     Destructor Destroy; Override;
 
     Procedure RefreshUI; Override;
-    Function Load(Const AFilename: String): Boolean;
+    Function Load(Const AFilename: String; AChannel: String = '';
+      AStartDateTime: TDateTime = 0): Boolean;
     Function Clear: Boolean;
     Procedure Pause;
 
@@ -249,7 +250,7 @@ Begin
   bHasFile := fmeVideo.HasVideo;
   bCanSeek := fmeVideo.CanSeek;
   bCanRate := fmeVideo.CanSetRate;
-  bCanGrab := fmeVideo.CanGrabBitmap;
+  bCanGrab := fmeVideo.CanGrabFrame;
 
   actPlay.Enabled := bHasFile And (fmeVideo.State In [vsStopped, vsPaused, vsEnded]);
   actPause.Enabled := bHasFile And (fmeVideo.State = vsPlaying);
@@ -262,9 +263,9 @@ Begin
   actResetRate.Enabled := bCanSeek And (Abs(fmeVideo.Rate - 1.0) > 0.01);
 
   If actPlay.Enabled Then
-    actPlayPause.ImageIndex:=5 //pause
+    actPlayPause.ImageIndex := 5 //pause
   Else
-    actPlayPause.ImageIndex:=0;//play
+    actPlayPause.ImageIndex := 0;//play
 
   btnGrab.Enabled := bCanGrab;
   btnOpenInExplorer.Enabled := bHasFile;
@@ -283,7 +284,8 @@ Begin
   actPlaySlower.Hint := actPlaySlower.Hint + sExtra;
 End;
 
-Function TFrameVideoPlayer.Load(Const AFilename: String): Boolean;
+Function TFrameVideoPlayer.Load(Const AFilename: String; AChannel: String;
+  AStartDateTime: TDateTime): Boolean;
 Begin
   FLastImageFolder := '';
   FFilename := AFilename;
@@ -293,7 +295,7 @@ Begin
   If EnsurePlaybackFrame Then
   Begin
     fmeVideo.Autoplay := FAutoplay;
-    Result := fmeVideo.Load(FFilename);
+    Result := fmeVideo.Load(FFilename, AChannel, AStartDateTime);
   End;
 
   lblStatus.Caption := Format('File: %s', [FFilename]);
@@ -411,11 +413,11 @@ Begin
   End;
 End;
 
-procedure TFrameVideoPlayer.pnlVideoMouseEnter(Sender: TObject);
-begin
+Procedure TFrameVideoPlayer.pnlVideoMouseEnter(Sender: TObject);
+Begin
   If pnlVideo.CanFocus Then
     pnlVideo.SetFocus;
-end;
+End;
 
 Procedure TFrameVideoPlayer.actStepForwardClick(Sender: TObject);
 Begin
@@ -491,81 +493,48 @@ End;
 
 Procedure TFrameVideoPlayer.btnGrabClick(Sender: TObject);
 Var
-  oBitmap: TBitmap;
-  oJPEG: TJPEGImage;
-  sPath, sFile, sSaveFile: String;
-  i: Integer;
+  sPath: String;
 Begin
   If Not Assigned(fmeVideo) Then
     Exit;
 
-  oBitmap := TBitmap.Create;
-  Try
-    If fmeVideo.GetBitmap(oBitmap) Then
-    Begin
-      If dlgSaveLocation.InitialDir = '' Then
-        dlgSaveLocation.InitialDir :=
-          IncludeTrailingBackslash(ExtractFilePath(fmeVideo.Filename));
+  If dlgSaveLocation.InitialDir = '' Then
+    dlgSaveLocation.InitialDir :=
+      IncludeTrailingBackslash(ExtractFilePath(fmeVideo.Filename));
 
-      If mnuGrabOnlyAskOnce.Checked Then
+  If mnuGrabOnlyAskOnce.Checked Then
+  Begin
+    If FLastImageFolder = '' Then
+    Begin
+      If dlgSaveLocation.Execute Then
       Begin
-        If FLastImageFolder = '' Then
-        Begin
-          If dlgSaveLocation.Execute Then
-          Begin
-            sPath := IncludeTrailingBackslash(dlgSaveLocation.FileName);
-            FLastImageFolder := sPath;
-          End
-          Else
-            sPath := '';
-        End
-        Else
-          sPath := FLastImageFolder;
-      End
-      Else If mnuGrabAlwaysAsk.Checked Then
-      Begin
-        If dlgSaveLocation.Execute Then
-        Begin
-          sPath := IncludeTrailingBackslash(dlgSaveLocation.FileName);
-          FLastImageFolder := sPath;
-        End
-        Else
-          sPath := '';
+        sPath := IncludeTrailingBackslash(dlgSaveLocation.FileName);
+        FLastImageFolder := sPath;
       End
       Else
-        sPath := IncludeTrailingBackslash(ExtractFilePath(fmeVideo.Filename));
-
-      If sPath <> '' Then
-      Begin
-        sFile := ExtractFileNameWithoutExt(ExtractFileNameOnly(fmeVideo.Filename));
-
-        i := 0;
-        Repeat
-          sSaveFile := Format('%s%s-%d.jpg', [sPath, sFile, i]);
-          Inc(i);
-        Until Not FileExists(sSaveFile);
-
-        Clipboard.Assign(oBitmap);
-
-        oJPEG := TJPEGImage.Create;
-        Try
-          oJPEG.CompressionQuality := 100;
-          oJPEG.Assign(oBitmap);
-          oJPEG.SaveToFile(sSaveFile);
-        Finally
-          oJPEG.Free;
-        End;
-
-        lblStatus.Caption := 'Saved ' + sSaveFile;
-      End;
+        sPath := '';
     End
     Else
+      sPath := FLastImageFolder;
+  End
+  Else If mnuGrabAlwaysAsk.Checked Then
+  Begin
+    If dlgSaveLocation.Execute Then
     Begin
-      lblStatus.Caption := 'Failed to grab image';
-    End;
-  Finally
-    oBitmap.Free;
-  End;
+      sPath := IncludeTrailingBackslash(dlgSaveLocation.FileName);
+      FLastImageFolder := sPath;
+    End
+    Else
+      sPath := '';
+  End
+  Else
+    sPath := IncludeTrailingBackslash(ExtractFilePath(fmeVideo.Filename));
+
+  // By default, leave it to the player to determine filename
+  If fmeVideo.SaveFrameToFile(sPath) Then
+    lblStatus.Caption := 'Saved image to ' + sPath
+  Else
+    lblStatus.Caption := 'Failed to grab image';
 
   RefreshUI;
 End;
@@ -647,7 +616,11 @@ Begin
     FUpdatingTracker := False;
   End;
 
-  lblTime.Caption := ToTime(PositionMS) + LineEnding + ToTime(DurationMS);
+  If fmeVideo.StartDateTime = 0 Then
+    lblTime.Caption := ToTime(PositionMS) + LineEnding + ToTime(DurationMS)
+  Else
+    lblTime.Caption := TimeToStr(fmeVideo.PositionAsTime) + LineEnding +
+      TimeToStr(fmeVideo.EndTime);
 End;
 
 Procedure TFrameVideoPlayer.VideoStateChanged(Sender: TObject; State: TVideoState);
