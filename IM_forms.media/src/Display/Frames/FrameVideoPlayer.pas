@@ -541,8 +541,8 @@ End;
 
 Procedure TFrameVideoPlayer.btnOpenInExplorerClick(Sender: TObject);
 Begin
-  If FFilename <> '' Then
-    LaunchFile('explorer.exe', Format('/e,/select,"%s"', [FFilename]));
+  If fmeVideo.Filename <> '' Then
+    LaunchFile('explorer.exe', Format('/e,/select,"%s"', [fmeVideo.Filename]));
 End;
 
 Procedure TFrameVideoPlayer.mnuGrabClick(Sender: TObject);

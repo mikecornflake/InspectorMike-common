@@ -90,7 +90,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object btnOpenInExplorer: TToolButton
         Left = 281
-        Hint = 'Open In Explorer'
+        Hint = 'Open Video Folder...'
         Top = 0
         Caption = 'btnOpenInExplorer'
         ImageIndex = 7
