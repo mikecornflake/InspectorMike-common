@@ -392,7 +392,7 @@ End;
 
 Function TFrameVideoLibmpv.CanSeek: Boolean;
 Begin
-  Result := Assigned(FmpvPlayer) And FmpvPlayer.IsMediaLoaded;
+  Result := Assigned(FmpvPlayer);
 End;
 
 Function TFrameVideoLibmpv.CanSetRate: Boolean;

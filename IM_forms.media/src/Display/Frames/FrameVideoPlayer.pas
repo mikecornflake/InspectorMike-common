@@ -218,7 +218,7 @@ Begin
   btnGrab.Enabled := bCanGrab;
   btnOpenInExplorer.Enabled := bHasFile;
 
-  trackVideo.Enabled := bHasEngine And bCanSeek;
+  trackVideo.Enabled := bCanSeek;
 
   If bHasEngine Then
   Begin
