@@ -213,6 +213,12 @@ Function TFrameVideoBase.Load(Const AFilename: String): Boolean;
 Begin
   FFilename := AFilename;
   Result := FileExists(AFilename);
+
+  ShowHint := Result;
+  If Result Then
+    Hint := ExtractFilename(AFilename)
+  Else
+    Hint := '';
 End;
 
 Function TFrameVideoBase.Play: Boolean;

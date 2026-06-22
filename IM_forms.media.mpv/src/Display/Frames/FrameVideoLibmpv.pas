@@ -249,17 +249,18 @@ End;
 
 Function TFrameVideoLibmpv.GetRate: Double;
 Begin
-  Result := 1.0; // TODO: wire to mpv speed property if needed.
-
   If Not Assigned(FmpvPlayer) Then
-    Exit;
+    Exit(1);
+
+  Result := FmpvPlayer.mpv_get_property_double('speed');
 End;
 
 Procedure TFrameVideoLibmpv.SetRate(AValue: Double);
 Begin
   If Not Assigned(FmpvPlayer) Then
     Exit;
-  // TODO: wire to mpv speed property if needed.
+
+  FmpvPlayer.mpv_set_property_double('speed', AValue);
 End;
 
 Function TFrameVideoLibmpv.GetState: TVideoState;
@@ -397,8 +398,7 @@ End;
 
 Function TFrameVideoLibmpv.CanSetRate: Boolean;
 Begin
-  // TODO
-  Result := False;
+  Result := True;
 End;
 
 Function TFrameVideoLibmpv.CanGrabBitmap: Boolean;
@@ -452,7 +452,7 @@ Begin
     FmpvPlayer.AutoStartPlayback := AValue;
 End;
 
-initialization
+Initialization
   TVideoEngineFactory.RegisterEngine('libmpv', TFrameVideoLibmpv);
 
 End.

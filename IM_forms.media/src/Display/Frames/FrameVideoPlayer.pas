@@ -31,13 +31,23 @@ Interface
 
 Uses
   Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, ExtCtrls, Menus, FrameBase, FrameVideoBase;
+  ComCtrls, StdCtrls, ExtCtrls, Menus, ActnList, FrameBase, FrameVideoBase,
+  Types;
 
 Type
 
   { TFrameVideoPlayer }
 
   TFrameVideoPlayer = Class(TFrameBase)
+    actStepBack: TAction;
+    actStepForward: TAction;
+    actPlayFaster: TAction;
+    actPlaySlower: TAction;
+    actPlay: TAction;
+    actPause: TAction;
+    actResetRate: TAction;
+    actPlayPause: TAction;
+    actVideo: TActionList;
     btnGrab: TToolButton;
     btnOpenInExplorer: TToolButton;
     btnPause: TToolButton;
@@ -46,31 +56,38 @@ Type
     ilToolbar: TImageList;
     lblStatus: TLabel;
     lblTime: TLabel;
+    mnuResetRate: TMenuItem;
+    mnuPlayPause: TMenuItem;
     mnuGrabAlwaysAsk: TMenuItem;
     mnuGrabOnlyAskOnce: TMenuItem;
     mnuGrabVideoFolder: TMenuItem;
     pmnuGrab: TPopupMenu;
     pnlToolbar: TPanel;
     pnlVideo: TPanel;
+    pmnuPlayer: TPopupMenu;
     tbVideo: TToolBar;
-    ToolButton1: TToolButton;
-    ToolButton3: TToolButton;
-    ToolButton4: TToolButton;
-    btnRewind: TToolButton;
-    btnFastForward: TToolButton;
+    btnSep2: TToolButton;
+    btnSep1: TToolButton;
+    btnSep3: TToolButton;
+    btnPlaySlower: TToolButton;
+    btnPlayFaster: TToolButton;
     btnStepBack: TToolButton;
     btnStepForward: TToolButton;
     trackVideo: TTrackBar;
-    Procedure btnFastForwardClick(Sender: TObject);
+    Procedure actPlayPauseExecute(Sender: TObject);
+    Procedure actResetRateExecute(Sender: TObject);
+    Procedure actPlayFasterClick(Sender: TObject);
     Procedure btnGrabClick(Sender: TObject);
     Procedure btnOpenInExplorerClick(Sender: TObject);
-    Procedure btnPauseClick(Sender: TObject);
-    Procedure btnPlayClick(Sender: TObject);
-    Procedure btnRewindClick(Sender: TObject);
-    Procedure btnStepForwardClick(Sender: TObject);
+    Procedure actPauseClick(Sender: TObject);
+    Procedure actPlayClick(Sender: TObject);
+    Procedure actPlaySlowerClick(Sender: TObject);
+    Procedure actStepForwardClick(Sender: TObject);
     Procedure mnuGrabClick(Sender: TObject);
     Procedure pnlToolbarResize(Sender: TObject);
-    Procedure btnStepBackClick(Sender: TObject);
+    Procedure actStepBackClick(Sender: TObject);
+    Procedure pnlVideoMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; Var Handled: Boolean);
     Procedure trackVideoChange(Sender: TObject);
     Procedure trackVideoMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -92,6 +109,7 @@ Type
     Procedure SetAutoplay(AValue: Boolean);
     Procedure SetVideoEngineClass(AValue: TFrameVideoBaseClass);
     Procedure SetShowLabel(AValue: Boolean);
+    Function StepDelta: Integer;
 
     Procedure VideoPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
     Procedure VideoStateChanged(Sender: TObject; State: TVideoState);
@@ -105,7 +123,8 @@ Type
     Procedure Pause;
 
     Property Filename: String Read GetFilename;
-    Property VideoEngineClass: TFrameVideoBaseClass Read FVideoEngineClass Write SetVideoEngineClass;
+    Property VideoEngineClass: TFrameVideoBaseClass Read FVideoEngineClass
+      Write SetVideoEngineClass;
 
     Property Autoplay: Boolean Read FAutoplay Write SetAutoplay;
     Property ShowLabel: Boolean Read GetShowLabel Write SetShowLabel;
@@ -116,10 +135,16 @@ Type
     Property VideoFileCount: Integer Read GetVideoFileCount;
   End;
 
+Const
+  MIN_RATE = 0.25;
+  MAX_RATE = 8.0;
+  RATE_STEP = Sqrt(2);
+
 Implementation
 
 Uses
   OSSupport, Math, Clipbrd;
+
 
   {$R *.lfm}
 
@@ -198,36 +223,64 @@ End;
 
 Procedure TFrameVideoPlayer.RefreshUI;
 Var
-  bHasEngine, bHasFile, bCanSeek, bCanRate, bCanGrab: Boolean;
+  bHasFile, bCanSeek, bCanRate, bCanGrab: Boolean;
+  sExtra: String;
 Begin
   Inherited RefreshUI;
 
-  bHasEngine := Assigned(fmeVideo);
-  bHasFile := bHasEngine And fmeVideo.HasVideo;
-  bCanSeek := bHasEngine And fmeVideo.CanSeek;
-  bCanRate := bHasEngine And fmeVideo.CanSetRate;
-  bCanGrab := bHasEngine And fmeVideo.CanGrabBitmap;
+  If Not Assigned(fmeVideo) Then
+  Begin
+    btnPlay.Enabled := False;
+    btnPause.Enabled := False;
+    btnStepBack.Enabled := False;
+    btnStepForward.Enabled := False;
+    btnPlayFaster.Enabled := False;
+    btnPlaySlower.Enabled := False;
+    btnGrab.Enabled := False;
+    btnOpenInExplorer.Enabled := False;
 
-  btnPlay.Enabled := bHasEngine And bHasFile And (fmeVideo.State In
-    [vsStopped, vsPaused, vsEnded]);
-  btnPause.Enabled := bHasEngine And bHasFile And (fmeVideo.State = vsPlaying);
-  btnStepBack.Enabled := bCanSeek;
-  btnStepForward.Enabled := bCanSeek;
-  btnFastForward.Enabled := bCanRate;
-  btnRewind.Enabled := bCanRate;
+    actPlayPause.Enabled := False;
+    actResetRate.Enabled := False;
+
+    Exit;
+  End;
+
+  bHasFile := fmeVideo.HasVideo;
+  bCanSeek := fmeVideo.CanSeek;
+  bCanRate := fmeVideo.CanSetRate;
+  bCanGrab := fmeVideo.CanGrabBitmap;
+
+  actPlay.Enabled := bHasFile And (fmeVideo.State In [vsStopped, vsPaused, vsEnded]);
+  actPause.Enabled := bHasFile And (fmeVideo.State = vsPlaying);
+  actStepBack.Enabled := bCanSeek;
+  actStepForward.Enabled := bCanSeek;
+  actPlayFaster.Enabled := bCanRate;
+  actPlaySlower.Enabled := bCanRate;
+
+  actPlayPause.Enabled := bHasFile;
+  actResetRate.Enabled := bCanSeek And (Abs(fmeVideo.Rate - 1.0) > 0.01);
+
+  If actPlay.Enabled Then
+    actPlayPause.ImageIndex:=5 //pause
+  Else
+    actPlayPause.ImageIndex:=0;//play
+
+
   btnGrab.Enabled := bCanGrab;
   btnOpenInExplorer.Enabled := bHasFile;
 
   trackVideo.Enabled := bCanSeek;
 
-  If bHasEngine Then
-  Begin
-    If fmeVideo.Rate = 1 Then
-      btnFastForward.Hint := 'Play faster'
-    Else
-      btnFastForward.Hint :=
-        Format('Play faster: Current rate %.1f times normal', [fmeVideo.Rate]);
-  End;
+  actPlayFaster.Hint := 'Play faster: ';
+  actPlaySlower.Hint := 'Play slower: ';
+
+  sExtra := Format('Current rate %.2f', [fmeVideo.Rate]);
+
+  If actResetRate.Enabled Then
+    sExtra := sExtra + LineEnding + 'Press Pause, then Play to reset rate';
+
+  actPlayFaster.Hint := actPlayFaster.Hint + sExtra;
+  actPlaySlower.Hint := actPlaySlower.Hint + sExtra;
 End;
 
 Function TFrameVideoPlayer.Load(Const AFilename: String): Boolean;
@@ -263,7 +316,7 @@ Begin
   RefreshUI;
 End;
 
-Procedure TFrameVideoPlayer.btnPlayClick(Sender: TObject);
+Procedure TFrameVideoPlayer.actPlayClick(Sender: TObject);
 Begin
   If EnsurePlaybackFrame Then
   Begin
@@ -279,7 +332,7 @@ Begin
   RefreshUI;
 End;
 
-Procedure TFrameVideoPlayer.btnPauseClick(Sender: TObject);
+Procedure TFrameVideoPlayer.actPauseClick(Sender: TObject);
 Begin
   If Assigned(fmeVideo) Then
   Begin
@@ -292,33 +345,96 @@ Begin
   RefreshUI;
 End;
 
-Procedure TFrameVideoPlayer.btnFastForwardClick(Sender: TObject);
+Procedure TFrameVideoPlayer.actPlayPauseExecute(Sender: TObject);
 Begin
-  If Assigned(fmeVideo) And fmeVideo.CanSetRate Then
-    fmeVideo.Rate := fmeVideo.Rate * Sqrt(2);
+  If Not Assigned(fmeVideo) Then
+    Exit;
+
+  If fmeVideo.State = vsPlaying Then
+    fmeVideo.Pause
+  Else
+    fmeVideo.Play;
 
   RefreshUI;
 End;
 
-Procedure TFrameVideoPlayer.btnRewindClick(Sender: TObject);
+Procedure TFrameVideoPlayer.actResetRateExecute(Sender: TObject);
 Begin
   If Assigned(fmeVideo) And fmeVideo.CanSetRate Then
-    fmeVideo.Rate := -1 * Abs(fmeVideo.Rate * Sqrt(2));
+    fmeVideo.Rate := 1.0;
 
   RefreshUI;
 End;
 
-Procedure TFrameVideoPlayer.btnStepBackClick(Sender: TObject);
+Procedure TFrameVideoPlayer.actPlayFasterClick(Sender: TObject);
+Begin
+  If Assigned(fmeVideo) And fmeVideo.CanSetRate Then
+    fmeVideo.Rate := Min(MAX_RATE, fmeVideo.Rate * RATE_STEP);
+
+  RefreshUI;
+  Application.CancelHint;
+  Application.ActivateHint(Mouse.CursorPos);
+End;
+
+Procedure TFrameVideoPlayer.actPlaySlowerClick(Sender: TObject);
+Begin
+  If Assigned(fmeVideo) And fmeVideo.CanSetRate Then
+    fmeVideo.Rate := Max(MIN_RATE, fmeVideo.Rate / RATE_STEP);
+
+  RefreshUI;
+  Application.CancelHint;
+  Application.ActivateHint(Mouse.CursorPos);
+End;
+
+Function TFrameVideoPlayer.StepDelta: Integer;
+Var
+  ShiftState: TShiftState;
+Begin
+  ShiftState := GetKeyShiftState;
+
+  If ssCtrl In ShiftState Then
+    Result := 1000
+  Else If ssShift In ShiftState Then
+    Result := 6000
+  Else
+    Result := 3000;
+End;
+
+Procedure TFrameVideoPlayer.actStepBackClick(Sender: TObject);
 Begin
   If Assigned(fmeVideo) And fmeVideo.CanSeek Then
   Begin
     If fmeVideo.State = vsPlaying Then
       fmeVideo.Pause;
 
-    fmeVideo.Position := Max(0, fmeVideo.Position - 1000);
+    fmeVideo.Position := Max(0, fmeVideo.Position - StepDelta);
   End;
+End;
 
-  RefreshUI;
+Procedure TFrameVideoPlayer.actStepForwardClick(Sender: TObject);
+Begin
+  If Assigned(fmeVideo) And fmeVideo.CanSeek Then
+  Begin
+    If fmeVideo.State = vsPlaying Then
+      fmeVideo.Pause;
+
+    fmeVideo.Position := Min(fmeVideo.Duration, fmeVideo.Position + StepDelta);
+  End;
+End;
+
+Procedure TFrameVideoPlayer.pnlVideoMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; Var Handled: Boolean);
+Begin
+  If Assigned(fmeVideo) And fmeVideo.CanSeek Then
+  Begin
+    If fmeVideo.State = vsPlaying Then
+      fmeVideo.Pause;
+
+    If WheelDelta > 0 Then
+      fmeVideo.Position := Min(fmeVideo.Duration, fmeVideo.Position + StepDelta)
+    Else
+      fmeVideo.Position := Max(0, fmeVideo.Position - StepDelta);
+  End;
 End;
 
 Procedure TFrameVideoPlayer.trackVideoChange(Sender: TObject);
@@ -365,14 +481,6 @@ Begin
 
   If Assigned(fmeVideo) And fmeVideo.CanSeek Then
     fmeVideo.Position := NewPos;
-End;
-
-Procedure TFrameVideoPlayer.btnStepForwardClick(Sender: TObject);
-Begin
-  If Assigned(fmeVideo) And fmeVideo.CanSeek Then
-    fmeVideo.Position := fmeVideo.Position + 5000;
-
-  RefreshUI;
 End;
 
 Procedure TFrameVideoPlayer.btnGrabClick(Sender: TObject);

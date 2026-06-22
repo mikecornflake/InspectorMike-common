@@ -1,4 +1,4 @@
-inherited fmeVideoBase: TFrameVideoBase
+inherited FrameVideoBase: TFrameVideoBase
   DesignLeft = 1046
   DesignTop = 112
 end

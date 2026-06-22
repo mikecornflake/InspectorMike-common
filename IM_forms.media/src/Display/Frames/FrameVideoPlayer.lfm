@@ -21,7 +21,9 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     Width = 642
     Align = alClient
     BevelOuter = bvNone
+    PopupMenu = pmnuPlayer
     TabOrder = 0
+    OnMouseWheel = pnlVideoMouseWheel
   end
   object pnlToolbar: TPanel[2]
     Left = 0
@@ -56,22 +58,14 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       TabOrder = 0
       object btnPlay: TToolButton
         Left = 1
-        Hint = 'Play / Restore normal play speed'
         Top = 0
-        Caption = 'btnPlay'
-        Enabled = False
+        Action = actPlay
         Grouped = True
-        ImageIndex = 0
-        OnClick = btnPlayClick
       end
       object btnPause: TToolButton
         Left = 37
-        Hint = 'Pause / Resume'
         Top = 0
-        Caption = 'btnPause'
-        Enabled = False
-        ImageIndex = 5
-        OnClick = btnPauseClick
+        Action = actPause
       end
       object btnGrab: TToolButton
         Left = 225
@@ -83,11 +77,11 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
         Style = tbsDropDown
         OnClick = btnGrabClick
       end
-      object ToolButton1: TToolButton
+      object btnSep2: TToolButton
         Left = 273
         Height = 32
         Top = 0
-        Caption = 'ToolButton1'
+        Caption = 'btnSep2'
         Style = tbsSeparator
       end
       object btnOpenInExplorer: TToolButton
@@ -100,7 +94,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
         ShowHint = True
         OnClick = btnOpenInExplorerClick
       end
-      object ToolButton3: TToolButton
+      object btnSep1: TToolButton
         Left = 73
         Height = 32
         Top = 0
@@ -114,51 +108,35 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
         Caption = 'lblTime'
         ParentColor = False
       end
-      object ToolButton4: TToolButton
+      object btnSep3: TToolButton
         Left = 357
         Height = 32
         Top = 0
-        Caption = 'ToolButton4'
+        Caption = 'btnSep3'
         Style = tbsSeparator
       end
-      object btnRewind: TToolButton
+      object btnPlaySlower: TToolButton
         Left = 153
         Top = 0
+        Action = actPlaySlower
         AllowAllUp = True
-        Caption = 'btnRewind'
-        Enabled = False
         Grouped = True
-        ImageIndex = 3
-        Visible = False
-        OnClick = btnRewindClick
       end
-      object btnFastForward: TToolButton
+      object btnPlayFaster: TToolButton
         Left = 189
-        Hint = 'Play faster'
         Top = 0
-        Caption = 'btnFastForward'
-        Enabled = False
+        Action = actPlayFaster
         Grouped = True
-        ImageIndex = 4
-        OnClick = btnFastForwardClick
       end
       object btnStepBack: TToolButton
         Left = 81
-        Hint = 'Step back 1 second'
         Top = 0
-        Caption = 'btnStepBack'
-        Enabled = False
-        ImageIndex = 9
-        OnClick = btnStepBackClick
+        Action = actStepBack
       end
       object btnStepForward: TToolButton
         Left = 117
-        Hint = 'Step forwards 5 seconds'
         Top = 0
-        Caption = 'btnStepForward'
-        Enabled = False
-        ImageIndex = 8
-        OnClick = btnStepForwardClick
+        Action = actStepForward
       end
     end
     object trackVideo: TTrackBar
@@ -168,11 +146,16 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       AnchorSideRight.Side = asrBottom
       Left = 365
       Height = 34
+      Hint = 'Drag Trackbar to quickly scroll'#13#10'Or move mouse over video and scroll mousewheel:'#13#10'  Normal: 3 seconds'#13#10'  Ctrl+scroll: 1 second'#13#10'  Shift+scroll: 6 seconds'
       Top = 0
       Width = 277
       Position = 0
+      TickMarks = tmTopLeft
+      TickStyle = tsNone
       OnChange = trackVideoChange
       Anchors = [akTop, akLeft, akRight]
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
       OnMouseDown = trackVideoMouseDown
     end
@@ -472,5 +455,68 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
   object dlgSaveLocation: TSelectDirectoryDialog[5]
     Left = 88
     Top = 93
+  end
+  object actVideo: TActionList[6]
+    Images = ilToolbar
+    Left = 256
+    Top = 40
+    object actPlayPause: TAction
+      Category = 'Playback'
+      Caption = 'Play / Pause video'
+      ShortCut = 32
+      OnExecute = actPlayPauseExecute
+    end
+    object actResetRate: TAction
+      Category = 'Playback'
+      Caption = 'Reset playback rate to normal'
+      ImageIndex = 0
+      OnExecute = actResetRateExecute
+    end
+    object actPlay: TAction
+      Category = 'Playback'
+      Caption = 'Play'
+      ImageIndex = 0
+      OnExecute = actPlayClick
+    end
+    object actPause: TAction
+      Category = 'Playback'
+      Caption = 'Pause'
+      ImageIndex = 5
+      OnExecute = actPauseClick
+    end
+    object actPlayFaster: TAction
+      Category = 'Playback'
+      Caption = 'Play Faster'
+      ImageIndex = 4
+      OnExecute = actPlayFasterClick
+    end
+    object actPlaySlower: TAction
+      Category = 'Playback'
+      Caption = 'actPlaySlower'
+      ImageIndex = 3
+      OnExecute = actPlaySlowerClick
+    end
+    object actStepBack: TAction
+      Category = 'Playback'
+      Caption = 'actStepBack'
+      ImageIndex = 1
+      OnExecute = actStepBackClick
+    end
+    object actStepForward: TAction
+      Category = 'Playback'
+      Caption = 'actStepForward'
+      ImageIndex = 2
+      OnExecute = actStepForwardClick
+    end
+  end
+  object pmnuPlayer: TPopupMenu[7]
+    Left = 352
+    Top = 72
+    object mnuPlayPause: TMenuItem
+      Action = actPlayPause
+    end
+    object mnuResetRate: TMenuItem
+      Action = actResetRate
+    end
   end
 end
