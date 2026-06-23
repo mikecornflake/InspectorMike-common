@@ -134,9 +134,6 @@ Type
     Property VideoEngineClass: TFrameVideoBaseClass Read FVideoEngineClass Write FVideoEngineClass;
   End;
 
-Const
-  MULTI_CHANNEL_NAME: String = '<channel>';
-
 Implementation
 
 Uses
@@ -176,7 +173,8 @@ Begin
 
   FVideoFileCount := 0;
 
-  FChannel := MULTI_CHANNEL_NAME;
+  // Use the generic placeholder as this is collection of channels
+  FChannel := CHANNEL_PARAM;
 End;
 
 Destructor TFrameSyncedVideo.Destroy;
@@ -435,12 +433,14 @@ Begin
 
   If Not Assigned(FMaster) Then
   Begin
-    Inherited Load(AFilename, MULTI_CHANNEL_NAME, AStartDateTime);
+    // Set the file details for TFrameSyncedVideo
+    Inherited Load(AFilename, CHANNEL_PARAM, AStartDateTime);
     Master := fmeVideo;
   End;
 
   fmeVideo.Muted := fmeVideo <> FMaster;
 
+  // Now set the file details for the specific channel
   Result := fmeVideo.Load(AFilename, AChannel, AStartDateTime);
 
   //FLayout.LayoutControls(FVideos, FVideoFileCount);
@@ -549,10 +549,9 @@ Begin
     sExt := ExtractFileExt(AFilename);
 
     If sExt = '' Then
-      sFile := IncludeTrailingBackslash(AFilename) +
-        Trim(FormatDateTime('yyyymmdd hhnnss', fmeVideo.StartDateTime) + ' ' + fmeVideo.Channel) + '.png'
+      sFile :=  fmeVideo.DefaultFrameFilename(IncludeTrailingBackslash(AFilename), '.png')
     Else
-      sFile := AFilename.Replace(MULTI_CHANNEL_NAME, fmeVideo.Channel);
+      sFile := AFilename.Replace(CHANNEL_PARAM, fmeVideo.Channel);
 
     Result := Result And FVideos[i].SaveFrameToFile(sFile);
   End;

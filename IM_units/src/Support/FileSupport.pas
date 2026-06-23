@@ -100,7 +100,8 @@ Procedure FlushFileStreamToDisk(AStream: TFileStream);
 Procedure WriteStringUTF8(AStream: TStream; Const S: String);
 
 // Filename generators
-Function UniqueFilename(Const ADir, APrefix, AExt: String; AUseGUID: Boolean = True): String;
+Function UniqueFilename(Const ADir, APrefix, AExt: String; AUseGUID: Boolean = True;
+  ACountDigits: Integer = 5): String;
 Function DateToFilename(ADate: TDateTime): String;
 Function TimeToFilename(ATime: TDateTime): String;
 Function DateTimeToFilename(ADateTime: TDateTime): String;
@@ -159,7 +160,7 @@ End;
 
 Procedure WriteStringUTF8(AStream: TStream; Const S: String);
 Var
-  sUTF8: UTF8String;
+  sUTF8: Utf8string;
 Begin
   sUTF8 := UTF8Encode(S);
   If Length(sUTF8) > 0 Then
@@ -168,7 +169,8 @@ End;
 
 // Based on code from ChatGPT 5.1 on 29 Nov 2025
 // and from GetTempFileName() in osutil.inc (see comment)
-Function UniqueFilename(Const ADir, APrefix, AExt: String; AUseGUID: Boolean = True): String;
+Function UniqueFilename(Const ADir, APrefix, AExt: String; AUseGUID: Boolean = True;
+  ACountDigits: Integer = 5): String;
 Var
   GUID: TGUID;
   sGUID: String;
@@ -207,9 +209,9 @@ Begin
     Else
       sFileBase := APrefix;
 
-    i := 0;
+    i := 1;
     Repeat
-      Result := Format('%s%s%.5d%s', [sDir, sFileBase, i, sExt]);
+      Result := Format('%s%s%.*d%s', [sDir, sFileBase, ACountDigits, i, sExt]);
       Inc(i);
     Until Not (FileExists(Result) Or DirectoryExists(Result));
   End;

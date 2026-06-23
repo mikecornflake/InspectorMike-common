@@ -411,13 +411,22 @@ Begin
 End;
 
 Function TFrameVideoLibmpv.SaveFrameToFile(Const AFilename: String): Boolean;
+Var
+  sFile, sExt: String;
 Begin
   Result := False;
 
   If Not Assigned(FmpvPlayer) Then
     Exit;
 
-  FmpvPlayer.ScreenshotToFile(AFilename, smVideo);
+  sExt := ExtractFileExt(AFilename);
+
+  If sExt = '' Then
+    sFile := DefaultFrameFilename(IncludeTrailingBackslash(AFilename), '.png')
+  Else
+    sFile := AFilename.Replace(CHANNEL_PARAM, FChannel);
+
+  FmpvPlayer.ScreenshotToFile(sFile, smVideo);
 
   Result := FileExists(AFilename);
 End;

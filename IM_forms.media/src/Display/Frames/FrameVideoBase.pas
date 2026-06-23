@@ -125,6 +125,7 @@ Type
     Function CanGrabFrame: Boolean; Virtual;
     Function SaveFrameToFile(Const AFilename: String): Boolean; Virtual;
     Function CopyFrameToClipboard: Boolean; Virtual;
+    Function DefaultFrameFilename(AFolder: String; AExt: String): String;
 
     Property Filename: String Read FFilename;
     Property Muted: Boolean Read GetMuted Write SetMuted;
@@ -149,12 +150,15 @@ Type
     Property VideoFileCount: Integer Read FVideoFileCount;
   End;
 
+Const
+  CHANNEL_PARAM: String = '<channel>';
+
 Implementation
 
 {$R *.lfm}
 
 Uses
-  DateUtils, Math;
+  DateUtils, Math, FileSupport;
 
   { TFrameVideoBase }
 
@@ -325,6 +329,21 @@ End;
 Function TFrameVideoBase.CopyFrameToClipboard: Boolean;
 Begin
   Result := False;
+End;
+
+Function TFrameVideoBase.DefaultFrameFilename(AFolder: String; AExt: String): String;
+Var
+  sBase: String;
+Begin
+  If FStartDateTime = 0 Then
+    sBase := FormatDateTime('hhnnss', PositionAsTime)
+  Else
+    sBase := FormatDateTime('yyyymmdd hhnnss', PositionAsTime);
+
+  If (FChannel <> CHANNEL_PARAM) And (Trim(FChannel) <> '') Then
+    sBase := sBase + '_' + Trim(FChannel);
+
+  Result := UniqueFilename(AFolder, sBase + '_', AExt, False, 2);
 End;
 
 { TFrameVideoBaseList }
