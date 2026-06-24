@@ -158,7 +158,7 @@ Implementation
 {$R *.lfm}
 
 Uses
-  DateUtils, Math, FileSupport;
+  DateUtils, Math, FileSupport, Clipbrd;
 
   { TFrameVideoBase }
 
@@ -327,8 +327,27 @@ Begin
 End;
 
 Function TFrameVideoBase.CopyFrameToClipboard: Boolean;
+Var
+  oPicture: TPicture;
+  sFile: String;
 Begin
   Result := False;
+  sFile := UniqueFilename(GetTempDir(False), 'Temp', '.png', False, 5);
+  Try
+    If SaveFrameToFile(sFile) Then
+    Begin
+      oPicture := TPicture.Create;
+      Try
+        oPicture.LoadFromFile(sFile);
+        Clipboard.Assign(oPicture.Graphic);
+        Result := True;
+      Finally
+        oPicture.Free;
+      End;
+    End;
+  Finally
+    DeleteFile(sFile);
+  End;
 End;
 
 Function TFrameVideoBase.DefaultFrameFilename(AFolder: String; AExt: String): String;

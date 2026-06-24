@@ -107,7 +107,6 @@ Type
 
     Function CanGrabFrame: Boolean; Override;
     Function SaveFrameToFile(Const AFilename: String): Boolean; Override;
-    Function CopyFrameToClipboard: Boolean; Override;
   End;
 
 Implementation
@@ -115,7 +114,7 @@ Implementation
 {$R *.lfm}
 
 Uses
-  LibmpvSupport, libMPV.Client, VideoEngineFactory;
+  LibmpvSupport, libMPV.Client, VideoEngineFactory, FileSupport;
 
   { TFrameVideoLibmpv }
 
@@ -429,11 +428,6 @@ Begin
   FmpvPlayer.ScreenshotToFile(sFile, smVideo);
 
   Result := FileExists(AFilename);
-End;
-
-Function TFrameVideoLibmpv.CopyFrameToClipboard: Boolean;
-Begin
-  // False;
 End;
 
 Procedure TFrameVideoLibmpv.mpvStartFile(Sender: TObject);

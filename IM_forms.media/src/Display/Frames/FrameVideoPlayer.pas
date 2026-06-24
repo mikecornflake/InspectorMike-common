@@ -39,6 +39,7 @@ Type
   { TFrameVideoPlayer }
 
   TFrameVideoPlayer = Class(TFrameBase)
+    actCopyToClipboard: TAction;
     actStepBack: TAction;
     actStepForward: TAction;
     actPlayFaster: TAction;
@@ -56,6 +57,8 @@ Type
     ilToolbar: TImageList;
     lblStatus: TLabel;
     lblTime: TLabel;
+    mnuCopyToClipboard: TMenuItem;
+    Separator1: TMenuItem;
     mnuResetRate: TMenuItem;
     mnuPlayPause: TMenuItem;
     mnuGrabAlwaysAsk: TMenuItem;
@@ -74,6 +77,7 @@ Type
     btnStepBack: TToolButton;
     btnStepForward: TToolButton;
     trackVideo: TTrackBar;
+    Procedure actCopyToClipboardExecute(Sender: TObject);
     Procedure actPlayPauseExecute(Sender: TObject);
     Procedure actResetRateExecute(Sender: TObject);
     Procedure actPlayFasterClick(Sender: TObject);
@@ -243,6 +247,7 @@ Begin
 
     actPlayPause.Enabled := False;
     actResetRate.Enabled := False;
+    actCopyToClipboard.Enabled := False;
 
     Exit;
   End;
@@ -269,6 +274,7 @@ Begin
 
   btnGrab.Enabled := bCanGrab;
   btnOpenInExplorer.Enabled := bHasFile;
+  actCopyToClipboard.Enabled := bCanGrab;
 
   trackVideo.Enabled := bCanSeek;
 
@@ -358,6 +364,15 @@ Begin
     fmeVideo.Play;
 
   RefreshUI;
+End;
+
+Procedure TFrameVideoPlayer.actCopyToClipboardExecute(Sender: TObject);
+Begin
+  If Not Assigned(fmeVideo) Then
+    Exit;
+
+  // TODO - If we're using SyncedVideo, how do we know which frame to grab?
+  fmeVideo.CopyFrameToClipboard;
 End;
 
 Procedure TFrameVideoPlayer.actResetRateExecute(Sender: TObject);

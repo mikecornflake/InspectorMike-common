@@ -515,6 +515,10 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       ShortCut = 39
       OnExecute = actStepForwardClick
     end
+    object actCopyToClipboard: TAction
+      Caption = 'Copy to clipboard'
+      OnExecute = actCopyToClipboardExecute
+    end
   end
   object pmnuPlayer: TPopupMenu[7]
     Left = 352
@@ -524,6 +528,12 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     end
     object mnuResetRate: TMenuItem
       Action = actResetRate
+    end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object mnuCopyToClipboard: TMenuItem
+      Action = actCopyToClipboard
     end
   end
 end

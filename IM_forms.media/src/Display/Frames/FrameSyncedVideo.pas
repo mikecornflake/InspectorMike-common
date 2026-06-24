@@ -559,7 +559,10 @@ End;
 
 Function TFrameSyncedVideo.CopyFrameToClipboard: Boolean;
 Begin
+  // TODO how do we know which frame to grab?
   Result := Assigned(FMaster) And FMaster.CanGrabFrame;
+  If Result Then
+    Result := FMaster.CopyFrameToClipboard;
 End;
 
 Procedure TFrameSyncedVideo.MasterPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
