@@ -267,7 +267,7 @@ Begin
   actPlayPause.Enabled := bHasFile;
   actResetRate.Enabled := bCanSeek And (Abs(fmeVideo.Rate - 1.0) > 0.01);
 
-  If actPlay.Enabled Then
+  If Not actPlay.Enabled Then
     actPlayPause.ImageIndex := 5 //pause
   Else
     actPlayPause.ImageIndex := 0;//play
