@@ -61,6 +61,7 @@ Type
     FVideoEngineClass: TFrameVideoBaseClass;
     FVideos: TFrameVideoBaseList;
     FMaster: TFrameVideoBase;
+    FActive: TFrameVideoBase;
     FState: TVideoState;
     FSyncTimer: TTimer;
     FSyncSeekThresholdMS: TVideoTime;
@@ -77,6 +78,7 @@ Type
 
     Procedure MasterPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
     Procedure VideoStateChanged(Sender: TObject; AState: TVideoState);
+    Procedure VideoActivateFrame(Sender: TObject);
 
     Function LoadedVideoCount: Integer;
     Function AllVideosLoaded: Boolean;
@@ -259,6 +261,7 @@ End;
 
 Procedure TFrameSyncedVideo.ClearVideoCount;
 Begin
+  FActive := nil;
   Master := nil;
   FFilename := '';
   FVideoFileCount := 0;
@@ -423,6 +426,7 @@ Begin
     fmeVideo := FVideoEngineClass.Create(nil);
     fmeVideo.Parent := Self;
     fmeVideo.OnStateChanged := @VideoStateChanged;
+    fmeVideo.OnActivateFrame := @VideoActivateFrame;
     fmeVideo.Autoplay := FAutoplay;
 
     FVideos.Add(fmeVideo);
@@ -549,7 +553,7 @@ Begin
     sExt := ExtractFileExt(AFilename);
 
     If sExt = '' Then
-      sFile :=  fmeVideo.DefaultFrameFilename(IncludeTrailingBackslash(AFilename), '.png')
+      sFile := fmeVideo.DefaultFrameFilename(IncludeTrailingBackslash(AFilename), '.png')
     Else
       sFile := AFilename.Replace(CHANNEL_PARAM, fmeVideo.Channel);
 
@@ -558,11 +562,18 @@ Begin
 End;
 
 Function TFrameSyncedVideo.CopyFrameToClipboard: Boolean;
+Var
+  fmeVideo: TFrameVideoBase;
 Begin
-  // TODO how do we know which frame to grab?
-  Result := Assigned(FMaster) And FMaster.CanGrabFrame;
+  fmeVideo := FActive;
+
+  If Not Assigned(fmeVideo) Then
+    fmeVideo := FMaster;
+
+  Result := Assigned(fmeVideo) And fmeVideo.CanGrabFrame;
+
   If Result Then
-    Result := FMaster.CopyFrameToClipboard;
+    Result := fmeVideo.CopyFrameToClipboard;
 End;
 
 Procedure TFrameSyncedVideo.MasterPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
@@ -665,6 +676,12 @@ Begin
       SetState(vsEmpty);
     End;
   End;
+End;
+
+Procedure TFrameSyncedVideo.VideoActivateFrame(Sender: TObject);
+Begin
+  If Sender Is TFrameVideobase Then
+    FActive := TFrameVideoBase(Sender);
 End;
 
 Procedure TFrameSyncedVideo.SyncTimerTimer(Sender: TObject);

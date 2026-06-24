@@ -77,6 +77,8 @@ Type
     Procedure mpvPause(Sender: TObject);
     Procedure mpvStop(Sender: TObject);
     Procedure mpvTimeChanged(ASender: TObject; AParam: Integer);
+    Procedure ControlMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
 
   Protected
     Procedure SetAutoplay(AValue: Boolean); Override;
@@ -122,6 +124,10 @@ Constructor TFrameVideoLibmpv.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
+  // Required to fire OnActivateFrame
+  lblMsg.OnMouseDown := @ControlMouseDown;
+  OnMouseDown := @ControlMouseDown;
+
   If Not FindLibmpvDLL Then
   Begin
     lblMsg.Visible := True;
@@ -159,6 +165,9 @@ Begin
     FmpvPlayer.OnStop := @mpvStop;
     FmpvPlayer.OnTimeChanged := @mpvTimeChanged;
 
+    // Required to fire OnActivateFrame
+    FmpvPlayer.OnMouseDown := @ControlMouseDown;
+
     FState := vsEmpty;
   End;
 
@@ -182,6 +191,12 @@ Begin
   FreeAndNil(FLoadWatchdog);
 
   Inherited Destroy;
+End;
+
+Procedure TFrameVideoLibmpv.ControlMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+Begin
+  DoActivateFrame;
 End;
 
 Procedure TFrameVideoLibmpv.FinaliseLoadedState;

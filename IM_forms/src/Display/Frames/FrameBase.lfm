@@ -5,6 +5,8 @@ object FrameBase: TFrameBase
   Width = 312
   LCLVersion = '1.2.2.0'
   TabOrder = 0
+  OnEnter = FrameEnter
+  OnExit = FrameExit
   DesignLeft = 568
   DesignTop = 146
 end

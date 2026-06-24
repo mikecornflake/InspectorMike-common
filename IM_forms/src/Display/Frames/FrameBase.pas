@@ -50,11 +50,18 @@ Type
   { TFrameBase }
 
   TFrameBase = Class(TFrame)
+    Procedure FrameEnter(Sender: TObject);
+    Procedure FrameExit(Sender: TObject);
   Protected
     FParentForm: TFormPersistent;
     FFullIdentKey: String;
+    FOnActivateFrame: TNotifyEvent;
+    FFrameActive: Boolean;
+
     Function GetFullIdentKey: String; Virtual;
     Function GetSettingsKey: String; Virtual;
+
+    Procedure DoActivateFrame;
   Public
     Constructor Create(TheOwner: TComponent); Override;
 
@@ -67,9 +74,16 @@ Type
     Procedure Open; Virtual;
     Procedure Close; Virtual;
 
-    Property ParentForm: TFormPersistent read FParentForm write FParentForm;
-    Property SettingsKey: String read GetSettingsKey;
-    Property FullIdentKey: String read GetFullIdentKey;
+    Property ParentForm: TFormPersistent Read FParentForm Write FParentForm;
+    Property SettingsKey: String Read GetSettingsKey;
+    Property FullIdentKey: String Read GetFullIdentKey;
+
+    // Implementation here is via OnEnter/OnExit.
+    // If descendant frame is unable to receive focus
+    // DoActivateFrame should be called in appropriate location.
+    // Required for i.e. TFrameSyncedVideo.
+    // See TFrameVideoLibmpv for a working example
+    Property OnActivateFrame: TNotifyEvent Read FOnActivateFrame Write FOnActivateFrame;
   End;
 
 Implementation
@@ -84,6 +98,26 @@ Begin
     Result := FParentForm.SettingsKey
   Else
     Result := Name;
+End;
+
+Procedure TFrameBase.DoActivateFrame;
+Begin
+  If Assigned(FOnActivateFrame) Then
+    FOnActivateFrame(Self);
+End;
+
+Procedure TFrameBase.FrameEnter(Sender: TObject);
+Begin
+  If Not FFrameActive Then
+  Begin
+    FFrameActive := True;
+    DoActivateFrame;
+  End;
+End;
+
+Procedure TFrameBase.FrameExit(Sender: TObject);
+Begin
+  FFrameActive := False;
 End;
 
 Function TFrameBase.GetFullIdentKey: String;
@@ -144,6 +178,7 @@ Begin
   Inherited Create(TheOwner);
 
   FParentForm := FindParentForm(TheOwner);
+  FFrameActive := False;
 End;
 
 Procedure TFrameBase.RefreshUI;

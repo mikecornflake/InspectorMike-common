@@ -103,7 +103,6 @@ Type
 
     Procedure DoPosition; Virtual;
     Procedure DoStateChanged; Virtual;
-
   Public
     Constructor Create(TheOwner: TComponent); Override;
 
