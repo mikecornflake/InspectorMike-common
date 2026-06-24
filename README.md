@@ -26,7 +26,7 @@ A frame that handles video playback using libmpv-2.dll and it's wrapper by URUWo
 ### IM_database.lpk
 Database helpers, export framework, SQL filtering dialogs, CSV/grid frames, and DBGrid support.
 
-The IM_application package is licensed under **LGPL-3.0-or-later** and provides the application framework components (TfrmMain, TfrmPersistent, TfrmMultiDock, Frames, etc.) used by InspectorMike applications.
+The IM_forms.* packages are licensed under **LGPL-3.0-or-later** and provides the application framework components (TfrmMain, TfrmPersistent, TfrmMultiDock, Frames, etc.) used by InspectorMike applications.
 
 ---
 
