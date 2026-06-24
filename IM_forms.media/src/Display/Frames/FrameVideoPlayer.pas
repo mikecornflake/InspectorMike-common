@@ -371,7 +371,6 @@ Begin
   If Not Assigned(fmeVideo) Then
     Exit;
 
-  // TODO - If we're using SyncedVideo, how do we know which frame to grab?
   fmeVideo.CopyFrameToClipboard;
 End;
 
