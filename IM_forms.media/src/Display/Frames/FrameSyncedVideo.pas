@@ -692,8 +692,8 @@ End;
 Procedure TFrameSyncedVideo.SyncVideos;
 Var
   i: Integer;
-  MasterPos: TVideoTime;
-  SlavePos: TVideoTime;
+  MasterPos: TDateTime;
+  SlavePos: TDateTime;
   DriftMS: TVideoTime;
   Slave: TFrameVideoBase;
 Begin
@@ -703,11 +703,11 @@ Begin
   If FMaster.State <> vsPlaying Then
     Exit;
 
-  MasterPos := FMaster.Position;
+  MasterPos := FMaster.PositionAsTime;
 
   For i := 0 To FVideoFileCount - 1 Do
   Begin
-    Slave := FVideos[i];
+    Slave := TFrameVideoBase(FVideos[i]);
 
     If Slave = FMaster Then
       Continue;
@@ -718,11 +718,11 @@ Begin
     If Not (Slave.State In [vsPlaying, vsPaused]) Then
       Continue;
 
-    SlavePos := Slave.Position;
-    DriftMS := Abs(MasterPos - SlavePos);
+    SlavePos := Slave.PositionAsTime;
+    DriftMS := Round(Abs(MasterPos - SlavePos) * MSecsPerDay);
 
     If DriftMS > FSyncSeekThresholdMS Then
-      Slave.Position := MasterPos;
+      Slave.PositionAsTime := MasterPos;
   End;
 End;
 
