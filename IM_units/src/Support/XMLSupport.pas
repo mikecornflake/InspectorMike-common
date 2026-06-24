@@ -231,12 +231,12 @@ End;
 
 Class Function TXMLHelper.GetAllFragments(Const AXML, ANodeName: String): TStringArray;
 Begin
-  // TODO
+  // TODO Class Function TXMLHelper.GetAllFragments
 End;
 
 Class Function TXMLHelper.GetAllNodeTexts(Const AXML, ANodeName: String): TStringArray;
 Begin
-  // TODO
+  // TODO Class Function TXMLHelper.GetAllNodeTexts
 End;
 
 Class Function TXMLHelper.EscapeXML(Const AXML: String): String;
