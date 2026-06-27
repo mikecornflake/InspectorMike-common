@@ -620,12 +620,14 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     object actPlay: TAction
       Category = 'Playback'
       Caption = 'Play'
+      Hint = 'Play / Resume'
       ImageIndex = 0
       OnExecute = actPlayClick
     end
     object actPause: TAction
       Category = 'Playback'
       Caption = 'Pause'
+      Hint = 'Pause'
       ImageIndex = 5
       OnExecute = actPauseClick
     end
@@ -644,6 +646,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     object actStepBack: TAction
       Category = 'Playback'
       Caption = 'actStepBack'
+      Hint = 'Step back:'#13#10'  Default 3 seconds'#13#10'  Shift+click 6 seconds'#13#10'  Ctrl+click 1 second'
       ImageIndex = 1
       ShortCut = 37
       OnExecute = actStepBackClick
@@ -651,12 +654,14 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     object actStepForward: TAction
       Category = 'Playback'
       Caption = 'actStepForward'
+      Hint = 'Step forward:'#13#10'  Default 3 seconds'#13#10'  Shift+click 6 seconds'#13#10'  Ctrl+click 1 second'
       ImageIndex = 2
       ShortCut = 39
       OnExecute = actStepForwardClick
     end
     object actCopyToClipboard: TAction
       Caption = 'Copy to clipboard'
+      Hint = 'Copy current frame to clipboard'#13#10'  Format will vary by playback engine'
       ImageIndex = 10
       OnExecute = actCopyToClipboardExecute
     end

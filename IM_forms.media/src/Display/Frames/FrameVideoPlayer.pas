@@ -236,12 +236,12 @@ Begin
 
   If Not Assigned(fmeVideo) Then
   Begin
-    btnPlay.Enabled := False;
-    btnPause.Enabled := False;
-    btnStepBack.Enabled := False;
-    btnStepForward.Enabled := False;
-    btnPlayFaster.Enabled := False;
-    btnPlaySlower.Enabled := False;
+    actPlay.Enabled := False;
+    actPause.Enabled := False;
+    actStepBack.Enabled := False;
+    actStepForward.Enabled := False;
+    actPlayFaster.Enabled := False;
+    actPlaySlower.Enabled := False;
     btnGrab.Enabled := False;
     btnOpenInExplorer.Enabled := False;
 
@@ -253,9 +253,9 @@ Begin
   End;
 
   bHasFile := fmeVideo.HasVideo;
-  bCanSeek := fmeVideo.CanSeek;
-  bCanRate := fmeVideo.CanSetRate;
-  bCanGrab := fmeVideo.CanGrabFrame;
+  bCanSeek := bHasFile And fmeVideo.CanSeek;
+  bCanRate := bHasFile And fmeVideo.CanSetRate;
+  bCanGrab := bHasFile And fmeVideo.CanGrabFrame;
 
   actPlay.Enabled := bHasFile And (fmeVideo.State In [vsStopped, vsPaused, vsEnded]);
   actPause.Enabled := bHasFile And (fmeVideo.State = vsPlaying);
