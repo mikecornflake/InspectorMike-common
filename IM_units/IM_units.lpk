@@ -77,6 +77,10 @@
         <Filename Value="src\Support\XPDFSupport.pas"/>
         <UnitName Value="XPDFSupport"/>
       </Item>
+      <Item>
+        <Filename Value="src\Support\InspectionSupport.pas"/>
+        <UnitName Value="InspectionSupport"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
