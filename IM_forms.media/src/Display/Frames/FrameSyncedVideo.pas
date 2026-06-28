@@ -192,7 +192,7 @@ End;
 Procedure TFrameSyncedVideo.FrameResize(Sender: TObject);
 Begin
   If Assigned(FLayout) Then
-    FLayout.LayoutControls(FVideos);
+    Layout(FLayout.RowCount, FLayout.ColCount, FLayout.Sequence);
 End;
 
 Procedure TFrameSyncedVideo.SetState(AValue: TVideoState);
@@ -231,13 +231,28 @@ Begin
   DoPosition;
 End;
 
+Type
+  THackCustomForm = Class(TCustomForm);
+
 Procedure TFrameSyncedVideo.Layout(ARows, ACols: Integer; ASequence: TControlLayoutSequence);
+Var
+  oParent: TCustomForm;
 Begin
   FLayout.RowCount := ARows;
   FLayout.ColCount := ACols;
   FLayout.Sequence := ASequence;
   FLayout.Extend := True;
-  FLayout.LayoutControls(FVideos, FVideoFileCount);
+
+  oParent := GetParentForm(self);
+
+  //If Assigned(oParent) Then
+  //  THackCustomForm(oParent).BeginFormUpdate;
+  Try
+    FLayout.LayoutControls(FVideos, FVideoFileCount);
+  Finally
+  //  If Assigned(oParent) Then
+  //    THackCustomForm(oParent).EndFormUpdate;
+  End;
 End;
 
 Procedure TFrameSyncedVideo.ClearUnloadedVideoFrames;
@@ -249,11 +264,11 @@ Begin
   Begin
     fmeVideo := FVideos[i];
 
-    // Unload Video
-    fmeVideo.Clear;
-
     // Hide video frame
     fmeVideo.Visible := False;
+
+    // Unload Video
+    fmeVideo.Clear;
   End;
 
   If (FVideoFileCount = 0) Then
@@ -448,6 +463,7 @@ Begin
   // Now set the file details for the specific channel
   Result := fmeVideo.Load(AFilename, AChannel, AStartDateTime);
 
+  // Moved the below into EndLoadVideo
   //FLayout.LayoutControls(FVideos, FVideoFileCount);
 End;
 
@@ -604,7 +620,7 @@ Begin
   If AllVideosLoaded Then
   Begin
     FReadyToPlay := True;
-    FLayout.LayoutControls(FVideos);
+    Layout(FLayout.RowCount, FLayout.ColCount, FLayout.Sequence);
     DoPosition;
 
     If FAutoPlay Then
@@ -738,7 +754,7 @@ End;
 Procedure TFrameSyncedVideo.EndLoadVideos;
 Begin
   ClearUnloadedVideoFrames;
-  FLayout.LayoutControls(FVideos, FVideoFileCount);
+  Layout(FLayout.RowCount, FLayout.ColCount, FLayout.Sequence);
   CheckAllVideosLoaded;
 End;
 
