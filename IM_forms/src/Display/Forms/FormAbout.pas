@@ -53,6 +53,7 @@ Type
   TfrmAbout = Class(TForm)
     Bevel1: TBevel;
     btnOK: TButton;
+    edtmpvDLL: TEdit;
     Label3: TLabel;
     Label4: TLabel;
     lblHTMLLabel2: TLabel;
@@ -177,16 +178,6 @@ Begin
   Else
     tsXPDF.TabVisible := False;
 
-  If (XPDFAvailable) And (FileExists(XPDFPath + '\..\README')) Then
-  Begin
-    tsXPDF.TabVisible := True;
-    memXPDF.Lines.LoadFromFile(XPDFPath + '\..\README');
-    lblXPDF1.Visible := True;
-    lblXPDF2.Visible := True;
-  End
-  Else
-    tsXPDF.TabVisible := False;
-
   If (FFmpegAvailable) Then
   Begin
     tsFFMPEG.TabVisible := True;
@@ -207,6 +198,10 @@ Begin
   End;
 
   tsMPV.TabVisible := LibmpvAvailable;
+  If tsMPV.TabVisible Then
+  Begin
+    edtmpvDLL.Text := LibmpvDLL;
+  End;
 
   lblSDKs.Visible := lblImageMagick.Visible Or lblXPDF1.Visible;
 

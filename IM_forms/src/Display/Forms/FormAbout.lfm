@@ -4888,13 +4888,13 @@ object frmAbout: TfrmAbout
     Height = 350
     Top = 56
     Width = 532
-    ActivePage = tsReadme
+    ActivePage = tsMPV
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -13
     Font.Pitch = fpFixed
     Font.Quality = fqDraft
     ParentFont = False
-    TabIndex = 2
+    TabIndex = 7
     TabOrder = 1
     object tsAbout: TTabSheet
       Caption = 'About'
@@ -5211,7 +5211,7 @@ object frmAbout: TfrmAbout
       object lblHTMLLabel3: TLabel
         Left = 16
         Height = 15
-        Top = 16
+        Top = 10
         Width = 197
         Caption = 'https://github.com/mpv-player/mpv'
         Font.Color = clBlue
@@ -5223,8 +5223,8 @@ object frmAbout: TfrmAbout
       end
       object memMPV: TMemo
         Left = 24
-        Height = 272
-        Top = 40
+        Height = 248
+        Top = 64
         Width = 488
         Anchors = [akTop, akLeft, akRight, akBottom]
         Color = clActiveBorder
@@ -5242,6 +5242,15 @@ object frmAbout: TfrmAbout
         )
         ReadOnly = True
         TabOrder = 0
+      end
+      object edtmpvDLL: TEdit
+        Left = 15
+        Height = 25
+        Top = 32
+        Width = 497
+        Color = clBtnFace
+        ReadOnly = True
+        TabOrder = 1
       end
     end
   end
