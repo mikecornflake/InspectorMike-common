@@ -84,17 +84,13 @@ End;
 
 Procedure InitializenetMC;
 Var
-  sApplicationFolder: String;
+  sFile: String;
 Begin
   If FnetMCPath = '' Then
-  Begin
-    sApplicationFolder := IncludeTrailingBackslash(Application.Location);
-    FnetMCPath := FindFolder([sApplicationFolder, sApplicationFolder +
-      'Apps', sApplicationFolder + '..', sApplicationFolder + '..\Apps'],
-      'netMC', Format('mnet_epkt%s', [GetExeExt]));
-  End;
+    sFile := FindSupportFileInFolders('Apps', 'netMC', Format('mnet_epkt%s', [GetExeExt]));
 
-  FnetMCPath := '';
+  If sFile <> '' Then
+    FnetMCPath := IncludeTrailingBackslash(ExtractFileDir(sFile));
 End;
 
 Function ProbeFile(sFilename: String): String;

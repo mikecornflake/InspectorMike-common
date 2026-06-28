@@ -137,16 +137,14 @@ End;
 
 Procedure InitializeTesseract;
 Var
-  sApplicationFolder: String;
+  sFile: String;
 Begin
   If FTesseractPath = '' Then
-  Begin
-    sApplicationFolder := IncludeTrailingBackslash(Application.Location);
-    FTesseractPath := FindFolder([sApplicationFolder,
-      sApplicationFolder + 'Apps', sApplicationFolder + '..',
-      sApplicationFolder + '..\Apps'], 'Tesseract-OCR',
+    sFile := FindSupportFileInFolders('Apps', 'Tesseract-OCR',
       Format('tesseract%s', [GetExeExt]));
-  End;
+
+  If sFile <> '' Then
+    FTesseractPath := IncludeTrailingBackslash(ExtractFileDir(sFile));
 End;
 
 Function OCR(AFilename: String; AOptions: String): String;

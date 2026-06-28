@@ -77,8 +77,6 @@ Begin
 End;
 
 Function FindLibmpvDLL: Boolean;
-Var
-  sApplicationFolder, sTemp: String;
 Begin
   Result := (FLibmpvDLL <> '') And FileExists(FLibmpvDLL);
 
@@ -86,12 +84,7 @@ Begin
     Exit;
 
   // TODO Linux
-  sApplicationFolder := IncludeTrailingBackslash(Application.Location);
-  sTemp := FindFolder([sApplicationFolder, sApplicationFolder + 'Apps',
-    sApplicationFolder + '..', sApplicationFolder + '..\Apps'], 'mpv', 'libmpv-2.dll');
-
-  If DirectoryExists(sTemp) Then
-    FLibmpvDLL := IncludeSlash(sTemp) + 'libmpv-2.dll';
+  FLibmpvDLL := FindDriverFileInFolders('mpv', 'libmpv-2.dll');
 
   Result := (FLibmpvDLL <> '') And FileExists(FLibmpvDLL);
 

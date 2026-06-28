@@ -485,6 +485,7 @@ Begin
 End;
 
 Initialization
-  TVideoEngineFactory.RegisterEngine('libmpv', TFrameVideoLibmpv);
+  If FindLibmpvDLL Then
+    TVideoEngineFactory.RegisterEngine('libmpv', TFrameVideoLibmpv);
 
 End.

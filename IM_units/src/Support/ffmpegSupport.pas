@@ -136,15 +136,14 @@ End;
 
 Procedure InitializeFFmpeg;
 Var
-  sApplicationFolder: String;
+  sFile: String;
 Begin
   If FFFmpegPath = '' Then
-  Begin
-    sApplicationFolder := IncludeTrailingBackslash(Application.Location);
-    FFFmpegPath := FindFolder([sApplicationFolder, sApplicationFolder +
-      'Apps', sApplicationFolder + '..', sApplicationFolder + '..\Apps'],
-      'ffmpeg\bin', Format('ffprobe%s', [GetExeExt]));
-  End;
+    sFile := FindSupportFileInFolders('Apps', 'ffmpeg\bin',
+      Format('ffprobe%s', [GetExeExt]));
+
+  If sFile <> '' Then
+    FFFmpegPath := ExtractFileDir(sFile);
 End;
 
 Function ProbeFile(sFilename: String): String;

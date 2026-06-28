@@ -86,15 +86,13 @@ End;
 
 Procedure InitializeImageMagick;
 Var
-  sApplicationFolder: String;
+  sFile: String;
 Begin
   If FImageMagickPath = '' Then
-  Begin
-    sApplicationFolder := IncludeTrailingBackslash(Application.Location);
-    FImageMagickPath := FindFolder([sApplicationFolder, sApplicationFolder +
-      'Apps', sApplicationFolder + '..', sApplicationFolder + '..\Apps'],
-      'ImageMagick', Format('magick%s', [GetExeExt]));
-  End;
+    sFile := FindSupportFileInFolders('Apps', 'ImageMagick', Format('magick%s', [GetExeExt]));
+
+  If sFile <> '' Then
+    FImageMagickPath := IncludeTrailingBackslash(ExtractFileDir(sFile));
 End;
 
 Initialization

@@ -81,15 +81,13 @@ End;
 
 Procedure InitializeXPDF;
 Var
-  sApplicationFolder: String;
+  sFile: String;
 Begin
   If FXPDFPath = '' Then
-  Begin
-    sApplicationFolder := IncludeTrailingBackslash(Application.Location);
-    FXPDFPath := FindFolder([sApplicationFolder, sApplicationFolder +
-      'Apps', sApplicationFolder + '..', sApplicationFolder + '..\Apps'],
-      'XPDF\bin32', Format('ffprobe%s', [GetExeExt]));
-  End;
+    sFile := FindSupportFileInFolders('Apps', 'XPDF\bin32', Format('ffprobe%s', [GetExeExt]));
+
+  If sFile <> '' Then
+    FXPDFPath := IncludeTrailingBackslash(ExtractFileDir(sFile));
 End;
 
 Initialization

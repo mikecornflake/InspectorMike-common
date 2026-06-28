@@ -75,7 +75,11 @@ Function RenameSubfolders(ARoot: String; AOperation: TRenameSubFolderOption): Bo
 Function CopyFileForce(sSource, sDestination: String; bFailIfExists: Boolean = False): Boolean;
 Function IsFileAbsolute(AFilename: String): Boolean;
 
-Function FindFolder(Const ASearchFolders: Array Of String; Const AFolder, AExe: String): String;
+// Helpers to find files in, ie, preferred Inspector Mike third party folders
+Function FindFileInFolders(Const ASearchFolders: Array Of String; Const AFolder, AExe: String): String;
+Function FindDriverFileInFolders(Const ADriverName: String; Const AFilename: String): String;
+Function FindSupportFileInFolders(Const AGroupFolder: String; Const ASubFolder: String;
+  Const ACheckFile: String): String;
 
 // OS Safety
 Function FixOSPathDelimiter(AInput: String): String;
@@ -127,7 +131,7 @@ Const
 Implementation
 
 Uses
-  FileUtil, LazFileUtils, Forms, StrUtils, StringSupport;
+  FileUtil, LazFileUtils, Forms, StrUtils, StringSupport, VersionSupport;
 
 Function GetIOErrorText(code: Integer): String;
 Begin
@@ -233,7 +237,7 @@ Begin
 End;
 
 // Written by ChatGPT 5.1 on 29 Nov 2025
-Function FindFolder(Const ASearchFolders: Array Of String; Const AFolder, AExe: String): String;
+Function FindFileInFolders(Const ASearchFolders: Array Of String; Const AFolder, AExe: String): String;
 Var
   i: Integer;
   sBaseFolder, sCandidateFolder: String;
@@ -254,14 +258,41 @@ Begin
 
   // 2) If not found, search %PATH% for AExe
   If AExe <> '' Then
-  Begin
     Result := FindDefaultExecutablePath(AExe);
-    If Result <> '' Then
-      Result := IncludeTrailingBackslash(ExtractFileDir(Result))
-    Else
-      Result := ''; // explicit, for clarity
-  End;
 End;
+
+// wrapper for FindFolder that searches preferred 
+// Inspector Mike support folder locations for, i.e. command line tools
+Function FindSupportFileInFolders(Const AGroupFolder: String; Const ASubFolder: String;
+  Const ACheckFile: String): String;
+Var
+  sBaseFolder: String;
+Begin
+  sBaseFolder := IncludeTrailingBackslash(Application.Location);
+
+  Result := FindFileInFolders([
+    // ie <exedir>\Apps or <exedir>\Drivers
+    sBaseFolder + AGroupFolder,
+    // ie <parentfolder>\Apps or <parentfolder>\Drivers
+    sBaseFolder + '..' + DirectorySeparator + AGroupFolder,
+    // ie directly in <exedir>
+    sBaseFolder], ASubFolder, ACheckFile);
+End;
+
+// wrapper for FindFolder that searches preferred 
+// Inspector Mike support folder locations for appropriate DLLs 
+Function FindDriverFileInFolders(Const ADriverName: String; Const AFilename: String): String;
+Var
+  Folder: String;
+Begin
+  Folder := FindSupportFileInFolders('Drivers', IncludeTrailingBackslash(ADriverName) + GetCPU, AFilename);
+
+  If Folder <> '' Then
+    Result := Folder + AFilename
+  Else
+    Result := AFilename; // let PATH / OS loader try
+End;
+
 
 Function FixOSPathDelimiter(AInput: String): String;
 Begin
