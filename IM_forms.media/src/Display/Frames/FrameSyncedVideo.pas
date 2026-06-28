@@ -236,6 +236,7 @@ Begin
   FLayout.RowCount := ARows;
   FLayout.ColCount := ACols;
   FLayout.Sequence := ASequence;
+  FLayout.Extend := True;
   FLayout.LayoutControls(FVideos, FVideoFileCount);
 End;
 

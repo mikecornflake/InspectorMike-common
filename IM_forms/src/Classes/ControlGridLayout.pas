@@ -22,6 +22,7 @@ Unit ControlGridLayout;
                 Initial implementation generated with assistance from
                 OpenAI ChatGPT GPT-5.5 and reviewed by Mike Thompson.
     2026-06-19: Refactored into split InspectorMike package structure
+    2026-06-28: Added Extend (extend into unused cells in final row/col)
 
   License
     This file is part of IM_forms.lpk.
@@ -65,6 +66,7 @@ Type
     FSequence: TControlLayoutSequence;
     FPanelMargin: Integer;
     FCellSpacing: Integer;
+    FExtend: Boolean;
 
     Procedure SetRowCount(AValue: Integer);
     Procedure SetColCount(AValue: Integer);
@@ -85,6 +87,7 @@ Type
 
     Property PanelMargin: Integer Read FPanelMargin Write FPanelMargin;
     Property CellSpacing: Integer Read FCellSpacing Write FCellSpacing;
+    Property Extend: Boolean Read FExtend Write FExtend;
   End;
 
 Implementation
@@ -101,6 +104,7 @@ Begin
   FSequence := clsLeftToRightThenDown;
   FPanelMargin := 0;
   FCellSpacing := 4;
+  FExtend := False;
 End;
 
 Procedure TControlGridLayout.SetRowCount(AValue: Integer);
@@ -146,6 +150,14 @@ Var
   Col: Integer;
   CellW: Integer;
   CellH: Integer;
+  LayoutCellW: Integer;
+  LayoutCellH: Integer;
+  LayoutColCount: Integer;
+  LayoutRowCount: Integer;
+  LastRow: Integer;
+  LastCol: Integer;
+  ItemsInLastRow: Integer;
+  ItemsInLastCol: Integer;
   LeftPos: Integer;
   TopPos: Integer;
   WorkW: Integer;
@@ -197,12 +209,58 @@ Begin
 
     GetCellPosition(i, Row, Col);
 
-    LeftPos := FPanelMargin + (Col * (CellW + FCellSpacing));
-    TopPos := FPanelMargin + (Row * (CellH + FCellSpacing));
+    LayoutCellW := CellW;
+    LayoutCellH := CellH;
+    LayoutColCount := FColCount;
+    LayoutRowCount := FRowCount;
+
+    If FExtend Then
+    Begin
+      Case FSequence Of
+        clsLeftToRightThenDown:
+        Begin
+          ItemsInLastRow := AControlCountLimit Mod FColCount;
+
+          If ItemsInLastRow <> 0 Then
+          Begin
+            LastRow := AControlCountLimit Div FColCount;
+
+            If Row = LastRow Then
+            Begin
+              LayoutColCount := ItemsInLastRow;
+              LayoutCellW :=
+                (FParent.ClientWidth - (FPanelMargin * 2) -
+                (FCellSpacing * (LayoutColCount - 1))) Div LayoutColCount;
+            End;
+          End;
+        End;
+
+        clsTopToBottomThenRight:
+        Begin
+          ItemsInLastCol := AControlCountLimit Mod FRowCount;
+
+          If ItemsInLastCol <> 0 Then
+          Begin
+            LastCol := AControlCountLimit Div FRowCount;
+
+            If Col = LastCol Then
+            Begin
+              LayoutRowCount := ItemsInLastCol;
+              LayoutCellH :=
+                (FParent.ClientHeight - (FPanelMargin * 2) -
+                (FCellSpacing * (LayoutRowCount - 1))) Div LayoutRowCount;
+            End;
+          End;
+        End;
+      End;
+    End;
+
+    LeftPos := FPanelMargin + (Col * (LayoutCellW + FCellSpacing));
+    TopPos := FPanelMargin + (Row * (LayoutCellH + FCellSpacing));
 
     oControl.Parent := FParent;
     oControl.Align := alNone;
-    oControl.SetBounds(LeftPos, TopPos, CellW, CellH);
+    oControl.SetBounds(LeftPos, TopPos, LayoutCellW, LayoutCellH);
     oControl.Visible := True;
   End;
 End;

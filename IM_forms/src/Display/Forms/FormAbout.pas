@@ -233,7 +233,6 @@ Begin
     FreeAndNil(fmeFFmpeg);
 End;
 
-
 Procedure TfrmAbout.btnOKClick(Sender: TObject);
 Begin
   Close;
