@@ -119,19 +119,19 @@ Type
     Function Info: String;
     Procedure RefreshUI; Override;
 
-    Property TempDir: String read FTempDir write FTempDir;
-    Property PDFDir: String read FPDFDir;
+    Property TempDir: String Read FTempDir Write FTempDir;
+    Property PDFDir: String Read FPDFDir;
     // This is the PDF image folder in the TEMP Dir
-    Property Filename: String read FFilename write SetFilename;
+    Property Filename: String Read FFilename Write SetFilename;
 
     // Third Party SDKs - the power behind this code
-    Property XPDFDir: String read FXPDFDir write FXPDFDir;
-    Property ImageMagickDir: String read FImageMagickDir write FImageMagickDir;
+    Property XPDFDir: String Read FXPDFDir Write FXPDFDir;
+    Property ImageMagickDir: String Read FImageMagickDir Write FImageMagickDir;
 
-    Property PageCount: Integer read FPageCount;
-    Property Page: Integer read FPage write SetPage;
+    Property PageCount: Integer Read FPageCount;
+    Property Page: Integer Read FPage Write SetPage;
 
-    Property Active: Boolean read FActive;
+    Property Active: Boolean Read FActive;
   End;
 
 Implementation
@@ -140,9 +140,9 @@ Uses
   VersionSupport, Dialogs, OSSupport, Types,
   XPDFSupport, ImageMagickSupport;
 
-{$R *.lfm}
+  {$R *.lfm}
 
-{ TFramePDFViewer }
+  { TFramePDFViewer }
 
 
 Constructor TFramePDFViewer.Create(TheOwner: TComponent);
@@ -157,7 +157,7 @@ Begin
   fmeImages.Stretch := True;
   fmeImages.OnScrollToNext := @OnScrollToNext;
 
-//  FTempDir := IncludeTrailingBackslash(Application.Location) + 'Temp';
+  //  FTempDir := IncludeTrailingBackslash(Application.Location) + 'Temp';
   FTempDir := IncludeTrailingBackslash(GetTempDir(False)) +
     ChangeFileExt(ExtractFileName(Application.ExeName), '');
 
@@ -272,8 +272,8 @@ End;
 
 Procedure TFramePDFViewer.CreateThumbnail(sFile: String; sThumb: String);
 Begin
-  RunAndCapture(Format('%s\convert.exe "%s" -resize %dx%d "%s"', [FImageMagickDir, sFile,
-    3 * (ilThumbs.Width - 8), 3 * (ilThumbs.Height - 8), sThumb]));
+  RunAndCapture(Format('%s\convert.exe "%s" -resize %dx%d "%s"',
+    [FImageMagickDir, sFile, 3 * (ilThumbs.Width - 8), 3 * (ilThumbs.Height - 8), sThumb]));
 End;
 
 Procedure TFramePDFViewer.lvThumbNailsCustomDrawItem(Sender: TCustomListView;
@@ -282,7 +282,6 @@ Var
   aRect, aRect2: TRect;
   sFile: String;
   sThumb: String;
-
 Begin
   sFile := ConvertPageToImage(FPDFDir, Item.Index + 1);
   sThumb := ChangeFileExt(sFile, '-thumb.png');

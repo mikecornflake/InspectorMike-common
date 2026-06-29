@@ -65,7 +65,10 @@ Type
 
 Implementation
 
-{ TVideoEngineInfo }
+Var
+  i: Integer;
+
+  { TVideoEngineInfo }
 
 Constructor TVideoEngineInfo.Create(Const ADisplayName: String; AClass: TFrameVideoBaseClass);
 Begin
@@ -117,9 +120,6 @@ Class Function TVideoEngineFactory.EngineInfo(AIndex: Integer): TVideoEngineInfo
 Begin
   Result := TVideoEngineInfo(GetEngines[AIndex]);
 End;
-
-Var
-  i: Integer;
 
 Finalization
   If Assigned(TVideoEngineFactory.FEngines) Then

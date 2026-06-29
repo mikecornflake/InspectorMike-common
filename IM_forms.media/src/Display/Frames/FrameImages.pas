@@ -93,13 +93,13 @@ Type
 
     Constructor Create(TheOwner: TComponent); Override;
 
-    Property Filename: String read FFilename write SetFilename;
-    Property PDF: Boolean read FPDF write FPDF;
+    Property Filename: String Read FFilename Write SetFilename;
+    Property PDF: Boolean Read FPDF Write FPDF;
 
-    Property Scale: Double read GetScale write SetScale;
-    Property OnScrollToNext: TScrollToNext read FScrollToNext write FScrollToNext;
-    Property Stretch: Boolean read FStretch write SetStretch;
-    Property ZoomToWidth: Boolean read FZoomToWidth write SetZoomToWidth;
+    Property Scale: Double Read GetScale Write SetScale;
+    Property OnScrollToNext: TScrollToNext Read FScrollToNext Write FScrollToNext;
+    Property Stretch: Boolean Read FStretch Write SetStretch;
+    Property ZoomToWidth: Boolean Read FZoomToWidth Write SetZoomToWidth;
   End;
 
 Implementation
@@ -107,9 +107,9 @@ Implementation
 Uses
   Clipbrd, OSSupport, Math;
 
-{$R *.lfm}
+  {$R *.lfm}
 
-{ TFrameImage }
+  { TFrameImage }
 
 Constructor TFrameImage.Create(TheOwner: TComponent);
 Begin
@@ -402,7 +402,7 @@ Begin
       [imgImage.Picture.Width, imgImage.Picture.Height, ExtractFilename(FFilename),
       ScaleInt(100)]);
 
-      // Reset this, we might not use it again
+    // Reset this, we might not use it again
     FCenterBeforeZoom := Point(-1, -1);
   End;
 End;

@@ -250,8 +250,8 @@ Begin
   Try
     FLayout.LayoutControls(FVideos, FVideoFileCount);
   Finally
-  //  If Assigned(oParent) Then
-  //    THackCustomForm(oParent).EndFormUpdate;
+    //  If Assigned(oParent) Then
+    //    THackCustomForm(oParent).EndFormUpdate;
   End;
 End;
 
