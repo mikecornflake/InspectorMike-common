@@ -76,7 +76,8 @@ Function CopyFileForce(sSource, sDestination: String; bFailIfExists: Boolean = F
 Function IsFileAbsolute(AFilename: String): Boolean;
 
 // Helpers to find files in, ie, preferred Inspector Mike third party folders
-Function FindFileInFolders(Const ASearchFolders: Array Of String; Const AFolder, AExe: String): String;
+Function FindFileInFolders(Const ASearchFolders: Array Of String;
+  Const AFolder, AExe: String): String;
 Function FindDriverFileInFolders(Const ADriverName: String; Const AFilename: String): String;
 Function FindSupportFileInFolders(Const AGroupFolder: String; Const ASubFolder: String;
   Const ACheckFile: String): String;
@@ -237,7 +238,8 @@ Begin
 End;
 
 // Written by ChatGPT 5.1 on 29 Nov 2025
-Function FindFileInFolders(Const ASearchFolders: Array Of String; Const AFolder, AExe: String): String;
+Function FindFileInFolders(Const ASearchFolders: Array Of String;
+  Const AFolder, AExe: String): String;
 Var
   i: Integer;
   sBaseFolder, sCandidateFolder: String;
@@ -285,7 +287,8 @@ Function FindDriverFileInFolders(Const ADriverName: String; Const AFilename: Str
 Var
   Folder: String;
 Begin
-  Folder := FindSupportFileInFolders('Drivers', IncludeTrailingBackslash(ADriverName) + GetCPU, AFilename);
+  Folder := FindSupportFileInFolders('Drivers', IncludeTrailingBackslash(ADriverName) +
+    GetCPU, AFilename);
 
   If Folder <> '' Then
     Result := Folder + AFilename
