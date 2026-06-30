@@ -65,16 +65,11 @@ Type
     FState: TVideoState;
     FSyncTimer: TTimer;
     FSyncSeekThresholdMS: TVideoTime;
-    FStartTime: TDateTime;
     FReadyToPlay: Boolean;
     FLayout: TControlGridLayout;
 
     Procedure SetState(AValue: TVideoState);
     Procedure SetMaster(AValue: TFrameVideoBase);
-
-    Function GetCurrentTime: TDateTime;
-    Procedure SetCurrentTime(AValue: TDateTime);
-    Function GetEndTime: TDateTime;
 
     Procedure MasterPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
     Procedure VideoStateChanged(Sender: TObject; AState: TVideoState);
@@ -101,7 +96,8 @@ Type
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
 
-    Procedure Layout(ARows, ACols: Integer; ASequence: TControlLayoutSequence);
+    Procedure Layout(ARows, ACols: Integer;
+      ASequence: TControlLayoutSequence = clsLeftToRightThenDown);
 
     Procedure ClearUnloadedVideoFrames;
     Procedure ClearVideoCount;
@@ -126,10 +122,6 @@ Type
 
     Property Videos: TFrameVideoBaseList Read FVideos;
     Property Master: TFrameVideoBase Read FMaster Write SetMaster;
-
-    Property StartTime: TDateTime Read FStartTime Write FStartTime;
-    Property CurrentTime: TDateTime Read GetCurrentTime Write SetCurrentTime;
-    Property EndTime: TDateTime Read GetEndTime;
 
     Property SyncSeekThresholdMS: TVideoTime Read FSyncSeekThresholdMS Write FSyncSeekThresholdMS;
 
@@ -156,7 +148,6 @@ Begin
   // End user will have to provide an active class
   FVideoEngineClass := nil;
 
-  FStartTime := 0;
   FSyncSeekThresholdMS := 1000;
   FReadyToPlay := False;
   FAutoPlay := False;
@@ -234,7 +225,8 @@ End;
 Type
   THackCustomForm = Class(TCustomForm);
 
-Procedure TFrameSyncedVideo.Layout(ARows, ACols: Integer; ASequence: TControlLayoutSequence);
+Procedure TFrameSyncedVideo.Layout(ARows, ACols: Integer;
+  ASequence: TControlLayoutSequence = clsLeftToRightThenDown);
 Var
   oParent: TCustomForm;
 Begin
@@ -386,37 +378,6 @@ Begin
     SetState(vsStopped)
   Else
     SetState(vsEmpty);
-End;
-
-Function TFrameSyncedVideo.GetCurrentTime: TDateTime;
-Begin
-  If FStartTime = 0 Then
-    Result := 0
-  Else
-    Result := FStartTime + (Position / MSecsPerDay);
-End;
-
-Procedure TFrameSyncedVideo.SetCurrentTime(AValue: TDateTime);
-Var
-  OffsetMS: TVideoTime;
-Begin
-  If FStartTime = 0 Then
-    Exit;
-
-  OffsetMS := MilliSecondsBetween(AValue, FStartTime);
-
-  If AValue < FStartTime Then
-    OffsetMS := -OffsetMS;
-
-  Position := OffsetMS;
-End;
-
-Function TFrameSyncedVideo.GetEndTime: TDateTime;
-Begin
-  If (FStartTime = 0) Or (Duration < 0) Then
-    Result := 0
-  Else
-    Result := FStartTime + (Duration / MSecsPerDay);
 End;
 
 Function TFrameSyncedVideo.Load(Const AFilename: String; AChannel: String;
