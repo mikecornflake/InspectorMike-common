@@ -78,9 +78,6 @@ Type
   { TFrameVideoBase }
 
   TFrameVideoBase = Class(TFrameBase)
-  Private
-    Function GetPositionAsTime: TDateTime;
-    Procedure SetPositionAsTime(AValue: TDateTime);
   Protected
     FFilename: String;
     FOnPosition: TPositionEvent;
@@ -101,6 +98,10 @@ Type
     Function GetMuted: Boolean; Virtual;
     Procedure SetMuted(AValue: Boolean); Virtual;
 
+    Function GetEndDateTime: TDateTime;
+    Function GetPositionAsTime: TDateTime;
+    Procedure SetPositionAsTime(AValue: TDateTime);
+
     Procedure DoPosition; Virtual;
     Procedure DoStateChanged; Virtual;
   Public
@@ -116,7 +117,6 @@ Type
     Property Autoplay: Boolean Read FAutoplay Write SetAutoplay;
 
     Function HasVideo: Boolean; Virtual;
-    Function EndTime: TDateTime;
 
     Function CanSeek: Boolean; Virtual;
     Function CanSetRate: Boolean; Virtual;
@@ -142,6 +142,7 @@ Type
 
     Property StartDateTime: TDateTime Read FStartDateTime Write FStartDateTime;
     Property PositionAsTime: TDateTime Read GetPositionAsTime Write SetPositionAsTime;
+    Property EndDateTime: TDateTime Read GetEndDateTime;
 
     Property OnPosition: TPositionEvent Read FOnPosition Write FOnPosition;
     Property OnStateChanged: TStateEvent Read FOnStateChanged Write FOnStateChanged;
@@ -176,6 +177,11 @@ Begin
   FVideoFileCount := 0;
 End;
 
+Function TFrameVideoBase.GetEndDateTime: TDateTime;
+Begin
+  Result := FStartDateTime + (Duration / MSecsPerDay);
+End;
+
 Function TFrameVideoBase.GetPositionAsTime: TDateTime;
 Begin
   Result := FStartDateTime;
@@ -194,11 +200,6 @@ Begin
   iPosition := Round((AValue - FStartDateTime) * MSecsPerDay);
 
   Position := EnsureRange(iPosition, 0, Duration);
-End;
-
-Function TFrameVideoBase.EndTime: TDateTime;
-Begin
-  Result := FStartDateTime + (Duration / MSecsPerDay);
 End;
 
 Procedure TFrameVideoBase.SetAutoplay(AValue: Boolean);
@@ -329,17 +330,24 @@ Function TFrameVideoBase.CopyFrameToClipboard: Boolean;
 Var
   oPicture: TPicture;
   sFile: String;
+  oBitmap: TBitmap;
 Begin
   Result := False;
-  sFile := UniqueFilename(GetTempDir(False), 'Temp', '.png', False, 5);
+  sFile := UniqueFilename(GetTempDir(False), 'Temp', '.jpg', False, 5);
   Try
     If SaveFrameToFile(sFile) Then
     Begin
       oPicture := TPicture.Create;
       Try
         oPicture.LoadFromFile(sFile);
-        Clipboard.Assign(oPicture.Graphic);
-        Result := True;
+        oBitmap := TBitmap.Create;
+        Try
+          oBitmap.Assign(oPicture.Graphic);
+          Clipboard.Assign(oBitmap);
+          Result := True;
+        Finally
+          oBitmap.Free;
+        End;
       Finally
         oPicture.Free;
       End;

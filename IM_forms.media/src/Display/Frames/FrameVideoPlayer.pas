@@ -634,7 +634,7 @@ Begin
     lblTime.Caption := ToTime(PositionMS) + LineEnding + ToTime(DurationMS)
   Else
     lblTime.Caption := TimeToStr(fmeVideo.PositionAsTime) + LineEnding +
-      TimeToStr(fmeVideo.EndTime);
+      TimeToStr(fmeVideo.EndDateTime);
 End;
 
 Procedure TFrameVideoPlayer.VideoStateChanged(Sender: TObject; State: TVideoState);
