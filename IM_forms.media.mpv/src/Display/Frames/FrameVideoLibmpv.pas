@@ -258,7 +258,7 @@ End;
 
 Function TFrameVideoLibmpv.GetDuration: TVideoTime;
 Begin
-  If Assigned(FmpvPlayer) And FmpvPlayer.IsMediaLoaded Then
+  If Assigned(FmpvPlayer) And (FmpvPlayer.IsMediaLoaded) Then
     Result := FmpvPlayer.GetMediaLenInMs
   Else
     Result := -1;

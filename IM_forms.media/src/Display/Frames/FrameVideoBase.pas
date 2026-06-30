@@ -78,6 +78,7 @@ Type
   { TFrameVideoBase }
 
   TFrameVideoBase = Class(TFrameBase)
+  Private
   Protected
     FFilename: String;
     FOnPosition: TPositionEvent;
@@ -101,6 +102,7 @@ Type
     Function GetEndDateTime: TDateTime;
     Function GetPositionAsTime: TDateTime;
     Procedure SetPositionAsTime(AValue: TDateTime);
+    Function ReadDurationAsTime: TDateTime;
 
     Procedure DoPosition; Virtual;
     Procedure DoStateChanged; Virtual;
@@ -143,6 +145,7 @@ Type
     Property StartDateTime: TDateTime Read FStartDateTime Write FStartDateTime;
     Property PositionAsTime: TDateTime Read GetPositionAsTime Write SetPositionAsTime;
     Property EndDateTime: TDateTime Read GetEndDateTime;
+    Property DurationAsTime: TDateTime Read ReadDurationAsTime;
 
     Property OnPosition: TPositionEvent Read FOnPosition Write FOnPosition;
     Property OnStateChanged: TStateEvent Read FOnStateChanged Write FOnStateChanged;
@@ -200,6 +203,11 @@ Begin
   iPosition := Round((AValue - FStartDateTime) * MSecsPerDay);
 
   Position := EnsureRange(iPosition, 0, Duration);
+End;
+
+Function TFrameVideoBase.ReadDurationAsTime: TDateTime;
+Begin
+  Result := Duration / MSecsPerDay;
 End;
 
 Procedure TFrameVideoBase.SetAutoplay(AValue: Boolean);
