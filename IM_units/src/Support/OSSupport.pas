@@ -55,13 +55,15 @@ Uses
   {$IFDEF UNIX}, BaseUnix {$ENDIF}
   ;
 
-Procedure LaunchFile(sFilename: String; sParameters: String = '');
+// Uses quick and dirty TProcess code
+Procedure LaunchFile(sFilename: String; sParameters: String = ''); Deprecated;
+
+// Uses ShellExecute(0, 'open'...
 Procedure LaunchDocument(sFilename: String);
 
 // Launch an external application and immediately return control to the caller.
 // This is intended for GUI applications such as VLC, editors, viewers, etc.
 // No output is captured and the launched process is not monitored or waited on.
-
 // AExecutable  - Full path to the executable to launch
 // AParams      - Command line parameters passed to the executable
 Procedure LaunchExternalTool(Const AExecutable, AParams: String);
