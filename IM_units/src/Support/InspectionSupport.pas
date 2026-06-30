@@ -246,17 +246,14 @@ Var
 Begin
   Result := False;
 
-  Parts := BaseName.Split(' - ');
-  If Length(Parts) < 2 Then
+  Parts := BaseName.Split(' ');
+  If Length(Parts) < 4 Then
     Exit;
 
   // Example:
   // 2014-04-26 204214 - lynx42 - 1
-  If Length(Parts[0]) <> 17 Then
-    Exit;
-
-  DateText := Copy(Parts[0], 1, 10);
-  TimeText := Copy(Parts[0], 12, 6);
+  DateText := Parts[0];
+  TimeText := Parts[1];
 
   If (DateText[5] <> '-') Or (DateText[8] <> '-') Then
     Exit;
@@ -279,9 +276,9 @@ Begin
 
   AInfo.FoundDateTime := True;
   AInfo.DateTime := DT;
-  AInfo.DateTimeText := Parts[0];
+  AInfo.DateTimeText := DateText+' '+TimeText;
 
-  AInfo.Channel := CleanChannel(Parts[1]);
+  AInfo.Channel := CleanChannel(Parts[3]);
   AInfo.FoundChannel := AInfo.Channel <> '';
 
   AInfo.Confidence := 95;
