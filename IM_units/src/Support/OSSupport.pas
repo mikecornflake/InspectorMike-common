@@ -50,7 +50,8 @@ Unit OSSupport;
 Interface
 
 Uses
-  Classes, SysUtils, UTF8Process, Controls, Forms, LCLType
+  Classes, SysUtils, UTF8Process, Controls, Graphics, Forms, LCLType, LCLIntf,
+  Types
   {$IFDEF WINDOWS}, Windows, ShellAPI{$ENDIF}
   {$IFDEF UNIX}, BaseUnix {$ENDIF}
   ;
@@ -105,11 +106,16 @@ Function ShellDirectoryRegister(AAppName: String; ACommand: String; ACaption: St
 // Return True if success
 Function ShellDirectoryUnRegister(AAppName: String): Boolean; // Return True if success
 
+// Clipboard
 Procedure CopyHTMLToClipboard(AHTML: TStringList; ABaseFolder: String = '';
   BAlsoAsText: Boolean = False);
 
+// Environment Variables
 Procedure SetEnvVar(Const Name, Value: String);
 Procedure AddToEnvironmentPath(AFolder: String);
+
+// icon extraction
+Function GetShellSmallIcon(Const AFilename: String): TIcon;
 
 Const
   HTML_STYLE_SHEET =
@@ -447,6 +453,27 @@ Begin
     SetEnvVar('PATH', AFolder)
   Else
     SetEnvVar('PATH', AFolder + PathSeparator + sCurrentPath);
+End;
+
+// TODO Linux?
+Function GetShellSmallIcon(Const AFilename: String): TIcon;
+Var
+  SFI: TSHFileInfo;
+Begin
+  Result := Nil;
+  FillChar(SFI, SizeOf(SFI), 0);
+
+  If SHGetFileInfo(
+       PChar(AFilename),
+       0,
+       SFI,
+       SizeOf(SFI),
+       SHGFI_ICON Or SHGFI_SMALLICON
+     ) = 0 Then
+    Exit;
+
+  Result := TIcon.Create;
+  Result.Handle := SFI.hIcon;
 End;
 
 End.
