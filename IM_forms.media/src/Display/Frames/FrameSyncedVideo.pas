@@ -91,6 +91,11 @@ Type
     Procedure SetRate(AValue: Double); Override;
     Function GetState: TVideoState; Override;
 
+    Function GetMuted: Boolean; Override;
+    Procedure SetMuted(AValue: Boolean); Override;
+    Function GetVolume: Integer; Override;
+    Procedure SetVolume(AValue: Integer); Override;
+
     Procedure SetAutoplay(AValue: Boolean); Override;
   Public
     Constructor Create(TheOwner: TComponent); Override;
@@ -225,8 +230,7 @@ End;
 Type
   THackCustomForm = Class(TCustomForm);
 
-Procedure TFrameSyncedVideo.Layout(ARows, ACols: Integer;
-  ASequence: TControlLayoutSequence = clsLeftToRightThenDown);
+Procedure TFrameSyncedVideo.Layout(ARows, ACols: Integer; ASequence: TControlLayoutSequence);
 Var
   oParent: TCustomForm;
 Begin
@@ -326,6 +330,38 @@ Begin
   Result := FState;
 End;
 
+Function TFrameSyncedVideo.GetMuted: Boolean;
+Begin
+  Result := Inherited GetMuted;
+
+  If Assigned(FMaster) Then
+    Result := FMaster.Muted;
+End;
+
+Procedure TFrameSyncedVideo.SetMuted(AValue: Boolean);
+Begin
+  Inherited SetMuted(AValue);
+
+  If Assigned(FMaster) Then
+    FMaster.Muted := AValue;
+End;
+
+Function TFrameSyncedVideo.GetVolume: Integer;
+Begin
+  Result := Inherited GetVolume;
+
+  If Assigned(FMaster) Then
+    Result := FMaster.Volume;
+End;
+
+Procedure TFrameSyncedVideo.SetVolume(AValue: Integer);
+Begin
+  Inherited SetVolume(AValue);
+
+  If Assigned(FMaster) Then
+    FMaster.Volume := AValue;
+End;
+
 Procedure TFrameSyncedVideo.SetAutoplay(AValue: Boolean);
 Var
   fmeVideo: TFrameVideoBase;
@@ -396,7 +432,6 @@ Begin
   Begin
     fmeVideo := FVideos[FVideoFileCount - 1];
     fmeVideo.Visible := True;
-    fmeVideo.Autoplay := FAutoplay;
   End
   Else
   Begin
@@ -404,10 +439,12 @@ Begin
     fmeVideo.Parent := Self;
     fmeVideo.OnStateChanged := @VideoStateChanged;
     fmeVideo.OnActivateFrame := @VideoActivateFrame;
-    fmeVideo.Autoplay := FAutoplay;
 
     FVideos.Add(fmeVideo);
   End;
+
+  fmeVideo.Autoplay := FAutoplay;
+  fmeVideo.Volume := FVolume;
 
   If FVideoFileCount > (FLayout.RowCount * FLayout.ColCount) Then
     FLayout.ColCount := FLayout.ColCount + 1;
@@ -419,7 +456,10 @@ Begin
     Master := fmeVideo;
   End;
 
-  fmeVideo.Muted := fmeVideo <> FMaster;
+  If fmeVideo = FMaster Then
+    fmeVideo.Muted := FMuted
+  Else
+    fmeVideo.Muted := True;
 
   // Now set the file details for the specific channel
   Result := fmeVideo.Load(AFilename, AChannel, AStartDateTime);

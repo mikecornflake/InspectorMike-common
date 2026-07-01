@@ -9,7 +9,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="src\Display\Frames"/>
-        <OtherUnitFiles Value="src\Classes;src\Display\Frames"/>
+        <OtherUnitFiles Value="src\Classes;src\Display\Frames;src\Display\Forms"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
@@ -70,6 +70,10 @@
       <Item>
         <Filename Value="src\Classes\VideoEngineFactory.pas"/>
         <UnitName Value="VideoEngineFactory"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Forms\FormVolumePopup.pas"/>
+        <UnitName Value="FormVolumePopup"/>
       </Item>
     </Files>
     <RequiredPkgs>

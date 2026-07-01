@@ -78,7 +78,6 @@ Type
   { TFrameVideoBase }
 
   TFrameVideoBase = Class(TFrameBase)
-  Private
   Protected
     FFilename: String;
     FOnPosition: TPositionEvent;
@@ -87,6 +86,8 @@ Type
     FAutoplay: Boolean;
     FChannel: String;
     FStartDateTime: TDateTime;
+    FMuted: Boolean;
+    FVolume: Integer;
 
     Procedure SetAutoplay(AValue: Boolean); Virtual;
 
@@ -96,8 +97,11 @@ Type
     Function GetRate: Double; Virtual;
     Procedure SetRate(AValue: Double); Virtual;
     Function GetState: TVideoState; Virtual;
+
     Function GetMuted: Boolean; Virtual;
     Procedure SetMuted(AValue: Boolean); Virtual;
+    Function GetVolume: Integer; Virtual;
+    Procedure SetVolume(AValue: Integer); Virtual;
 
     Function GetEndDateTime: TDateTime;
     Function GetPositionAsTime: TDateTime;
@@ -129,7 +133,9 @@ Type
     Function DefaultFrameFilename(AFolder: String; AExt: String): String;
 
     Property Filename: String Read FFilename;
+
     Property Muted: Boolean Read GetMuted Write SetMuted;
+    Property Volume: Integer Read GetVolume Write SetVolume;
 
     Property Rate: Double Read GetRate Write SetRate;
     Property State: TVideoState Read GetState;
@@ -175,6 +181,8 @@ Begin
   FOnStateChanged := nil;
   FChannel := '';
   FStartDateTime := 0;
+  FMuted := False;
+  FVolume := 100;
 
   // Each descendent should set this when files are correctly loaded.
   FVideoFileCount := 0;
@@ -208,6 +216,16 @@ End;
 Function TFrameVideoBase.ReadDurationAsTime: TDateTime;
 Begin
   Result := Duration / MSecsPerDay;
+End;
+
+Function TFrameVideoBase.GetVolume: Integer;
+Begin
+  Result := FVolume;
+End;
+
+Procedure TFrameVideoBase.SetVolume(AValue: Integer);
+Begin
+  FVolume := EnsureRange(AValue, 0, 100);
 End;
 
 Procedure TFrameVideoBase.SetAutoplay(AValue: Boolean);
@@ -247,12 +265,12 @@ End;
 
 Function TFrameVideoBase.GetMuted: Boolean;
 Begin
-  Result := False;
+  Result := FMuted;
 End;
 
 Procedure TFrameVideoBase.SetMuted(AValue: Boolean);
 Begin
-  //Descendant handles muting
+  FMuted := AValue;
 End;
 
 Procedure TFrameVideoBase.DoPosition;

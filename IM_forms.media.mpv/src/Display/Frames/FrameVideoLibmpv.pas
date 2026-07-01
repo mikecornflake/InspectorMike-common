@@ -61,7 +61,6 @@ Type
   Private
     FmpvPlayer: TMPVPlayer;
     FState: TVideoState;
-    FMuted: Boolean;
 
     FLoadWatchdog: TTimer;
     FLoadMediaFinalised: Boolean;
@@ -88,8 +87,11 @@ Type
     Function GetRate: Double; Override;
     Procedure SetRate(AValue: Double); Override;
     Function GetState: TVideoState; Override;
+
     Function GetMuted: Boolean; Override;
     Procedure SetMuted(AValue: Boolean); Override;
+    Function GetVolume: Integer; Override;
+    Procedure SetVolume(AValue: Integer); Override;
 
     Procedure SetVisible(Value: Boolean); Override;
   Public
@@ -116,7 +118,8 @@ Implementation
 {$R *.lfm}
 
 Uses
-  LibmpvSupport, libMPV.Client, VideoEngineFactory, FileSupport;
+  LibmpvSupport, libMPV.Client, VideoEngineFactory, FileSupport,
+  Math;
 
   { TFrameVideoLibmpv }
 
@@ -294,8 +297,27 @@ Procedure TFrameVideoLibmpv.SetMuted(AValue: Boolean);
 Begin
   FMuted := AValue;
 
-  If Assigned(FmpvPlayer) And FmpvPlayer.IsMediaLoaded Then
+  If Assigned(FmpvPlayer) Then
     FmpvPlayer.SetAudioMute(FMuted);
+End;
+
+Function TFrameVideoLibmpv.GetVolume: Integer;
+Begin
+  Result := Inherited GetVolume;
+
+  If Assigned(FmpvPlayer) And FmpvPlayer.IsMediaLoaded Then
+    Result := FmpvPlayer.GetAudioVolume;
+End;
+
+Procedure TFrameVideoLibmpv.SetVolume(AValue: Integer);
+Begin
+  Inherited SetVolume(AValue);
+
+  If Assigned(FmpvPlayer) Then
+  Begin
+    AValue := EnsureRange(AValue, 0, 100);
+    FmpvPlayer.SetAudioVolume(Byte(AValue));
+  End;
 End;
 
 Procedure TFrameVideoLibmpv.SetVisible(Value: Boolean);
@@ -323,6 +345,8 @@ Begin
 
   SetState(vsLoading);
   FmpvPlayer.Play(AFilename);
+  Muted := FMuted; // Uses SetMuted, which has correct call
+  Volume := FVolume;  // Uses SetVolumn, which has correct call and conversion
   FLoadWatchdog.Enabled := True;
 End;
 

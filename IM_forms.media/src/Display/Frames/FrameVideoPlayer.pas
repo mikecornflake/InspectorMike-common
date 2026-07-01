@@ -32,7 +32,7 @@ Interface
 Uses
   Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs,
   ComCtrls, StdCtrls, ExtCtrls, Menus, ActnList, FrameBase, FrameVideoBase,
-  Types;
+  Types, FormVolumePopup, IniFiles;
 
 Type
 
@@ -40,6 +40,7 @@ Type
 
   TFrameVideoPlayer = Class(TFrameBase)
     actCopyToClipboard: TAction;
+    actVolume: TAction;
     actStepBack: TAction;
     actStepForward: TAction;
     actPlayFaster: TAction;
@@ -54,7 +55,7 @@ Type
     btnPause: TToolButton;
     btnPlay: TToolButton;
     dlgSaveLocation: TSelectDirectoryDialog;
-    ilToolbar: TImageList;
+    ilToolbar32: TImageList;
     lblStatus: TLabel;
     lblTime: TLabel;
     mnuCopyToClipboard: TMenuItem;
@@ -76,11 +77,14 @@ Type
     btnPlayFaster: TToolButton;
     btnStepBack: TToolButton;
     btnStepForward: TToolButton;
+    ToolButton1: TToolButton;
+    btnVolume: TToolButton;
     trackVideo: TTrackBar;
     Procedure actCopyToClipboardExecute(Sender: TObject);
     Procedure actPlayPauseExecute(Sender: TObject);
     Procedure actResetRateExecute(Sender: TObject);
     Procedure actPlayFasterClick(Sender: TObject);
+    Procedure actVolumeExecute(Sender: TObject);
     Procedure btnGrabClick(Sender: TObject);
     Procedure btnOpenInExplorerClick(Sender: TObject);
     Procedure actPauseClick(Sender: TObject);
@@ -103,6 +107,9 @@ Type
     FOnStop: TNotifyEvent;
     FVideoEngineClass: TFrameVideoBaseClass;
     fmeVideo: TFrameVideoBase;
+    FVolumePopup: TfrmVolumePopup;
+    FMuted: Boolean;
+    FVolume: Integer;
 
     FUpdatingTracker: Boolean;
     FLastSeekTick: QWord;
@@ -114,19 +121,27 @@ Type
     Procedure SetAutoplay(AValue: Boolean);
     Procedure SetVideoEngineClass(AValue: TFrameVideoBaseClass);
     Procedure SetShowLabel(AValue: Boolean);
+
+    Procedure ShowVolumePopup;
     Function StepDelta: Integer;
 
     Procedure VideoPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
     Procedure VideoStateChanged(Sender: TObject; State: TVideoState);
+    Procedure VolumePopupChanged(AOwner: TObject; AVolume: Integer; AMuted: Boolean);
   Public
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
 
     Procedure RefreshUI; Override;
+
     Function Load(Const AFilename: String; AChannel: String = '';
       AStartDateTime: TDateTime = 0): Boolean;
+
     Function Clear: Boolean;
     Procedure Pause;
+
+    Procedure LoadSettings(oInifile: TIniFile); Virtual;
+    Procedure SaveSettings(oInifile: TIniFile); Virtual;
 
     Property Filename: String Read GetFilename;
     Property VideoEngineClass: TFrameVideoBaseClass Read FVideoEngineClass
@@ -177,6 +192,9 @@ Begin
   trackVideo.Max := 0;
   trackVideo.Position := 0;
 
+  FMuted := False;
+  FVolume := 100;
+
   RefreshUI;
 End;
 
@@ -201,6 +219,8 @@ Begin
   fmeVideo.Name := 'fmeVideo';
   fmeVideo.Align := alClient;
   fmeVideo.Autoplay := FAutoplay;
+  fmeVideo.Muted := FMuted;
+  fmeVideo.Volume := FVolume;
 
   fmeVideo.OnPosition := @VideoPosition;
   fmeVideo.OnStateChanged := @VideoStateChanged;
@@ -234,6 +254,13 @@ Var
 Begin
   Inherited RefreshUI;
 
+  If FMuted Then
+    actVolume.ImageIndex := 12
+  Else
+    actVolume.ImageIndex := 11;
+
+  actVolume.Hint := Format('Volume=%d%s', [FVolume, '%']);
+
   If Not Assigned(fmeVideo) Then
   Begin
     actPlay.Enabled := False;
@@ -248,6 +275,7 @@ Begin
     actPlayPause.Enabled := False;
     actResetRate.Enabled := False;
     actCopyToClipboard.Enabled := False;
+    actVolume.Enabled := False;
 
     Exit;
   End;
@@ -275,6 +303,7 @@ Begin
   btnGrab.Enabled := bCanGrab;
   btnOpenInExplorer.Enabled := bHasFile;
   actCopyToClipboard.Enabled := bCanGrab;
+  actVolume.Enabled := bHasFile;
 
   trackVideo.Enabled := bCanSeek;
 
@@ -288,6 +317,45 @@ Begin
 
   actPlayFaster.Hint := actPlayFaster.Hint + sExtra;
   actPlaySlower.Hint := actPlaySlower.Hint + sExtra;
+End;
+
+Procedure TFrameVideoPlayer.ShowVolumePopup;
+Var
+  P: TPoint;
+Begin
+  If Not Assigned(FVolumePopup) Then
+    FVolumePopup := TfrmVolumePopup.Create(Self);
+
+  FVolumePopup.cbMuted.Checked := fmeVideo.Muted;
+  FVolumePopup.tbVolume.Position := fmeVideo.Volume;
+
+  FVolumePopup.OnVolumeChanged := @VolumePopupChanged;
+
+  P := btnVolume.ClientToScreen(Point(0, btnVolume.Height));
+  FVolumePopup.SetBounds(P.X, P.Y, 60, 180);
+
+  FVolumePopup.Show;
+  FVolumePopup.MakeFullyVisible;
+  FVolumePopup.BringToFront;
+  FVolumePopup.SetFocus;
+End;
+
+Procedure TFrameVideoPlayer.VolumePopupChanged(AOwner: TObject; AVolume: Integer;
+  AMuted: Boolean);
+Begin
+  If Assigned(fmeVideo) Then
+  Begin
+    FMuted := AMuted;
+    FVolume := AVolume;
+
+    fmeVideo.Muted := AMuted;
+    fmeVideo.Volume := AVolume;
+
+    If AMuted Then
+      actVolume.ImageIndex := 12
+    Else
+      actVolume.ImageIndex := 11;
+  End;
 End;
 
 Function TFrameVideoPlayer.Load(Const AFilename: String; AChannel: String;
@@ -322,6 +390,26 @@ Begin
     fmeVideo.Pause;
 
   RefreshUI;
+End;
+
+Procedure TFrameVideoPlayer.LoadSettings(oInifile: TIniFile);
+Begin
+  FMuted := oInifile.ReadBool(FullIdentKey, 'Muted', False);
+  FVolume := oInifile.ReadInteger(FullIdentKey, 'Volume', 100);
+
+  If Assigned(fmeVideo) Then
+  Begin
+    fmeVideo.Muted := FMuted;
+    fmeVideo.Volume := FVolume;
+  End;
+
+  RefreshUI;
+End;
+
+Procedure TFrameVideoPlayer.SaveSettings(oInifile: TIniFile);
+Begin
+  oInifile.WriteBool(FullIdentKey, 'Muted', FMuted);
+  oInifile.WriteInteger(FullIdentKey, 'Volume', FVolume);
 End;
 
 Procedure TFrameVideoPlayer.actPlayClick(Sender: TObject);
@@ -390,6 +478,11 @@ Begin
   RefreshUI;
   Application.CancelHint;
   Application.ActivateHint(Mouse.CursorPos);
+End;
+
+Procedure TFrameVideoPlayer.actVolumeExecute(Sender: TObject);
+Begin
+  ShowVolumePopup;
 End;
 
 Procedure TFrameVideoPlayer.actPlaySlowerClick(Sender: TObject);
