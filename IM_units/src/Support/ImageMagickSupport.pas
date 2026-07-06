@@ -55,6 +55,7 @@ Uses
 
 Function ImageMagickAvailable: Boolean;
 Function ImageMagickPath: String;
+Function ImageMagickExe: String;
 Procedure SetImageMagickPath(AValue: String);
 Procedure InitializeImageMagick;
 
@@ -74,6 +75,14 @@ End;
 Function ImageMagickPath: String;
 Begin
   Result := FImageMagickPath;
+End;
+
+Function ImageMagickExe: String;
+Begin
+  Result := IncludeSlash(ImageMagickPath) + 'magick' + GetExeExt;
+
+  If Not FileExists(Result) Then
+    Result := '';
 End;
 
 Procedure SetImageMagickPath(AValue: String);

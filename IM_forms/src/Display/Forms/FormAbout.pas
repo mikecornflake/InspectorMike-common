@@ -54,14 +54,16 @@ Type
     Bevel1: TBevel;
     btnOK: TButton;
     edtmpvDLL: TEdit;
+    edtImageMagickDir: TEdit;
+    edtXPDFDir: TEdit;
     Label3: TLabel;
     Label4: TLabel;
     lblHTMLLabel2: TLabel;
     lblHTMLLabel3: TLabel;
-    lblSDKs: TLabel;
-    lblImageMagick: TLabel;
-    lblXPDF1: TLabel;
+    lblImageMagickURL: TLabel;
     lblXPDF2: TLabel;
+    lblXPDFURL: TLabel;
+    lblSDKs: TLabel;
     lblHTMLLabel6: TLabel;
     lblHTMLLabel7: TLabel;
     lblXPDF3: TLabel;
@@ -89,6 +91,7 @@ Type
     Procedure btnOKClick(Sender: TObject);
     Procedure FormCreate(Sender: TObject);
     Procedure FormDestroy(Sender: TObject);
+    procedure lblImageMagickClick(Sender: TObject);
     Procedure URLLabelMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     Procedure URLLabelMouseEnter(Sender: TObject);
@@ -163,7 +166,7 @@ Begin
   Begin
     tsImageMagick.TabVisible := True;
     memImageMagick.Lines.LoadFromFile(ImageMagickPath + '\License.txt');
-    lblImageMagick.Visible := True;
+    edtImageMagickDir.Text := ImageMagickPath;
   End
   Else
     tsImageMagick.TabVisible := False;
@@ -172,8 +175,7 @@ Begin
   Begin
     tsXPDF.TabVisible := True;
     memXPDF.Lines.LoadFromFile(XPDFPath + '\..\README');
-    lblXPDF1.Visible := True;
-    lblXPDF2.Visible := True;
+    edtXPDFDir.Text := XPDFPath;
   End
   Else
     tsXPDF.TabVisible := False;
@@ -203,8 +205,6 @@ Begin
     edtmpvDLL.Text := LibmpvDLL;
   End;
 
-  lblSDKs.Visible := lblImageMagick.Visible Or lblXPDF1.Visible;
-
   memAbout.Lines.Clear;
   memAbout.Lines.Add(Application.exename);
   memAbout.Lines.Add('');
@@ -232,6 +232,11 @@ Begin
   If Assigned(fmeFFmpeg) Then
     FreeAndNil(fmeFFmpeg);
 End;
+
+procedure TfrmAbout.lblImageMagickClick(Sender: TObject);
+begin
+
+end;
 
 Procedure TfrmAbout.btnOKClick(Sender: TObject);
 Begin

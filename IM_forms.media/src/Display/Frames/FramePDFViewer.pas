@@ -96,13 +96,11 @@ Type
     FPicture: TPicture; // Cache for thumbnailer
     FActive: Boolean;
     FFilename: String;
-    FImageMagickDir: String;
     fmeImages: TFrameImage;
     FPage: Integer;
     FPageCount: Integer;
     FPDFDir: String;
     FTempDir: String;
-    FXPDFDir: String;
     Procedure CreateThumbnail(sFile: String; sThumb: String);
     Procedure SetFilename(AValue: String);
 
@@ -121,12 +119,9 @@ Type
 
     Property TempDir: String Read FTempDir Write FTempDir;
     Property PDFDir: String Read FPDFDir;
+
     // This is the PDF image folder in the TEMP Dir
     Property Filename: String Read FFilename Write SetFilename;
-
-    // Third Party SDKs - the power behind this code
-    Property XPDFDir: String Read FXPDFDir Write FXPDFDir;
-    Property ImageMagickDir: String Read FImageMagickDir Write FImageMagickDir;
 
     Property PageCount: Integer Read FPageCount;
     Property Page: Integer Read FPage Write SetPage;
@@ -138,7 +133,7 @@ Implementation
 
 Uses
   VersionSupport, Dialogs, OSSupport, Types,
-  XPDFSupport, ImageMagickSupport;
+  XPDFSupport, ImageMagickSupport, Math;
 
   {$R *.lfm}
 
@@ -161,10 +156,6 @@ Begin
   FTempDir := IncludeTrailingBackslash(GetTempDir(False)) +
     ChangeFileExt(ExtractFileName(Application.ExeName), '');
 
-  FXPDFDir := XPDFSupport.XPDFPath;
-
-  FImageMagickDir := ImageMagickSupport.ImageMagickPath;
-
   FActive := False;
 
   FPicture := TPicture.Create;
@@ -186,6 +177,7 @@ End;
 
 Procedure TFramePDFViewer.SetPage(AValue: Integer);
 Begin
+  AValue := EnsureRange(AValue, 1, FPageCount);
   If FPage <> AValue Then
   Begin
     SetBusy;
@@ -231,22 +223,34 @@ Procedure TFramePDFViewer.btnRotateCCWClick(Sender: TObject);
 Var
   sFile: String;
 Begin
-  sFile := fmeImages.Filename;
-  RunAndCapture(Format('"%s\convert.exe" "%s" -rotate -90 "%s"',
-    [FImageMagickDir, sFile, sFile]));
+  If ImageMagickExe = '' Then
+    Exit;
 
+  sFile := fmeImages.Filename;
+  RunAndCapture(Format('"%s" mogrify -rotate -90 "%s"', [ImageMagickExe, sFile]));
   fmeImages.Filename := '';
   fmeImages.Filename := sFile;
+
+  DeleteFile(ChangeFileExt(sFile, '-thumb.png'));
+  If lvThumbNails.Visible Then
+    lvThumbNails.Refresh;
 End;
 
 Procedure TFramePDFViewer.btnRotateCWClick(Sender: TObject);
 Var
   sFile: String;
 Begin
+  If ImageMagickExe = '' Then
+    Exit;
+
   sFile := fmeImages.Filename;
-  RunAndCapture(Format('%s\convert.exe "%s" -rotate +90 "%s"', [FImageMagickDir, sFile, sFile]));
+  RunAndCapture(Format('"%s" mogrify -rotate +90 "%s"', [ImageMagickExe, sFile]));
   fmeImages.Filename := '';
   fmeImages.Filename := sFile;
+
+  DeleteFile(ChangeFileExt(sFile, '-thumb.png'));
+  If lvThumbNails.Visible Then
+    lvThumbNails.Refresh;
 End;
 
 Procedure TFramePDFViewer.btnZoom100Click(Sender: TObject);
@@ -272,8 +276,11 @@ End;
 
 Procedure TFramePDFViewer.CreateThumbnail(sFile: String; sThumb: String);
 Begin
-  RunAndCapture(Format('%s\convert.exe "%s" -resize %dx%d "%s"',
-    [FImageMagickDir, sFile, 3 * (ilThumbs.Width - 8), 3 * (ilThumbs.Height - 8), sThumb]));
+  If ImageMagickExe = '' Then
+    Exit;
+
+  RunAndCapture(Format('"%s" "%s" -resize %dx%d "%s"', [ImageMagickExe, sFile,
+    3 * (ilThumbs.Width - 8), 3 * (ilThumbs.Height - 8), sThumb]));
 End;
 
 Procedure TFramePDFViewer.lvThumbNailsCustomDrawItem(Sender: TCustomListView;
@@ -288,6 +295,23 @@ Begin
 
   If Not FileExists(sThumb) Then
     CreateThumbnail(sFile, sThumb);
+
+  If Not FileExists(sThumb) Then
+  Begin
+    aRect := Item.DisplayRect(drBounds);
+
+    Sender.Canvas.Brush.Color := clWhite;
+    Sender.Canvas.FillRect(aRect);
+
+    Sender.Canvas.Pen.Color := clSilver;
+    Sender.Canvas.Rectangle(aRect);
+
+    Sender.Canvas.TextOut(aRect.Left + 6, aRect.Top + 6,
+      IntToStr(Item.Index + 1));
+
+    DefaultDraw := False;
+    Exit;
+  End;
 
   FPicture.LoadFromFile(sThumb);
 
@@ -362,7 +386,7 @@ Begin
   Begin
     FActive := False;
     FPageCount := 0;
-    fmeImages.Filename := '';  // Clear any the existing Picture
+    fmeImages.Filename := '';  // Clear the existing Picture
 
     If FileExists(AValue) Then
     Begin
@@ -464,26 +488,13 @@ Begin
 
     If Not FileExists(sFullFilename + '.png') Then
     Begin
-(*
-      Run(Format('%s\convert.exe -density 300 "%s[%d]" -quality 100 "%s.png"',
-       [FImageMagickDir, FFilename, iPage, sFullFilename]));
-*)
-      // Generate the original .ppm file, which TImage won't load (Lazarus bug?)
-      sError := RunAndCapture(Format('%s\pdftopng.exe -f %d -l %d "%s" "%s\Page"',
-        [FXPDFDir, iPage, iPage, FFilename, sDir]));
+      sError := RunAndCapture(Format('%s -f %d -l %d "%s" "%s\Page"',
+        [PDFtoPNGExe, iPage, iPage, FFilename, sDir]));
 
       sError := Trim(sError);
 
       If sError <> '' Then
         ShowMessage(sError);
-
-      // Now convert the ppm file to a more handlable format
-(*
-      Run(Format('%s\convert.exe "%s.ppm" "%s.png"', [FImageMagickDir,
-        sFullFilename, sFullFilename]));
-
-      DeleteFile(Format('%s.ppm', [sFullFilename]));
-*)
     End;
 
     Result := sFullFilename + '.png';
@@ -499,7 +510,7 @@ Var
 Begin
   slInfo := TStringList.Create;
   Try
-    slInfo.Text := RunAndCapture(Format('%s\pdfinfo.exe "%s"', [XPDFDir, FFilename]));
+    slInfo.Text := XPDFInfo(FFilename);
 
     For i := 0 To slInfo.Count - 1 Do
       slInfo[i] := StringReplace(slInfo[i], ': ', '=', [rfIgnoreCase]);

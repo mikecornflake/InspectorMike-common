@@ -51,12 +51,16 @@ Uses
 Function XPDFAvailable: Boolean;
 Function XPDFPath: String;
 Procedure SetXPDFPath(AValue: String);
+Function PDFtoPNGExe: String;
+Function PDFInfoExe: String;
 Procedure InitializeXPDF;
+
+Function XPDFInfo(APDFFilename: String): String;
 
 Implementation
 
 Uses
-  Forms, FileSupport, FileUtil;
+  Forms, FileSupport, OSSupport, FileUtil;
 
 Var
   FXPDFPath: String;
@@ -79,6 +83,22 @@ Begin
     FXPDFPath := '';
 End;
 
+Function PDFToPNGExe: String;
+Begin
+  Result := IncludeSlash(XPDFPath) + 'pdftopng' + GetExeExt;
+
+  If Not FileExists(Result) Then
+    Result := '';
+End;
+
+Function PDFInfoExe: String;
+Begin
+  Result := IncludeSlash(XPDFPath) + 'pdfinfo' + GetExeExt;
+
+  If Not FileExists(Result) Then
+    Result := '';
+End;
+
 Procedure InitializeXPDF;
 Var
   sFile: String;
@@ -88,6 +108,12 @@ Begin
 
   If sFile <> '' Then
     FXPDFPath := IncludeTrailingBackslash(ExtractFileDir(sFile));
+End;
+
+Function XPDFInfo(APDFFilename: String): String;
+Begin
+  If (PDFInfoExe <> '') And FileExists(APDFFilename) Then
+    Result := RunAndCapture(Format('%s "%s"', [PDFInfoExe, APDFFilename]));
 End;
 
 Initialization
