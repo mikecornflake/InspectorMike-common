@@ -300,7 +300,11 @@ Begin
   Begin
     aRect := Item.DisplayRect(drBounds);
 
-    Sender.Canvas.Brush.Color := clWhite;
+    If Item.Selected Then
+      Sender.Canvas.Brush.Color := clGray
+    Else
+      Sender.Canvas.Brush.Color := clWhite;
+
     Sender.Canvas.FillRect(aRect);
 
     Sender.Canvas.Pen.Color := clSilver;
@@ -488,7 +492,7 @@ Begin
 
     If Not FileExists(sFullFilename + '.png') Then
     Begin
-      sError := RunAndCapture(Format('%s -f %d -l %d "%s" "%s\Page"',
+      sError := RunAndCapture(Format('"%s" -f %d -l %d "%s" "%s\Page"',
         [PDFtoPNGExe, iPage, iPage, FFilename, sDir]));
 
       sError := Trim(sError);
