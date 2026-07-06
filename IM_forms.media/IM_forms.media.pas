@@ -8,7 +8,7 @@ unit IM_forms.media;
 interface
 
 uses
-  FrameImages, FramePDFViewers, FrameRelatedVideos, FrameSyncedVideo, 
+  FrameImages, FramePDFViewer, FrameRelatedVideos, FrameSyncedVideo, 
   FrameVideoPlayer, FrameVideoBase, VideoEngineFactory, FormVolumePopup, 
   LazarusPackageIntf;
 

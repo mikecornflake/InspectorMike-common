@@ -1,8 +1,8 @@
-Unit FramePDFViewers;
+Unit FramePDFViewer;
 
 {-------------------------------------------------------------------------------
   Package   : IM_forms.media
-  Unit      : FramePDFViewers.pas
+  Unit      : FramePDFViewer.pas
   Description
     Frame for browsing PDF pages with thumbnails and toolbar controls.
 

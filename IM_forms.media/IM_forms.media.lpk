@@ -28,12 +28,12 @@
         <UnitName Value="FrameImages"/>
       </Item>
       <Item>
-        <Filename Value="src\Display\Frames\FramePDFViewers.lfm"/>
+        <Filename Value="src\Display\Frames\FramePDFViewer.lfm"/>
         <Type Value="LFM"/>
       </Item>
       <Item>
-        <Filename Value="src\Display\Frames\FramePDFViewers.pas"/>
-        <UnitName Value="FramePDFViewers"/>
+        <Filename Value="src\Display\Frames\FramePDFViewer.pas"/>
+        <UnitName Value="FramePDFViewer"/>
       </Item>
       <Item>
         <Filename Value="src\Display\Frames\FrameRelatedVideos.lfm"/>
