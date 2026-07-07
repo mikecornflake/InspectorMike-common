@@ -11,6 +11,11 @@
         <OtherUnitFiles Value="src\Classes;src\Support"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx6058="True"/>
+        </CompilerMessages>
+      </Other>
     </CompilerOptions>
     <Files>
       <Item>
@@ -80,6 +85,10 @@
       <Item>
         <Filename Value="src\Support\InspectionSupport.pas"/>
         <UnitName Value="InspectionSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\qpdfSupport.pas"/>
+        <UnitName Value="qpdfSupport"/>
       </Item>
     </Files>
     <RequiredPkgs>

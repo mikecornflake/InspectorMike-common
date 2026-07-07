@@ -133,7 +133,7 @@ Implementation
 
 Uses
   VersionSupport, Dialogs, OSSupport, Types,
-  XPDFSupport, ImageMagickSupport, Math;
+  XPDFSupport, ImageMagickSupport, qpdfSupport, Math;
 
   {$R *.lfm}
 
@@ -511,6 +511,8 @@ Function TFramePDFViewer.Info: String;
 Var
   slInfo: TStringList;
   i: Integer;
+  oPDFAttachments: TPDFAttachments;
+  oPDFAttachment: TPDFAttachment;
 Begin
   slInfo := TStringList.Create;
   Try
@@ -522,6 +524,28 @@ Begin
     Result := slInfo.Text;
 
     FPageCount := StrToIntDef(slInfo.Values['Pages'], 0);
+
+    If qpdfAvailable Then
+    Begin
+      Result := Result + LineEnding;
+
+      oPDFAttachments := TPDFAttachments.Create(True);
+      Try
+        qpdfListAttachments(FFilename, oPDFAttachments);
+
+        If oPDFAttachments.Count = 0 Then
+          Result := Result + 'No attachments in PDF'
+        Else
+        Begin
+          Result := Result + Format('%d attachments: ', [oPDFAttachments.Count]) + LineEnding;
+
+          For oPDFAttachment In oPDFAttachments Do
+            Result := Result + oPDFAttachment.DisplayText + LineEnding;
+        End;
+      Finally
+        oPDFAttachments.Free;
+      End;
+    End;
   Finally
     slInfo.Free;
   End;
@@ -530,5 +554,6 @@ End;
 Initialization
   InitializeXPDF;
   InitializeImageMagick;
+  Initializeqpdf;
 
 End.

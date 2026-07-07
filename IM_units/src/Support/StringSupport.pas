@@ -57,6 +57,7 @@ Function TextBetween(Const ASource, sStart, sEnd: String): String;
 Function Count(Const sSubstr, ASource: String): Integer;
 Function ExtractField(Const ASource: String; cSeparator: Char; iIndex: Integer): String;
 Function ChangeCase(Const ASource: String; ACaseOperation: TCaseOperation): String;
+Function BeginsWith(Const ASource, ATextAtStart: String): Boolean;
 
 // Date Time helpers
 Function FormatDateTimeAsISO8601(dt: TDateTime): String;
@@ -155,6 +156,11 @@ Begin
       Result := AnsiProperCase(sTemp, StdWordDelims); // TODO Proper case
     End;
   End;
+End;
+
+Function BeginsWith(Const ASource, ATextAtStart: String): Boolean;
+Begin
+  Result := CompareText(Copy(ASource, 1, Length(ATextAtStart)), ATextAtStart) = 0;
 End;
 
 Function FindNextString(Const ASource, sSubstr: String; iStart: Integer): Integer;

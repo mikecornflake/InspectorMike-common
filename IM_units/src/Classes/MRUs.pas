@@ -79,8 +79,8 @@ Type
     Procedure Load(oInifile: TInifile; sSection, sIdent: String);
     Procedure Save(oInifile: TInifile; sSection, sIdent: String);
 
-    Property Max: Integer read FMax write FMax;
-    Property Files: Boolean read FFiles write FFiles;
+    Property Max: Integer Read FMax Write FMax;
+    Property Files: Boolean Read FFiles Write FFiles;
   End;
 
 
@@ -89,7 +89,7 @@ Implementation
 Uses
   FileUtil;
 
-{ TMRU }
+  { TMRU }
 
 Constructor TMRU.Create;
 Begin

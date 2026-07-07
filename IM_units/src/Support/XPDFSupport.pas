@@ -51,9 +51,10 @@ Uses
 Function XPDFAvailable: Boolean;
 Function XPDFPath: String;
 Procedure SetXPDFPath(AValue: String);
+Procedure InitializeXPDF;
+
 Function PDFtoPNGExe: String;
 Function PDFInfoExe: String;
-Procedure InitializeXPDF;
 
 Function XPDFInfo(APDFFilename: String): String;
 
@@ -104,7 +105,7 @@ Var
   sFile: String;
 Begin
   If FXPDFPath = '' Then
-    sFile := FindSupportFileInFolders('Apps', 'XPDF\bin32', Format('ffprobe%s', [GetExeExt]));
+    sFile := FindSupportFileInFolders('Apps', 'XPDF\bin32', Format('pdfinfo%s', [GetExeExt]));
 
   If sFile <> '' Then
     FXPDFPath := IncludeTrailingBackslash(ExtractFileDir(sFile));

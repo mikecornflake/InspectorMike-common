@@ -460,16 +460,11 @@ Function GetShellSmallIcon(Const AFilename: String): TIcon;
 Var
   SFI: TSHFileInfo;
 Begin
-  Result := Nil;
+  Result := nil;
   FillChar(SFI, SizeOf(SFI), 0);
 
-  If SHGetFileInfo(
-       PChar(AFilename),
-       0,
-       SFI,
-       SizeOf(SFI),
-       SHGFI_ICON Or SHGFI_SMALLICON
-     ) = 0 Then
+  If SHGetFileInfo(PChar(AFilename), 0, SFI, SizeOf(SFI), SHGFI_ICON Or
+    SHGFI_SMALLICON) = 0 Then
     Exit;
 
   Result := TIcon.Create;
