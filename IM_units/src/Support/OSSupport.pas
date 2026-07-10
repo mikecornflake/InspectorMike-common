@@ -82,7 +82,7 @@ Procedure LaunchExternalTool(Const AExecutable, AParams: String);
 // ARunExCallback  - Optional callback triggered while output is being received
 
 // Returns the captured stdout/stderr text.
-Function RunAndCapture(AExecutable: String; AParamaters: TStrings = nil;
+Function RunAndCapture(AExecutable: String; AParameters: TStrings = nil;
   ARedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
 
 // Convenience overload of RunAndCapture() that accepts a simple array of
@@ -187,7 +187,7 @@ Begin
   End;
 End;
 
-Function RunAndCapture(AExecutable: String; AParamaters: TStrings = nil;
+Function RunAndCapture(AExecutable: String; AParameters: TStrings = nil;
   ARedirectErr: Boolean = False; ARunExCallback: TNotifyEvent = nil): String;
 Const
   READ_BYTES = 2048;
@@ -205,12 +205,12 @@ Begin
   Try
     oProcess := TProcess.Create(nil);
     Try
-      If Assigned(AParamaters) Then
+      If Assigned(AParameters) Then
       Begin
         oProcess.Executable := AExecutable;
 
-        For i := 0 To AParamaters.Count - 1 Do
-          oProcess.Parameters.Add(AParamaters[i]);
+        For i := 0 To AParameters.Count - 1 Do
+          oProcess.Parameters.Add(AParameters[i]);
       End
       Else
         oProcess.CommandLine := AExecutable;

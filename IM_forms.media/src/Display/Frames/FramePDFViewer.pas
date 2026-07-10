@@ -133,12 +133,11 @@ Implementation
 
 Uses
   VersionSupport, Dialogs, OSSupport, Types,
-  XPDFSupport, ImageMagickSupport, qpdfSupport, Math;
+  XPDFSupport, ImageMagickSupport, qpdfSupport, Math, PDF;
 
   {$R *.lfm}
 
   { TFramePDFViewer }
-
 
 Constructor TFramePDFViewer.Create(TheOwner: TComponent);
 Begin

@@ -34,41 +34,41 @@ Unit qpdfSupport;
 
     SPDX-License-Identifier: LGPL-3.0-or-later
 -------------------------------------------------------------------------------}
+
 Interface
 
 Uses
-  Classes, SysUtils, fgl;
-
-Type
-
-  { TPDFAttachment }
-
-  TPDFAttachment = Class
-    Key: Integer;
-    Filename: String;
-    Description: String;
-    CreationDate: TDateTime;
-    ModificationTime: TDateTime;
-
-    Function DisplayText: String;
-  End;
-
-  TPDFAttachments = Class(Specialize TFPGObjectList<TPDFAttachment>);
-
+  Classes, SysUtils, fgl, PDF;
 
 Function qpdfAvailable: Boolean;
 Function qpdfExe: String;
 Procedure SetqpdfExe(AValue: String);
 Function Initializeqpdf: Boolean;
 
+// Parses qpdf-normalised UTC dates.
+// Expected format: D:YYYYMMDDHHNNSSZ
+// Note: PDFDate is more complex when showing non-UTC dates
+Function qpdfPDFDateToDateTime(Const APDFDate: String): TDateTime;
+Function qpdfDateTimeToPDFDate(Const ADate: TDateTime): String;
+
+// Escape double quotes, and wrap AValue in double quotes
+Function qpdfQuoteParam(Const AValue: String): String;
+
+// Produce the --add-attachment parameter
+Function qpdfAddAttachmentParam(APDFAttachment: TPDFAttachment): String;
+
+// Call --list-attachments, and parse the result
 Function qpdfListAttachments(Const AFilename: String; APDFAttachments: TPDFAttachments): Boolean;
 
-Function PDFDateToDateTime(APDFDate: String): TDateTime;
+// Generate the appropriate --add-attachment parameters list, call them
+// Uses a temp file.  The only file that will exist after the operation
+// is AFilename, with the attachments added
+Function qpdAddAttachments(Const AFilename: String; APDFAttachments: TPDFAttachments): Boolean;
 
 Implementation
 
 Uses
-  Forms, FileSupport, OSSupport, FileUtil, StringSupport;
+  Forms, DateUtils, FileSupport, OSSupport, FileUtil, StringSupport;
 
 Var
   FqpdfExe: String;
@@ -106,11 +106,144 @@ Begin
   Result := FileExists(FqpdfExe);
 End;
 
+Function qpdfPDFDateToDateTime(Const APDFDate: String): TDateTime;
+Var
+  iYear, iMonth, iDay: Integer;
+  iHour, iMinute, iSecond: Integer;
+Begin
+  Result := 0;
+
+  // Expected format: D:20260707065535Z
+  If Length(APDFDate) <> 17 Then
+    Exit;
+
+  If (Copy(APDFDate, 1, 2) <> 'D:') Or (APDFDate[17] <> 'Z') Then
+    Exit;
+
+  If Not TryStrToInt(Copy(APDFDate, 3, 4), iYear) Or Not
+    TryStrToInt(Copy(APDFDate, 7, 2), iMonth) Or Not TryStrToInt(Copy(APDFDate, 9, 2), iDay) Or
+    Not TryStrToInt(Copy(APDFDate, 11, 2), iHour) Or Not
+    TryStrToInt(Copy(APDFDate, 13, 2), iMinute) Or Not
+    TryStrToInt(Copy(APDFDate, 15, 2), iSecond) Then
+    Exit;
+
+  TryEncodeDateTime(iYear, iMonth, iDay, iHour, iMinute, iSecond, 0, Result);
+End;
+
+Function qpdfDateTimeToPDFDate(Const ADate: TDateTime): String;
+Begin
+  If ADate = 0 Then
+    Exit('');
+
+  Result := 'D:' + FormatDateTime('yyyymmddhhnnss', ADate) + 'Z';
+End;
+
 Function qpdfListAttachments(Const AFilename: String; APDFAttachments: TPDFAttachments): Boolean;
 Var
   slOutput: TStringList;
   sLine, sCommand: String;
   oAttach: TPDFAttachment;
+Begin
+  Result := False;
+
+  If Not FileExists(AFilename) Then
+    Exit;
+
+  Assert(Assigned(APDFAttachments),
+    'Must pass a TPDFAttachments');
+
+  Assert(APDFAttachments.FreeObjects,
+    'APDFAttachments must be set to FreeObjects');
+
+  If Not Initializeqpdf Then
+    Exit;
+
+  slOutput := TStringList.Create;
+  Try
+    sCommand := Format('"%s" --list-attachments --verbose "%s"', [FqpdfExe, AFilename]);
+
+    slOutput.Text := RunAndCapture(sCommand, nil, True);
+
+    oAttach := nil;
+
+    For sLine In slOutput Do
+    Begin
+      If sLine = '' Then
+        Continue;
+
+      If (sLine[1] <> ' ') And sLine.Contains(' ->') Then
+      Begin
+        // Start of a new attachment is not indented.
+        oAttach := TPDFAttachment.Create;
+        oAttach.Filename := TextBetween(sLine, '', ' ->');
+        oAttach.Key :=
+          StrToIntDef(Trim(TextBetween(sLine, ' ->', ',')), -1);
+
+        APDFAttachments.Add(oAttach);
+      End
+      Else If Not Assigned(oAttach) Then
+        Continue
+      Else If (oAttach.Description = '') And BeginsWith(sLine, '  description: ') Then
+      Begin
+        oAttach.Description :=
+          TextBetween(sLine, '  description: ', '');
+      End
+      Else If (oAttach.CreationDate = 0) And BeginsWith(sLine, '      creation date: ') Then
+      Begin
+        oAttach.CreationDate := qpdfPDFDateToDateTime(
+          TextBetween(sLine, '      creation date: ', ''));
+      End
+      Else If (oAttach.ModificationTime = 0) And BeginsWith(sLine,
+        '      modification date: ') Then
+      Begin
+        oAttach.ModificationTime :=
+          qpdfPDFDateToDateTime(TextBetween(sLine, '      modification date: ', ''));
+      End;
+    End;
+
+    Result := True;
+  Finally
+    slOutput.Free;
+  End;
+End;
+
+Function qpdfQuoteParam(Const AValue: String): String;
+Begin
+  Result := StringReplace(AValue, '"', '\"', [rfReplaceAll]);
+  If (Result <> '') And (Result[1] <> '"') Then
+    Result := '"' + Result + '"';
+End;
+
+Function qpdfAddAttachmentParam(APDFAttachment: TPDFAttachment): String;
+Begin
+  Assert(Assigned(APDFAttachment),
+    'Must pass a TPDFAttachment');
+
+  Assert(APDFAttachment.SourceFilename <> '', 'Attachment source filename must not be empty');
+
+  Result := ' --add-attachment=' + qpdfQuoteParam(APDFAttachment.SourceFilename);
+
+  If APDFAttachment.Filename <> '' Then
+    Result += ' --filename=' + qpdfQuoteParam(APDFAttachment.Filename);
+
+  If APDFAttachment.Description <> '' Then
+    Result += ' --description=' + qpdfQuoteParam(APDFAttachment.Description);
+
+  If APDFAttachment.CreationDate <> 0 Then
+    Result := Result + Format(' --creationdate="%s"',
+      [qpdfDateTimeToPDFDate(APDFAttachment.CreationDate)]);
+
+  If APDFAttachment.ModificationTime <> 0 Then
+    Result := Result + Format(' --moddate="%s"',
+      [qpdfDateTimeToPDFDate(APDFAttachment.ModificationTime)]);
+
+  Result := Result + ' --';
+End;
+
+Function qpdAddAttachments(Const AFilename: String; APDFAttachments: TPDFAttachments): Boolean;
+Var
+  sFolder, sExt, sOriginal, sParams, sCommand, sTemp: String;
+  oTemp: TPDFAttachment;
 Begin
   Result := False;
 
@@ -123,85 +256,30 @@ Begin
   If Not Initializeqpdf Then
     Exit;
 
-  slOutput := TStringList.Create;
-  Try
-    sCommand := Format('%s --list-attachments --verbose "%s"', [FqpdfExe, AFilename]);
-    slOutput.Text := RunAndCapture(sCommand, nil, True);
+  sFolder := ExtractFileDir(AFilename);
+  sOriginal := ChangeFileExt(ExtractFileName(AFilename), '');
+  sExt := ExtractFileExt(AFilename);
+  sTemp := UniqueFilename(sFolder, sOriginal, sExt, False, 5);
 
-    oAttach := nil;
+  // TODO Compare Existing Attachments then update or append accordingly
+  //oExistingAttachments := TPDFAttachments.Create;
 
-    For sLine In slOutput Do
-    Begin
-      If sLine = '' Then
-        Continue;
+  If APDFAttachments.Count > 0 Then
+  Begin
+    sParams := '';
 
-      If (sLine[1] <> ' ') And sLine.Contains(' ->') Then
-      Begin
-        // Start of a new attachment is not indented
-        oAttach := TPDFAttachment.Create;
-        oAttach.Filename := TextBetween(sLine, '', ' ->');
-        oAttach.Key := StrToIntDef(Trim(TextBetween(sLine, ' ->', ',')), -1);
-        APDFAttachments.Add(oAttach);
-      End
-      Else If (oAttach.Description = '') And BeginsWith(sLine, '  description: ') Then
-        oAttach.Description := TextBetween(sLine, '  description: ', '')
-      Else If (oAttach.CreationDate = 0) And sLine.Contains('      creation date: ') Then
-        oAttach.CreationDate := PDFDateToDateTime(TextBetween(sLine, '      creation date: ', ''))
-      Else If (oAttach.ModificationTime = 0) And sLine.Contains('      modification date: ') Then
-        oAttach.ModificationTime :=
-          PDFDateToDateTime(TextBetween(sLine, '      modification date: ', ''));
-    End;
+    sCommand := Format('"%s" "%s"', [qpdfExe, AFilename]);
 
-  Finally
-    slOutput.Free;
+    For oTemp In APDFAttachments Do
+      sParams += qpdfAddAttachmentParam(oTemp);
+
+    If sParams = '' Then
+      Exit;
+
+    sParams := '--replace-input ' + sParams;
+
+    RunAndCapture(sCommand + ' ' + sParams);
   End;
-End;
-
-Function PDFDateToDateTime(APDFDate: String): TDateTime;
-Var
-  sTemp, sY, sM, sD, sH, sN, sS, sYMDHns: String;
-Begin
-  Result := 0;
-
-  //D:20260707065535Z
-  sTemp := TextBetween(APDFDate, 'D:', 'Z');
-  If Length(sTemp) <> 14 Then
-    Exit;
-
-  sY := Copy(sTemp, 1, 4);
-  sM := Copy(sTemp, 5, 2);
-  sD := Copy(sTemp, 7, 2);
-  sH := Copy(sTemp, 9, 2);
-  sN := Copy(sTemp, 11, 2);
-  sS := Copy(sTemp, 13, 2);
-
-  sYMDHns := Format('%s/%s/%s %s:%s:%s', [sY, sM, sD, sH, sN, sS]);
-
-  Result := YYYYmmddHHmmssToDateTime(sYMDHns);
-End;
-
-{ TPDFAttachment }
-
-Function TPDFAttachment.DisplayText: String;
-Begin
-  Result := '';
-
-  If Filename <> '' Then
-    Result += Format('  Filename="%s" %s', [Filename, LineEnding]);
-
-  If Key <> 0 Then
-    Result += Format('    Key="%d" %s', [Key, LineEnding]);
-
-  If Description <> '' Then
-    Result += Format('    Description="%s" %s', [Description, LineEnding]);
-
-  If CreationDate <> 0 Then
-    Result += Format('    CreationDate="%s" %s',
-      [FormatDateTime('yyyy-mm-dd HH:nn:ss', CreationDate), LineEnding]);
-
-  If ModificationTime <> 0 Then
-    Result += Format('    ModificationTime="%s" %s',
-      [FormatDateTime('yyyy-mm-dd HH:nn:ss', ModificationTime), LineEnding]);
 End;
 
 End.

@@ -7,7 +7,7 @@ Unit FileSupport;
     Helper unit for File Operations
 
     Some routines are from AdvLibrary code (pre Netlink copy)
-    Some routines from Lazarus Forum (see acknowledgement comments inline
+    Some routines from Lazarus Forum (see acknowledgement comments inline)
 
   Notable cousin
     If you're here because you forgot the name of the LCL file management unit

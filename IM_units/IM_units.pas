@@ -11,7 +11,7 @@ uses
   Logs, MRUs, Settings, ffmpegSupport, FileSupport, GPSSupport, 
   ImageMagickSupport, LibmpvSupport, netMCSupport, OSSupport, StringSupport, 
   TesseractSupport, VersionSupport, WGS84, XMLSupport, XPDFSupport, 
-  InspectionSupport, qpdfSupport, LazarusPackageIntf;
+  InspectionSupport, qpdfSupport, PDF, LazarusPackageIntf;
 
 implementation
 

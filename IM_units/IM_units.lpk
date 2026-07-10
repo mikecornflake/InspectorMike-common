@@ -90,6 +90,10 @@
         <Filename Value="src\Support\qpdfSupport.pas"/>
         <UnitName Value="qpdfSupport"/>
       </Item>
+      <Item>
+        <Filename Value="src\Classes\PDF.pas"/>
+        <UnitName Value="PDF"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
