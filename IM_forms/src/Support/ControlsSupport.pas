@@ -110,13 +110,14 @@ Begin
       oNode := oNode.GetPrev;
 
     // We'll manually locate the first node ourselves.
-    If Copy(sLocation, 1, Length(sDelimiter)) = sDelimiter Then
-      sLocation := Copy(sLocation, 2, Length(sLocation));
+    if Copy(sLocation, 1, Length(sDelimiter)) = sDelimiter then
+      Delete(sLocation, 1, Length(sDelimiter));
 
     sNode := ExtractField(sLocation, sDelimiter[1], 0);
 
-    While Assigned(oNode) And (oNode.Text <> sNode) Do
-      oNode := oNode.GetNext;
+    While Assigned(oNode) And
+          (CompareText(oNode.Text, sNode) <> 0) Do
+      oNode := oNode.GetNextSibling;
 
     If Assigned(oNode) Then
       Result := SelectNode2(oNode, TextBetween(sLocation, sDelimiter, ''))
