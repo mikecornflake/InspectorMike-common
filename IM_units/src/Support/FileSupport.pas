@@ -111,6 +111,9 @@ Function DateToFilename(ADate: TDateTime): String;
 Function TimeToFilename(ATime: TDateTime): String;
 Function DateTimeToFilename(ADateTime: TDateTime): String;
 
+Function FileCreationDate(Const AFilename: String): TDateTime;
+Function FileModificationDate(Const AFilename: String): TDateTime;
+
 Const
   EXE_DIR = '<EXEDIR>';
   faAnyFilesExcDirs = faAnyFile And Not faDirectory;
@@ -132,7 +135,9 @@ Const
 Implementation
 
 Uses
-  FileUtil, LazFileUtils, Forms, StrUtils, StringSupport, VersionSupport;
+  Forms,
+  FileUtil, DateUtils, LazFileUtils, StrUtils,
+  StringSupport, VersionSupport;
 
 Function GetIOErrorText(code: Integer): String;
 Begin
@@ -174,8 +179,8 @@ End;
 
 // Based on code from ChatGPT 5.1 on 29 Nov 2025
 // and from GetTempFileName() in osutil.inc (see comment)
-Function UniqueFilename(Const ADir, APrefix, AExt: String; AUseGUID: Boolean = True;
-  ACountDigits: Integer = 5): String;
+Function UniqueFilename(Const ADir, APrefix, AExt: String; AUseGUID: Boolean;
+  ACountDigits: Integer): String;
 Var
   GUID: TGUID;
   sGUID: String;
@@ -235,6 +240,64 @@ End;
 Function DateTimeToFilename(ADateTime: TDateTime): String;
 Begin
   Result := DateTimeToStr(ADateTime, GFilenameDateTimeFormat);
+End;
+
+Function FileCreationDate(Const AFilename: String): TDateTime;
+  {$IFDEF Windows}
+Var
+  hFile: THandle;
+  oCreationTime: TFileTime;
+  oLocalTime: TFileTime;
+  oSystemTime: TSystemTime;
+  {$ENDIF}
+Begin
+  Result := 0;
+
+  {$IFDEF Windows}
+    hFile := CreateFileW(
+      PWideChar(UTF8Decode(AFilename)),
+      GENERIC_READ,
+      FILE_SHARE_READ Or FILE_SHARE_WRITE Or FILE_SHARE_DELETE,
+      Nil,
+      OPEN_EXISTING,
+      FILE_ATTRIBUTE_NORMAL,
+      0
+    );
+
+    If hFile = INVALID_HANDLE_VALUE Then
+      Exit;
+
+    Try
+      If Not GetFileTime(hFile, @oCreationTime, Nil, Nil) Then
+        Exit;
+
+      If Not FileTimeToLocalFileTime(oCreationTime, oLocalTime) Then
+        Exit;
+
+      If Not FileTimeToSystemTime(oLocalTime, oSystemTime) Then
+        Exit;
+
+      Result := EncodeDateTime(
+        oSystemTime.wYear,
+        oSystemTime.wMonth,
+        oSystemTime.wDay,
+        oSystemTime.wHour,
+        oSystemTime.wMinute,
+        oSystemTime.wSecond,
+        oSystemTime.wMilliseconds
+      );
+    Finally
+      CloseHandle(hFile);
+    End;
+  {$ENDIF}
+End;
+
+Function FileModificationDate(Const AFilename: String): TDateTime;
+Begin
+  Result := 0;
+
+  If Not FileAge(AFilename, Result) Then
+    Result := 0;
 End;
 
 // Written by ChatGPT 5.1 on 29 Nov 2025
@@ -568,8 +631,8 @@ End;
 
 //  http://forum.lazarus.freepascal.org/index.php/topic,16093.msg87124.html#msg87124
 
-Function DeleteDirectoryEx(AFolder: String; AFilemask: String = '';
-  ARemoveEmptyRoot: Boolean = True): Boolean;
+Function DeleteDirectoryEx(AFolder: String; AFilemask: String;
+  ARemoveEmptyRoot: Boolean): Boolean;
   // Lazarus fileutil.DeleteDirectory on steroids, works like
   // deltree <directory>, rmdir /s /q <directory> or rm -rf <directory>
   // - removes read-only files/directories (DeleteDirectory doesn't)
