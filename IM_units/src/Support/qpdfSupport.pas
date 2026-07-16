@@ -54,16 +54,40 @@ Function qpdfDateTimeToPDFDate(Const ADate: TDateTime): String;
 // Escape double quotes, and wrap AValue in double quotes
 Function qpdfQuoteParam(Const AValue: String): String;
 
-// Produce the --add-attachment parameter
-Function qpdfAddAttachmentParam(APDFAttachment: TPDFAttachment): String;
+// TODO This should be APDFAttachments.IndexOf()...
+Function qpdfFindAttachment(APDFAttachments: TPDFAttachments;
+  Const AFilename: String): TPDFAttachment;
+
+// Produce the --add-attachment parameter using SourceFilename.
+Function qpdfAddAttachmentParam(APDFAttachment: TPDFAttachment): String; Overload;
+
+// Produce the --add-attachment parameter using an explicit source filename.
+Function qpdfAddAttachmentParam(APDFAttachment: TPDFAttachment;
+  Const ASourceFilename: String): String; Overload;
 
 // Call --list-attachments, and parse the result
 Function qpdfListAttachments(Const AFilename: String; APDFAttachments: TPDFAttachments): Boolean;
 
+// call --show-attachment
+Function qpdfExtractAttachment(Const APDFFilename: String; Const AAttachmentKey: String;
+  Const AOutputFilename: String): Boolean;
+
 // Generate the appropriate --add-attachment parameters list, call them
 // Uses a temp file.  The only file that will exist after the operation
 // is AFilename, with the attachments added
+// No checking is done on whether the attachments already exist
 Function qpdAddAttachments(Const AFilename: String; APDFAttachments: TPDFAttachments): Boolean;
+
+// Replace the PDF's complete attachment collection with APDFAttachments.
+Function qpdfWriteAttachments(Const AFilename: String; APDFAttachments: TPDFAttachments): Boolean;
+
+// Read attachments from another PDF and extract their contents into
+// AWorkingFolder. APDFAttachments becomes an editable import list.
+
+// AWorkingFolder must continue to exist until the attachments have
+// been written to the destination PDF.
+Function qpdfLoadAttachmentsForImport(Const APDFFilename: String;
+  Const AWorkingFolder: String; APDFAttachments: TPDFAttachments): Boolean;
 
 Implementation
 
@@ -176,8 +200,6 @@ Begin
         // Start of a new attachment is not indented.
         oAttach := TPDFAttachment.Create;
         oAttach.Filename := TextBetween(sLine, '', ' ->');
-        oAttach.Key :=
-          StrToIntDef(Trim(TextBetween(sLine, ' ->', ',')), -1);
 
         APDFAttachments.Add(oAttach);
       End
@@ -193,10 +215,10 @@ Begin
         oAttach.CreationDate := qpdfPDFDateToDateTime(
           TextBetween(sLine, '      creation date: ', ''));
       End
-      Else If (oAttach.ModificationTime = 0) And BeginsWith(sLine,
+      Else If (oAttach.ModificationDate = 0) And BeginsWith(sLine,
         '      modification date: ') Then
       Begin
-        oAttach.ModificationTime :=
+        oAttach.ModificationDate :=
           qpdfPDFDateToDateTime(TextBetween(sLine, '      modification date: ', ''));
       End;
     End;
@@ -214,30 +236,69 @@ Begin
     Result := '"' + Result + '"';
 End;
 
-Function qpdfAddAttachmentParam(APDFAttachment: TPDFAttachment): String;
+Function qpdfAddAttachmentParam(APDFAttachment: TPDFAttachment;
+  Const ASourceFilename: String): String;
 Begin
   Assert(Assigned(APDFAttachment),
     'Must pass a TPDFAttachment');
 
-  Assert(APDFAttachment.SourceFilename <> '', 'Attachment source filename must not be empty');
+  Assert(ASourceFilename <> '',
+    'Attachment source filename must not be empty');
 
-  Result := ' --add-attachment=' + qpdfQuoteParam(APDFAttachment.SourceFilename);
+  Result := ' --add-attachment ' + qpdfQuoteParam(ASourceFilename);
 
-  If APDFAttachment.Filename <> '' Then
-    Result += ' --filename=' + qpdfQuoteParam(APDFAttachment.Filename);
+  // Explicitly provide these because an extracted attachment may have
+  // a generated temporary source filename.
+  Result += ' --key=' + qpdfQuoteParam(APDFAttachment.Filename);
+
+  Result += ' --filename=' + qpdfQuoteParam(APDFAttachment.Filename);
 
   If APDFAttachment.Description <> '' Then
     Result += ' --description=' + qpdfQuoteParam(APDFAttachment.Description);
 
   If APDFAttachment.CreationDate <> 0 Then
-    Result := Result + Format(' --creationdate="%s"',
-      [qpdfDateTimeToPDFDate(APDFAttachment.CreationDate)]);
+    Result += ' --creationdate=' + qpdfQuoteParam(qpdfDateTimeToPDFDate(
+      APDFAttachment.CreationDate));
 
-  If APDFAttachment.ModificationTime <> 0 Then
-    Result := Result + Format(' --moddate="%s"',
-      [qpdfDateTimeToPDFDate(APDFAttachment.ModificationTime)]);
+  If APDFAttachment.ModificationDate <> 0 Then
+    Result += ' --moddate=' + qpdfQuoteParam(qpdfDateTimeToPDFDate(
+      APDFAttachment.ModificationDate));
 
-  Result := Result + ' --';
+  // Terminates this --add-attachment option group.
+  Result += ' --';
+End;
+
+// TODO Make this a TPDFAttachments Function, with
+// case sensivity dependant on OS
+Function qpdfFindAttachment(APDFAttachments: TPDFAttachments;
+  Const AFilename: String): TPDFAttachment;
+Var
+  oAttachment: TPDFAttachment;
+Begin
+  Result := nil;
+
+  For oAttachment In APDFAttachments Do
+    If SameText(oAttachment.Filename, AFilename) Then
+      Exit(oAttachment);
+End;
+
+Function qpdfAddAttachmentParam(APDFAttachment: TPDFAttachment): String;
+Begin
+  Assert(Assigned(APDFAttachment),
+    'Must pass a TPDFAttachment');
+
+  Result := qpdfAddAttachmentParam(APDFAttachment, APDFAttachment.SourceFilename);
+End;
+
+Function qpdfExtractAttachment(Const APDFFilename: String; Const AAttachmentKey: String;
+  Const AOutputFilename: String): Boolean;
+Var
+  sCommand: String;
+Begin
+  sCommand := qpdfQuoteParam(FqpdfExe) + ' ' + qpdfQuoteParam(APDFFilename) +
+    ' ' + '--show-attachment=' + qpdfQuoteParam(AAttachmentKey);
+
+  Result := RunAndCaptureToFile(sCommand, AOutputFilename);
 End;
 
 Function qpdAddAttachments(Const AFilename: String; APDFAttachments: TPDFAttachments): Boolean;
@@ -279,6 +340,172 @@ Begin
     sParams := '--replace-input ' + sParams;
 
     RunAndCapture(sCommand + ' ' + sParams);
+  End;
+End;
+
+// Takes a collection of attachments as input
+// and forces the PDF file to only have these
+Function qpdfWriteAttachments(Const AFilename: String; APDFAttachments: TPDFAttachments): Boolean;
+Var
+  oExistingAttachments: TPDFAttachments;
+  oAttachment: TPDFAttachment;
+  oExistingAttachment: TPDFAttachment;
+
+  aSourceFilenames: Array Of String;
+
+  sCommand: String;
+  sTempFolder: String;
+  sTempFilename, sTempRoot: String;
+
+  i: Integer;
+Begin
+  Result := False;
+
+  If Not FileExists(AFilename) Then
+    Exit;
+
+  Assert(Assigned(APDFAttachments), 'Must pass a TPDFAttachments');
+
+  If Not Initializeqpdf Then
+    Exit;
+
+  oExistingAttachments := TPDFAttachments.Create(True);
+  Try
+    // Obtain the actual attachment set currently in the PDF.
+    If Not qpdfListAttachments(AFilename, oExistingAttachments) Then
+      Exit;
+
+    sTempRoot := IncludeSlash(GetTempDir(False)) + 'qpdfSupport/';
+    sTempFolder := sTempRoot + FormatDateTime('yyyymmdd-hhnnss-zzz', Now);
+
+    If Not ForceDirectories(sTempFolder) Then
+      Exit;
+
+    Try
+      SetLength(aSourceFilenames, APDFAttachments.Count);
+
+      // Resolve a physical source file for every attachment in the
+      // desired final collection.
+      For i := 0 To APDFAttachments.Count - 1 Do
+      Begin
+        oAttachment := APDFAttachments[i];
+
+        If oAttachment.Filename = '' Then
+          Exit;
+
+        If oAttachment.SourceFilename <> '' Then
+        Begin
+          // New attachment, including a replacement file with the
+          // same embedded filename as an existing attachment.
+          If Not FileExists(oAttachment.SourceFilename) Then
+            Exit;
+
+          aSourceFilenames[i] :=
+            oAttachment.SourceFilename;
+        End
+        Else
+        Begin
+          // Existing attachment. Extract its binary content before
+          // the original attachment collection is replaced.
+          oExistingAttachment := qpdfFindAttachment(oExistingAttachments, oAttachment.Filename);
+
+          If Not Assigned(oExistingAttachment) Then
+            Exit;
+
+          sTempFilename := IncludeSlash(sTempFolder) + oExistingAttachment.Filename;
+
+          If Not qpdfExtractAttachment(AFilename, oExistingAttachment.Filename,
+            sTempFilename) Then
+            Exit;
+
+          aSourceFilenames[i] := sTempFilename;
+        End;
+      End;
+
+      sCommand := qpdfQuoteParam(FqpdfExe) + ' ' + qpdfQuoteParam(AFilename);
+
+      // Remove every attachment currently in the PDF.
+      For oAttachment In oExistingAttachments Do
+        sCommand += ' --remove-attachment=' + qpdfQuoteParam(oAttachment.Filename);
+
+      // Add the complete desired attachment collection.
+      For i := 0 To APDFAttachments.Count - 1 Do
+        sCommand += qpdfAddAttachmentParam(APDFAttachments[i], aSourceFilenames[i]);
+
+      // qpdf performs the rewrite through its own temporary output.
+      sCommand += ' --replace-input';
+
+      RunAndCapture(sCommand);
+    Finally
+      DeleteDirectory(sTempRoot, False);
+      Result := True;
+    End;
+  Finally
+    oExistingAttachments.Free;
+  End;
+End;
+
+Function qpdfLoadAttachmentsForImport(Const APDFFilename: String;
+  Const AWorkingFolder: String; APDFAttachments: TPDFAttachments): Boolean;
+Var
+  oAttachment: TPDFAttachment;
+  sExtractFilename: String;
+  sSafeFilename: String;
+  i: Integer;
+Begin
+  Result := False;
+
+  If Not FileExists(APDFFilename) Then
+    Exit;
+
+  Assert(Assigned(APDFAttachments), 'Must pass a TPDFAttachments');
+
+  Assert(APDFAttachments.FreeObjects, 'APDFAttachments must own its objects');
+
+  Assert(APDFAttachments.Count = 0, 'APDFAttachments must be empty');
+
+  If Not ForceDirectories(AWorkingFolder) Then
+    Exit;
+
+  If Not qpdfListAttachments(APDFFilename, APDFAttachments) Then
+    Exit;
+
+  Try
+    For i := 0 To APDFAttachments.Count - 1 Do
+    Begin
+      oAttachment := APDFAttachments[i];
+
+      // The numeric prefix avoids any possible filesystem collision.
+      // ExtractFileName also prevents an embedded path being used.
+      sSafeFilename := Format('%.4d_%s',
+        [i, ExtractFileName(oAttachment.Filename)]);
+
+      If ExtractFileName(oAttachment.Filename) = '' Then
+        sSafeFilename := Format('%.4d_attachment.bin', [i]);
+
+      sExtractFilename := IncludeSlash(AWorkingFolder) +
+        sSafeFilename;
+
+      If Not qpdfExtractAttachment(APDFFilename,
+        oAttachment.Filename, sExtractFilename
+        ) Then
+        Exit;
+
+      // This identifies the physical file that qpdfWriteAttachments
+      // will use when the destination PDF is saved.
+      oAttachment.SourceFilename := sExtractFilename;
+    End;
+
+    Result := True;
+  Finally
+    If Not Result Then
+    Begin
+      For oAttachment In APDFAttachments Do
+        If oAttachment.SourceFilename <> '' Then
+          DeleteFile(oAttachment.SourceFilename);
+
+      APDFAttachments.Clear;
+    End;
   End;
 End;
 
