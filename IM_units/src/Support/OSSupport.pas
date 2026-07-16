@@ -97,6 +97,10 @@ Function RunAndCapture(AExecutable: String; AParameters: TStrings = nil;
 Function RunAndCapture(ACommandLine: String; AParamArray: Array Of String;
   ARedirectErr: Boolean; ARunExCallback: TNotifyEvent): String;
 
+// As per RunAndCapture, but save stdout to a file instead.
+Function RunAndCaptureToFile(AExecutable, AOutputFilename: String;
+  AParameters: TStrings = nil; ARunExCallback: TNotifyEvent = nil): Boolean;
+
 Procedure SetBusy;
 Procedure ClearBusy;
 
@@ -288,6 +292,75 @@ Begin
     Result := RunAndCapture(ACommandLine, slParameters, ARedirectErr, ARunExCallback);
   Finally
     slParameters.Free;
+  End;
+End;
+
+Function RunAndCaptureToFile(AExecutable, AOutputFilename: String;
+  AParameters: TStrings = nil; ARunExCallback: TNotifyEvent = nil): Boolean;
+Const
+  READ_BYTES = 2048;
+Var
+  oProcess: TProcess;
+  oStream: TFileStream;
+  Buffer: Array[0..READ_BYTES - 1] Of Byte;
+  iNumBytes: Longint;
+  i: Integer;
+Begin
+  Result := False;
+
+  oStream := TFileStream.Create(AOutputFilename, fmCreate);
+  Try
+    oProcess := TProcess.Create(nil);
+    Try
+      If Assigned(AParameters) Then
+      Begin
+        oProcess.Executable := AExecutable;
+
+        For i := 0 To AParameters.Count - 1 Do
+          oProcess.Parameters.Add(AParameters[i]);
+      End
+      Else
+        oProcess.CommandLine := AExecutable;
+
+      oProcess.Options := [poNoConsole, poUsePipes];
+
+      oProcess.Execute;
+
+      While oProcess.Running Do
+      Begin
+        iNumBytes := oProcess.Output.Read(Buffer, SizeOf(Buffer));
+
+        If iNumBytes > 0 Then
+        Begin
+          oStream.WriteBuffer(Buffer, iNumBytes);
+
+          If Assigned(ARunExCallback) Then
+            ARunExCallback(nil);
+        End
+        Else
+          Sleep(100);
+      End;
+
+      // Read any remaining output.
+      Repeat
+        iNumBytes := oProcess.Output.Read(Buffer, SizeOf(Buffer));
+
+        If iNumBytes > 0 Then
+          oStream.WriteBuffer(Buffer, iNumBytes);
+      Until iNumBytes <= 0;
+
+      If (oProcess.ExitStatus <> 0) Then
+      Begin
+        SysUtils.DeleteFile(AOutputFilename);
+        Exit(False);
+      End;
+
+      Result := True;
+    Finally
+      oProcess.Free;
+    End;
+  Finally
+    oStream.Free;
   End;
 End;
 
