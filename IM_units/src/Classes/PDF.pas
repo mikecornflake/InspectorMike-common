@@ -44,26 +44,29 @@ Uses
 Type
 
   TPDFAttachment = Class
-    Key: Integer;
     SourceFilename: String;
     Filename: String;
     Description: String;
     CreationDate: TDateTime;
-    ModificationTime: TDateTime;
+    ModificationDate: TDateTime;
 
     Function DisplayText: String;
+    Function CreationDateAsText: String;
   End;
 
-  TPDFAttachments = Class(Specialize TFPGObjectList<TPDFAttachment>);
+  { TPDFAttachments }
+
+  TPDFAttachments = Class(Specialize TFPGObjectList<TPDFAttachment>)
+  Public
+    Function Remove(AAttachment: TPDFAttachment): Boolean;
+  End;
 
 Implementation
 
 Uses
   StringSupport;
 
-
-
-{ TPDFAttachment }
+  { TPDFAttachment }
 
 Function TPDFAttachment.DisplayText: String;
 Begin
@@ -75,19 +78,36 @@ Begin
   If Filename <> '' Then
     Result += Format('  Filename="%s" %s', [Filename, LineEnding]);
 
-  If Key <> 0 Then
-    Result += Format('    Key="%d" %s', [Key, LineEnding]);
-
   If Description <> '' Then
     Result += Format('    Description="%s" %s', [Description, LineEnding]);
 
   If CreationDate <> 0 Then
-    Result += Format('    CreationDate="%s" %s',
-      [FormatDateTime('yyyy-mm-dd HH:nn:ss', CreationDate), LineEnding]);
+    Result += Format('    CreationDate="%s" %s', [CreationDateAsText, LineEnding]);
 
-  If ModificationTime <> 0 Then
-    Result += Format('    ModificationTime="%s" %s',
-      [FormatDateTime('yyyy-mm-dd HH:nn:ss', ModificationTime), LineEnding]);
+  If ModificationDate <> 0 Then
+    Result += Format('    ModificationDate="%s" %s',
+      [FormatDateTime('yyyy-mm-dd HH:nn:ss', ModificationDate), LineEnding]);
+End;
+
+Function TPDFAttachment.CreationDateAsText: String;
+Begin
+  If CreationDate = 0 Then
+    Result := ''
+  Else
+    Result := FormatDateTime('yyyy-mm-dd HH:nn:ss', CreationDate);
+End;
+
+{ TPDFAttachments }
+
+Function TPDFAttachments.Remove(AAttachment: TPDFAttachment): Boolean;
+Var
+  i: Integer;
+Begin
+  i := IndexOf(AAttachment);
+  Result := (i >= 0);
+
+  If Result Then
+    Delete(i);
 End;
 
 End.
