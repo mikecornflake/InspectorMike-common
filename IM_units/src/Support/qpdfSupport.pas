@@ -38,7 +38,8 @@ Unit qpdfSupport;
 Interface
 
 Uses
-  Classes, SysUtils, fgl, PDF;
+  Classes, SysUtils, fgl, fpjson, ComCtrls,
+  PDF;
 
 Function qpdfAvailable: Boolean;
 Function qpdfExe: String;
@@ -89,10 +90,13 @@ Function qpdfWriteAttachments(Const AFilename: String; APDFAttachments: TPDFAtta
 Function qpdfLoadAttachmentsForImport(Const APDFFilename: String;
   Const AWorkingFolder: String; APDFAttachments: TPDFAttachments): Boolean;
 
+Function qpdfPopulateTOC(Const APDFFilename: String; ATreeView: TTreeView): Boolean;
+
 Implementation
 
 Uses
-  Forms, DateUtils, FileSupport, OSSupport, FileUtil, StringSupport;
+  Forms, DateUtils, FileSupport, OSSupport, FileUtil, StringSupport,
+  jsonparser;
 
 Var
   FqpdfExe: String;
@@ -477,18 +481,15 @@ Begin
 
       // The numeric prefix avoids any possible filesystem collision.
       // ExtractFileName also prevents an embedded path being used.
-      sSafeFilename := Format('%.4d_%s',
-        [i, ExtractFileName(oAttachment.Filename)]);
+      sSafeFilename := Format('%.4d_%s', [i, ExtractFileName(oAttachment.Filename)]);
 
       If ExtractFileName(oAttachment.Filename) = '' Then
         sSafeFilename := Format('%.4d_attachment.bin', [i]);
 
-      sExtractFilename := IncludeSlash(AWorkingFolder) +
-        sSafeFilename;
+      sExtractFilename := IncludeSlash(AWorkingFolder) + sSafeFilename;
 
-      If Not qpdfExtractAttachment(APDFFilename,
-        oAttachment.Filename, sExtractFilename
-        ) Then
+      If Not qpdfExtractAttachment(APDFFilename, oAttachment.Filename,
+        sExtractFilename) Then
         Exit;
 
       // This identifies the physical file that qpdfWriteAttachments
@@ -506,6 +507,76 @@ Begin
 
       APDFAttachments.Clear;
     End;
+  End;
+End;
+
+Function qpdfPopulateTOC(Const APDFFilename: String; ATreeView: TTreeView): Boolean;
+
+  Procedure ParseNode(NodeJSON: TJSONData; Parent: TTreeNode);
+  Var
+    Title: String;
+    Page, i: Integer;
+    Kids: TJSONData;
+    NewNode: TTreeNode;
+  Begin
+    Title := NodeJSON.FindPath('title').AsString;
+    Page := NodeJSON.FindPath('destpageposfrom1').AsInteger;
+
+    NewNode := ATreeView.Items.AddChild(Parent, Title);
+
+    NewNode.Data := Pointer(PtrInt(Page));
+
+    Kids := NodeJSON.FindPath('kids');
+    If (Kids <> nil) And (Kids.JSONType = jtArray) Then
+      For i := 0 To Kids.Count - 1 Do
+        ParseNode(Kids.Items[i], NewNode);
+  End;
+
+Var
+  sCommand: String;
+  sJSON: String;
+  RootJSON: TJSONData;
+  OutlinesJSON: TJSONData;
+  i: Integer;
+Begin
+  Result := False;
+
+  If Not FileExists(APDFFilename) Then
+    Exit;
+
+  If Not Assigned(ATreeView) Then
+    Exit;
+
+  sCommand := Format('"%s" --json --json-key=outlines "%s"', [FqpdfExe, APDFFilename]);
+
+  sJSON := RunAndCapture(sCommand);
+
+  If Trim(sJSON) = '' Then
+    Exit;
+
+  RootJSON := nil;
+
+  ATreeView.Items.BeginUpdate;
+  Try
+    ATreeView.Items.Clear;
+
+    RootJSON := GetJSON(sJSON);
+
+    OutlinesJSON := RootJSON.FindPath('outlines');
+
+    If Not Assigned(OutlinesJSON) Then
+      Exit;
+
+    If OutlinesJSON.JSONType <> jtArray Then
+      Exit;
+
+    For i := 0 To OutlinesJSON.Count - 1 Do
+      ParseNode(OutlinesJSON.Items[i], nil);
+
+    Result := True;
+  Finally
+    RootJSON.Free;
+    ATreeView.Items.EndUpdate;
   End;
 End;
 
