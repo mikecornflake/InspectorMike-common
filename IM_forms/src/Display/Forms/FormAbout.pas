@@ -53,6 +53,7 @@ Type
   TfrmAbout = Class(TForm)
     Bevel1: TBevel;
     btnOK: TButton;
+    edtqpdfDir: TEdit;
     edtmpvDLL: TEdit;
     edtImageMagickDir: TEdit;
     edtXPDFDir: TEdit;
@@ -61,6 +62,7 @@ Type
     lblHTMLLabel2: TLabel;
     lblHTMLLabel3: TLabel;
     lblImageMagickURL: TLabel;
+    lblqpdfURL: TLabel;
     lblXPDF2: TLabel;
     lblXPDFURL: TLabel;
     lblSDKs: TLabel;
@@ -68,6 +70,7 @@ Type
     lblHTMLLabel7: TLabel;
     lblXPDF3: TLabel;
     memImageMagick: TMemo;
+    memqdfp: TMemo;
     memMPV: TMemo;
     memXPDF: TMemo;
     memReadme: TMemo;
@@ -80,6 +83,7 @@ Type
     lblHTMLLabel1: TLabel;
     memLicence: TMemo;
     memAbout: TMemo;
+    tsQPDF: TTabSheet;
     tsMPV: TTabSheet;
     tsFFMPEG: TTabSheet;
     tsImageMagick: TTabSheet;
@@ -109,7 +113,7 @@ Implementation
 
 Uses
   LCLIntf, VersionSupport,
-  XPDFSupport, ImageMagickSupport, ffmpegSupport, OSSupport, LibmpvSupport;
+  XPDFSupport, ImageMagickSupport, ffmpegSupport, OSSupport, LibmpvSupport, qpdfSupport;
 
   {$R *.lfm}
 
@@ -140,15 +144,15 @@ Begin
     imgAbout.Picture.LoadFromFile(sFolder + 'AboutGraphic.png');
   End;
 
-  If FileExists(sFolder + 'licence.txt') Then
+  If FileExists(sFolder + 'LICENSE.txt') Then
   Begin
     tsLicence.TabVisible := True;
-    memLicence.Lines.LoadFromFile(sFolder + 'licence.txt');
+    memLicence.Lines.LoadFromFile(sFolder + 'LICENSE.txt');
   End
-  Else If FileExists(sFolder + 'licence') Then
+  Else If FileExists(sFolder + 'LICENSE') Then
   Begin
     tsLicence.TabVisible := True;
-    memLicence.Lines.LoadFromFile(sFolder + 'licence');
+    memLicence.Lines.LoadFromFile(sFolder + 'LICENSE');
   End;
 
   If FileExists(sFolder + 'readme.txt') Then
@@ -198,6 +202,16 @@ Begin
     tsFFMPEG.TabVisible := False;
     fmeFFmpeg := nil;
   End;
+
+  If qpdfAvailable Then
+  Begin
+    tsqPDF.TabVisible := True;
+
+    If FileExists(qpdfExe) Then
+      edtqpdfDir.Text := qpdfExe;
+  end
+  Else
+      tsqPDF.TabVisible := False;
 
   tsMPV.TabVisible := LibmpvAvailable;
   If tsMPV.TabVisible Then

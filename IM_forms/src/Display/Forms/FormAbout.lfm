@@ -1,7 +1,7 @@
 object frmAbout: TfrmAbout
-  Left = 576
+  Left = 560
   Height = 454
-  Top = 140
+  Top = 135
   Width = 736
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
@@ -4888,21 +4888,23 @@ object frmAbout: TfrmAbout
     Height = 350
     Top = 40
     Width = 532
-    ActivePage = tsXPDF
+    ActivePage = tsLicence
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -13
     Font.Pitch = fpFixed
     Font.Quality = fqDraft
+    MultiLine = True
+    Options = [nboMultiLine]
     ParentFont = False
-    TabIndex = 5
+    TabIndex = 3
     TabOrder = 1
     object tsAbout: TTabSheet
       Caption = 'About'
-      ClientHeight = 320
+      ClientHeight = 298
       ClientWidth = 524
       object memAbout: TMemo
         Left = 10
-        Height = 227
+        Height = 205
         Top = 23
         Width = 506
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -4924,7 +4926,7 @@ object frmAbout: TfrmAbout
       object lblHTMLLabel: TLabel
         Left = 280
         Height = 15
-        Top = 296
+        Top = 274
         Width = 208
         Anchors = [akLeft, akBottom]
         Caption = 'http://mikecornflake.blogspot.com.au/'
@@ -4938,7 +4940,7 @@ object frmAbout: TfrmAbout
       object lblHTMLLabel1: TLabel
         Left = 18
         Height = 15
-        Top = 279
+        Top = 257
         Width = 183
         Anchors = [akLeft, akBottom]
         Caption = 'mailto:mike.cornflake@gmail.com'
@@ -4952,7 +4954,7 @@ object frmAbout: TfrmAbout
       object Label2: TLabel
         Left = 10
         Height = 15
-        Top = 264
+        Top = 242
         Width = 113
         Anchors = [akLeft, akBottom]
         Caption = 'Contact Information'
@@ -4963,7 +4965,7 @@ object frmAbout: TfrmAbout
       object lblHTMLLabel2: TLabel
         Left = 18
         Height = 15
-        Top = 296
+        Top = 274
         Width = 187
         Anchors = [akLeft, akBottom]
         Caption = 'https://github.com/mikecornflake/'
@@ -4977,12 +4979,12 @@ object frmAbout: TfrmAbout
     end
     object tsCredits: TTabSheet
       Caption = 'Credits'
-      ClientHeight = 320
+      ClientHeight = 298
       ClientWidth = 524
       object lblHTMLLabel6: TLabel
         Left = 51
         Height = 15
-        Top = 154
+        Top = 132
         Width = 183
         Anchors = [akLeft, akBottom]
         Caption = 'http://www.lazarus.freepascal.org/'
@@ -4996,7 +4998,7 @@ object frmAbout: TfrmAbout
       object lblHTMLLabel7: TLabel
         Left = 51
         Height = 15
-        Top = 178
+        Top = 156
         Width = 144
         Anchors = [akLeft, akBottom]
         Caption = 'http://www.freepascal.org/'
@@ -5010,7 +5012,7 @@ object frmAbout: TfrmAbout
       object Label3: TLabel
         Left = 25
         Height = 15
-        Top = 133
+        Top = 111
         Width = 181
         Anchors = [akLeft, akBottom]
         Caption = 'Core Development Environment'
@@ -5021,7 +5023,7 @@ object frmAbout: TfrmAbout
       object lblSDKs: TLabel
         Left = 25
         Height = 15
-        Top = 205
+        Top = 183
         Width = 122
         Anchors = [akLeft, akBottom]
         Caption = 'Other SDKs and Tools:'
@@ -5031,7 +5033,7 @@ object frmAbout: TfrmAbout
       end
       object Label4: TLabel
         Left = 9
-        Height = 112
+        Height = 90
         Top = 8
         Width = 502
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -5044,7 +5046,7 @@ object frmAbout: TfrmAbout
       object lblXPDF3: TLabel
         Left = 52
         Height = 15
-        Top = 226
+        Top = 204
         Width = 394
         Anchors = [akLeft, akBottom]
         Caption = 'http://www.softicons.com/toolbar-icons/fatcow-hosting-icons-by-fatcow'
@@ -5058,12 +5060,12 @@ object frmAbout: TfrmAbout
     end
     object tsReadme: TTabSheet
       Caption = 'Readme'
-      ClientHeight = 320
+      ClientHeight = 298
       ClientWidth = 524
       TabVisible = False
       object memReadme: TMemo
         Left = 0
-        Height = 320
+        Height = 298
         Top = 0
         Width = 524
         Align = alClient
@@ -5088,12 +5090,12 @@ object frmAbout: TfrmAbout
     end
     object tsLicence: TTabSheet
       Caption = 'Licence'
-      ClientHeight = 320
+      ClientHeight = 298
       ClientWidth = 524
       TabVisible = False
       object memLicence: TMemo
         Left = 0
-        Height = 320
+        Height = 298
         Top = 0
         Width = 524
         Align = alClient
@@ -5111,11 +5113,11 @@ object frmAbout: TfrmAbout
     end
     object tsImageMagick: TTabSheet
       Caption = 'ImageMagick'
-      ClientHeight = 320
+      ClientHeight = 298
       ClientWidth = 524
       object memImageMagick: TMemo
         Left = 0
-        Height = 265
+        Height = 243
         Top = 30
         Width = 524
         Align = alClient
@@ -5133,7 +5135,7 @@ object frmAbout: TfrmAbout
       object edtImageMagickDir: TEdit
         Left = 0
         Height = 25
-        Top = 295
+        Top = 273
         Width = 524
         Align = alBottom
         Color = clBtnFace
@@ -5159,11 +5161,11 @@ object frmAbout: TfrmAbout
     end
     object tsXPDF: TTabSheet
       Caption = 'XPDF'
-      ClientHeight = 320
+      ClientHeight = 298
       ClientWidth = 524
       object memXPDF: TMemo
         Left = 0
-        Height = 255
+        Height = 233
         Top = 40
         Width = 524
         Align = alClient
@@ -5181,7 +5183,7 @@ object frmAbout: TfrmAbout
       object edtXPDFDir: TEdit
         Left = 0
         Height = 25
-        Top = 295
+        Top = 273
         Width = 524
         Align = alBottom
         Color = clBtnFace
@@ -5227,14 +5229,15 @@ object frmAbout: TfrmAbout
     end
     object tsMPV: TTabSheet
       Caption = 'MPV (dll)'
-      ClientHeight = 320
+      ClientHeight = 298
       ClientWidth = 524
       TabVisible = False
       object lblHTMLLabel3: TLabel
-        Left = 16
+        Left = 0
         Height = 15
-        Top = 10
-        Width = 197
+        Top = 0
+        Width = 524
+        Align = alTop
         Caption = 'https://github.com/mpv-player/mpv'
         Font.Color = clBlue
         ParentColor = False
@@ -5244,12 +5247,11 @@ object frmAbout: TfrmAbout
         OnMouseLeave = URLLabelMouseLeave
       end
       object memMPV: TMemo
-        Left = 24
-        Height = 248
-        Top = 64
-        Width = 488
-        Anchors = [akTop, akLeft, akRight, akBottom]
-        Color = clActiveBorder
+        Left = 0
+        Height = 258
+        Top = 15
+        Width = 524
+        Align = alClient
         Lines.Strings = (
           'libmpv-2.dll can be built with different license models, either GPL-2 or LGPL-2.1'
           ''
@@ -5266,10 +5268,85 @@ object frmAbout: TfrmAbout
         TabOrder = 0
       end
       object edtmpvDLL: TEdit
-        Left = 15
+        Left = 0
         Height = 25
-        Top = 32
-        Width = 497
+        Top = 273
+        Width = 524
+        Align = alBottom
+        Color = clBtnFace
+        ReadOnly = True
+        TabOrder = 1
+      end
+    end
+    object tsQPDF: TTabSheet
+      Caption = 'QPDF'
+      ClientHeight = 298
+      ClientWidth = 524
+      object lblqpdfURL: TLabel
+        Left = 0
+        Height = 30
+        Top = 0
+        Width = 524
+        Align = alTop
+        AutoSize = False
+        Caption = 'https://github.com/qpdf/qpdf'
+        Font.Color = clBlue
+        Layout = tlCenter
+        ParentColor = False
+        ParentFont = False
+        OnMouseDown = URLLabelMouseDown
+        OnMouseEnter = URLLabelMouseEnter
+        OnMouseLeave = URLLabelMouseLeave
+      end
+      object memqdfp: TMemo
+        Left = 0
+        Height = 243
+        Top = 30
+        Width = 524
+        Align = alClient
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -13
+        Font.Name = 'Courier New'
+        Font.Pitch = fpFixed
+        Font.Quality = fqDraft
+        HideSelection = False
+        Lines.Strings = (
+          'qpdf is a command-line tool and C++ library that performs content-preserving transformations on PDF files. '
+          'It supports linearization, encryption, and numerous other features. It can also be used for splitting and merging files, creating PDF files (but you have to supply all the content yourself), and inspecting files for study or analysis. qpdf does not render PDFs or perform text extraction, and it does not contain higher-level interfaces for working with page contents. It is a low-level tool for working with the structure of PDF files and can be a valuable tool for anyone who wants to do programmatic or command-line-based manipulation of PDF files.'
+          ''
+          'The qpdf manual is hosted online at https://qpdf.readthedocs.io. '
+          'The project website is https://qpdf.sourceforge.io. '
+          'The source code repository is hosted at GitHub: https://github.com/qpdf/qpdf.'
+          ''
+          '-------------------------------------'
+          ''
+          'qpdf is copyright (c) 2005-2021 Jay Berkenbilt, 2022-2026 Jay Berkenbilt and Manfred Holger'
+          ''
+          'Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at'
+          ''
+          'https://www.apache.org/licenses/LICENSE-2.0'
+          ''
+          'Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an " AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.'
+          ''
+          'You may also see the license in the file LICENSE.txt in the source distribution.'
+          ''
+          'Versions of qpdf prior to version 7 were released under the terms of version 2.0 of the Artistic License. At your option, you may continue to consider qpdf to be licensed under those terms. Please see the manual for additional information. The Artistic License appears in the file Artistic-2.0 in the source distribution.'
+          ''
+          '-------------------------------------'
+          ''
+          'The qpdf project has a JetBrains license through their Open Source Program. We are grateful for this program and have been enjoying the benefits of their high-quality products.'
+        )
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+      object edtqpdfDir: TEdit
+        Left = 0
+        Height = 25
+        Top = 273
+        Width = 524
+        Align = alBottom
         Color = clBtnFace
         ReadOnly = True
         TabOrder = 1
