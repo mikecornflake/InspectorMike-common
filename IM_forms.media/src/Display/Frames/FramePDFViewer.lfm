@@ -3,8 +3,8 @@ inherited FramePDFViewer: TFramePDFViewer
   Width = 643
   ClientHeight = 277
   ClientWidth = 643
-  DesignLeft = 550
-  DesignTop = 106
+  DesignLeft = 548
+  DesignTop = 125
   object pnlAll: TPanel[0]
     Left = 0
     Height = 277
@@ -16,22 +16,6 @@ inherited FramePDFViewer: TFramePDFViewer
     ClientHeight = 277
     ClientWidth = 643
     TabOrder = 0
-    object lvThumbNails: TListView
-      Left = 0
-      Height = 220
-      Top = 34
-      Width = 111
-      Align = alLeft
-      Columns = <>
-      LargeImages = ilThumbs
-      OwnerData = True
-      SmallImages = ilThumbs
-      TabOrder = 0
-      ViewStyle = vsIcon
-      OnCustomDrawItem = lvThumbNailsCustomDrawItem
-      OnData = lvThumbNailsData
-      OnSelectItem = lvThumbNailsSelectItem
-    end
     object pnlToolbar: TPanel
       Left = 0
       Height = 34
@@ -42,7 +26,7 @@ inherited FramePDFViewer: TFramePDFViewer
       BevelOuter = bvNone
       ClientHeight = 34
       ClientWidth = 643
-      TabOrder = 1
+      TabOrder = 0
       object tbMain: TToolBar
         Left = 0
         Height = 34
@@ -182,23 +166,23 @@ inherited FramePDFViewer: TFramePDFViewer
       end
     end
     object splThumbNails: TSplitter
-      Left = 111
+      Left = 147
       Height = 220
       Top = 34
       Width = 5
     end
     object pnlImages: TPanel
-      Left = 116
+      Left = 152
       Height = 220
       Top = 34
-      Width = 527
+      Width = 491
       Align = alClient
       BevelOuter = bvNone
       Caption = 'pnlImages'
       Color = clWhite
       ParentBackground = False
       ParentColor = False
-      TabOrder = 3
+      TabOrder = 2
     end
     object sbPDF: TStatusBar
       Left = 0
@@ -215,6 +199,43 @@ inherited FramePDFViewer: TFramePDFViewer
         end>
       SimplePanel = False
       OnResize = sbPDFResize
+    end
+    object pcNavigation: TPageControl
+      Left = 0
+      Height = 220
+      Top = 34
+      Width = 147
+      ActivePage = tsThumbnails
+      Align = alLeft
+      Images = ilPageControl
+      Style = tsFlatButtons
+      TabIndex = 0
+      TabOrder = 4
+      object tsThumbnails: TTabSheet
+        AutoSize = True
+        ClientHeight = 192
+        ClientWidth = 139
+        ImageIndex = 0
+        object lvThumbNails: TListView
+          Left = 0
+          Height = 192
+          Top = 0
+          Width = 139
+          Align = alClient
+          Columns = <>
+          LargeImages = ilThumbs
+          OwnerData = True
+          SmallImages = ilThumbs
+          TabOrder = 0
+          ViewStyle = vsIcon
+          OnCustomDrawItem = lvThumbNailsCustomDrawItem
+          OnData = lvThumbNailsData
+          OnSelectItem = lvThumbNailsSelectItem
+        end
+      end
+      object tsTOC: TTabSheet
+        ImageIndex = 1
+      end
     end
   end
   object ilThumbs: TImageList[1]
@@ -1033,6 +1054,40 @@ inherited FramePDFViewer: TFramePDFViewer
       49F68CFCBDEA79B7B3D39CD79B37C6BA339AF81BD5DF5613E79E34D246E6C663
       1D1DE876B7BBDD8E3F8D75C3DAA55ED6F09AC445AF97561E7937A507F247BAFF
       FDEF5FFC5662CFA9499C7BD248BBD5D8E785FF032B62D82B
+    }
+  end
+  object ilPageControl: TImageList[4]
+    Left = 375
+    Top = 75
+    Bitmap = {
+      4C7A020000001000000010000000680300000000000078DA9D94DF53135714C7
+      9DBED97FC3F73A62D427A7E5B5E39F50A7DA76A62353FAD2BE546714CC2F4936
+      8965C6B1434348204800B17DEC0C2869A04EA72AFA8A020604B281249BDDEC66
+      213FF87ACEDD0D0609583C93CFECCDB9E77BEEDDB3E75E00C71EFC2E296377BD
+      48DCF17C108EE37890AE01FB8E6276FCAE3E71C72DFCCFA4CF30177260EEF659
+      8BD099A6B143CCB3D9F14D7A97F067721AB24593D882AC98900B3A3614039BE4
+      DB2C1A9073AAAD77B5D427876F61662C4004911AE9815A54F164C48917636EC2
+      85FF86BB45DCE801FAE9610F52A3126688D4BD5B304B2A3E19053EBD0F1C1FA7
+      C011FBFD0FD06BBA09DDAC1055E8E56D940D03F5720930354245552F1EBAFEC3
+      5837A6E36E7A0F8F8D1B7F132926EEC274ACEBD0F7DFDAAE817EA8B480FD3C7F
+      98FE51B41BC9215A33EED907FB79FE30FDFFB5F7F5763DE18877E27CE2277C9E
+      F8791FECE7F956F51FB3FBAFFDAF5E7C39791717267FDB07FB79DED2EFEDBFF1
+      23F6FFF87BFD1F0D7625D9C7793F04C7717CB39EEC0471FA089C68687B7B7B95
+      60288440206811B49E5220D01AC97A0629AEA16533A96FCDED3AB123C6866EC0
+      2895F6A269D06DD83807E7629B8DDFC083ABEDF8E35A3BFEA173B6B2F2062BE9
+      34F11ACBAF97905E5AC4D2C22B2CBE9AC7C2CB79606787F622EDEA07AE9C42F1
+      E514561EFD8A68C769C8D91CBEF9F63B0C0E0D21168B2132302072719EF4E202
+      6AF5AAA5972CFD54F82A867E3C87C1CEB334BE86EC460159398B6C2603797D1D
+      EBABAB58A53DBD595E16D4AA0DBDC45B81A26870FB8250F50AF2AA899CA26333
+      AF6163230F39238B1CF2DA3A326B6B82667DBD5683AA16E1F1D29D4187EDC978
+      0FD5E20B4C10FF26DC50548DF217A014F2440E857C4E6858EBE7F5EB75AA7709
+      5ED27BFD210CFEE010B5587E781B11AA8BB155C5D7972E231A8D8A3A84FBFB77
+      EBE7F7FBC578CB2CC3EDB6CE416AB00B031D0E41327A1D86C977912ED63074FA
+      7E256DAF9EAC52A9C0E974A2CE63A26643ED40F7D936745D4789A13EE031EB59
+      DBD0EFD07FA7D33AC7CFFF9430F14BBBE0E9840F55CA51A5F7AD52CD781D86AD
+      59CFD6D57D134EAF0FB18E3614E727919E0AA1FFFB9362EEAB8B17118944100E
+      87D1D7D7D752DFB0C7C32EAA5B9B60367EF3C073CCDA80DD7F1F63ACF5783C49
+      7EFA7C3E1BDE137FD780058DD9F76EDEA2A1FD88B3BFE71E780BD7D2212A
     }
   end
 end

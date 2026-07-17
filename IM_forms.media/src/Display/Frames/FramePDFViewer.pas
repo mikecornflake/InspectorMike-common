@@ -54,12 +54,16 @@ Type
     ilThumbs: TImageList;
     ilToolbar: TImageList;
     ilToolbarDisabled: TImageList;
+    ilPageControl: TImageList;
     lvThumbNails: TListView;
+    pcNavigation: TPageControl;
     pnlAll: TPanel;
     pnlImages: TPanel;
     pnlToolbar: TPanel;
     splThumbNails: TSplitter;
     sbPDF: TStatusBar;
+    tsThumbnails: TTabSheet;
+    tsTOC: TTabSheet;
     tbMain: TToolBar;
     btnFirstPage: TToolButton;
     btnPrevPage: TToolButton;
@@ -404,9 +408,9 @@ Begin
         Info;
 
         // only show the thumbnails if we've more than one page
-        lvThumbNails.Visible := FPageCount > 1;
-        splThumbNails.Visible := lvThumbNails.Visible;
-        splThumbNails.Left := lvThumbNails.Left + lvThumbNails.Width;
+        pcNavigation.Visible := FPageCount > 1;
+        splThumbNails.Visible := pcNavigation.Visible;
+        splThumbNails.Left := pcNavigation.Left + pcNavigation.Width;
 
         FActive := True;
 
