@@ -162,11 +162,6 @@ Begin
   AInfo.DateTimeText := '';
 End;
 
-Function StripPathAndExt(Const AFilename: String): String;
-Begin
-  Result := ChangeFileExt(ExtractFileName(AFilename), '');
-End;
-
 Function TokenIsCount(Const S: String): Boolean;
 Begin
   Result := DigitsOnly(S);
@@ -413,7 +408,7 @@ Var
 Begin
   ClearInfo(AInfo);
 
-  BaseName := StripPathAndExt(AFilename);
+  BaseName := ChangeFileExt(ExtractFileName(AFilename), '');
 
   Result :=
     TryParseOptionsDVR(BaseName, AInfo) Or TryParseNexusDVR(BaseName, AInfo) Or

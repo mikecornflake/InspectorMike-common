@@ -118,6 +118,7 @@ Type
       State: TCustomDrawState; Var DefaultDraw: Boolean);
     Procedure lvThumbNailsData(Sender: TObject; Item: TListItem);
     Procedure lvThumbNailsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    Procedure pcNavigationChange(Sender: TObject);
     Procedure sbPDFResize(Sender: TObject);
     Procedure tvTOCSelectionChanged(Sender: TObject);
   Private
@@ -367,7 +368,7 @@ Begin
   // create a smaller rect for the thumbnail, so we have room to paint a
   // selection border if required
   aRect2 := aRect;
-  aRect2.Right := EnsureRange(aRect2.Right, aRect2.Right, ilThumbs.Width+20);
+  aRect2.Right := EnsureRange(aRect2.Right, aRect2.Right, ilThumbs.Width + 20);
   InflateRect(aRect2, -4, -4);
 
   // paint the selection border
@@ -401,6 +402,14 @@ Begin
   If Assigned(Item) Then
     If Item.Selected And (Page <> Item.Index + 1) Then
       Page := Item.Index + 1;
+End;
+
+Procedure TFramePDFViewer.pcNavigationChange(Sender: TObject);
+Begin
+  If pcNavigation.ActivePage = tsThumbnails Then
+    pcNavigation.Width := 100
+  Else
+    pcNavigation.Width := 300;
 End;
 
 Procedure TFramePDFViewer.sbPDFResize(Sender: TObject);
@@ -438,7 +447,6 @@ Begin
   RefreshUI;
 End;
 
-
 Procedure TFramePDFViewer.SetFilename(AFilename: String);
 Begin
   If (FFilename <> AFilename) Then
@@ -472,11 +480,20 @@ Begin
         UpdateAttachmentsList;
 
         qpdfPopulateTOC(AFilename, tvTOC);
+        tsTOC.TabVisible := (tvTOC.Items.Count > 0);
 
-        If tvTOC.Items.Count > 0 Then
-          pcNavigation.ActivePage := tsTOC
+        If (tvTOC.Items.Count > 0) Then
+        Begin
+          If pcNavigation.ActivePage = tsThumbnails Then
+            pcNavigation.ActivePage := tsTOC;
+        End
         Else
           pcNavigation.ActivePage := tsThumbnails;
+
+        If pcNavigation.ActivePage = tsThumbnails Then
+          pcNavigation.Width := 100
+        Else
+          pcNavigation.Width := 300;
       Finally
         ClearBusy;
       End;
@@ -578,7 +595,7 @@ Begin
     Begin
       iLast := EnsureRange(iPage + 20, iPage, FPageCount);
       sError := RunAndCapture(Format('"%s" -f %d -l %d "%s" "%s\Page"',
-        [PDFtoPNGExe, iPage, iLast, FFilename, sDir]));
+        [xpdf_PDFtoPNGExe, iPage, iLast, FFilename, sDir]));
 
       sError := Trim(sError);
 
@@ -601,7 +618,7 @@ Var
 Begin
   slInfo := TStringList.Create;
   Try
-    slInfo.Text := XPDFInfo(FFilename);
+    slInfo.Text := xpdf_Info(FFilename);
 
     For i := 0 To slInfo.Count - 1 Do
       slInfo[i] := StringReplace(slInfo[i], ': ', '=', [rfIgnoreCase]);
@@ -890,9 +907,9 @@ Begin
 
   // Changing selection forces a RefreshUI
   If lvAttachments.Items.Count > 0 Then
-    lvAttachments.Selected := lvAttachments.Items[0]
-  Else
-    RefreshUI;
+    lvAttachments.Selected := lvAttachments.Items[0];
+
+  RefreshUI;
 End;
 
 Initialization

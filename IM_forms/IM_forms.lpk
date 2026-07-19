@@ -85,6 +85,12 @@
     </Files>
     <RequiredPkgs>
       <Item>
+        <PackageName Value="SynEditDsgn"/>
+      </Item>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
+      <Item>
         <PackageName Value="TurboPowerIPro"/>
       </Item>
       <Item>

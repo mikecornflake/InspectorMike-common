@@ -42,9 +42,8 @@ Unit FormAbout;
 Interface
 
 Uses
-  Classes, ComCtrls,
-  Controls, Dialogs, ExtCtrls, FileUtil, Forms, Graphics, StdCtrls, SysUtils,
-  FrameHTMLs;
+  Classes, ComCtrls, Controls, Dialogs, ExtCtrls, FileUtil, SynEdit,
+  SynHighlighterMarkdown, Forms, Graphics, StdCtrls, SysUtils, FrameHTMLs;
 
 Type
 
@@ -73,7 +72,6 @@ Type
     memqdfp: TMemo;
     memMPV: TMemo;
     memXPDF: TMemo;
-    memReadme: TMemo;
     pcAbout: TPageControl;
     imgAbout: TImage;
     Label1: TLabel;
@@ -83,6 +81,8 @@ Type
     lblHTMLLabel1: TLabel;
     memLicence: TMemo;
     memAbout: TMemo;
+    memReadme: TSynEdit;
+    synMarkdown: TSynMarkdownSyn;
     tsQPDF: TTabSheet;
     tsMPV: TTabSheet;
     tsFFMPEG: TTabSheet;
@@ -158,11 +158,13 @@ Begin
   If FileExists(sFolder + 'readme.txt') Then
   Begin
     tsReadme.TabVisible := True;
+    memReadme.Highlighter := nil;
     memReadme.Lines.LoadFromFile(sFolder + 'readme.txt');
   End
   Else If FileExists(sFolder + 'readme.md') Then
   Begin
     tsReadme.TabVisible := True;
+    memReadme.Highlighter := synMarkdown;
     memReadme.Lines.LoadFromFile(sFolder + 'readme.md');
   End;
 

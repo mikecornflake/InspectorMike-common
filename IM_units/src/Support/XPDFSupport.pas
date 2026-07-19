@@ -53,10 +53,9 @@ Function XPDFPath: String;
 Procedure SetXPDFPath(AValue: String);
 Procedure InitializeXPDF;
 
-Function PDFtoPNGExe: String;
-Function PDFInfoExe: String;
-
-Function XPDFInfo(APDFFilename: String): String;
+Function xpdf_PDFtoPNGExe: String;
+Function xpdf_PDFInfoExe: String;
+Function xpdf_Info(APDFFilename: String): String;
 
 Implementation
 
@@ -84,22 +83,6 @@ Begin
     FXPDFPath := '';
 End;
 
-Function PDFToPNGExe: String;
-Begin
-  Result := IncludeSlash(XPDFPath) + 'pdftopng' + GetExeExt;
-
-  If Not FileExists(Result) Then
-    Result := '';
-End;
-
-Function PDFInfoExe: String;
-Begin
-  Result := IncludeSlash(XPDFPath) + 'pdfinfo' + GetExeExt;
-
-  If Not FileExists(Result) Then
-    Result := '';
-End;
-
 Procedure InitializeXPDF;
 Var
   sFile: String;
@@ -111,10 +94,26 @@ Begin
     FXPDFPath := IncludeTrailingBackslash(ExtractFileDir(sFile));
 End;
 
-Function XPDFInfo(APDFFilename: String): String;
+Function xpdf_PDFToPNGExe: String;
 Begin
-  If (PDFInfoExe <> '') And FileExists(APDFFilename) Then
-    Result := RunAndCapture(Format('%s "%s"', [PDFInfoExe, APDFFilename]));
+  Result := IncludeSlash(XPDFPath) + 'pdftopng' + GetExeExt;
+
+  If Not FileExists(Result) Then
+    Result := '';
+End;
+
+Function xpdf_PDFInfoExe: String;
+Begin
+  Result := IncludeSlash(XPDFPath) + 'pdfinfo' + GetExeExt;
+
+  If Not FileExists(Result) Then
+    Result := '';
+End;
+
+Function xpdf_Info(APDFFilename: String): String;
+Begin
+  If (xpdf_PDFInfoExe <> '') And FileExists(APDFFilename) Then
+    Result := RunAndCapture(Format('%s "%s"', [xpdf_PDFInfoExe, APDFFilename]));
 End;
 
 Initialization
