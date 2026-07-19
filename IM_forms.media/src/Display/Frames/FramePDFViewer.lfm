@@ -205,10 +205,10 @@ inherited FramePDFViewer: TFramePDFViewer
       Height = 220
       Top = 34
       Width = 269
-      ActivePage = tsAttachments
+      ActivePage = tsThumbnails
       Align = alLeft
       Images = ilPageControl
-      TabIndex = 2
+      TabIndex = 0
       TabOrder = 4
       TabWidth = 25
       object tsThumbnails: TTabSheet
@@ -222,12 +222,21 @@ inherited FramePDFViewer: TFramePDFViewer
           Top = 0
           Width = 261
           Align = alClient
-          Columns = <>
+          Columns = <          
+            item
+              MaxWidth = 60
+              MinWidth = 60
+              Width = 60
+            end>
+          ColumnClick = False
+          HideSelection = False
+          IconOptions.WrapText = False
           LargeImages = ilThumbs
           OwnerData = True
+          ReadOnly = True
           SmallImages = ilThumbs
           TabOrder = 0
-          ViewStyle = vsIcon
+          ViewStyle = vsReport
           OnCustomDrawItem = lvThumbNailsCustomDrawItem
           OnData = lvThumbNailsData
           OnSelectItem = lvThumbNailsSelectItem
@@ -291,6 +300,7 @@ inherited FramePDFViewer: TFramePDFViewer
             RowSelect = True
             TabOrder = 0
             ViewStyle = vsReport
+            OnDblClick = btnEditDescriptionClick
           end
           object tbAttachments: TToolBar
             Left = 0
@@ -299,7 +309,6 @@ inherited FramePDFViewer: TFramePDFViewer
             Width = 261
             AutoSize = True
             Images = ilPageControl
-            List = True
             ParentShowHint = False
             ShowHint = True
             TabOrder = 1
@@ -310,6 +319,7 @@ inherited FramePDFViewer: TFramePDFViewer
               AutoSize = True
               Caption = 'Add'
               ImageIndex = 9
+              OnClick = btnAddAttachmentClick
             end
             object btnDeleteAttachment: TToolButton
               Left = 47
@@ -318,6 +328,7 @@ inherited FramePDFViewer: TFramePDFViewer
               AutoSize = True
               Caption = 'Delete'
               ImageIndex = 10
+              OnClick = btnDeleteAttachmentClick
             end
             object btnSep1: TToolButton
               Left = 70
@@ -333,6 +344,8 @@ inherited FramePDFViewer: TFramePDFViewer
               AutoSize = True
               Caption = 'Import attachments...'
               ImageIndex = 8
+              ShowCaption = False
+              OnClick = btnImportAttachmentsClick
             end
             object btnEditDescription: TToolButton
               Left = 24
@@ -340,6 +353,7 @@ inherited FramePDFViewer: TFramePDFViewer
               Top = 2
               Caption = 'Edit description'
               ImageIndex = 11
+              OnClick = btnEditDescriptionClick
             end
             object ToolButton3: TToolButton
               Left = 101
@@ -354,6 +368,7 @@ inherited FramePDFViewer: TFramePDFViewer
               Top = 2
               Caption = 'Export'
               ImageIndex = 7
+              OnClick = btnExportAttachmentClick
             end
             object ToolButton4: TToolButton
               Left = 132
@@ -367,6 +382,7 @@ inherited FramePDFViewer: TFramePDFViewer
               Top = 2
               Caption = 'Save'
               ImageIndex = 12
+              OnClick = btnSavePDFClick
             end
           end
         end

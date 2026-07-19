@@ -367,6 +367,7 @@ Begin
   // create a smaller rect for the thumbnail, so we have room to paint a
   // selection border if required
   aRect2 := aRect;
+  aRect2.Right := EnsureRange(aRect2.Right, aRect2.Right, ilThumbs.Width+20);
   InflateRect(aRect2, -4, -4);
 
   // paint the selection border
@@ -472,7 +473,7 @@ Begin
 
         qpdfPopulateTOC(AFilename, tvTOC);
 
-        If tvTOC.Items.Count>0 Then
+        If tvTOC.Items.Count > 0 Then
           pcNavigation.ActivePage := tsTOC
         Else
           pcNavigation.ActivePage := tsThumbnails;
@@ -562,6 +563,7 @@ Var
   sError: String;
   sFullFilename: String;
   sFile: String;
+  iLast: Integer;
 Begin
   SetBusy;
   Try
@@ -574,8 +576,9 @@ Begin
 
     If Not FileExists(sFullFilename + '.png') Then
     Begin
+      iLast := EnsureRange(iPage + 20, iPage, FPageCount);
       sError := RunAndCapture(Format('"%s" -f %d -l %d "%s" "%s\Page"',
-        [PDFtoPNGExe, iPage, iPage, FFilename, sDir]));
+        [PDFtoPNGExe, iPage, iLast, FFilename, sDir]));
 
       sError := Trim(sError);
 
