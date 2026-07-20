@@ -4888,7 +4888,7 @@ object frmAbout: TfrmAbout
     Height = 380
     Top = 36
     Width = 601
-    ActivePage = tsReadme
+    ActivePage = tsFFMPEG
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -13
     Font.Pitch = fpFixed
@@ -4896,7 +4896,7 @@ object frmAbout: TfrmAbout
     MultiLine = True
     Options = [nboMultiLine]
     ParentFont = False
-    TabIndex = 2
+    TabIndex = 6
     TabOrder = 1
     object tsAbout: TTabSheet
       Caption = 'About'
@@ -5717,7 +5717,19 @@ object frmAbout: TfrmAbout
     end
     object tsFFMPEG: TTabSheet
       Caption = 'FFmpeg'
+      ClientHeight = 350
+      ClientWidth = 593
       TabVisible = False
+      object edtFFMPEGDir: TEdit
+        Left = 0
+        Height = 25
+        Top = 325
+        Width = 593
+        Align = alBottom
+        Color = clBtnFace
+        ReadOnly = True
+        TabOrder = 0
+      end
     end
     object tsMPV: TTabSheet
       Caption = 'MPV (dll)'

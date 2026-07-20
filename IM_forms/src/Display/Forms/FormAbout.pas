@@ -56,6 +56,7 @@ Type
     edtmpvDLL: TEdit;
     edtImageMagickDir: TEdit;
     edtXPDFDir: TEdit;
+    edtFFMPEGDir: TEdit;
     Label3: TLabel;
     Label4: TLabel;
     lblHTMLLabel2: TLabel;
@@ -194,6 +195,8 @@ Begin
     fmeFFmpeg.Name := 'fmeFFmpeg';
     fmeFFmpeg.Align := alClient;
     fmeFFmpeg.Visible := True;
+
+    edtFFMPEGDir.Text := FFmpegPath;
 
     fmeFFmpeg.OnHyperlink := @HTMLHyperlink;
 
