@@ -52,6 +52,7 @@ Type
   TfrmAbout = Class(TForm)
     Bevel1: TBevel;
     btnOK: TButton;
+    edtAppExe: TEdit;
     edtqpdfDir: TEdit;
     edtmpvDLL: TEdit;
     edtImageMagickDir: TEdit;
@@ -96,6 +97,7 @@ Type
     Procedure btnOKClick(Sender: TObject);
     Procedure FormCreate(Sender: TObject);
     Procedure FormDestroy(Sender: TObject);
+    procedure imgAboutClick(Sender: TObject);
     procedure lblImageMagickClick(Sender: TObject);
     Procedure URLLabelMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -138,12 +140,13 @@ Begin
   Inherited;
 
   sFolder := IncludeTrailingBackslash(ExtractFilePath(Application.ExeName));
-  pcAbout.ActivePage := tsAbout;
 
   If FileExists(sFolder + 'AboutGraphic.png') Then
   Begin
     imgAbout.Picture.LoadFromFile(sFolder + 'AboutGraphic.png');
   End;
+
+  edtAppExe.TExt := Application.ExeName;
 
   If FileExists(sFolder + 'LICENSE.txt') Then
   Begin
@@ -243,6 +246,11 @@ Begin
   memAbout.Lines.Add(' with ' + GetCompilerInfo + ' on ' + GetCompiledDate);
   memAbout.Lines.Add(' and using ' + GetLCLVersion + ' and ' + GetWidgetset);
 
+  If tsReadme.TabVisible Then
+    pcAbout.ActivePage := tsReadme
+  Else
+    pcAbout.ActivePage := tsAbout;
+
   lblApplicationTitle.Caption := Application.Title;
 End;
 
@@ -251,6 +259,11 @@ Begin
   If Assigned(fmeFFmpeg) Then
     FreeAndNil(fmeFFmpeg);
 End;
+
+procedure TfrmAbout.imgAboutClick(Sender: TObject);
+begin
+
+end;
 
 procedure TfrmAbout.lblImageMagickClick(Sender: TObject);
 begin
