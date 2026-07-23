@@ -43,6 +43,7 @@ Type
   Public
     Constructor Create; Virtual;
 
+    Procedure DefineDefaults; Virtual; Abstract;
     Procedure Initialise; Virtual;
 
     Property Folder: String Read FFolder;
@@ -85,6 +86,13 @@ End;
 Constructor TThirdParty.Create;
 Begin
   ThirdParties.Add(Self);
+
+  // User must override this
+  DefineDefaults;
+
+  // User may optionally override this
+  // But defaults work with Drivers and CLI apps
+  Initialise;
 End;
 
 Procedure TThirdParty.Initialise;
@@ -126,12 +134,12 @@ Begin
   Begin
     // Lets have a good rummage around for a readme and license file
     FReadMe := CheckFiles(FFolder, ['readme.md', 'readme.txt', 'readme']);
-    If not FileExists(FReadMe) Then
-      FReadMe := CheckFiles(FFolder+'..\', ['readme.md', 'readme.txt', 'readme']);
+    If Not FileExists(FReadMe) Then
+      FReadMe := CheckFiles(FFolder + '..\', ['readme.md', 'readme.txt', 'readme']);
 
     FLicense := CheckFiles(FFolder, ['license.txt', 'license.md', 'license']);
-    If not FileExists(FLicense) Then
-      FLicense := CheckFiles(FFolder+'..\', ['license.txt', 'license.md', 'license']);
+    If Not FileExists(FLicense) Then
+      FLicense := CheckFiles(FFolder + '..\', ['license.txt', 'license.md', 'license']);
   End;
 End;
 

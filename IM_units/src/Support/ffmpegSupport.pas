@@ -79,42 +79,24 @@ Type
 
   TFFmpegSupport = Class(TThirdParty)
   Public
-    Constructor Create; Override;
+    Procedure DefineDefaults; Override;
 
+    { FFProbe routines }
+
+    // Functions to analyse video
+    Function MediaInfo(AFilename: String): TMediaInfo;
+    Function Probe(sFilename: String): String;
+
+    // The following functions operate on the output of Probe
+    // Results will be in lowercase
+    Function ExtractStreamByCodec(AInput, ACodec: String): String;
+    Function ExtractStreamByCodecType(AInput, ACodecType: String): String;
+
+    { FFMpeg routines }
+
+    // Video Processing routines
+    Function CreateThumbnail(sVideo, sThumbnail: String): String;
   End;
-
-Function FFmpegAvailable: Boolean;
-Function FFmpegPath: String;
-Procedure SetFFmpegPath(AValue: String);
-Procedure InitializeFFmpeg;
-
-Function ProbeFile(sFilename: String): String;
-Function ExtractStreamByCodec(AInput, ACodec: String): String; // Results will be in lowercase
-Function ExtractStreamByCodecType(AInput, ACodecType: String): String;
-// Results will be in lowercase
-Function ExtractFormat(sInput: String): String;        // Results will be in lowercase
-
-Function MediaInfo(AFilename: String): TMediaInfo;
-
-Function CreateThumbnail(sVideo, sThumbnail: String): String;
-
-Const
-  FFmpegHelpAboutBlurb = '<html><body>' +
-    'This software uses libraries from the FFmpeg project under the LGPLv2.1<br>' +
-    '<br>' + 'Where used, functionality of FFmpeg is obtained by running the static ' +
-    'command line utilities.&nbsp; The command line utilities themselves use ' +
-    'other third party libraries, and full details of the licenses for each ' +
-    'of these utilites can be found in the <a href="FFMPEGLibraryLicenses">ffmpeg\licenses</a> ' +
-    'folder distributed with this software.<br/><br/>' + '<b>FFmpeg Homepage</b><br/>' +
-    '&nbsp;&nbsp;<a href="http://www.ffmpeg.org/">http://www.ffmpeg.org/</a>' +
-    '<br><br/>' + '<b>FFmpeg License and mini-Patent FAQ</b><br/>' +
-    '&nbsp;&nbsp;<a href="http://www.ffmpeg.org/legal.html">http://www.ffmpeg.org/legal.html</a>' +
-    '<br><br/>' + 'This software uses code of <a href="http://ffmpeg.org">FFmpeg</a> ' +
-    'licensed under the ' +
-    '<a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPLv2.1</a> ' +
-    'and the source code can be obtained by sending an email to ' +
-    '<a href="mailto:mike.cornflake@gmail.com">mailto:mike.cornflake@gmail.com</a> ' +
-    'and requesting a copy.' + '</body></html>';
 
 Function FFmpeg: TFFmpegSupport;
 
@@ -124,7 +106,6 @@ Uses
   Forms, StringSupport, FileUtil, OSSupport, FileSupport;
 
 Var
-  FFFmpegPath: String;
   FFFmpeg: TFFmpegSupport;
 
 Function FFmpeg: TFFmpegSupport;
@@ -132,76 +113,41 @@ Begin
   Result := FFFmpeg;
 End;
 
-Function FFmpegAvailable: Boolean;
+{ TFFmpegSupport }
+
+Procedure TFFmpegSupport.DefineDefaults;
 Begin
-  Result := FFFmpegPath <> '';
+  // CLI, we don't care if the exe is 32bit or 64bit
+  FCPUSensitive := False;
+
+  // Preparation for default Initialise
+  FKeyFile := 'ffprobe' + GetExeExt;
+  FKeyFolder := 'ffmpeg\bin';
+
+  // Metadata
+  FName := 'FFmpeg';
+  FSummary := 'FFmpeg is a collection of libraries and tools to process multimedia ' +
+    'content such as audio, video, subtitles and related metadata.';
+  FProjectURL := 'http://ffmpeg.org';
+  FCodeURL := 'https://github.com/ffmpeg/ffmpeg';
 End;
 
-Function FFmpegPath: String;
-Begin
-  Result := FFFmpegPath;
-End;
-
-Procedure SetFFmpegPath(AValue: String);
-Begin
-  If DirectoryExists(AValue) Then
-    FFFmpegPath := AValue
-  Else
-    FFFmpegPath := '';
-End;
-
-Procedure InitializeFFmpeg;
-Var
-  sFile: String;
-Begin
-  If FFFmpegPath = '' Then
-    sFile := FindSupportFileInFolders('Apps', 'ffmpeg\bin', Format('ffprobe%s', [GetExeExt]));
-
-  If sFile <> '' Then
-    FFFmpegPath := ExtractFileDir(sFile);
-End;
-
-Function ProbeFile(sFilename: String): String;
+Function TFFmpegSupport.Probe(sFilename: String): String;
 Var
   sCommand: String;
 Begin
   Result := '';
-  If FFFmpegPath <> '' Then
+
+  If FFolder <> '' Then
   Begin
     sCommand := Format('%s\ffprobe%s -v quiet -show_format -show_streams "%s"',
-      [FFmpegPath, GetExeExt, sFilename]);
+      [FFolder, GetExeExt, sFilename]);
+
     Result := RunAndCapture(sCommand, nil, True);
   End;
 End;
 
-Function CreateThumbnail(sVideo, sThumbnail: String): String;
-Var
-  sCommand, sTemp: String;
-
-  Function GrabThumbnail(sFromTime: String): Boolean;
-  Begin
-    sCommand := Format('%s\ffmpeg%s -hide_banner -i "%s" -ss %s -frames:v 1 "%s"',
-      [FFmpegPath, GetExeExt, sVideo, sFromTime, sThumbnail]);
-
-    sTemp := RunAndCapture(sCommand, nil, True);
-
-    Result := FileExists(sThumbnail);
-  End;
-
-Begin
-  Result := '';
-  If FFFmpegPath <> '' Then
-  Begin
-    If Not GrabThumbnail('00:01:00') Then
-      If Not GrabThumbnail('00:00:10') Then
-        GrabThumbnail('00:00:01');
-
-    If FileExists(sThumbnail) Then
-      Result := sTemp;
-  End;
-End;
-
-Function ExtractStreamByCodec(AInput, ACodec: String): String;
+Function TFFmpegSupport.ExtractStreamByCodec(AInput, ACodec: String): String;
 Var
   sTemp: String;
   sResult: String;
@@ -235,7 +181,7 @@ Begin
   End;
 End;
 
-Function ExtractStreamByCodecType(AInput, ACodecType: String): String;
+Function TFFmpegSupport.ExtractStreamByCodecType(AInput, ACodecType: String): String;
 Var
   sTemp: String;
   sResult: String;
@@ -269,16 +215,16 @@ Begin
   End;
 End;
 
-Function ExtractFormat(sInput: String): String;
-Var
-  sTemp: String;
-Begin
-  sTemp := Lowercase(sInput);
+Function TFFmpegSupport.MediaInfo(AFilename: String): TMediaInfo;
 
-  Result := Trim(TextBetween(sTemp, '[format]', '[/format]'));
-End;
+  Function ExtractFormat(sInput: String): String;
+  Var
+    sTemp: String;
+  Begin
+    sTemp := Lowercase(sInput);
 
-Function MediaInfo(AFilename: String): TMediaInfo;
+    Result := Trim(TextBetween(sTemp, '[format]', '[/format]'));
+  End;
 
   Function ExtractField(AInput, AField: String): String;
   Begin
@@ -288,7 +234,7 @@ Function MediaInfo(AFilename: String): TMediaInfo;
 Var
   sFFPROBE, sFormat, sCodec, sTemp: String;
 Begin
-  sFFPROBE := Lowercase(ProbeFile(AFilename));
+  sFFPROBE := Lowercase(Probe(AFilename));
   sFormat := ExtractFormat(sFFPROBE);
 
   If sFormat <> '' Then
@@ -339,32 +285,35 @@ Begin
   End;
 End;
 
-{ TFFmpegSupport }
+Function TFFmpegSupport.CreateThumbnail(sVideo, sThumbnail: String): String;
+Var
+  sCommand, sTemp: String;
 
-Constructor TFFmpegSupport.Create;
+  Function GrabThumbnail(sFromTime: String): Boolean;
+  Begin
+    sCommand := Format('%s\ffmpeg%s -hide_banner -i "%s" -ss %s -frames:v 1 "%s"',
+      [FFolder, GetExeExt, sVideo, sFromTime, sThumbnail]);
+
+    sTemp := RunAndCapture(sCommand, nil, True);
+
+    Result := FileExists(sThumbnail);
+  End;
+
 Begin
-  Inherited Create;
+  Result := '';
 
-  // CLI, we don't care if the exe are 32bit or 64bit
-  FCPUSensitive := False;
+  If FFolder <> '' Then
+  Begin
+    If Not GrabThumbnail('00:01:00') Then
+      If Not GrabThumbnail('00:00:10') Then
+        GrabThumbnail('00:00:01');
 
-  // Preparation for default Initialise
-  FKeyFile := 'ffprobe' + GetExeExt;
-  FKeyFolder := 'ffmpeg\bin';
-
-  // Metadata
-  FName := 'FFmpeg';
-  FSummary := 'FFmpeg is a collection of libraries and tools to process multimedia content such as audio, video, subtitles and related metadata.';
-  FProjectURL := 'http://ffmpeg.org';
-  FCodeURL := 'https://github.com/ffmpeg/ffmpeg';
-
-  // Default initialise works with drivers and CLI's
-  Initialise;
+    If FileExists(sThumbnail) Then
+      Result := sTemp;
+  End;
 End;
 
 Initialization
-  FFFmpegPath := '';
-
   FFFmpeg := TFFmpegSupport.Create;
 
 Finalization;
