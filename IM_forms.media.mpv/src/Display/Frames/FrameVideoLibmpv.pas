@@ -118,7 +118,7 @@ Implementation
 {$R *.lfm}
 
 Uses
-  LibmpvSupport, libMPV.Client, VideoEngineFactory, FileSupport,
+  LibmpvSupport, VideoEngineFactory, FileSupport,
   Math;
 
   { TFrameVideoLibmpv }
@@ -131,7 +131,7 @@ Begin
   lblMsg.OnMouseDown := @ControlMouseDown;
   OnMouseDown := @ControlMouseDown;
 
-  If Not FindLibmpvDLL Then
+  If Not LibmpvDLL.Available Then
   Begin
     lblMsg.Visible := True;
     lblMsg.Caption := 'libmpv-2.dll not found';
@@ -142,9 +142,6 @@ Begin
   End
   Else
   Begin
-    If Not IsLibMPV_Loaded Then
-      Load_libMPV(LibmpvSupport.LibmpvDLL);
-
     lblMsg.Visible := False;
 
     FmpvPlayer := TMPVPlayer.Create(Self);
@@ -509,7 +506,7 @@ Begin
 End;
 
 Initialization
-  If FindLibmpvDLL Then
+  If LibmpvDLL.Available Then
     TVideoEngineFactory.RegisterEngine('libmpv', TFrameVideoLibmpv);
 
 End.

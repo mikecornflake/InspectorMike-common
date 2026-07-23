@@ -23,6 +23,7 @@ Unit ffmpegSupport;
     2024-01-22: Migrated to Github.  Refactored package to "IM_units"
     2025-11-29: Added this header
     2026-06-19: Refactored into split InspectorMike package structure
+    2026-07-23: Refactored into new TThirdParty Class
 
   License
     This file is part of IM_units.lpk.

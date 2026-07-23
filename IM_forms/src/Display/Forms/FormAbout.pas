@@ -54,14 +54,12 @@ Type
     btnOK: TButton;
     edtAppExe: TEdit;
     edtqpdfDir: TEdit;
-    edtmpvDLL: TEdit;
     edtImageMagickDir: TEdit;
     edtPopplerDir: TEdit;
     edtXPDFDir: TEdit;
     Label3: TLabel;
     Label4: TLabel;
     lblHTMLLabel2: TLabel;
-    lblHTMLLabel3: TLabel;
     lblImageMagickURL: TLabel;
     lblqpdfURL: TLabel;
     lblPopperURL: TLabel;
@@ -74,7 +72,6 @@ Type
     memImageMagick: TMemo;
     memLicence: TSynEdit;
     memqdfp: TMemo;
-    memMPV: TMemo;
     memPopplerReadme: TSynEdit;
     memPopplerLicense: TSynEdit;
     memXPDF: TMemo;
@@ -93,7 +90,6 @@ Type
     tsPopplerLicense: TTabSheet;
     tsPoppler: TTabSheet;
     tsQPDF: TTabSheet;
-    tsMPV: TTabSheet;
     tsImageMagick: TTabSheet;
     tsXPDF: TTabSheet;
     tsCredits: TTabSheet;
@@ -116,7 +112,7 @@ Implementation
 
 Uses
   LCLIntf, VersionSupport,
-  XPDFSupport, ImageMagickSupport, ffmpegSupport, OSSupport, LibmpvSupport,
+  XPDFSupport, ImageMagickSupport, ffmpegSupport, OSSupport,
   qpdfSupport, PopplerSupport, FrameAboutThirdParty, ThirdPartySupport;
 
   {$R *.lfm}
@@ -255,12 +251,6 @@ Begin
   End
   Else
     tsqPDF.TabVisible := False;
-
-  tsMPV.TabVisible := LibmpvAvailable;
-  If tsMPV.TabVisible Then
-  Begin
-    edtmpvDLL.Text := LibmpvDLL;
-  End;
 
   memAbout.Lines.Clear;
   memAbout.Lines.Add(Application.exename);

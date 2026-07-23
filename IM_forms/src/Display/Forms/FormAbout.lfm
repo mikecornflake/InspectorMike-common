@@ -4692,7 +4692,7 @@ object frmAbout: TfrmAbout
     Height = 380
     Top = 36
     Width = 675
-    ActivePage = tsImageMagick
+    ActivePage = tsQPDF
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -13
     Font.Pitch = fpFixed
@@ -4700,7 +4700,7 @@ object frmAbout: TfrmAbout
     MultiLine = True
     Options = [nboMultiLine]
     ParentFont = False
-    TabIndex = 4
+    TabIndex = 6
     TabOrder = 1
     object tsReadme: TTabSheet
       Caption = 'Readme'
@@ -6027,57 +6027,6 @@ object frmAbout: TfrmAbout
         OnMouseDown = URLLabelMouseDown
         OnMouseEnter = URLLabelMouseEnter
         OnMouseLeave = URLLabelMouseLeave
-      end
-    end
-    object tsMPV: TTabSheet
-      Caption = 'MPV (dll)'
-      ClientHeight = 350
-      ClientWidth = 667
-      TabVisible = False
-      object lblHTMLLabel3: TLabel
-        Left = 0
-        Height = 15
-        Top = 0
-        Width = 667
-        Align = alTop
-        Caption = 'https://github.com/mpv-player/mpv'
-        Font.Color = clBlue
-        ParentColor = False
-        ParentFont = False
-        OnMouseDown = URLLabelMouseDown
-        OnMouseEnter = URLLabelMouseEnter
-        OnMouseLeave = URLLabelMouseLeave
-      end
-      object memMPV: TMemo
-        Left = 0
-        Height = 310
-        Top = 15
-        Width = 667
-        Align = alClient
-        Lines.Strings = (
-          'libmpv-2.dll can be built with different license models, either GPL-2 or LGPL-2.1'
-          ''
-          'For my testing, I used the following:'
-          ''
-          '- Version: 0.41.0-697-g13a3e3ad0'
-          '- Source: mpv project (https://mpv.io)'
-          '- Windows build: Shinchiro developer build'
-          '- License: See mpv Copyright and License files'
-          ''
-          'If you are using a dll shipped with an Inspector Mike application, it will likely be this one.'
-        )
-        ReadOnly = True
-        TabOrder = 0
-      end
-      object edtmpvDLL: TEdit
-        Left = 0
-        Height = 25
-        Top = 325
-        Width = 667
-        Align = alBottom
-        Color = clBtnFace
-        ReadOnly = True
-        TabOrder = 1
       end
     end
     object tsQPDF: TTabSheet

@@ -47,10 +47,6 @@
         <UnitName Value="ImageMagickSupport"/>
       </Item>
       <Item>
-        <Filename Value="src\Support\LibmpvSupport.pas"/>
-        <UnitName Value="LibmpvSupport"/>
-      </Item>
-      <Item>
         <Filename Value="src\Support\netMCSupport.pas"/>
         <UnitName Value="netMCSupport"/>
       </Item>

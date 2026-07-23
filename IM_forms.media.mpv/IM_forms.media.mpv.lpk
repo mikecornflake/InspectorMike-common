@@ -8,14 +8,18 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="src\Display\Frames"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <OtherUnitFiles Value="src\Display\Frames;src\Support"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
     <Files>
       <Item>
         <Filename Value="src\Display\Frames\FrameVideoLibmpv.pas"/>
         <UnitName Value="FrameVideoLibmpv"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\LibmpvSupport.pas"/>
+        <UnitName Value="LibmpvSupport"/>
       </Item>
     </Files>
     <RequiredPkgs>

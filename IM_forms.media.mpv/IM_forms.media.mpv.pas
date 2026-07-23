@@ -8,7 +8,7 @@ unit IM_forms.media.mpv;
 interface
 
 uses
-  FrameVideoLibmpv, LazarusPackageIntf;
+  FrameVideoLibmpv, LibmpvSupport, LazarusPackageIntf;
 
 implementation
 

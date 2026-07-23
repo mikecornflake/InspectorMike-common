@@ -18,6 +18,7 @@ Unit LibmpvSupport;
                    as part of  IM_common.lpk
     2026-06-19: Added this header & refactored
     2026-06-19: Refactored into split InspectorMike package structure
+    2026-07-23: Refactored into new TThirdParty Class
 
   License
     This file is part of IM_units.lpk.
@@ -43,55 +44,77 @@ Unit LibmpvSupport;
 Interface
 
 Uses
-  Classes, SysUtils;
+  Classes, SysUtils, ThirdPartySupport;
 
-Function LibmpvAvailable: Boolean;
-Function LibmpvDLL: String;
-Procedure SetLibmpvDLL(AValue: String);
-Function FindLibmpvDLL: Boolean;
+Type
+
+  { TLibmpvSupport }
+
+  TLibmpvSupport = Class(TThirdParty)
+  Public
+    Procedure DefineDefaults; Override;
+    Procedure Initialise; Override;
+  End;
+
+Function LibmpvDLL: TLibmpvSupport;
 
 Implementation
 
 Uses
-  Forms, OSSupport, FileSupport, FileUtil;
+  Forms, OSSupport, FileSupport, FileUtil, libMPV.Client;
 
 Var
-  FLibmpvDLL: String;
+  FLibmpv: TLibmpvSupport;
 
-Function LibmpvAvailable: Boolean;
+Function LibmpvDLL: TLibmpvSupport;
 Begin
-  Result := (FLibmpvDLL <> '') And FileExists(FLibmpvDLL);
+  Result := FLibmpv;
 End;
 
-Function LibmpvDLL: String;
+{ TLibmpvSupport }
+
+Procedure TLibmpvSupport.DefineDefaults;
 Begin
-  Result := FLibmpvDLL;
+  // CLI, we don't care if the exe is 32bit or 64bit
+  FCPUSensitive := True;
+
+  // Preparation for default Initialise
+  FKeyFile := 'libmpv-2.dll';
+  FKeyFolder := 'mpv';
+
+  // Metadata
+  FName := 'mpv';
+
+  FSummary := 'mpv is a free (as in freedom) media player for the command line. ' +
+    'It supports a wide variety of media file formats, audio and video codecs, ' +
+    'and subtitle types.' + LineEnding + LineEnding + '- Version: 0.41.0-697-g13a3e3ad0 ' +
+    LineEnding + '- Windows build: Shinchiro developer build';
+
+  FProjectURL := 'https://mpv.io/';
+  FCodeURL := 'hhttps://github.com/mpv-player/mpv';
 End;
 
-Procedure SetLibmpvDLL(AValue: String);
+Procedure TLibmpvSupport.Initialise;
+Var
+  sFile: String;
 Begin
-  If FileExists(AValue) Then
-    FLibmpvDLL := AValue
-  Else
-    FLibmpvDLL := '';
+  Inherited Initialise;
+
+  If DirectoryExists(FFolder) Then
+  Begin
+    If Not IsLibMPV_Loaded Then
+    Begin
+      sFile := IncludeSlash(FFolder) + FKeyFile;
+
+      FAvailable := (Load_libMPV(sFile) = MPV_ERROR_SUCCESS);
+    End;
+  End;
 End;
 
-Function FindLibmpvDLL: Boolean;
-Begin
-  Result := (FLibmpvDLL <> '') And FileExists(FLibmpvDLL);
+Initialization
+  FLibmpv := TLibmpvSupport.Create;
 
-  If Result Then
-    Exit;
-
-  // TODO Linux
-  FLibmpvDLL := FindDriverFileInFolders('mpv', 'libmpv-2.dll');
-
-  Result := (FLibmpvDLL <> '') And FileExists(FLibmpvDLL);
-
-  If Result Then
-    Exit
-  Else
-    FLibmpvDLL := '';
-End;
+Finalization;
+  FreeAndNil(FLibmpv);
 
 End.
