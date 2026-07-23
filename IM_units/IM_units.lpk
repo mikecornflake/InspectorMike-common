@@ -13,7 +13,7 @@
       </SearchPaths>
       <Other>
         <CompilerMessages>
-          <IgnoredMessages idx6058="True"/>
+          <IgnoredMessages idx6058="True" idx5044="True"/>
         </CompilerMessages>
       </Other>
     </CompilerOptions>
@@ -94,8 +94,19 @@
         <Filename Value="src\Classes\PDF.pas"/>
         <UnitName Value="PDF"/>
       </Item>
+      <Item>
+        <Filename Value="src\Support\ImageSupport.pas"/>
+        <UnitName Value="ImageSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\PopplerSupport.pas"/>
+        <UnitName Value="PopplerSupport"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="BGRABitmapPack"/>
+      </Item>
       <Item>
         <PackageName Value="LCLBase"/>
       </Item>

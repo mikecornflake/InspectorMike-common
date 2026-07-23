@@ -135,6 +135,8 @@ Type
     FDirty: Boolean;
 
     Procedure CreateThumbnail(sFile: String; sThumb: String);
+    Function PageImageFilename(Const ADir: String; APage: Integer): String;
+    Function PopplerPageFilename(Const ADir, APrefix: String; APage: Integer): String;
     Procedure SetFilename(AFilename: String);
 
     // PDF Operations
@@ -168,7 +170,7 @@ Implementation
 
 Uses
   VersionSupport, FileSupport, OSSupport, Types,
-  XPDFSupport, ImageMagickSupport, qpdfSupport, Math;
+  PopplerSupport, ImageSupport, qpdfSupport, Math;
 
   {$R *.lfm}
 
@@ -267,11 +269,9 @@ Procedure TFramePDFViewer.btnRotateCCWClick(Sender: TObject);
 Var
   sFile: String;
 Begin
-  If ImageMagickExe = '' Then
-    Exit;
-
   sFile := fmeImages.Filename;
-  RunAndCapture(Format('"%s" mogrify -rotate -90 "%s"', [ImageMagickExe, sFile]));
+  RotateImageFile90CCW(sFile, sFile);
+
   fmeImages.Filename := '';
   fmeImages.Filename := sFile;
 
@@ -284,11 +284,9 @@ Procedure TFramePDFViewer.btnRotateCWClick(Sender: TObject);
 Var
   sFile: String;
 Begin
-  If ImageMagickExe = '' Then
-    Exit;
-
   sFile := fmeImages.Filename;
-  RunAndCapture(Format('"%s" mogrify -rotate +90 "%s"', [ImageMagickExe, sFile]));
+  RotateImageFile90CW(sFile, sFile);
+
   fmeImages.Filename := '';
   fmeImages.Filename := sFile;
 
@@ -319,12 +317,12 @@ Begin
 End;
 
 Procedure TFramePDFViewer.CreateThumbnail(sFile: String; sThumb: String);
+Var
+  iW, iH: Integer;
 Begin
-  If ImageMagickExe = '' Then
-    Exit;
-
-  RunAndCapture(Format('"%s" "%s" -resize %dx%d "%s"', [ImageMagickExe, sFile,
-    3 * (ilThumbs.Width - 8), 3 * (ilThumbs.Height - 8), sThumb]));
+  iW := 3 * (ilThumbs.Width - 8);
+  iH := 3 * (ilThumbs.Height - 8);
+  ImageSupport.CreateThumbnail(sFile, sThumb, iW, iH);
 End;
 
 Procedure TFramePDFViewer.lvThumbNailsCustomDrawItem(Sender: TCustomListView;
@@ -468,8 +466,7 @@ Begin
         FPDFDir := IncludeTrailingBackslash(TempDir) + ExtractFileNameOnly(FFilename);
 
         // Initialise the page count
-        // TODO Simplify this
-        Info;
+        FPageCount := qpdfGetPageCount(FFilename);
 
         FActive := True;
 
@@ -575,35 +572,89 @@ Begin
   Result := ConvertPageToImage(FPDFDir, FPage);
 End;
 
-Function TFramePDFViewer.ConvertPageToImage(sDir: String; iPage: Integer): String;
-Var
-  sError: String;
-  sFullFilename: String;
-  sFile: String;
-  iLast: Integer;
+Function TFramePDFViewer.PageImageFilename(Const ADir: String; APage: Integer): String;
 Begin
+  Result :=
+    IncludeTrailingPathDelimiter(ADir) + Format('Page-%.6d.png', [APage]);
+End;
+
+
+Function TFramePDFViewer.PopplerPageFilename(Const ADir, APrefix: String; APage: Integer): String;
+Var
+  iDigits: Integer;
+Begin
+  iDigits := Length(IntToStr(FPageCount));
+
+  Result :=
+    IncludeTrailingPathDelimiter(ADir) + APrefix + '-' +
+    Format('%.*d', [iDigits, APage]) + '.png';
+End;
+
+Function TFramePDFViewer.ConvertPageToImage(sDir: String; iPage: Integer): String;
+Const
+  PagesPerBatch = 10;
+  PopplerPrefix = '_PopplerPage';
+Var
+  sError, sSourceFilename, sDestFilename, sOutputPrefix: String;
+  iStart, iEnd, i: Integer;
+Begin
+  Result := '';
+
   SetBusy;
   Try
-    sDir := ExcludeTrailingBackslash(sDir);
-    ForceDirectory(sDir);
+    sDir := ExcludeTrailingPathDelimiter(sDir);
 
-    sFile := Format('\Page-%0:6d', [iPage]);
-    sFile := StringReplace(sFile, ' ', '0', [rfReplaceAll]);
-    sFullFilename := sDir + sFile;
+    If Not ForceDirectories(sDir) Then
+      Exit;
 
-    If Not FileExists(sFullFilename + '.png') Then
+    Result := PageImageFilename(sDir, iPage);
+
+    { Already cached. }
+    If FileExists(Result) Then
+      Exit;
+
+    iStart := iPage;
+    iEnd := iPage;
+
+    { Find a forward run of up to 20 missing pages. }
+    While
+      (iEnd < FPageCount) And ((iEnd - iStart + 1) < PagesPerBatch) And Not
+      FileExists(PageImageFilename(sDir, iEnd + 1)) Do
+      Inc(iEnd);
+
+    sOutputPrefix := IncludeTrailingPathDelimiter(sDir) + PopplerPrefix;
+
+    sError := Trim(RunAndCapture(Format('"%s" -png -f %d -l %d "%s" "%s"',
+      [Poppler_PDFtoPPMExe, iStart, iEnd, FFilename, sOutputPrefix])));
+
+    If sError <> '' Then
     Begin
-      iLast := EnsureRange(iPage + 20, iPage, FPageCount);
-      sError := RunAndCapture(Format('"%s" -f %d -l %d "%s" "%s\Page"',
-        [xpdf_PDFtoPNGExe, iPage, iLast, FFilename, sDir]));
-
-      sError := Trim(sError);
-
-      If sError <> '' Then
-        ShowMessage(sError);
+      ShowMessage(sError);
+      Exit;
     End;
 
-    Result := sFullFilename + '.png';
+    { Normalise Poppler's filenames into our fixed cache format. }
+    For i := iStart To iEnd Do
+    Begin
+      sSourceFilename := PopplerPageFilename(sDir, PopplerPrefix, i);
+
+      sDestFilename := PageImageFilename(sDir, i);
+
+      If Not FileExists(sSourceFilename) Then
+        Continue;
+
+      If FileExists(sDestFilename) Then
+        DeleteFile(sDestFilename);
+
+      If Not RenameFile(sSourceFilename, sDestFilename) Then
+        Raise Exception.CreateFmt('Unable to rename rendered page:%s%s%s',
+          [LineEnding, sSourceFilename, LineEnding + sDestFilename]);
+    End;
+
+    { The requested page should now exist. }
+    If Not FileExists(Result) Then
+      Result := '';
+
   Finally
     ClearBusy;
   End;
@@ -618,7 +669,7 @@ Var
 Begin
   slInfo := TStringList.Create;
   Try
-    slInfo.Text := xpdf_Info(FFilename);
+    slInfo.Text := Poppler_PDFInfo(FFilename);
 
     For i := 0 To slInfo.Count - 1 Do
       slInfo[i] := StringReplace(slInfo[i], ': ', '=', [rfIgnoreCase]);
@@ -913,8 +964,7 @@ Begin
 End;
 
 Initialization
-  InitializeXPDF;
-  InitializeImageMagick;
+  InitializePoppler;
   Initializeqpdf;
 
 End.

@@ -56,6 +56,7 @@ Type
     edtqpdfDir: TEdit;
     edtmpvDLL: TEdit;
     edtImageMagickDir: TEdit;
+    edtPopplerDir: TEdit;
     edtXPDFDir: TEdit;
     edtFFMPEGDir: TEdit;
     Label3: TLabel;
@@ -64,6 +65,7 @@ Type
     lblHTMLLabel3: TLabel;
     lblImageMagickURL: TLabel;
     lblqpdfURL: TLabel;
+    lblPopperURL: TLabel;
     lblXPDF2: TLabel;
     lblXPDFURL: TLabel;
     lblSDKs: TLabel;
@@ -73,7 +75,10 @@ Type
     memImageMagick: TMemo;
     memqdfp: TMemo;
     memMPV: TMemo;
+    memPopplerReadme: TSynEdit;
+    memPopplerLicense: TSynEdit;
     memXPDF: TMemo;
+    pcPoppler: TPageControl;
     pcAbout: TPageControl;
     imgAbout: TImage;
     Label1: TLabel;
@@ -85,6 +90,9 @@ Type
     memAbout: TMemo;
     memReadme: TSynEdit;
     synMarkdown: TSynMarkdownSyn;
+    tsPopplerReadme: TTabSheet;
+    tsPopplerLicense: TTabSheet;
+    tsPoppler: TTabSheet;
     tsQPDF: TTabSheet;
     tsMPV: TTabSheet;
     tsFFMPEG: TTabSheet;
@@ -97,8 +105,6 @@ Type
     Procedure btnOKClick(Sender: TObject);
     Procedure FormCreate(Sender: TObject);
     Procedure FormDestroy(Sender: TObject);
-    procedure imgAboutClick(Sender: TObject);
-    procedure lblImageMagickClick(Sender: TObject);
     Procedure URLLabelMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     Procedure URLLabelMouseEnter(Sender: TObject);
@@ -116,7 +122,8 @@ Implementation
 
 Uses
   LCLIntf, VersionSupport,
-  XPDFSupport, ImageMagickSupport, ffmpegSupport, OSSupport, LibmpvSupport, qpdfSupport;
+  XPDFSupport, ImageMagickSupport, ffmpegSupport, OSSupport, LibmpvSupport,
+  qpdfSupport, PopplerSupport;
 
   {$R *.lfm}
 
@@ -146,7 +153,7 @@ Begin
     imgAbout.Picture.LoadFromFile(sFolder + 'AboutGraphic.png');
   End;
 
-  edtAppExe.TExt := Application.ExeName;
+  edtAppExe.Text := Application.ExeName;
 
   If FileExists(sFolder + 'LICENSE.txt') Then
   Begin
@@ -190,6 +197,38 @@ Begin
   Else
     tsXPDF.TabVisible := False;
 
+  If (PopplerAvailable) Then
+  Begin
+    tsPoppler.TabVisible := True;
+    If FileExists(Poppler_Readme) Then
+    Begin
+      If SameText(ExtractFileExt(Poppler_Readme), '.md') Then
+        memPopplerReadme.Highlighter := synMarkdown
+      Else
+        memPopplerReadme.Highlighter := nil;
+
+      memPopplerReadme.Lines.LoadFromFile(Poppler_Readme);
+    End
+    Else
+      tsPopplerReadme.TabVisible := False;
+
+    If FileExists(Poppler_License) Then
+    Begin
+      If SameText(ExtractFileExt(Poppler_License), '.md') Then
+        memPopplerLicense.Highlighter := synMarkdown
+      Else
+        memPopplerLicense.Highlighter := nil;
+
+      memPopplerLicense.Lines.LoadFromFile(Poppler_License);
+    End
+    Else
+      tsPopplerLicense.TabVisible := False;
+
+    edtPopplerDir.Text := PopplerPath;
+  End
+  Else
+    tsPoppler.TabVisible := False;
+
   If (FFmpegAvailable) Then
   Begin
     tsFFMPEG.TabVisible := True;
@@ -217,9 +256,9 @@ Begin
 
     If FileExists(qpdfExe) Then
       edtqpdfDir.Text := qpdfExe;
-  end
+  End
   Else
-      tsqPDF.TabVisible := False;
+    tsqPDF.TabVisible := False;
 
   tsMPV.TabVisible := LibmpvAvailable;
   If tsMPV.TabVisible Then
@@ -259,16 +298,6 @@ Begin
   If Assigned(fmeFFmpeg) Then
     FreeAndNil(fmeFFmpeg);
 End;
-
-procedure TfrmAbout.imgAboutClick(Sender: TObject);
-begin
-
-end;
-
-procedure TfrmAbout.lblImageMagickClick(Sender: TObject);
-begin
-
-end;
 
 Procedure TfrmAbout.btnOKClick(Sender: TObject);
 Begin

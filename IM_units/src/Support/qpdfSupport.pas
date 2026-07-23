@@ -91,6 +91,8 @@ Function qpdfLoadAttachmentsForImport(Const APDFFilename: String;
   Const AWorkingFolder: String; APDFAttachments: TPDFAttachments): Boolean;
 
 Function qpdfPopulateTOC(Const APDFFilename: String; ATreeView: TTreeView): Boolean;
+Function qpdfGetPageCount(Const APDFFilename: String): Integer;
+
 
 Implementation
 
@@ -578,6 +580,21 @@ Begin
     RootJSON.Free;
     ATreeView.Items.EndUpdate;
   End;
+End;
+
+Function qpdfGetPageCount(Const APDFFilename: String): Integer;
+Var
+  sOutput: String;
+Begin
+  Result := 0;
+
+  If Not FileExists(APDFFilename) Then
+    Exit;
+
+  sOutput := Trim(RunAndCapture(Format('"%s" --show-npages "%s"', [qpdfExe, APDFFilename])));
+
+  If Not TryStrToInt(sOutput, Result) Then
+    Result := 0;
 End;
 
 End.
