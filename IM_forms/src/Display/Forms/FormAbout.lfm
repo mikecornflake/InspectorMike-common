@@ -4692,7 +4692,7 @@ object frmAbout: TfrmAbout
     Height = 380
     Top = 36
     Width = 601
-    ActivePage = tsPoppler
+    ActivePage = tsQPDF
     Anchors = [akTop, akLeft, akRight, akBottom]
     Font.Height = -13
     Font.Pitch = fpFixed
@@ -4700,16 +4700,16 @@ object frmAbout: TfrmAbout
     MultiLine = True
     Options = [nboMultiLine]
     ParentFont = False
-    TabIndex = 9
+    TabIndex = 7
     TabOrder = 1
     object tsReadme: TTabSheet
       Caption = 'Readme'
-      ClientHeight = 328
+      ClientHeight = 350
       ClientWidth = 593
       TabVisible = False
       inline memReadme: TSynEdit
         Left = 0
-        Height = 328
+        Height = 350
         Top = 0
         Width = 593
         Align = alClient
@@ -5226,11 +5226,11 @@ object frmAbout: TfrmAbout
     end
     object tsAbout: TTabSheet
       Caption = 'Build'
-      ClientHeight = 328
+      ClientHeight = 350
       ClientWidth = 593
       object memAbout: TMemo
         Left = 10
-        Height = 235
+        Height = 257
         Top = 23
         Width = 575
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -5252,7 +5252,7 @@ object frmAbout: TfrmAbout
       object lblHTMLLabel: TLabel
         Left = 280
         Height = 15
-        Top = 304
+        Top = 326
         Width = 208
         Anchors = [akLeft, akBottom]
         Caption = 'http://mikecornflake.blogspot.com.au/'
@@ -5266,7 +5266,7 @@ object frmAbout: TfrmAbout
       object lblHTMLLabel1: TLabel
         Left = 18
         Height = 15
-        Top = 287
+        Top = 309
         Width = 183
         Anchors = [akLeft, akBottom]
         Caption = 'mailto:mike.cornflake@gmail.com'
@@ -5280,7 +5280,7 @@ object frmAbout: TfrmAbout
       object Label2: TLabel
         Left = 10
         Height = 15
-        Top = 272
+        Top = 294
         Width = 113
         Anchors = [akLeft, akBottom]
         Caption = 'Contact Information'
@@ -5291,7 +5291,7 @@ object frmAbout: TfrmAbout
       object lblHTMLLabel2: TLabel
         Left = 18
         Height = 15
-        Top = 304
+        Top = 326
         Width = 187
         Anchors = [akLeft, akBottom]
         Caption = 'https://github.com/mikecornflake/'
@@ -5305,12 +5305,12 @@ object frmAbout: TfrmAbout
     end
     object tsCredits: TTabSheet
       Caption = 'Credits'
-      ClientHeight = 328
+      ClientHeight = 350
       ClientWidth = 593
       object lblHTMLLabel6: TLabel
         Left = 51
         Height = 15
-        Top = 162
+        Top = 184
         Width = 183
         Anchors = [akLeft, akBottom]
         Caption = 'http://www.lazarus.freepascal.org/'
@@ -5324,7 +5324,7 @@ object frmAbout: TfrmAbout
       object lblHTMLLabel7: TLabel
         Left = 51
         Height = 15
-        Top = 186
+        Top = 208
         Width = 144
         Anchors = [akLeft, akBottom]
         Caption = 'http://www.freepascal.org/'
@@ -5338,7 +5338,7 @@ object frmAbout: TfrmAbout
       object Label3: TLabel
         Left = 25
         Height = 15
-        Top = 141
+        Top = 163
         Width = 181
         Anchors = [akLeft, akBottom]
         Caption = 'Core Development Environment'
@@ -5349,7 +5349,7 @@ object frmAbout: TfrmAbout
       object lblSDKs: TLabel
         Left = 25
         Height = 15
-        Top = 213
+        Top = 235
         Width = 122
         Anchors = [akLeft, akBottom]
         Caption = 'Other SDKs and Tools:'
@@ -5359,7 +5359,7 @@ object frmAbout: TfrmAbout
       end
       object Label4: TLabel
         Left = 9
-        Height = 120
+        Height = 142
         Top = 8
         Width = 571
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -5372,7 +5372,7 @@ object frmAbout: TfrmAbout
       object lblXPDF3: TLabel
         Left = 52
         Height = 15
-        Top = 234
+        Top = 256
         Width = 394
         Anchors = [akLeft, akBottom]
         Caption = 'http://www.softicons.com/toolbar-icons/fatcow-hosting-icons-by-fatcow'
@@ -5386,12 +5386,12 @@ object frmAbout: TfrmAbout
     end
     object tsLicence: TTabSheet
       Caption = 'Licence'
-      ClientHeight = 328
+      ClientHeight = 350
       ClientWidth = 593
       TabVisible = False
       object memLicence: TMemo
         Left = 0
-        Height = 303
+        Height = 325
         Top = 0
         Width = 593
         Align = alClient
@@ -5409,7 +5409,7 @@ object frmAbout: TfrmAbout
       object edtAppExe: TEdit
         Left = 0
         Height = 25
-        Top = 303
+        Top = 325
         Width = 593
         Align = alBottom
         Color = clBtnFace
@@ -5419,11 +5419,11 @@ object frmAbout: TfrmAbout
     end
     object tsImageMagick: TTabSheet
       Caption = 'ImageMagick'
-      ClientHeight = 328
+      ClientHeight = 350
       ClientWidth = 593
       object memImageMagick: TMemo
         Left = 0
-        Height = 273
+        Height = 295
         Top = 30
         Width = 593
         Align = alClient
@@ -5441,7 +5441,7 @@ object frmAbout: TfrmAbout
       object edtImageMagickDir: TEdit
         Left = 0
         Height = 25
-        Top = 303
+        Top = 325
         Width = 593
         Align = alBottom
         Color = clBtnFace
@@ -5467,11 +5467,11 @@ object frmAbout: TfrmAbout
     end
     object tsXPDF: TTabSheet
       Caption = 'XPDF'
-      ClientHeight = 328
+      ClientHeight = 350
       ClientWidth = 593
       object memXPDF: TMemo
         Left = 0
-        Height = 263
+        Height = 285
         Top = 40
         Width = 593
         Align = alClient
@@ -5489,7 +5489,7 @@ object frmAbout: TfrmAbout
       object edtXPDFDir: TEdit
         Left = 0
         Height = 25
-        Top = 303
+        Top = 325
         Width = 593
         Align = alBottom
         Color = clBtnFace
@@ -5529,25 +5529,9 @@ object frmAbout: TfrmAbout
         OnMouseLeave = URLLabelMouseLeave
       end
     end
-    object tsFFMPEG: TTabSheet
-      Caption = 'FFmpeg'
-      ClientHeight = 328
-      ClientWidth = 593
-      TabVisible = False
-      object edtFFMPEGDir: TEdit
-        Left = 0
-        Height = 25
-        Top = 303
-        Width = 593
-        Align = alBottom
-        Color = clBtnFace
-        ReadOnly = True
-        TabOrder = 0
-      end
-    end
     object tsMPV: TTabSheet
       Caption = 'MPV (dll)'
-      ClientHeight = 328
+      ClientHeight = 350
       ClientWidth = 593
       TabVisible = False
       object lblHTMLLabel3: TLabel
@@ -5566,7 +5550,7 @@ object frmAbout: TfrmAbout
       end
       object memMPV: TMemo
         Left = 0
-        Height = 288
+        Height = 310
         Top = 15
         Width = 593
         Align = alClient
@@ -5588,7 +5572,7 @@ object frmAbout: TfrmAbout
       object edtmpvDLL: TEdit
         Left = 0
         Height = 25
-        Top = 303
+        Top = 325
         Width = 593
         Align = alBottom
         Color = clBtnFace
@@ -5598,7 +5582,7 @@ object frmAbout: TfrmAbout
     end
     object tsQPDF: TTabSheet
       Caption = 'QPDF'
-      ClientHeight = 328
+      ClientHeight = 350
       ClientWidth = 593
       object lblqpdfURL: TLabel
         Left = 0
@@ -5618,7 +5602,7 @@ object frmAbout: TfrmAbout
       end
       object memqdfp: TMemo
         Left = 0
-        Height = 273
+        Height = 295
         Top = 30
         Width = 593
         Align = alClient
@@ -5662,7 +5646,7 @@ object frmAbout: TfrmAbout
       object edtqpdfDir: TEdit
         Left = 0
         Height = 25
-        Top = 303
+        Top = 325
         Width = 593
         Align = alBottom
         Color = clBtnFace
@@ -5672,24 +5656,24 @@ object frmAbout: TfrmAbout
     end
     object tsPoppler: TTabSheet
       Caption = 'Poppler'
-      ClientHeight = 328
+      ClientHeight = 350
       ClientWidth = 593
       object pcPoppler: TPageControl
         Left = 0
-        Height = 273
+        Height = 295
         Top = 30
         Width = 593
-        ActivePage = tsPopplerReadme
+        ActivePage = tsPopplerLicense
         Align = alClient
-        TabIndex = 0
+        TabIndex = 1
         TabOrder = 0
         object tsPopplerReadme: TTabSheet
           Caption = 'Readme'
-          ClientHeight = 243
+          ClientHeight = 265
           ClientWidth = 585
           inline memPopplerReadme: TSynEdit
             Left = 0
-            Height = 243
+            Height = 265
             Top = 0
             Width = 585
             Align = alClient
@@ -6134,6 +6118,7 @@ object frmAbout: TfrmAbout
               'memReadme'
             )
             VisibleSpecialChars = [vscSpace, vscTabAtLast]
+            ReadOnly = True
             SelectedColor.ForePriority = 50
             SelectedColor.BackPriority = 50
             SelectedColor.FramePriority = 50
@@ -6206,11 +6191,11 @@ object frmAbout: TfrmAbout
         end
         object tsPopplerLicense: TTabSheet
           Caption = 'License'
-          ClientHeight = 243
+          ClientHeight = 265
           ClientWidth = 585
           inline memPopplerLicense: TSynEdit
             Left = 0
-            Height = 243
+            Height = 265
             Top = 0
             Width = 585
             Align = alClient
@@ -6655,6 +6640,7 @@ object frmAbout: TfrmAbout
               'memReadme'
             )
             VisibleSpecialChars = [vscSpace, vscTabAtLast]
+            ReadOnly = True
             SelectedColor.ForePriority = 50
             SelectedColor.BackPriority = 50
             SelectedColor.FramePriority = 50
@@ -6745,7 +6731,7 @@ object frmAbout: TfrmAbout
       object edtPopplerDir: TEdit
         Left = 0
         Height = 25
-        Top = 303
+        Top = 325
         Width = 593
         Align = alBottom
         Color = clBtnFace

@@ -51,7 +51,7 @@ Unit ffmpegSupport;
 Interface
 
 Uses
-  Classes, SysUtils;
+  Classes, SysUtils, ThirdPartySupport;
 
 Type
   TMediaInfo = Record
@@ -73,6 +73,14 @@ Type
     S_Codec: String;
 
     RAW: String;
+  End;
+
+  { TFFmpegSupport }
+
+  TFFmpegSupport = Class(TThirdParty)
+  Public
+    Constructor Create; Override;
+
   End;
 
 Function FFmpegAvailable: Boolean;
@@ -108,6 +116,8 @@ Const
     '<a href="mailto:mike.cornflake@gmail.com">mailto:mike.cornflake@gmail.com</a> ' +
     'and requesting a copy.' + '</body></html>';
 
+Function FFmpeg: TFFmpegSupport;
+
 Implementation
 
 Uses
@@ -115,6 +125,12 @@ Uses
 
 Var
   FFFmpegPath: String;
+  FFFmpeg: TFFmpegSupport;
+
+Function FFmpeg: TFFmpegSupport;
+Begin
+  Result := FFFmpeg;
+End;
 
 Function FFmpegAvailable: Boolean;
 Begin
@@ -139,8 +155,7 @@ Var
   sFile: String;
 Begin
   If FFFmpegPath = '' Then
-    sFile := FindSupportFileInFolders('Apps', 'ffmpeg\bin',
-      Format('ffprobe%s', [GetExeExt]));
+    sFile := FindSupportFileInFolders('Apps', 'ffmpeg\bin', Format('ffprobe%s', [GetExeExt]));
 
   If sFile <> '' Then
     FFFmpegPath := ExtractFileDir(sFile);
@@ -324,7 +339,34 @@ Begin
   End;
 End;
 
+{ TFFmpegSupport }
+
+Constructor TFFmpegSupport.Create;
+Begin
+  Inherited Create;
+
+  // CLI, we don't care if the exe are 32bit or 64bit
+  FCPUSensitive := False;
+
+  // Preparation for default Initialise
+  FKeyFile := 'ffprobe' + GetExeExt;
+  FKeyFolder := 'ffmpeg\bin';
+
+  // Metadata
+  FName := 'FFmpeg';
+  FSummary := 'FFmpeg is a collection of libraries and tools to process multimedia content such as audio, video, subtitles and related metadata.';
+  FProjectURL := 'http://ffmpeg.org';
+  FCodeURL := 'https://github.com/ffmpeg/ffmpeg';
+
+  // Default initialise works with drivers and CLI's
+  Initialise;
+End;
+
 Initialization
   FFFmpegPath := '';
 
+  FFFmpeg := TFFmpegSupport.Create;
+
+Finalization;
+  FreeAndNil(FFFmpeg);
 End.

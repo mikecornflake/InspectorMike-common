@@ -58,7 +58,6 @@ Type
     edtImageMagickDir: TEdit;
     edtPopplerDir: TEdit;
     edtXPDFDir: TEdit;
-    edtFFMPEGDir: TEdit;
     Label3: TLabel;
     Label4: TLabel;
     lblHTMLLabel2: TLabel;
@@ -95,7 +94,6 @@ Type
     tsPoppler: TTabSheet;
     tsQPDF: TTabSheet;
     tsMPV: TTabSheet;
-    tsFFMPEG: TTabSheet;
     tsImageMagick: TTabSheet;
     tsXPDF: TTabSheet;
     tsCredits: TTabSheet;
@@ -110,10 +108,6 @@ Type
     Procedure URLLabelMouseEnter(Sender: TObject);
     Procedure URLLabelMouseLeave(Sender: TObject);
   Protected
-    fmeFFmpeg: TFrameHTML;
-
-    Procedure HTMLHyperlink(Sender: TObject; AHREF: String);
-  Public
   End;
 
 Procedure ShowAbout;
@@ -123,7 +117,7 @@ Implementation
 Uses
   LCLIntf, VersionSupport,
   XPDFSupport, ImageMagickSupport, ffmpegSupport, OSSupport, LibmpvSupport,
-  qpdfSupport, PopplerSupport;
+  qpdfSupport, PopplerSupport, FrameAboutThirdParty, ThirdPartySupport;
 
   {$R *.lfm}
 
@@ -143,6 +137,9 @@ Procedure TfrmAbout.FormCreate(Sender: TObject);
 Var
   oResourceStrings: TStringList;
   sFolder: String;
+  oTab: TTabSheet;
+  oFrame: TFrameThirdParty;
+  oThirdParty: TThirdParty;
 Begin
   Inherited;
 
@@ -154,6 +151,20 @@ Begin
   End;
 
   edtAppExe.Text := Application.ExeName;
+
+  For oThirdParty In ThirdParties Do
+  Begin
+    If oThirdParty.Available Then
+    Begin
+      oTab := pcAbout.AddTabSheet;
+      oTab.Caption := oThirdParty.Name;
+
+      oFrame := TFrameThirdParty.Create(oTab);
+      oFrame.Parent := oTab;
+      oFrame.Align := alClient;
+      oFrame.Populate(oThirdParty);
+    End;
+  End;
 
   If FileExists(sFolder + 'LICENSE.txt') Then
   Begin
@@ -229,27 +240,6 @@ Begin
   Else
     tsPoppler.TabVisible := False;
 
-  If (FFmpegAvailable) Then
-  Begin
-    tsFFMPEG.TabVisible := True;
-    fmeFFmpeg := TFrameHTML.Create(Self);
-    fmeFFmpeg.Parent := tsFFMPEG;
-    fmeFFmpeg.Name := 'fmeFFmpeg';
-    fmeFFmpeg.Align := alClient;
-    fmeFFmpeg.Visible := True;
-
-    edtFFMPEGDir.Text := FFmpegPath;
-
-    fmeFFmpeg.OnHyperlink := @HTMLHyperlink;
-
-    fmeFFmpeg.SetHTMLAsString(FFmpegHelpAboutBlurb);
-  End
-  Else
-  Begin
-    tsFFMPEG.TabVisible := False;
-    fmeFFmpeg := nil;
-  End;
-
   If qpdfAvailable Then
   Begin
     tsqPDF.TabVisible := True;
@@ -295,8 +285,6 @@ End;
 
 Procedure TfrmAbout.FormDestroy(Sender: TObject);
 Begin
-  If Assigned(fmeFFmpeg) Then
-    FreeAndNil(fmeFFmpeg);
 End;
 
 Procedure TfrmAbout.btnOKClick(Sender: TObject);
@@ -309,14 +297,6 @@ Begin
   TLabel(Sender).Font.Style := [];
   TLabel(Sender).Font.Color := clBlue;
   TLabel(Sender).Cursor := crDefault;
-End;
-
-Procedure TfrmAbout.HTMLHyperlink(Sender: TObject; AHREF: String);
-Begin
-  If AHREF = 'FFMPEGLibraryLicenses' Then
-    LaunchFile('explorer.exe', Format('/e,"%s"', [FFmpegPath + '\..\licenses']))
-  Else
-    OpenURL(AHREF);
 End;
 
 Procedure TfrmAbout.URLLabelMouseEnter(Sender: TObject);

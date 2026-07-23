@@ -10,7 +10,7 @@ interface
 uses
   ControlGridLayout, FormPersistent, FrameBase, FormAbout, FormMain, 
   FrameHTMLs, ControlsSupport, WizardBase, PipelineEventMap, 
-  FramePipelineView, LazarusPackageIntf;
+  FramePipelineView, FrameAboutThirdParty, LazarusPackageIntf;
 
 implementation
 

@@ -102,6 +102,10 @@
         <Filename Value="src\Support\PopplerSupport.pas"/>
         <UnitName Value="PopplerSupport"/>
       </Item>
+      <Item>
+        <Filename Value="src\Support\ThirdPartySupport.pas"/>
+        <UnitName Value="ThirdPartySupport"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
