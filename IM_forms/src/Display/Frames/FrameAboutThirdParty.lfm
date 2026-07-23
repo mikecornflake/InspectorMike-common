@@ -531,6 +531,7 @@ object FrameThirdParty: TFrameThirdParty
         MouseTextActions = <>
         MouseSelActions = <>
         VisibleSpecialChars = [vscSpace, vscTabAtLast]
+        ReadOnly = True
         SelectedColor.ForePriority = 50
         SelectedColor.BackPriority = 50
         SelectedColor.FramePriority = 50
@@ -1049,6 +1050,7 @@ object FrameThirdParty: TFrameThirdParty
         MouseTextActions = <>
         MouseSelActions = <>
         VisibleSpecialChars = [vscSpace, vscTabAtLast]
+        ReadOnly = True
         SelectedColor.ForePriority = 50
         SelectedColor.BackPriority = 50
         SelectedColor.FramePriority = 50
@@ -1133,9 +1135,5 @@ object FrameThirdParty: TFrameThirdParty
   object synMarkdown: TSynMarkdownSyn
     Left = 378
     Top = 223
-  end
-  object synMarkdown1: TSynMarkdownSyn
-    Left = 406
-    Top = 251
   end
 end

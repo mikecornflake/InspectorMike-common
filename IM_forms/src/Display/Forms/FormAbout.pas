@@ -72,6 +72,7 @@ Type
     lblHTMLLabel7: TLabel;
     lblXPDF3: TLabel;
     memImageMagick: TMemo;
+    memLicence: TSynEdit;
     memqdfp: TMemo;
     memMPV: TMemo;
     memPopplerReadme: TSynEdit;
@@ -85,7 +86,6 @@ Type
     lblApplicationTitle: TLabel;
     lblHTMLLabel: TLabel;
     lblHTMLLabel1: TLabel;
-    memLicence: TMemo;
     memAbout: TMemo;
     memReadme: TSynEdit;
     synMarkdown: TSynMarkdownSyn;
@@ -166,7 +166,13 @@ Begin
     End;
   End;
 
-  If FileExists(sFolder + 'LICENSE.txt') Then
+  If FileExists(sFolder + 'LICENSE.md') Then
+  Begin
+    tsLicence.TabVisible := True;
+    memLicence.Lines.LoadFromFile(sFolder + 'LICENSE.md');
+    memLicence.Highlighter := synMarkdown;
+  End
+  Else If FileExists(sFolder + 'LICENSE.txt') Then
   Begin
     tsLicence.TabVisible := True;
     memLicence.Lines.LoadFromFile(sFolder + 'LICENSE.txt');

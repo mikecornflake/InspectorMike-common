@@ -13,7 +13,6 @@ Type
   { TFrameThirdParty }
 
   TFrameThirdParty = Class(TFrame)
-
     edtFolder: TEdit;
     Label1: TLabel;
     Label2: TLabel;
@@ -24,7 +23,6 @@ Type
     memLicense: TSynEdit;
     pcMain: TPageControl;
     synMarkdown: TSynMarkdownSyn;
-    synMarkdown1: TSynMarkdownSyn;
     tsReadme: TTabSheet;
     tsLicense: TTabSheet;
     tsLinks: TTabSheet;

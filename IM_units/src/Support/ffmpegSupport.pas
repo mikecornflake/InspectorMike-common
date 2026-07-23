@@ -128,7 +128,7 @@ Begin
   FName := 'FFmpeg';
   FSummary := 'FFmpeg is a collection of libraries and tools to process multimedia ' +
     'content such as audio, video, subtitles and related metadata.';
-  FProjectURL := 'http://ffmpeg.org';
+  FProjectURL := 'https://ffmpeg.org';
   FCodeURL := 'https://github.com/ffmpeg/ffmpeg';
 End;
 
