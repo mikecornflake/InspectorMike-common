@@ -81,6 +81,9 @@ Begin
   // This unit self registers
   FUsed := True;
 
+  // Dynamically Linked DLL
+  FKind := tpkRuntimeLibrary;
+
   // CLI, we don't care if the exe is 32bit or 64bit
   FCPUSensitive := True;
 

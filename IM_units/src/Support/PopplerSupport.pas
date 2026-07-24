@@ -80,6 +80,8 @@ Begin
   // This unit self registers
   FUsed := True;
 
+  FKind := tpkCommandLineTool;
+
   // CLI, we don't care if the exe is 32bit or 64bit
   FCPUSensitive := False;
 

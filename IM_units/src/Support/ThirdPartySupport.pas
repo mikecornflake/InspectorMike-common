@@ -116,6 +116,9 @@ Const
     )
     );
 
+// TODO: Handle BGRABITMAP, ZEOS, WGS84, FREEPASCAL, LAZARUS,
+//       URUWORKS, TURBOPOWER, LAZSERIAL
+
 Implementation
 
 Uses
@@ -193,6 +196,9 @@ End;
 Constructor TThirdParty.Create;
 Begin
   FUsed := False;
+
+  // defaults
+  FKind := tpkCommandLineTool;
 
   ThirdParties.Add(Self);
 
