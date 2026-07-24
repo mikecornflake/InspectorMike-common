@@ -100,8 +100,11 @@ Const
   THIRDPARTY_IMAGEMAGICK = 'ImageMagick';
   THIRDPARTY_FATCOW_ICONS = 'FatCow Icons';
 
+  THIRDPARTY_UW_MPVPLAYER = 'UW_MPVPlayer';
+
+
 Const
-  ThirdPartyDefinitions: Array[0..4] Of TThirdPartyDefinition = (
+  ThirdPartyDefinitions: Array[0..5] Of TThirdPartyDefinition = (
     (
     Name: THIRDPARTY_LAZARUSFORUM;
     Summary: 'Words alone cannot express my gratitude to the open source community for developing a wide range of versatile tools, and for making these easily available to other developers such as myself. ' + LineEnding + 'In particular I''d like to thank all the helpful individuals on the Lazarus forums.  These people give up their free time willingly, providing help and support.';
@@ -146,6 +149,16 @@ Const
     Kind: tpkAssetCollection;
     KeyFile: '';
     KeyFolder: '';
+    CPUSensitive: False
+    ), (
+    Name: THIRDPARTY_UW_MPVPLAYER;
+    Summary: 'A libmpv media player control for Lazarus' + LineEnding + LineEnding +
+    'Powerful multimedia playback engine. It supports a wide variety of media file formats, audio and video codecs, and subtitle types';
+    ProjectURL: 'https://www.uruworks.net/index.html';
+    CodeURL: 'https://github.com/URUWorks/UW_MPVPlayer';
+    Kind: tpkLazarusPackage;
+    KeyFile: 'Readme.md';
+    KeyFolder: THIRDPARTY_UW_MPVPLAYER;
     CPUSensitive: False
     )
     );

@@ -123,6 +123,8 @@ End;
 Initialization
   FLibmpv := TLibmpvSupport.Create;
 
+  ThirdParties.Include([THIRDPARTY_UW_MPVPLAYER]);
+
 Finalization;
   // Free'd by FThirdParties
   //FreeAndNil(FLibmpv);
