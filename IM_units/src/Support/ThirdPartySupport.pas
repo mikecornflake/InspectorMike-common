@@ -40,14 +40,16 @@ Type
 
     // The found folder
     FFolder: String;
+
   Public
     Constructor Create; Virtual;
 
     Procedure DefineDefaults; Virtual; Abstract;
     Procedure Initialise; Virtual;
 
-    Property Folder: String Read FFolder;
+    Function FullExe(AExeNoExt: String): String;
 
+    Property Folder: String Read FFolder;
     Property Available: Boolean Read FAvailable;
 
     Property Name: String Read FName;
@@ -68,7 +70,7 @@ Const
 Implementation
 
 Uses
-  FileSupport, VersionSupport;
+  FileSupport, FileUtil, VersionSupport;
 
 Var
   FThirdParties: TThirdParties;
@@ -82,6 +84,21 @@ Begin
 End;
 
 { TThirdPartySupport }
+
+Function TThirdParty.FullExe(AExeNoExt: String): String;
+Var
+  sFile: String;
+Begin
+  Result := '';
+
+  If Not DirectoryExists(FFolder) Then
+    Exit;
+
+  sFile := IncludeSlash(FFolder) + AExeNoExt + GetExeExt;
+
+  If FileExists(sFile) Then
+    Result := sFile;
+End;
 
 Constructor TThirdParty.Create;
 Begin

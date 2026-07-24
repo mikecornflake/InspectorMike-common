@@ -15,6 +15,7 @@ Unit PopplerSupport;
 
   History
     2026-07-23: Created Unit
+    2026-0724: Migrated to ThirdParty framework
 
   License
     This file is part of IM_units.lpk.
@@ -38,18 +39,20 @@ Unit PopplerSupport;
 Interface
 
 Uses
-  Classes, SysUtils;
+  Classes, SysUtils, ThirdPartySupport;
 
-Function PopplerAvailable: Boolean;
-Function PopplerPath: String;
-Procedure SetPopplerPath(AValue: String);
-Procedure InitializePoppler;
+Type
 
-Function Poppler_PDFtoPPMExe: String;
-Function Poppler_PDFInfoExe: String;
-Function Poppler_PDFInfo(APDFFilename: String): String;
-Function Poppler_Readme: String;
-Function Poppler_License: String;
+  { TPopplerSupport }
+
+  TPopplerSupport = Class(TThirdParty)
+  Public
+    Procedure DefineDefaults; Override;
+
+    Function PDFInfo(APDFFilename: String): String;
+  End;
+
+Function Poppler: TPopplerSupport;
 
 Implementation
 
@@ -57,82 +60,54 @@ Uses
   Forms, FileSupport, OSSupport, FileUtil;
 
 Var
-  FPopplerPath: String;
+  FPoppler: TPopplerSupport;
 
-Function PopplerAvailable: Boolean;
+Function Poppler: TPopplerSupport;
 Begin
-  Result := FPopplerPath <> '';
+  If Not Assigned(FPoppler) Then
+    FPoppler := TPopplerSupport.Create;
+
+  Result := FPoppler;
 End;
 
-Function PopplerPath: String;
+{ TPopplerSupport }
+
+Procedure TPopplerSupport.DefineDefaults;
 Begin
-  Result := FPopplerPath;
+  // CLI, we don't care if the exe is 32bit or 64bit
+  FCPUSensitive := False;
+
+  // Preparation for default Initialise
+  // Have to search for the dll as Poppler shares same
+  // names as XPDF
+  FKeyFile := 'poppler.dll';
+  FKeyFolder := 'Poppler\bin';
+
+  // Metadata
+  FName := 'Poppler';
+  FSummary := 'Poppler, a PDF rendering library ' + LineEnding +
+    'This is Poppler, a library for rendering PDF files, and examining or ' +
+    'modifying their structure.  Poppler originally came from the XPDF ' + 'sources';
+  FProjectURL := 'https://poppler.freedesktop.org/';
+  FCodeURL := 'https://gitlab.freedesktop.org/poppler/poppler';
 End;
 
-Procedure SetPopplerPath(AValue: String);
-Begin
-  If DirectoryExists(AValue) Then
-    FPopplerPath := AValue
-  Else
-    FPopplerPath := '';
-End;
-
-Procedure InitializePoppler;
+Function TPopplerSupport.PDFInfo(APDFFilename: String): String;
 Var
-  sFile: String;
-Begin
-  If FPopplerPath = '' Then
-    sFile := FindSupportFileInFolders('Apps', 'Poppler\bin', 'poppler.dll');
-
-  If sFile <> '' Then
-    FPopplerPath := IncludeTrailingBackslash(ExtractFileDir(sFile));
-End;
-
-Function Poppler_PDFToPPMExe: String;
-Begin
-  Result := IncludeSlash(PopplerPath) + 'pdftoppm' + GetExeExt;
-
-  If Not FileExists(Result) Then
-    Result := '';
-End;
-
-Function Poppler_PDFInfoExe: String;
-Begin
-  Result := IncludeSlash(PopplerPath) + 'pdfinfo' + GetExeExt;
-
-  If Not FileExists(Result) Then
-    Result := '';
-End;
-
-Function Poppler_PDFInfo(APDFFilename: String): String;
-Begin
-  If (Poppler_PDFInfoExe <> '') And FileExists(APDFFilename) Then
-    Result := RunAndCapture(Format('%s "%s"', [Poppler_PDFInfoExe, APDFFilename]));
-End;
-
-Function Poppler_Readme: String;
+  sPDFInfo: String;
 Begin
   Result := '';
 
-  If FileExists(FPopplerPath + 'readme.txt') Then
-    Result := FPopplerPath + 'readme.txt'
-  Else If FileExists(FPopplerPath + 'readme.md') Then
-    Result := FPopplerPath + 'readme.md'
-  Else If FileExists(FPopplerPath + 'readme') Then
-    Result := FPopplerPath + 'readme';
-End;
+  sPDFInfo := FullExe('pdfinfo');
 
-Function Poppler_License: String;
-Begin
-  If FileExists(FPopplerPath + 'license.txt') Then
-    Result := FPopplerPath + 'license.txt'
-  Else If FileExists(FPopplerPath + 'license.md') Then
-    Result := FPopplerPath + 'license.md'
-  Else If FileExists(FPopplerPath + 'license') Then
-    Result := FPopplerPath + 'license';
+  If FileExists(sPDFInfo) And FileExists(APDFFilename) Then
+    Result := RunAndCapture(Format('"%s" "%s"', [sPDFInfo, APDFFilename]));
 End;
 
 Initialization
-  FPopplerPath := '';
+  FPoppler := nil;
+
+Finalization;
+  FreeAndNil(FPoppler);
 
 End.

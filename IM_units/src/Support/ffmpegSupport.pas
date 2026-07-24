@@ -111,6 +111,9 @@ Var
 
 Function FFmpeg: TFFmpegSupport;
 Begin
+  If Not Assigned(FFFmpeg) Then
+    FFFmpeg := TFFmpegSupport.Create;
+
   Result := FFFmpeg;
 End;
 
@@ -315,7 +318,7 @@ Begin
 End;
 
 Initialization
-  FFFmpeg := TFFmpegSupport.Create;
+  FFFmpeg := nil;
 
 Finalization;
   FreeAndNil(FFFmpeg);

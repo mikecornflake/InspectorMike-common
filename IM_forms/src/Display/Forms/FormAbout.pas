@@ -53,16 +53,12 @@ Type
     Bevel1: TBevel;
     btnOK: TButton;
     edtAppExe: TEdit;
-    edtqpdfDir: TEdit;
     edtImageMagickDir: TEdit;
-    edtPopplerDir: TEdit;
     edtXPDFDir: TEdit;
     Label3: TLabel;
     Label4: TLabel;
     lblHTMLLabel2: TLabel;
     lblImageMagickURL: TLabel;
-    lblqpdfURL: TLabel;
-    lblPopperURL: TLabel;
     lblXPDF2: TLabel;
     lblXPDFURL: TLabel;
     lblSDKs: TLabel;
@@ -71,11 +67,7 @@ Type
     lblXPDF3: TLabel;
     memImageMagick: TMemo;
     memLicence: TSynEdit;
-    memqdfp: TMemo;
-    memPopplerReadme: TSynEdit;
-    memPopplerLicense: TSynEdit;
     memXPDF: TMemo;
-    pcPoppler: TPageControl;
     pcAbout: TPageControl;
     imgAbout: TImage;
     Label1: TLabel;
@@ -86,10 +78,6 @@ Type
     memAbout: TMemo;
     memReadme: TSynEdit;
     synMarkdown: TSynMarkdownSyn;
-    tsPopplerReadme: TTabSheet;
-    tsPopplerLicense: TTabSheet;
-    tsPoppler: TTabSheet;
-    tsQPDF: TTabSheet;
     tsImageMagick: TTabSheet;
     tsXPDF: TTabSheet;
     tsCredits: TTabSheet;
@@ -209,48 +197,6 @@ Begin
   End
   Else
     tsXPDF.TabVisible := False;
-
-  If (PopplerAvailable) Then
-  Begin
-    tsPoppler.TabVisible := True;
-    If FileExists(Poppler_Readme) Then
-    Begin
-      If SameText(ExtractFileExt(Poppler_Readme), '.md') Then
-        memPopplerReadme.Highlighter := synMarkdown
-      Else
-        memPopplerReadme.Highlighter := nil;
-
-      memPopplerReadme.Lines.LoadFromFile(Poppler_Readme);
-    End
-    Else
-      tsPopplerReadme.TabVisible := False;
-
-    If FileExists(Poppler_License) Then
-    Begin
-      If SameText(ExtractFileExt(Poppler_License), '.md') Then
-        memPopplerLicense.Highlighter := synMarkdown
-      Else
-        memPopplerLicense.Highlighter := nil;
-
-      memPopplerLicense.Lines.LoadFromFile(Poppler_License);
-    End
-    Else
-      tsPopplerLicense.TabVisible := False;
-
-    edtPopplerDir.Text := PopplerPath;
-  End
-  Else
-    tsPoppler.TabVisible := False;
-
-  If qpdfAvailable Then
-  Begin
-    tsqPDF.TabVisible := True;
-
-    If FileExists(qpdfExe) Then
-      edtqpdfDir.Text := qpdfExe;
-  End
-  Else
-    tsqPDF.TabVisible := False;
 
   memAbout.Lines.Clear;
   memAbout.Lines.Add(Application.exename);

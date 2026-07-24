@@ -466,17 +466,17 @@ Begin
         FPDFDir := IncludeTrailingBackslash(TempDir) + ExtractFileNameOnly(FFilename);
 
         // Initialise the page count
-        FPageCount := qpdfGetPageCount(FFilename);
+        FPageCount := qpdf.PageCount(FFilename);
 
         FActive := True;
 
         Page := 1;
         lvThumbNails.Items.Count := FPageCount;
 
-        qpdfListAttachments(AFilename, FAttachments);
+        qpdf.ListAttachments(AFilename, FAttachments);
         UpdateAttachmentsList;
 
-        qpdfPopulateTOC(AFilename, tvTOC);
+        qpdf.PopulateTOC(AFilename, tvTOC);
         tsTOC.TabVisible := (tvTOC.Items.Count > 0);
 
         If (tvTOC.Items.Count > 0) Then
@@ -525,7 +525,7 @@ Begin
     btnNextPage.Enabled := btnLastPage.Enabled;
     btnPrevPage.Enabled := btnFirstPage.Enabled;
 
-    bHasqdf := qpdfAvailable;
+    bHasqdf := qpdf.Available;
     bSelected := bHasqdf And Assigned(lvAttachments.Selected) And (lvAttachments.SelCount = 1);
 
     btnAddAttachment.Enabled := bHasqdf;
@@ -586,8 +586,8 @@ Begin
   iDigits := Length(IntToStr(FPageCount));
 
   Result :=
-    IncludeTrailingPathDelimiter(ADir) + APrefix + '-' +
-    Format('%.*d', [iDigits, APage]) + '.png';
+    IncludeTrailingPathDelimiter(ADir) + APrefix + '-' + Format('%.*d',
+    [iDigits, APage]) + '.png';
 End;
 
 Function TFramePDFViewer.ConvertPageToImage(sDir: String; iPage: Integer): String;
@@ -595,7 +595,7 @@ Const
   PagesPerBatch = 10;
   PopplerPrefix = '_PopplerPage';
 Var
-  sError, sSourceFilename, sDestFilename, sOutputPrefix: String;
+  sError, sSourceFilename, sDestFilename, sOutputPrefix, sPDFTOPPM: String;
   iStart, iEnd, i: Integer;
 Begin
   Result := '';
@@ -624,8 +624,15 @@ Begin
 
     sOutputPrefix := IncludeTrailingPathDelimiter(sDir) + PopplerPrefix;
 
+    sPDFTOPPM := Poppler.FullExe('pdftoppm');
+    If sPDFTOPPM = '' Then
+    Begin
+      ShowMessage('Poppler: pdftoppm not found');
+      Exit;
+    End;
+
     sError := Trim(RunAndCapture(Format('"%s" -png -f %d -l %d "%s" "%s"',
-      [Poppler_PDFtoPPMExe, iStart, iEnd, FFilename, sOutputPrefix])));
+      [sPDFTOPPM, iStart, iEnd, FFilename, sOutputPrefix])));
 
     If sError <> '' Then
     Begin
@@ -669,7 +676,7 @@ Var
 Begin
   slInfo := TStringList.Create;
   Try
-    slInfo.Text := Poppler_PDFInfo(FFilename);
+    slInfo.Text := Poppler.PDFInfo(FFilename);
 
     For i := 0 To slInfo.Count - 1 Do
       slInfo[i] := StringReplace(slInfo[i], ': ', '=', [rfIgnoreCase]);
@@ -678,13 +685,13 @@ Begin
 
     FPageCount := StrToIntDef(slInfo.Values['Pages'], 0);
 
-    If qpdfAvailable Then
+    If qpdf.Available Then
     Begin
       Result := Result + LineEnding;
 
       oPDFAttachments := TPDFAttachments.Create(True);
       Try
-        qpdfListAttachments(FFilename, oPDFAttachments);
+        qpdf.ListAttachments(FFilename, oPDFAttachments);
 
         If oPDFAttachments.Count = 0 Then
           Result := Result + 'No attachments in PDF'
@@ -716,7 +723,7 @@ Begin
     sFilename := dlgOpen.FileName;
     sAttachmentKey := ExtractFileName(sFilename);
 
-    oExistingAttachment := qpdfFindAttachment(FAttachments, sAttachmentKey);
+    oExistingAttachment := qpdf.FindAttachment(FAttachments, sAttachmentKey);
 
     If Assigned(oExistingAttachment) Then
     Begin
@@ -822,7 +829,7 @@ Begin
   If dlgSave.Execute Then
   Begin
     sFilename := dlgSave.FileName;
-    If qpdfExtractAttachment(FFilename, oAttachment.Filename, sFilename) Then
+    If qpdf.ExtractAttachment(FFilename, oAttachment.Filename, sFilename) Then
       ShowMessageFmt('Attachment "%s" has been exported as:%s %s',
         [oAttachment.Filename, LineEnding, sFilename]);
   End;
@@ -842,7 +849,7 @@ Begin
 
   oImportAttachments := TPDFAttachments.Create(True);
   Try
-    If Not qpdfLoadAttachmentsForImport(dlgOpen.FileName, FTempDir, oImportAttachments) Then
+    If Not qpdf.LoadAttachmentsForImport(dlgOpen.FileName, FTempDir, oImportAttachments) Then
     Begin
       MessageDlg('Import Attachments', 'The attachments could not be read from the selected PDF.',
         mtError, [mbOK], 0);
@@ -855,7 +862,7 @@ Begin
       oImportAttachment := oImportAttachments[0];
 
       oExistingAttachment :=
-        qpdfFindAttachment(FAttachments, oImportAttachment.Filename);
+        qpdf.FindAttachment(FAttachments, oImportAttachment.Filename);
 
       If Assigned(oExistingAttachment) Then
       Begin
@@ -901,7 +908,7 @@ Begin
 
   OSSupport.SetBusy;
   Try
-    If Not qpdfWriteAttachments(FFilename, FAttachments) Then
+    If Not qpdf.WriteAttachments(FFilename, FAttachments) Then
     Begin
       MessageDlg('Save Attachments', 'The PDF attachments could not be saved.' +
         LineEnding + LineEnding + 'The original PDF has not been changed.',
@@ -962,9 +969,5 @@ Begin
 
   RefreshUI;
 End;
-
-Initialization
-  InitializePoppler;
-  Initializeqpdf;
 
 End.
