@@ -53,14 +53,10 @@ Type
     Bevel1: TBevel;
     btnOK: TButton;
     edtAppExe: TEdit;
-    Label3: TLabel;
-    Label4: TLabel;
+    ilTabs: TImageList;
     lblHTMLLabel2: TLabel;
-    lblSDKs: TLabel;
-    lblHTMLLabel6: TLabel;
-    lblHTMLLabel7: TLabel;
-    lblXPDF3: TLabel;
     memLicence: TSynEdit;
+    pcThirdParty: TPageControl;
     pcAbout: TPageControl;
     imgAbout: TImage;
     Label1: TLabel;
@@ -71,7 +67,7 @@ Type
     memAbout: TMemo;
     memReadme: TSynEdit;
     synMarkdown: TSynMarkdownSyn;
-    tsCredits: TTabSheet;
+    tsThirdParty: TTabSheet;
     tsAbout: TTabSheet;
     tsReadme: TTabSheet;
     tsLicence: TTabSheet;
@@ -91,7 +87,7 @@ Implementation
 
 Uses
   LCLIntf,
-  VersionSupport,OSSupport,
+  VersionSupport, OSSupport,
   FrameAboutThirdParty, ThirdPartySupport;
 
   {$R *.lfm}
@@ -118,6 +114,9 @@ Var
 Begin
   Inherited;
 
+  // Register the attribuions for this TForm
+  ThirdParties.Include([THIRDPARTY_FATCOW_ICONS]);
+
   sFolder := IncludeTrailingBackslash(ExtractFilePath(Application.ExeName));
 
   If FileExists(sFolder + 'AboutGraphic.png') Then
@@ -129,10 +128,12 @@ Begin
 
   For oThirdParty In ThirdParties Do
   Begin
-    If (oThirdParty.Used)  Then
+    If (oThirdParty.Used) Then
     Begin
-      oTab := pcAbout.AddTabSheet;
+      oTab := pcThirdParty.AddTabSheet;
       oTab.Caption := oThirdParty.Name;
+
+      oTab.ImageIndex := 4 + Integer(oThirdParty.Kind);
 
       oFrame := TFrameThirdParty.Create(oTab);
       oFrame.Parent := oTab;
@@ -140,6 +141,8 @@ Begin
       oFrame.Populate(oThirdParty);
     End;
   End;
+
+  tsThirdParty.TabVisible := (pcThirdParty.PageCount > 0);
 
   If FileExists(sFolder + 'LICENSE.md') Then
   Begin

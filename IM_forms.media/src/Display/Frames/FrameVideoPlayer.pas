@@ -140,8 +140,8 @@ Type
     Function Clear: Boolean;
     Procedure Pause;
 
-    Procedure LoadSettings(oInifile: TIniFile); Virtual;
-    Procedure SaveSettings(oInifile: TIniFile); Virtual;
+    Procedure LoadSettings(oInifile: TIniFile); Override;
+    Procedure SaveSettings(oInifile: TIniFile); Override;
 
     Property Filename: String Read GetFilename;
     Property VideoEngineClass: TFrameVideoBaseClass Read FVideoEngineClass

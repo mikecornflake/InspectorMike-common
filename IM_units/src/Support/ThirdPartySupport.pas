@@ -19,6 +19,7 @@ Type
     Kind: TThirdPartyKind;
     KeyFile: String;
     KeyFolder: String;
+    CPUSensitive: Boolean;
   End;
 
   { TThirdParty }
@@ -91,33 +92,65 @@ Function ThirdParties: TThirdParties;
 
 Const
   THIRDPARTY_FOLDER = 'Apps';
+
+  THIRDPARTY_LAZARUS = 'Lazarus';
+  THIRDPARTY_FPC = 'Free Pascal';
+  THIRDPARTY_LAZARUSFORUM = 'Lazarus Forum';
+
   THIRDPARTY_IMAGEMAGICK = 'ImageMagick';
   THIRDPARTY_FATCOW_ICONS = 'FatCow Icons';
 
 Const
-  ThirdPartyDefinitions: Array[0..1] Of TThirdPartyDefinition = (
+  ThirdPartyDefinitions: Array[0..4] Of TThirdPartyDefinition = (
     (
+    Name: THIRDPARTY_LAZARUSFORUM;
+    Summary: 'Words alone cannot express my gratitude to the open source community for developing a wide range of versatile tools, and for making these easily available to other developers such as myself. ' + LineEnding + 'In particular I''d like to thank all the helpful individuals on the Lazarus forums.  These people give up their free time willingly, providing help and support.';
+    ProjectURL: 'https://forum.lazarus.freepascal.org/index.php';
+    CodeURL: 'https://wiki.lazarus.freepascal.org/';
+    Kind: tpkLazarusPackage;
+    KeyFile: '';
+    KeyFolder: '';
+    CPUSensitive: False
+    ), (
+    Name: THIRDPARTY_LAZARUS;
+    Summary: 'Lazarus is a Delphi compatible cross-platform IDE for Rapid Application Development. It has variety of components ready for use and a graphical form designer to easily create complex graphical user interfaces.';
+    ProjectURL: 'https://www.lazarus-ide.org/';
+    CodeURL: 'https://gitlab.com/freepascal.org/lazarus';
+    Kind: tpkLazarusPackage;
+    KeyFile: '';
+    KeyFolder: '';
+    CPUSensitive: False
+    ), (
+    Name: THIRDPARTY_FPC;
+    Summary: 'Free Pascal is a mature, versatile, open source Pascal compiler. It can target many processor architectures.';
+    ProjectURL: 'https://www.freepascal.org/';
+    CodeURL: 'https://gitlab.com/freepascal.org/';
+    Kind: tpkSourceLibrary;
+    KeyFile: '';
+    KeyFolder: '';
+    CPUSensitive: False
+    ), (
     Name: THIRDPARTY_IMAGEMAGICK;
-    Summary: 'mageMagick® is a free, open-source software suite, used for editing and manipulating digital images';
+    Summary: 'ImageMagick® is a free, open-source software suite, used for editing and manipulating digital images';
     ProjectURL: 'https://imagemagick.org';
     CodeURL: 'https://github.com/imagemagick/imagemagick';
     Kind: tpkCommandLineTool;
     KeyFile: 'magick.exe'; // TODO Linux
-    KeyFolder: 'ImageMagick'
-    ),
-    (
+    KeyFolder: 'ImageMagick';
+    CPUSensitive: False
+    ), (
     Name: THIRDPARTY_FATCOW_ICONS;
     Summary: 'Free Icon set: commercial usage allowed under Creative Commons license 3.0';
     ProjectURL: 'http://www.softicons.com/toolbar-icons/fatcow-hosting-icons-by-fatcow';
     CodeURL: 'https://creativecommons.org/licenses/by/3.0/us/';
     Kind: tpkAssetCollection;
     KeyFile: '';
-    KeyFolder: ''
+    KeyFolder: '';
+    CPUSensitive: False
     )
     );
 
-// TODO: Handle BGRABITMAP, ZEOS, WGS84, FREEPASCAL, LAZARUS,
-//       URUWORKS, TURBOPOWER, LAZSERIAL
+  // TODO: Handle BGRABITMAP, ZEOS, WGS84, URUWORKS, TURBOPOWER, LAZSERIAL
 
 Implementation
 
@@ -197,9 +230,6 @@ Constructor TThirdParty.Create;
 Begin
   FUsed := False;
 
-  // defaults
-  FKind := tpkCommandLineTool;
-
   ThirdParties.Add(Self);
 
   // User must override this
@@ -221,6 +251,8 @@ Begin
 
   FKeyFile := ADefinition.KeyFile;
   FKeyFolder := ADefinition.KeyFolder;
+
+  FCPUSensitive := ADefinition.CPUSensitive;
 
   Create;
 End;
@@ -280,6 +312,9 @@ End;
 
 Initialization
   FThirdParties := nil;
+
+  // Ensure these two are always included
+  ThirdParties.Include([THIRDPARTY_LAZARUS, THIRDPARTY_FPC, THIRDPARTY_LAZARUSFORUM]);
 
 Finalization;
   FreeAndNil(FThirdParties);

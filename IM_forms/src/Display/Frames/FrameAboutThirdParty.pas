@@ -79,6 +79,13 @@ Begin
   End
   Else
     tsLicense.TabVisible := False;
+
+  pcMain.ActivePage := tsLinks;
+
+  If Not tsLicense.TabVisible And Not tsReadme.TabVisible Then
+  Begin
+    tsLinks.TabVisible := False;
+  end;
 End;
 
 Procedure TFrameThirdParty.URLLabelMouseEnter(Sender: TObject);

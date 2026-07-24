@@ -251,6 +251,9 @@ Begin
   RefreshUI;
 End;
 
+Type
+  THackIniFile = Class(TIniFile);
+
 Procedure TFormMain.DoSaveGlobalSettings;
 Var
   sFilename: String;
@@ -280,7 +283,8 @@ Var
         // This works around an AVG issue whereby
         // it locks the ini file during repeated writes
         // causing a CreateError exception to be thrown
-        oInifile.UpdateFile;
+        If THackIniFile(oIniFile).Dirty Then
+          oIniFile.UpdateFile;
       Finally
         oInifile.Free;
       End;
