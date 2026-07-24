@@ -58,6 +58,9 @@ Type
 
 Function LibmpvDLL: TLibmpvSupport;
 
+Const
+  THIRDPARTY_LIBMPV = 'libmpv';
+
 Implementation
 
 Uses
@@ -75,6 +78,9 @@ End;
 
 Procedure TLibmpvSupport.DefineDefaults;
 Begin
+  // This unit self registers
+  FUsed := True;
+
   // CLI, we don't care if the exe is 32bit or 64bit
   FCPUSensitive := True;
 
@@ -83,7 +89,7 @@ Begin
   FKeyFolder := 'mpv';
 
   // Metadata
-  FName := 'mpv';
+  FName := THIRDPARTY_LIBMPV;
 
   FSummary := 'mpv is a free (as in freedom) media player for the command line. ' +
     'It supports a wide variety of media file formats, audio and video codecs, ' +
@@ -115,6 +121,7 @@ Initialization
   FLibmpv := TLibmpvSupport.Create;
 
 Finalization;
-  FreeAndNil(FLibmpv);
+  // Free'd by FThirdParties
+  //FreeAndNil(FLibmpv);
 
 End.

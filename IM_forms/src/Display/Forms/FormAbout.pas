@@ -53,21 +53,14 @@ Type
     Bevel1: TBevel;
     btnOK: TButton;
     edtAppExe: TEdit;
-    edtImageMagickDir: TEdit;
-    edtXPDFDir: TEdit;
     Label3: TLabel;
     Label4: TLabel;
     lblHTMLLabel2: TLabel;
-    lblImageMagickURL: TLabel;
-    lblXPDF2: TLabel;
-    lblXPDFURL: TLabel;
     lblSDKs: TLabel;
     lblHTMLLabel6: TLabel;
     lblHTMLLabel7: TLabel;
     lblXPDF3: TLabel;
-    memImageMagick: TMemo;
     memLicence: TSynEdit;
-    memXPDF: TMemo;
     pcAbout: TPageControl;
     imgAbout: TImage;
     Label1: TLabel;
@@ -78,8 +71,6 @@ Type
     memAbout: TMemo;
     memReadme: TSynEdit;
     synMarkdown: TSynMarkdownSyn;
-    tsImageMagick: TTabSheet;
-    tsXPDF: TTabSheet;
     tsCredits: TTabSheet;
     tsAbout: TTabSheet;
     tsReadme: TTabSheet;
@@ -99,9 +90,9 @@ Procedure ShowAbout;
 Implementation
 
 Uses
-  LCLIntf, VersionSupport,
-  XPDFSupport, ImageMagickSupport, ffmpegSupport, OSSupport,
-  qpdfSupport, PopplerSupport, FrameAboutThirdParty, ThirdPartySupport;
+  LCLIntf,
+  VersionSupport,OSSupport,
+  FrameAboutThirdParty, ThirdPartySupport;
 
   {$R *.lfm}
 
@@ -138,7 +129,7 @@ Begin
 
   For oThirdParty In ThirdParties Do
   Begin
-    If oThirdParty.Available Then
+    If (oThirdParty.Used)  Then
     Begin
       oTab := pcAbout.AddTabSheet;
       oTab.Caption := oThirdParty.Name;
@@ -179,24 +170,6 @@ Begin
     memReadme.Highlighter := synMarkdown;
     memReadme.Lines.LoadFromFile(sFolder + 'readme.md');
   End;
-
-  If (ImageMagickAvailable) And (FileExists(ImageMagickPath + '\License.txt')) Then
-  Begin
-    tsImageMagick.TabVisible := True;
-    memImageMagick.Lines.LoadFromFile(ImageMagickPath + '\License.txt');
-    edtImageMagickDir.Text := ImageMagickPath;
-  End
-  Else
-    tsImageMagick.TabVisible := False;
-
-  If (XPDFAvailable) And (FileExists(XPDFPath + '\..\README')) Then
-  Begin
-    tsXPDF.TabVisible := True;
-    memXPDF.Lines.LoadFromFile(XPDFPath + '\..\README');
-    edtXPDFDir.Text := XPDFPath;
-  End
-  Else
-    tsXPDF.TabVisible := False;
 
   memAbout.Lines.Clear;
   memAbout.Lines.Add(Application.exename);

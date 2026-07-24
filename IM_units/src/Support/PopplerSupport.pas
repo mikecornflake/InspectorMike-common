@@ -54,6 +54,9 @@ Type
 
 Function Poppler: TPopplerSupport;
 
+Const
+  THIRDPARTY_POPPLER = 'Poppler';
+
 Implementation
 
 Uses
@@ -74,20 +77,19 @@ End;
 
 Procedure TPopplerSupport.DefineDefaults;
 Begin
+  // This unit self registers
+  FUsed := True;
+
   // CLI, we don't care if the exe is 32bit or 64bit
   FCPUSensitive := False;
 
   // Preparation for default Initialise
-  // Have to search for the dll as Poppler shares same
-  // names as XPDF
-  FKeyFile := 'poppler.dll';
+  FKeyFile := 'pdfinfo' + GetExeExt;
   FKeyFolder := 'Poppler\bin';
 
   // Metadata
-  FName := 'Poppler';
-  FSummary := 'Poppler, a PDF rendering library ' + LineEnding +
-    'This is Poppler, a library for rendering PDF files, and examining or ' +
-    'modifying their structure.  Poppler originally came from the XPDF ' + 'sources';
+  FName := THIRDPARTY_POPPLER;
+  FSummary := 'This is Poppler, a library for rendering PDF files, and examining or modifying their structure.  Poppler originally came from the XPDF ' + 'sources';
   FProjectURL := 'https://poppler.freedesktop.org/';
   FCodeURL := 'https://gitlab.freedesktop.org/poppler/poppler';
 End;
@@ -108,6 +110,7 @@ Initialization
   FPoppler := nil;
 
 Finalization;
-  FreeAndNil(FPoppler);
+  // Free'd by ThirdParties owner
+  //FreeAndNil(FPoppler);
 
 End.

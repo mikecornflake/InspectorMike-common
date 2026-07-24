@@ -41,16 +41,25 @@ Unit TesseractSupport;
 Interface
 
 Uses
-  Classes, SysUtils;
+  Classes, SysUtils, ThirdPartySupport;
 
-Function TesseractAvailable: Boolean;
-Function TesseractPath: String;
-Function BuildOptionsString(AOEM: Integer = 3; APSM: Integer = -1;
-  AWhitelist: String = ''): String;
-Procedure SetTesseractPath(AValue: String);
-Procedure InitializeTesseract;
+Type
 
-Function OCR(AFilename: String; AOptions: String = ''): String;
+  { TTesseractSupport }
+
+  TTesseractSupport = Class(TThirdParty)
+  Public
+    Procedure DefineDefaults; Override;
+    Function BuildOptionsString(AOEM: Integer = 3; APSM: Integer = -1;
+      AWhitelist: String = ''): String;
+
+    Function OCR(AFilename: String; AOptions: String = ''): String;
+  End;
+
+Function Tesseract: TTesseractSupport;
+
+Const
+  THIRDPARTY_TESSERACT = 'Tesseract';
 
 Implementation
 
@@ -58,32 +67,39 @@ Uses
   Forms, StringSupport, FileUtil, OSSupport, FileSupport;
 
 Var
-  FTesseractPath: String;
+  FTesseract: TTesseractSupport;
 
-Function TesseractAvailable: Boolean;
+Function Tesseract: TTesseractSupport;
 Begin
-  Result := FTesseractPath <> '';
+  If Not Assigned(FTesseract) Then
+    FTesseract := TTesseractSupport.Create;
+
+  Result := FTesseract;
 End;
 
-Function TesseractPath: String;
+{ TTesseractSupport }
+
+Procedure TTesseractSupport.DefineDefaults;
 Begin
-  Result := IncludeTrailingBackslash(FTesseractPath);
+  // This unit self registers
+  FUsed := True;
+
+  // CLI, we don't care if the exe is 32bit or 64bit
+  FCPUSensitive := False;
+
+  // Preparation for default Initialise
+  FKeyFile := 'tesseract' + GetExeExt;
+  FKeyFolder := 'Tesseract-OCR';
+
+  // Metadata
+  FName := THIRDPARTY_TESSERACT;
+  FSummary := 'Tesseract OCR is the industry-standard free, open-source Optical Character Recognition engine. It leverages advanced LSTM neural networks to extract text from images with up to 99%+ accuracy across 100+ languages. Fully offline and secure, it is the foundation of global document analysis, text extraction, and tesseract ocr download';
+  FProjectURL := 'https://tesseractocr.org/';
+  FCodeURL := 'https://github.com/tesseract-ocr/tesseract';
 End;
 
-Function GetTesseractExe: String;
-Begin
-  Result := IncludeTrailingBackslash(FTesseractPath) + 'tesseract' + GetExeExt;
-End;
-
-Procedure SetTesseractPath(AValue: String);
-Begin
-  If DirectoryExists(AValue) Then
-    FTesseractPath := AValue
-  Else
-    FTesseractPath := '';
-End;
-
-Function BuildOptionsString(AOEM: Integer; APSM: Integer; AWhitelist: String): String;
+Function TTesseractSupport.BuildOptionsString(AOEM: Integer; APSM: Integer;
+  AWhitelist: String): String;
 Begin
   Result := '';
 
@@ -135,19 +151,7 @@ Begin
   Result := Trim(Result);
 End;
 
-Procedure InitializeTesseract;
-Var
-  sFile: String;
-Begin
-  If FTesseractPath = '' Then
-    sFile := FindSupportFileInFolders('Apps', 'Tesseract-OCR',
-      Format('tesseract%s', [GetExeExt]));
-
-  If sFile <> '' Then
-    FTesseractPath := IncludeTrailingBackslash(ExtractFileDir(sFile));
-End;
-
-Function OCR(AFilename: String; AOptions: String): String;
+Function TTesseractSupport.OCR(AFilename: String; AOptions: String): String;
 Var
   sCommand: String;
   sTempDir, sOutputBase, sOutputFile: String;
@@ -159,7 +163,7 @@ Begin
   // and supply your own options string
   // or use BuildOptionsString() - Uses only a simplified subset
 
-  If TesseractAvailable Then
+  If FAvailable Then
   Begin
     sTempDir := IncludeTrailingBackslash(SysUtils.GetTempDir(False)) +
       ChangeFileExt(ExtractFileName(Application.ExeName), '');
@@ -172,7 +176,8 @@ Begin
     // Huh.  Tesseract must be automatically adding the .txt...
     sOutputBase := ChangeFileExt(sOutputFile, '');
 
-    sCommand := Format('"%s" "%s" "%s" %s', [GetTesseractExe, AFilename, sOutputBase, AOptions]);
+    sCommand := Format('"%s" "%s" "%s" %s', [FullExe('tesseract'), AFilename,
+      sOutputBase, AOptions]);
 
     RunAndCapture(sCommand, nil, True);
 
@@ -193,5 +198,10 @@ Begin
 End;
 
 Initialization
-  FTesseractPath := '';
+  FTesseract := nil;
+
+Finalization;
+  // Free'd by ThirdParties owner
+  //FreeAndNil(FTesseract);
+
 End.

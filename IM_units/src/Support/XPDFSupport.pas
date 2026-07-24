@@ -39,23 +39,29 @@ Unit XPDFSupport;
 
 {$mode objfpc}{$H+}
 
-// Running the command line interface itself is so easy I see no
-// need to subclass that code.
-// This is really here just to find the directory
-
 Interface
 
 Uses
-  Classes, SysUtils;
+  Classes, SysUtils, ThirdPartySupport;
 
-Function XPDFAvailable: Boolean;
-Function XPDFPath: String;
-Procedure SetXPDFPath(AValue: String);
-Procedure InitializeXPDF;
+Type
 
-Function xpdf_PDFtoPNGExe: String;
-Function xpdf_PDFInfoExe: String;
-Function xpdf_Info(APDFFilename: String): String;
+  { TXPDFSupport }
+
+  TXPDFSupport = Class(TThirdParty)
+  Private
+  Public
+    Procedure DefineDefaults; Override;
+
+    { PDFInfo.exe }
+
+    Function Info(APDFFilename: String): String;
+  End;
+
+Function XPDF: TXPDFSupport;
+
+Const
+  THIRDPARTY_XPDF = 'XPDF';
 
 Implementation
 
@@ -63,60 +69,59 @@ Uses
   Forms, FileSupport, OSSupport, FileUtil;
 
 Var
-  FXPDFPath: String;
+  FXPDF: TXPDFSupport;
 
-Function XPDFAvailable: Boolean;
+Function XPDF: TXPDFSupport;
 Begin
-  Result := FXPDFPath <> '';
+  If Not Assigned(FXPDF) Then
+    FXPDF := TXPDFSupport.Create;
+
+  Result := FXPDF;
 End;
 
-Function XPDFPath: String;
+{ TFFmpegSupport }
+
+Procedure TXPDFSupport.DefineDefaults;
 Begin
-  Result := FXPDFPath;
+  // This unit self registers
+  FUsed := True;
+
+  // CLI, we don't care if the exe is 32bit or 64bit
+  FCPUSensitive := False;
+
+  // Preparation for default Initialise
+  FKeyFile := 'pdfinfo' + GetExeExt;
+  FKeyFolder := 'XPDF\bin32';
+
+  // Metadata
+  FName := THIRDPARTY_XPDF;
+  FSummary := 'The Xpdf open source project includes a PDF viewer along with a collection of command line tools which perform various functions on PDF files:';
+  FProjectURL := 'https://www.xpdfreader.com';
+  FCodeURL := 'https://www.xpdfreader.com/download.html';
 End;
 
-Procedure SetXPDFPath(AValue: String);
-Begin
-  If DirectoryExists(AValue) Then
-    FXPDFPath := AValue
-  Else
-    FXPDFPath := '';
-End;
-
-Procedure InitializeXPDF;
+Function TXPDFSupport.Info(APDFFilename: String): String;
 Var
-  sFile: String;
+  sInfo: String;
 Begin
-  If FXPDFPath = '' Then
-    sFile := FindSupportFileInFolders('Apps', 'XPDF\bin32', Format('pdfinfo%s', [GetExeExt]));
+  Result := '';
 
-  If sFile <> '' Then
-    FXPDFPath := IncludeTrailingBackslash(ExtractFileDir(sFile));
-End;
+  If Not FAvailable Then
+    Exit;
 
-Function xpdf_PDFToPNGExe: String;
-Begin
-  Result := IncludeSlash(XPDFPath) + 'pdftopng' + GetExeExt;
+  sInfo := IncludeSlash(FFolder) + 'pdfinfo' + GetExeExt;
 
-  If Not FileExists(Result) Then
-    Result := '';
-End;
+  If (Not FileExists(sInfo)) Or (Not FileExists(APDFFilename)) Then
+    Exit;
 
-Function xpdf_PDFInfoExe: String;
-Begin
-  Result := IncludeSlash(XPDFPath) + 'pdfinfo' + GetExeExt;
-
-  If Not FileExists(Result) Then
-    Result := '';
-End;
-
-Function xpdf_Info(APDFFilename: String): String;
-Begin
-  If (xpdf_PDFInfoExe <> '') And FileExists(APDFFilename) Then
-    Result := RunAndCapture(Format('%s "%s"', [xpdf_PDFInfoExe, APDFFilename]));
+  Result := RunAndCapture(Format('"%s" "%s"', [sInfo, APDFFilename]));
 End;
 
 Initialization
-  FXPDFPath := '';
+  FXPDF := nil;
+
+Finalization;
+  // Free'd by ThirdParties owner
+  //FreeAndNil(FXPDF);
 
 End.

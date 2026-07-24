@@ -35,12 +35,12 @@ Unit FramePipelineView;
 
     SPDX-License-Identifier: LGPL-3.0-or-later
 -------------------------------------------------------------------------------}
-
+{$WARN 5024 off : Parameter "$1" not used}
 Interface
 
 Uses
   Classes, SysUtils, Forms, Controls, ComCtrls, ExtCtrls, StdCtrls,
-  ActnList, Menus, FrameBase, PipelineEventMap, DB;
+  ActnList, Menus, FrameBase, PipelineEventMap;
 
 Type
   { TFramePipelineView }
@@ -76,7 +76,7 @@ Type
     ToolButton1: TToolButton;
     btnRange: TToolButton;
 
-    procedure acCopyToClipboardExecute(Sender: TObject);
+    Procedure acCopyToClipboardExecute(Sender: TObject);
     Procedure acZoomExtentsExecute(Sender: TObject);
     Procedure acZoomInExecute(Sender: TObject);
     Procedure acZoomOutExecute(Sender: TObject);
@@ -285,10 +285,10 @@ Begin
   SetDisplayRange(FMinKP, FMaxKP);
 End;
 
-procedure TFramePipelineView.acCopyToClipboardExecute(Sender: TObject);
-begin
+Procedure TFramePipelineView.acCopyToClipboardExecute(Sender: TObject);
+Begin
   FPipelineDisplay.CopyToClipboard;
-end;
+End;
 
 Procedure TFramePipelineView.mnuRangeClick(Sender: TObject);
 Var

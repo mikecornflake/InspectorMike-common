@@ -5,15 +5,30 @@ Unit ThirdPartySupport;
 Interface
 
 Uses
-  Classes, SysUtils, fgl;
+  Classes, SysUtils, fgl, FileUtil;
 
 Type
+  TThirdPartyKind = (tpkCommandLineTool, tpkDatabaseDriver, tpkRuntimeLibrary,
+    tpkLazarusPackage, tpkSourceLibrary, tpkAssetCollection);
+
+  TThirdPartyDefinition = Record
+    Name: String;
+    Summary: String;
+    ProjectURL: String;
+    CodeURL: String;
+    Kind: TThirdPartyKind;
+    KeyFile: String;
+    KeyFolder: String;
+  End;
 
   { TThirdParty }
 
   TThirdParty = Class
   Private
+    Procedure SetFolder(AValue: String);
   Protected
+    FKind: TThirdPartyKind;
+    FUsed: Boolean;
     FLicense: String;
     FReadMe: String;
 
@@ -43,14 +58,19 @@ Type
 
   Public
     Constructor Create; Virtual;
+    Constructor Create(ADefinition: TThirdPartyDefinition);
 
-    Procedure DefineDefaults; Virtual; Abstract;
+    Procedure DefineDefaults; Virtual;
     Procedure Initialise; Virtual;
 
     Function FullExe(AExeNoExt: String): String;
 
-    Property Folder: String Read FFolder;
+    Property Used: Boolean Read FUsed Write FUsed;
+
+    Property Folder: String Read FFolder Write SetFolder;
     Property Available: Boolean Read FAvailable;
+
+    Property Kind: TThirdPartyKind Read FKind;
 
     Property Name: String Read FName;
     Property Summary: String Read FSummary;
@@ -60,30 +80,89 @@ Type
     Property License: String Read FLicense;
   End;
 
-  TThirdParties = Class(Specialize TFPGObjectList<TThirdParty>);
+  { TThirdParties }
+
+  TThirdParties = Class(Specialize TFPGObjectList<TThirdParty>)
+  Public
+    Procedure Include(Const ANames: Array Of String);
+  End;
 
 Function ThirdParties: TThirdParties;
 
 Const
-  THIRDPARTY_FOLDER: String = 'Apps';
+  THIRDPARTY_FOLDER = 'Apps';
+  THIRDPARTY_IMAGEMAGICK = 'ImageMagick';
+  THIRDPARTY_FATCOW_ICONS = 'FatCow Icons';
+
+Const
+  ThirdPartyDefinitions: Array[0..1] Of TThirdPartyDefinition = (
+    (
+    Name: THIRDPARTY_IMAGEMAGICK;
+    Summary: 'mageMagick® is a free, open-source software suite, used for editing and manipulating digital images';
+    ProjectURL: 'https://imagemagick.org';
+    CodeURL: 'https://github.com/imagemagick/imagemagick';
+    Kind: tpkCommandLineTool;
+    KeyFile: 'magick.exe'; // TODO Linux
+    KeyFolder: 'ImageMagick'
+    ),
+    (
+    Name: THIRDPARTY_FATCOW_ICONS;
+    Summary: 'Free Icon set: commercial usage allowed under Creative Commons license 3.0';
+    ProjectURL: 'http://www.softicons.com/toolbar-icons/fatcow-hosting-icons-by-fatcow';
+    CodeURL: 'https://creativecommons.org/licenses/by/3.0/us/';
+    Kind: tpkAssetCollection;
+    KeyFile: '';
+    KeyFolder: ''
+    )
+    );
 
 Implementation
 
 Uses
-  FileSupport, FileUtil, VersionSupport;
+  FileSupport, VersionSupport;
 
 Var
   FThirdParties: TThirdParties;
 
 Function ThirdParties: TThirdParties;
+Var
+  oDefinition: TThirdPartyDefinition;
 Begin
   If Not Assigned(FThirdParties) Then
-    FThirdParties := TThirdParties.Create(False);
+  Begin
+    FThirdParties := TThirdParties.Create(True);
+
+    // During Creation, TThirdParty registers itself with FThirdParties
+    For oDefinition In ThirdPartyDefinitions Do
+      TThirdParty.Create(oDefinition);
+  End;
 
   Result := FThirdParties;
 End;
 
-{ TThirdPartySupport }
+{ TThirdParties }
+
+Procedure TThirdParties.Include(Const ANames: Array Of String);
+Var
+  sName: String;
+  oThirdParty: TThirdParty;
+Begin
+  Begin
+    For sName In ANames Do
+    Begin
+      For oThirdParty In Self Do
+        If SameText(oThirdParty.Name, sName) Then
+        Begin
+          If Assigned(oThirdParty) Then
+            oThirdParty.Used := True
+          Else
+            Raise Exception.CreateFmt('Unknown third-party dependency: %s', [sName]);
+        End;
+    End;
+  End;
+End;
+
+{ TThirdParty }
 
 Function TThirdParty.FullExe(AExeNoExt: String): String;
 Var
@@ -100,8 +179,21 @@ Begin
     Result := sFile;
 End;
 
+Procedure TThirdParty.SetFolder(AValue: String);
+Begin
+  // Outside world is trying to set folder because it knows where the exe's are
+  If FFolder = AValue Then
+    Exit;
+
+  FFolder := AValue;
+
+  Initialise;
+End;
+
 Constructor TThirdParty.Create;
 Begin
+  FUsed := False;
+
   ThirdParties.Add(Self);
 
   // User must override this
@@ -110,6 +202,26 @@ Begin
   // User may optionally override this
   // But defaults work with Drivers and CLI apps
   Initialise;
+End;
+
+Constructor TThirdParty.Create(ADefinition: TThirdPartyDefinition);
+Begin
+  FName := ADefinition.Name;
+  FSummary := ADefinition.Summary;
+  FKind := ADefinition.Kind;
+
+  FCodeURL := ADefinition.CodeURL;
+  FProjectURL := ADefinition.ProjectURL;
+
+  FKeyFile := ADefinition.KeyFile;
+  FKeyFolder := ADefinition.KeyFolder;
+
+  Create;
+End;
+
+Procedure TThirdParty.DefineDefaults;
+Begin
+
 End;
 
 Procedure TThirdParty.Initialise;

@@ -101,6 +101,9 @@ Type
 
 Function FFmpeg: TFFmpegSupport;
 
+Const
+  THIRDPARTY_FFMPEG = 'FFmpeg';
+
 Implementation
 
 Uses
@@ -121,6 +124,9 @@ End;
 
 Procedure TFFmpegSupport.DefineDefaults;
 Begin
+  // This unit self registers
+  FUsed := True;
+
   // CLI, we don't care if the exe is 32bit or 64bit
   FCPUSensitive := False;
 
@@ -129,7 +135,7 @@ Begin
   FKeyFolder := 'ffmpeg\bin';
 
   // Metadata
-  FName := 'FFmpeg';
+  FName := THIRDPARTY_FFMPEG;
   FSummary := 'FFmpeg is a collection of libraries and tools to process multimedia ' +
     'content such as audio, video, subtitles and related metadata.';
   FProjectURL := 'https://ffmpeg.org';
@@ -321,5 +327,7 @@ Initialization
   FFFmpeg := nil;
 
 Finalization;
-  FreeAndNil(FFFmpeg);
+  // Free'd by ThirdParties owner
+  //FreeAndNil(FFFmpeg);
+
 End.

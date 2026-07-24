@@ -130,7 +130,7 @@ Function MainForm: TFormMain;
 Implementation
 
 Uses
-  Math, FormAbout, FileSupport;
+  Math, FormAbout, FileSupport, ThirdPartySupport;
 
   {$R *.lfm}
 
@@ -166,6 +166,8 @@ End;
 Constructor TFormMain.Create(AOwner: TComponent);
 Begin
   Inherited Create(AOwner);
+
+  ThirdParties.Include([THIRDPARTY_FATCOW_ICONS]);
 
   FSettingsLoaded := False;
   FBusy := 0;

@@ -104,6 +104,8 @@ Type
 
 Function QPDF: TqpdfSupport;
 
+Const
+  THIRDPARTY_QPDF = 'QPDF';
 
 Implementation
 
@@ -126,6 +128,9 @@ End;
 
 Procedure TqpdfSupport.DefineDefaults;
 Begin
+  // This unit self registers
+  FUsed := True;
+
   // CLI, we don't care if the exe is 32bit or 64bit
   FCPUSensitive := False;
 
@@ -136,7 +141,7 @@ Begin
   FKeyFolder := 'qpdf\bin';
 
   // Metadata
-  FName := 'QPDF';
+  FName := THIRDPARTY_QPDF;
   FSummary := 'qpdf is a command-line tool and C++ library that performs content-preserving transformations on PDF files. It supports linearization, encryption, and numerous other features. It can also be used for splitting and merging files, creating PDF files (but you have to supply all the content yourself), and inspecting files for study or analysis. qpdf does not render PDFs or perform text extraction, and it does not contain higher-level interfaces for working with page contents. It is a low-level tool for working with the structure of PDF files and can be a valuable tool for anyone who wants to do programmatic or command-line-based manipulation of PDF files.';
   FCodeURL := 'https://github.com/qpdf/qpdf';
 End;
@@ -611,6 +616,7 @@ Initialization
   FQPDF := nil;
 
 Finalization;
-  FreeAndNil(FQPDF);
+  // Free'd by ThirdParties owner
+  //FreeAndNil(FQPDF);
 
 End.

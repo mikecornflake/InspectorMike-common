@@ -586,8 +586,8 @@ Begin
   iDigits := Length(IntToStr(FPageCount));
 
   Result :=
-    IncludeTrailingPathDelimiter(ADir) + APrefix + '-' + Format('%.*d',
-    [iDigits, APage]) + '.png';
+    IncludeTrailingPathDelimiter(ADir) + APrefix + '-' +
+    Format('%.*d', [iDigits, APage]) + '.png';
 End;
 
 Function TFramePDFViewer.ConvertPageToImage(sDir: String; iPage: Integer): String;

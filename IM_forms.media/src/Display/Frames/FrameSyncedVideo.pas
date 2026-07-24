@@ -227,19 +227,19 @@ Begin
   DoPosition;
 End;
 
-Type
-  THackCustomForm = Class(TCustomForm);
+//Type
+//  THackCustomForm = Class(TCustomForm);
 
 Procedure TFrameSyncedVideo.Layout(ARows, ACols: Integer; ASequence: TControlLayoutSequence);
-Var
-  oParent: TCustomForm;
+//Var
+//  oParent: TCustomForm;
 Begin
   FLayout.RowCount := ARows;
   FLayout.ColCount := ACols;
   FLayout.Sequence := ASequence;
   FLayout.Extend := True;
 
-  oParent := GetParentForm(self);
+  //oParent := GetParentForm(self);
 
   //If Assigned(oParent) Then
   //  THackCustomForm(oParent).BeginFormUpdate;

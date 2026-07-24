@@ -1,10 +1,10 @@
 object FormMain: TFormMain
   Left = 418
-  Height = 322
+  Height = 302
   Top = 148
   Width = 487
   Caption = 'frmMain'
-  ClientHeight = 322
+  ClientHeight = 302
   ClientWidth = 487
   Menu = mnuMain
   LCLVersion = '4.99.0.0'
@@ -13,7 +13,7 @@ object FormMain: TFormMain
   object pbMain: TProgressBar
     Left = 0
     Height = 23
-    Top = 276
+    Top = 256
     Width = 487
     Align = alBottom
     TabOrder = 0
@@ -22,7 +22,7 @@ object FormMain: TFormMain
   object sbMain: TStatusBar
     Left = 0
     Height = 23
-    Top = 299
+    Top = 279
     Width = 487
     Panels = <>
   end
