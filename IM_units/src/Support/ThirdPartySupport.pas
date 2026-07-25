@@ -9,7 +9,7 @@ Uses
 
 Type
   TThirdPartyKind = (tpkCommandLineTool, tpkDatabaseDriver, tpkRuntimeLibrary,
-    tpkLazarusPackage, tpkSourceLibrary, tpkAssetCollection);
+    tpkLazarusPackage, tpkSourceLibrary, tpkAssetCollection, tpkCollaborator);
 
   TThirdPartyDefinition = Record
     Name: String;
@@ -99,8 +99,10 @@ Const
   THIRDPARTY_IMAGEMAGICK = 'ImageMagick';
   THIRDPARTY_FATCOW_ICONS = 'FatCow Icons';
 
+  THIRDPARTY_AI_CHATGPT = 'ChatGPT';
+
 Const
-  ThirdPartyDefinitions: Array[0..4] Of TThirdPartyDefinition = (
+  ThirdPartyDefinitions: Array[0..5] Of TThirdPartyDefinition = (
     (
     Name: THIRDPARTY_LAZARUSFORUM;
     Summary: 'Words alone cannot express my gratitude to the open source community for developing a wide range of versatile tools, and for making these easily available to other developers such as myself. ' + LineEnding + LineEnding + 'In particular I''d like to thank all the helpful individuals on the Lazarus forums.  These people give up their free time willingly, providing help and support.';
@@ -143,6 +145,20 @@ Const
     ProjectURL: 'http://www.softicons.com/toolbar-icons/fatcow-hosting-icons-by-fatcow';
     CodeURL: 'https://creativecommons.org/licenses/by/3.0/us/';
     Kind: tpkAssetCollection;
+    KeyFile: '';
+    KeyFolder: '';
+    CPUSensitive: False
+    ), (
+    Name: THIRDPARTY_AI_CHATGPT;
+    Summary:
+    'Since early 2025, I have been using ChatGPT as a coding assistant. ' +
+    'It is good to feel part of a coding team again. I review, understand ' +
+    'and test all suggested code before including it.  I accept full ' +
+    'responsibility for the result, only publishing code I am willing ' +
+    'to maintain.';
+    ProjectURL: 'https://chatgpt.com';
+    CodeURL: 'https://openai.com';
+    Kind: tpkCollaborator;
     KeyFile: '';
     KeyFolder: '';
     CPUSensitive: False
@@ -301,8 +317,9 @@ End;
 Initialization
   FThirdParties := nil;
 
-  // Ensure these two are always included
-  ThirdParties.Include([THIRDPARTY_LAZARUS, THIRDPARTY_FPC, THIRDPARTY_LAZARUSFORUM]);
+  // Ensure these are always attributed
+  ThirdParties.Include([THIRDPARTY_LAZARUS, THIRDPARTY_FPC, THIRDPARTY_LAZARUSFORUM,
+    THIRDPARTY_AI_CHATGPT]);
 
 Finalization;
   FreeAndNil(FThirdParties);
