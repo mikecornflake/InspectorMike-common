@@ -1,37 +1,39 @@
 inherited FramePDFViewer: TFramePDFViewer
-  Height = 277
-  Width = 643
-  ClientHeight = 277
-  ClientWidth = 643
+  Height = 400
+  Width = 600
+  ClientHeight = 400
+  ClientWidth = 600
+  Constraints.MinHeight = 400
+  Constraints.MinWidth = 600
   DesignLeft = 548
   DesignTop = 125
   object pnlAll: TPanel[0]
     Left = 0
-    Height = 277
+    Height = 400
     Top = 0
-    Width = 643
+    Width = 600
     Align = alClient
     BevelOuter = bvNone
     Caption = 'pnlAll'
-    ClientHeight = 277
-    ClientWidth = 643
+    ClientHeight = 400
+    ClientWidth = 600
     TabOrder = 0
     object pnlToolbar: TPanel
       Left = 0
       Height = 34
       Top = 0
-      Width = 643
+      Width = 600
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
       ClientHeight = 34
-      ClientWidth = 643
+      ClientWidth = 600
       TabOrder = 0
       object tbMain: TToolBar
         Left = 0
         Height = 34
         Top = 0
-        Width = 643
+        Width = 600
         AutoSize = True
         ButtonHeight = 32
         ButtonWidth = 32
@@ -167,15 +169,15 @@ inherited FramePDFViewer: TFramePDFViewer
     end
     object splThumbNails: TSplitter
       Left = 269
-      Height = 220
+      Height = 343
       Top = 34
       Width = 5
     end
     object pnlImages: TPanel
       Left = 274
-      Height = 220
+      Height = 343
       Top = 34
-      Width = 369
+      Width = 326
       Align = alClient
       BevelOuter = bvNone
       Caption = 'pnlImages'
@@ -187,8 +189,8 @@ inherited FramePDFViewer: TFramePDFViewer
     object sbPDF: TStatusBar
       Left = 0
       Height = 23
-      Top = 254
-      Width = 643
+      Top = 377
+      Width = 600
       Panels = <      
         item
           Width = 300
@@ -202,7 +204,7 @@ inherited FramePDFViewer: TFramePDFViewer
     end
     object pcNavigation: TPageControl
       Left = 0
-      Height = 220
+      Height = 343
       Top = 34
       Width = 269
       ActivePage = tsAttachments
@@ -215,12 +217,12 @@ inherited FramePDFViewer: TFramePDFViewer
       OnChange = pcNavigationChange
       object tsThumbnails: TTabSheet
         AutoSize = True
-        ClientHeight = 192
+        ClientHeight = 312
         ClientWidth = 261
         ImageIndex = 0
         object lvThumbNails: TListView
           Left = 0
-          Height = 192
+          Height = 312
           Top = 0
           Width = 261
           Align = alClient
@@ -247,12 +249,12 @@ inherited FramePDFViewer: TFramePDFViewer
         end
       end
       object tsTOC: TTabSheet
-        ClientHeight = 192
+        ClientHeight = 312
         ClientWidth = 261
         ImageIndex = 1
         object tvTOC: TTreeView
           Left = 0
-          Height = 192
+          Height = 312
           Top = 0
           Width = 261
           Align = alClient
@@ -261,23 +263,23 @@ inherited FramePDFViewer: TFramePDFViewer
         end
       end
       object tsAttachments: TTabSheet
-        ClientHeight = 192
+        ClientHeight = 312
         ClientWidth = 261
         ImageIndex = 2
         object pnlAttachments: TPanel
           Left = 0
-          Height = 192
+          Height = 312
           Top = 0
           Width = 261
           Align = alClient
           BevelOuter = bvNone
-          ClientHeight = 192
+          ClientHeight = 312
           ClientWidth = 261
           TabOrder = 0
           object lvAttachments: TListView
             Left = 0
-            Height = 168
-            Top = 24
+            Height = 270
+            Top = 42
             Width = 261
             Align = alClient
             Columns = <            
@@ -300,94 +302,82 @@ inherited FramePDFViewer: TFramePDFViewer
                 Width = 75
               end>
             HideSelection = False
+            PopupMenu = pmAttachments
             ReadOnly = True
             RowSelect = True
             TabOrder = 0
             ViewStyle = vsReport
-            OnDblClick = btnEditDescriptionClick
+            OnDblClick = actEditDescriptionClick
+            OnSelectItem = lvAttachmentsSelectItem
           end
           object tbAttachments: TToolBar
             Left = 0
-            Height = 24
+            Height = 42
             Top = 0
             Width = 261
             AutoSize = True
+            ButtonHeight = 40
+            ButtonWidth = 23
             Images = ilPageControl
             ParentShowHint = False
+            ShowCaptions = True
             ShowHint = True
             TabOrder = 1
             object btnAddAttachment: TToolButton
               Left = 1
-              Hint = 'Add an attachment'
               Top = 2
+              Action = actAddAttachment
               AutoSize = True
-              Caption = 'Add'
-              ImageIndex = 9
-              OnClick = btnAddAttachmentClick
             end
             object btnDeleteAttachment: TToolButton
-              Left = 47
-              Hint = 'Delete selected attachment'
+              Left = 59
+              Hint = 'Delete attachment'
               Top = 2
+              Action = actDeleteAttachment
               AutoSize = True
-              Caption = 'Delete'
-              ImageIndex = 10
-              OnClick = btnDeleteAttachmentClick
             end
             object btnSep1: TToolButton
-              Left = 70
-              Height = 22
+              Left = 100
+              Height = 40
               Top = 2
               Caption = 'btnSep1'
               Style = tbsSeparator
             end
             object btnImportAttachments: TToolButton
-              Left = 109
-              Hint = 'Import attachments from an existing PDF'
+              Left = 157
               Top = 2
+              Action = actImportAttachments
               AutoSize = True
-              Caption = 'Import attachments...'
-              ImageIndex = 8
               ShowCaption = False
-              OnClick = btnImportAttachmentsClick
             end
             object btnEditDescription: TToolButton
-              Left = 24
-              Hint = 'Edit description of selected attachment'
+              Left = 31
               Top = 2
-              Caption = 'Edit description'
-              ImageIndex = 11
-              OnClick = btnEditDescriptionClick
+              Action = actEditDescription
             end
             object ToolButton3: TToolButton
-              Left = 101
-              Height = 22
+              Left = 149
+              Height = 40
               Top = 2
               Caption = 'ToolButton2'
               Style = tbsSeparator
             end
             object btnExportAttachment: TToolButton
-              Left = 78
-              Hint = 'Save selected attachment as a file...'
+              Left = 108
               Top = 2
-              Caption = 'Export'
-              ImageIndex = 7
-              OnClick = btnExportAttachmentClick
+              Action = actExportAttachment
             end
             object ToolButton4: TToolButton
-              Left = 132
-              Height = 22
+              Left = 201
+              Height = 40
               Top = 2
               Caption = 'ToolButton1'
               Style = tbsSeparator
             end
             object btnSavePDF2: TToolButton
-              Left = 140
-              Hint = 'Save PDF'
+              Left = 209
               Top = 2
-              Caption = 'Save'
-              ImageIndex = 12
-              OnClick = btnSavePDFClick
+              Action = actSavePDF
             end
           end
         end
@@ -1431,5 +1421,79 @@ inherited FramePDFViewer: TFramePDFViewer
     Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
     Left = 177
     Top = 204
+  end
+  object actAttachments: TActionList[7]
+    Images = ilPageControl
+    Left = 56
+    Top = 232
+    object actAddAttachment: TAction
+      Caption = 'Add'
+      Hint = 'Add attachment...'
+      ImageIndex = 9
+      OnExecute = actAddAttachmentClick
+    end
+    object actEditDescription: TAction
+      Caption = 'Edit'
+      Hint = 'Edit description'
+      ImageIndex = 11
+      OnExecute = actEditDescriptionClick
+    end
+    object actDeleteAttachment: TAction
+      Caption = 'Delete'
+      Hint = 'Delete selected attachment'
+      ImageIndex = 10
+      OnExecute = actDeleteAttachmentClick
+    end
+    object actExportAttachment: TAction
+      Caption = 'Export'
+      Hint = 'Export selected attachment'
+      ImageIndex = 7
+      OnExecute = actExportAttachmentClick
+    end
+    object actImportAttachments: TAction
+      Caption = 'Import'
+      Hint = 'Import all attachments from another PDF'
+      ImageIndex = 8
+      OnExecute = actImportAttachmentsClick
+    end
+    object actSavePDF: TAction
+      Caption = 'Save'
+      Hint = 'Save this PDF'
+      ImageIndex = 12
+      OnExecute = actSavePDFClick
+    end
+  end
+  object pmAttachments: TPopupMenu[8]
+    Images = ilPageControl
+    OnPopup = pmAttachmentsPopup
+    Left = 57
+    Top = 168
+    object mnuAddAttachment: TMenuItem
+      Action = actAddAttachment
+    end
+    object mnuEditDescription: TMenuItem
+      Action = actEditDescription
+    end
+    object mnuDeleteAttachment: TMenuItem
+      Action = actDeleteAttachment
+    end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object mnuExportAttachment: TMenuItem
+      Action = actExportAttachment
+    end
+    object Separator2: TMenuItem
+      Caption = '-'
+    end
+    object mnuImportAttachments: TMenuItem
+      Action = actImportAttachments
+    end
+    object Separator3: TMenuItem
+      Caption = '-'
+    end
+    object mnuSavePDF: TMenuItem
+      Action = actSavePDF
+    end
   end
 end

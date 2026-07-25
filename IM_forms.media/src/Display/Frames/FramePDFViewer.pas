@@ -42,14 +42,21 @@ Unit FramePDFViewer;
 Interface
 
 Uses
-  Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, ExtCtrls, ComCtrls,
-  FrameBase, FrameImages, Graphics, Dialogs, PDF;
+  Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, ExtCtrls,
+  ComCtrls, FrameBase, FrameImages, Graphics, Dialogs, ActnList, Menus, PDF;
 
 Type
 
   { TFramePDFViewer }
 
   TFramePDFViewer = Class(TFrameBase)
+    actAddAttachment: TAction;
+    actEditDescription: TAction;
+    actDeleteAttachment: TAction;
+    actExportAttachment: TAction;
+    actImportAttachments: TAction;
+    actSavePDF: TAction;
+    actAttachments: TActionList;
     btnAddAttachment: TToolButton;
     btnDeleteAttachment: TToolButton;
     btnEditDescription: TToolButton;
@@ -66,11 +73,21 @@ Type
     ilPageControl: TImageList;
     lvAttachments: TListView;
     lvThumbNails: TListView;
+    Separator3: TMenuItem;
+    Separator2: TMenuItem;
+    Separator1: TMenuItem;
+    mnuSavePDF: TMenuItem;
+    mnuImportAttachments: TMenuItem;
+    mnuExportAttachment: TMenuItem;
+    mnuDeleteAttachment: TMenuItem;
+    mnuEditDescription: TMenuItem;
+    mnuAddAttachment: TMenuItem;
     pcNavigation: TPageControl;
     pnlAll: TPanel;
     pnlAttachments: TPanel;
     pnlImages: TPanel;
     pnlToolbar: TPanel;
+    pmAttachments: TPopupMenu;
     splThumbNails: TSplitter;
     sbPDF: TStatusBar;
     tbAttachments: TToolBar;
@@ -95,21 +112,21 @@ Type
     btnRotateCW: TToolButton;
     ToolButton2: TToolButton;
     ToolButton5: TToolButton;
-    Procedure btnAddAttachmentClick(Sender: TObject);
-    Procedure btnDeleteAttachmentClick(Sender: TObject);
-    Procedure btnEditDescriptionClick(Sender: TObject);
-    Procedure btnExportAttachmentClick(Sender: TObject);
+    Procedure actAddAttachmentClick(Sender: TObject);
+    Procedure actDeleteAttachmentClick(Sender: TObject);
+    Procedure actEditDescriptionClick(Sender: TObject);
+    Procedure actExportAttachmentClick(Sender: TObject);
     Procedure btnFirstPageClick(Sender: TObject);
     Procedure btnFitPageClick(Sender: TObject);
     Procedure btnFitWidthClick(Sender: TObject);
-    Procedure btnImportAttachmentsClick(Sender: TObject);
+    Procedure actImportAttachmentsClick(Sender: TObject);
     Procedure btnInfoClick(Sender: TObject);
     Procedure btnLastPageClick(Sender: TObject);
     Procedure btnNextPageClick(Sender: TObject);
     Procedure btnPrevPageClick(Sender: TObject);
     Procedure btnRotateCCWClick(Sender: TObject);
     Procedure btnRotateCWClick(Sender: TObject);
-    Procedure btnSavePDFClick(Sender: TObject);
+    Procedure actSavePDFClick(Sender: TObject);
     Procedure btnZoom100Click(Sender: TObject);
     Procedure btnZoomInClick(Sender: TObject);
     Procedure btnZoomOutClick(Sender: TObject);
@@ -119,6 +136,7 @@ Type
     Procedure lvThumbNailsData(Sender: TObject; Item: TListItem);
     Procedure lvThumbNailsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     Procedure pcNavigationChange(Sender: TObject);
+    procedure pmAttachmentsPopup(Sender: TObject);
     Procedure sbPDFResize(Sender: TObject);
     Procedure tvTOCSelectionChanged(Sender: TObject);
   Private
@@ -149,6 +167,9 @@ Type
   Public
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
+
+    Procedure AddAttachments(Const FileNames: Array Of String);
+    Procedure SavePDF;
 
     Function Info: String;
     Procedure RefreshUI; Override;
@@ -204,7 +225,6 @@ Begin
   FAttachments := TPDFAttachments.Create(True);
   FDirty := False;
 
-
   RefreshUI;
 End;
 
@@ -214,6 +234,105 @@ Begin
   FreeAndNil(FAttachments);
 
   Inherited Destroy;
+End;
+
+Procedure TFramePDFViewer.AddAttachments(Const FileNames: Array Of String);
+Var
+  iFileCount, i: Integer;
+  sFilename, sAttachmentKey, sDescription, sWarning: String;
+  oExistingAttachment, oAttachment: TPDFAttachment;
+Begin
+  iFileCount := Length(Filenames);
+
+  If iFileCount = 0 Then
+    Exit;
+
+  If iFileCount = 1 Then
+    sWarning := 'Do you wish to add this file as an attachment?' + LineEnding +
+      LineEnding + 'If the attachment already exists it will be replaced.'
+  Else
+    sWarning := 'Do you wish to add these files as attachments?' + LineEnding +
+      LineEnding + 'If any attachment already exists they will be replaced.';
+
+  If MessageDlg('Add Attachment', sWarning, mtConfirmation, [mbYes, mbNo], 0) = mrNo Then
+    Exit;
+
+  For i := Low(Filenames) To High(Filenames) Do
+  Begin
+    sFilename := Filenames[i];
+
+    sAttachmentKey := ExtractFileName(sFilename);
+
+    oExistingAttachment := qpdf.FindAttachment(FAttachments, sAttachmentKey);
+
+    If Assigned(oExistingAttachment) Then
+    Begin
+      sDescription := oExistingAttachment.Description;
+
+      FAttachments.Remove(oExistingAttachment);
+    End
+    Else
+      sDescription := '';
+
+    oAttachment := TPDFAttachment.Create;
+    oAttachment.SourceFilename := sFilename;
+    oAttachment.Filename := sAttachmentKey;
+    oAttachment.Description := sDescription;
+    oAttachment.CreationDate := FileCreationDate(sFilename);
+    oAttachment.ModificationDate := FileModificationDate(sFilename);
+
+    // Creation time is not available on every filesystem/platform.
+    If oAttachment.CreationDate = 0 Then
+      oAttachment.CreationDate := oAttachment.ModificationDate;
+
+    FAttachments.Add(oAttachment);
+
+    FDirty := True;
+  End;
+
+  If FDirty Then
+  Begin
+    pcNavigation.ActivePage := tsAttachments;
+    pcNavigation.Width := Max(300, pcNavigation.Width);
+
+    UpdateAttachmentsList;
+  End;
+End;
+
+Procedure TFramePDFViewer.SavePDF;
+Var
+  sTemp: String;
+Begin
+  If Not FDirty Then
+    Exit;
+
+  If Not FileExists(FFilename) Then
+    Exit;
+
+  OSSupport.SetBusy;
+  Try
+    If Not qpdf.WriteAttachments(FFilename, FAttachments) Then
+    Begin
+      MessageDlg('Save Attachments', 'The PDF attachments could not be saved.' +
+        LineEnding + LineEnding + 'The original PDF has not been changed.',
+        mtError, [mbOK], 0);
+
+      Exit;
+    End;
+
+    // Reload from the finished PDF. This clears SourceFilename from
+    // newly added attachments and verifies what qpdf actually wrote.
+    sTemp := FFilename;
+    Filename := '';
+    Filename := sTemp;
+
+    // Happens in SetFilename, but here for additional clarity
+    FDirty := False;
+
+    RefreshUI;
+  Finally
+    OSSupport.ClearBusy;
+  End;
 End;
 
 Procedure TFramePDFViewer.btnInfoClick(Sender: TObject);
@@ -407,8 +526,13 @@ Begin
   If pcNavigation.ActivePage = tsThumbnails Then
     pcNavigation.Width := 100
   Else
-    pcNavigation.Width := 300;
+    pcNavigation.Width := Max(300, pcNavigation.Width);
 End;
+
+procedure TFramePDFViewer.pmAttachmentsPopup(Sender: TObject);
+begin
+  RefreshUI;
+end;
 
 Procedure TFramePDFViewer.sbPDFResize(Sender: TObject);
 Begin
@@ -508,12 +632,12 @@ Var
 Begin
   pnlAll.Visible := FActive;
 
-  btnAddAttachment.Enabled := False;
-  btnImportAttachments.Enabled := False;
-  btnDeleteAttachment.Enabled := False;
-  btnEditDescription.Enabled := False;
-  btnExportAttachment.Enabled := False;
-  btnSavePDF2.Enabled := False;
+  actAddAttachment.Enabled := False;
+  actImportAttachments.Enabled := False;
+  actDeleteAttachment.Enabled := False;
+  actEditDescription.Enabled := False;
+  actExportAttachment.Enabled := False;
+  actSavePDF.Enabled := False;
 
   If FActive Then
   Begin
@@ -528,12 +652,12 @@ Begin
     bHasqdf := qpdf.Available;
     bSelected := bHasqdf And Assigned(lvAttachments.Selected) And (lvAttachments.SelCount = 1);
 
-    btnAddAttachment.Enabled := bHasqdf;
-    btnEditDescription.Enabled := bSelected;
-    btnDeleteAttachment.Enabled := bSelected;
-    btnExportAttachment.Enabled := bSelected;
-    btnImportAttachments.Enabled := bHasqdf;
-    btnSavePDF2.Enabled := FDirty;
+    actAddAttachment.Enabled := bHasqdf;
+    actEditDescription.Enabled := bSelected;
+    actDeleteAttachment.Enabled := bSelected;
+    actExportAttachment.Enabled := bSelected;
+    actImportAttachments.Enabled := bHasqdf;
+    actSavePDF.Enabled := FDirty;
   End
   Else
   Begin
@@ -586,8 +710,8 @@ Begin
   iDigits := Length(IntToStr(FPageCount));
 
   Result :=
-    IncludeTrailingPathDelimiter(ADir) + APrefix + '-' +
-    Format('%.*d', [iDigits, APage]) + '.png';
+    IncludeTrailingPathDelimiter(ADir) + APrefix + '-' + Format('%.*d',
+    [iDigits, APage]) + '.png';
 End;
 
 Function TFramePDFViewer.ConvertPageToImage(sDir: String; iPage: Integer): String;
@@ -711,7 +835,7 @@ Begin
   End;
 End;
 
-Procedure TFramePDFViewer.btnAddAttachmentClick(Sender: TObject);
+Procedure TFramePDFViewer.actAddAttachmentClick(Sender: TObject);
 Var
   oAttachment, oExistingAttachment: TPDFAttachment;
   sFilename, sAttachmentKey, sDescription: String;
@@ -759,7 +883,7 @@ Begin
   End;
 End;
 
-Procedure TFramePDFViewer.btnDeleteAttachmentClick(Sender: TObject);
+Procedure TFramePDFViewer.actDeleteAttachmentClick(Sender: TObject);
 Var
   oAttachment: TPDFAttachment;
 Begin
@@ -782,7 +906,7 @@ Begin
   End;
 End;
 
-Procedure TFramePDFViewer.btnEditDescriptionClick(Sender: TObject);
+Procedure TFramePDFViewer.actEditDescriptionClick(Sender: TObject);
 Var
   oAttachment: TPDFAttachment;
   sDescription: String;
@@ -807,7 +931,7 @@ Begin
   End;
 End;
 
-Procedure TFramePDFViewer.btnExportAttachmentClick(Sender: TObject);
+Procedure TFramePDFViewer.actExportAttachmentClick(Sender: TObject);
 Var
   oAttachment: TPDFAttachment;
   sFilename: String;
@@ -835,7 +959,7 @@ Begin
   End;
 End;
 
-Procedure TFramePDFViewer.btnImportAttachmentsClick(Sender: TObject);
+Procedure TFramePDFViewer.actImportAttachmentsClick(Sender: TObject);
 Var
   oImportAttachments: TPDFAttachments;
   oImportAttachment: TPDFAttachment;
@@ -896,38 +1020,9 @@ Begin
   End;
 End;
 
-Procedure TFramePDFViewer.btnSavePDFClick(Sender: TObject);
-Var
-  sTemp: String;
+Procedure TFramePDFViewer.actSavePDFClick(Sender: TObject);
 Begin
-  If Not FDirty Then
-    Exit;
-
-  If Not FileExists(FFilename) Then
-    Exit;
-
-  OSSupport.SetBusy;
-  Try
-    If Not qpdf.WriteAttachments(FFilename, FAttachments) Then
-    Begin
-      MessageDlg('Save Attachments', 'The PDF attachments could not be saved.' +
-        LineEnding + LineEnding + 'The original PDF has not been changed.',
-        mtError, [mbOK], 0);
-
-      Exit;
-    End;
-
-    // Reload from the finished PDF. This clears SourceFilename from
-    // newly added attachments and verifies what qpdf actually wrote.
-    sTemp := FFilename;
-    Filename := '';
-    Filename := sTemp;
-
-    MessageDlg('Save Attachments', 'The PDF attachments have been saved.',
-      mtInformation, [mbOK], 0);
-  Finally
-    OSSupport.ClearBusy;
-  End;
+  SavePDF;
 End;
 
 Procedure TFramePDFViewer.lvAttachmentsSelectItem(Sender: TObject; Item: TListItem;
