@@ -57,11 +57,12 @@ Type
     // The found folder
     FFolder: String;
 
+    Procedure Initialise; Virtual;
   Public
     Constructor Create; Virtual; Overload;
     Constructor Create(ADefinition: TThirdPartyDefinition); Overload;
 
-    Procedure Initialise; Virtual;
+    Procedure IncludeAttribution; // A do nothing procedure designed to ensure attribution in about box
 
     Function FullExe(AExeNoExt: String): String;
 
@@ -108,7 +109,7 @@ Const
     Summary: 'Words alone cannot express my gratitude to the open source community for developing a wide range of versatile tools, and for making these easily available to other developers such as myself. ' + LineEnding + LineEnding + 'In particular I''d like to thank all the helpful individuals on the Lazarus forums.  These people give up their free time willingly, providing help and support.';
     ProjectURL: 'https://forum.lazarus.freepascal.org/index.php';
     CodeURL: 'https://wiki.lazarus.freepascal.org/';
-    Kind: tpkLazarusPackage;
+    Kind: tpkCollaborator;
     KeyFile: '';
     KeyFolder: '';
     CPUSensitive: False
@@ -154,8 +155,7 @@ Const
     'Since early 2025, I have been using ChatGPT as a coding assistant. ' +
     'It is good to feel part of a coding team again. I review, understand ' +
     'and test all suggested code before including it.  I accept full ' +
-    'responsibility for the result, only publishing code I am willing ' +
-    'to maintain.';
+    'responsibility for the result, only publishing code I am willing ' + 'to maintain.';
     ProjectURL: 'https://chatgpt.com';
     CodeURL: 'https://openai.com';
     Kind: tpkCollaborator;
@@ -264,6 +264,11 @@ Begin
 
   Initialise;
   ThirdParties.Add(Self);
+End;
+
+Procedure TThirdParty.IncludeAttribution;
+Begin
+
 End;
 
 Procedure TThirdParty.Initialise;
