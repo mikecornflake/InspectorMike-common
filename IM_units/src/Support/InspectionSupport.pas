@@ -271,7 +271,7 @@ Begin
 
   AInfo.FoundDateTime := True;
   AInfo.DateTime := DT;
-  AInfo.DateTimeText := DateText+' '+TimeText;
+  AInfo.DateTimeText := DateText + ' ' + TimeText;
 
   AInfo.Channel := CleanChannel(Parts[3]);
   AInfo.FoundChannel := AInfo.Channel <> '';

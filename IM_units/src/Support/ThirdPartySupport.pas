@@ -62,7 +62,8 @@ Type
     Constructor Create; Virtual; Overload;
     Constructor Create(ADefinition: TThirdPartyDefinition); Overload;
 
-    Procedure IncludeAttribution; // A do nothing procedure designed to ensure attribution in about box
+    Procedure IncludeAttribution;
+    // A do nothing procedure designed to ensure attribution in about box
 
     Function FullExe(AExeNoExt: String): String;
 
@@ -99,11 +100,16 @@ Const
 
   THIRDPARTY_IMAGEMAGICK = 'ImageMagick';
   THIRDPARTY_FATCOW_ICONS = 'FatCow Icons';
+  THIRDPARTY_BGRABITMAP = 'BGRABitmap';
+  THIRDPARTY_ZEOS = 'ZeosDB';
+  THIRDPARTY_TURBOPOWER_IPRO = 'Turbopower IPro';
+  THIRDPARTY_WGS84 = 'WGS84';
+  THIRDPARTY_FPCUPDELUXE = 'fpcupdeluxe';
 
   THIRDPARTY_AI_CHATGPT = 'ChatGPT';
 
 Const
-  ThirdPartyDefinitions: Array[0..5] Of TThirdPartyDefinition = (
+  ThirdPartyDefinitions: Array[0..10] Of TThirdPartyDefinition = (
     (
     Name: THIRDPARTY_LAZARUSFORUM;
     Summary: 'Words alone cannot express my gratitude to the open source community for developing a wide range of versatile tools, and for making these easily available to other developers such as myself. ' + LineEnding + LineEnding + 'In particular I''d like to thank all the helpful individuals on the Lazarus forums.  These people give up their free time willingly, providing help and support.';
@@ -162,10 +168,55 @@ Const
     KeyFile: '';
     KeyFolder: '';
     CPUSensitive: False
-    )
-    );
-
-  // TODO: Handle BGRABITMAP, ZEOS, WGS84, URUWORKS, TURBOPOWER, LAZSERIAL
+    ), (
+    Name: THIRDPARTY_BGRABITMAP;
+    Summary:
+    'BGRABitmap is a graphics library for FreePascal and Lazarus that offers extensive capabilities for image manipulation, including transparency management, direct pixel access, and various effects for dynamic image generation.';
+    ProjectURL: 'https://bgrabitmap.github.io/';
+    CodeURL: 'https://github.com/bgrabitmap/bgrabitmap';
+    Kind: tpkLazarusPackage;
+    KeyFile: '';
+    KeyFolder: '';
+    CPUSensitive: False
+    ), (
+    Name: THIRDPARTY_ZEOS;
+    Summary:
+    'The Zeos library is a set of database components for Delphi, FreePascal/Lazarus and C++ Builder';
+    ProjectURL: 'https://zeoslib.sourceforge.io/';
+    CodeURL: 'https://github.com/frones/ZeosLib';
+    Kind: tpkDatabaseDriver;
+    KeyFile: '';
+    KeyFolder: '';
+    CPUSensitive: False
+    ), (
+    Name: THIRDPARTY_TURBOPOWER_IPRO;
+    Summary:
+    'Free Pascal port of Turbopower Internet Pro: a set of VCL components providing Internet connectivity for Borland Delphi & C++Builder. iPRO includes POP3, SMTP, NNTP, FTP, HTTP, Instant Messaging, & HTML viewer components, as well as components for low-level socket access. ';
+    ProjectURL: 'https://wiki.freepascal.org/TurboPower_Internet_Pro';
+    CodeURL: 'https://gitlab.com/freepascal.org/lazarus/lazarus/-/tree/main/components/turbopower_ipro?ref_type=heads';
+    Kind: tpkLazarusPackage;
+    KeyFile: '';
+    KeyFolder: '';
+    CPUSensitive: False
+    ), (
+    Name: THIRDPARTY_WGS84;
+    Summary: 'Helper unit for WGS84 coordinate conversions.  Written by Lazarus Forum User @Stab, and made available with no constraints.  Inlcusion in this library adds LGPL3 licensing.';
+    ProjectURL: '';
+    CodeURL: 'https://forum.lazarus.freepascal.org/index.php/topic,57818.msg430740.html#msg430740';
+    Kind: tpkSourceLibrary;
+    KeyFile: '';
+    KeyFolder: '';
+    CPUSensitive: False
+    ), (
+    Name: THIRDPARTY_FPCUPDELUXE;
+    Summary: 'fpcupdeluxe is a GUI installer for FPC and Lazarus. It is based on fpcup, written by legendary user @BigChimp R.I.P.' + LineEnding + LineEnding + 'fpcupdeluxe is the only way I install Lazarus and FPC.';
+    ProjectURL: 'https://forum.lazarus.freepascal.org/index.php/topic,34645.0.html';
+    CodeURL: 'https://github.com/LongDirtyAnimAlf/fpcupdeluxe';
+    Kind: tpkAssetCollection;
+    KeyFile: '';
+    KeyFolder: '';
+    CPUSensitive: False
+    ));
 
 Implementation
 
@@ -324,7 +375,7 @@ Initialization
 
   // Ensure these are always attributed
   ThirdParties.Include([THIRDPARTY_LAZARUS, THIRDPARTY_FPC, THIRDPARTY_LAZARUSFORUM,
-    THIRDPARTY_AI_CHATGPT]);
+    THIRDPARTY_AI_CHATGPT, THIRDPARTY_FPCUPDELUXE]);
 
 Finalization;
   FreeAndNil(FThirdParties);

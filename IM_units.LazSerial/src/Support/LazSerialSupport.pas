@@ -71,10 +71,13 @@ Type
     Property SettingsAsXML: String Read GetSettingsAsXML Write SetSettingsAsXML;
   End;
 
+Const
+  THIRDPARTY_LAZSERIAL = 'TLazSerial';
+
 Implementation
 
 Uses
-  lazserialsetup, StringSupport;
+  lazserialsetup, StringSupport, ThirdPartySupport;
 
 Function TLazSerialHelper.Settings: TStringArray;
 Begin
@@ -204,4 +207,15 @@ Begin
   Result := WriteData(AData + CRLF);
 End;
 
+Var
+  oDef: TThirdPartyDefinition;
+
+Initialization
+  oDef.Name := THIRDPARTY_LAZSERIAL;
+  oDef.Summary := 'Serial Port Component for Lazarus. Created by inactive user @JurrasicPork. Currently being maintained by Lazarus Forum Users, including @CM630';
+  oDef.ProjectURL := 'https://github.com/JurassicPork/TLazSerial';
+  oDef.CodeURL := 'https://forum.lazarus.freepascal.org/index.php?topic=20481.495';
+  oDef.Kind := tpkLazarusPackage;
+
+  TThirdParty.Create(oDef);
 End.
