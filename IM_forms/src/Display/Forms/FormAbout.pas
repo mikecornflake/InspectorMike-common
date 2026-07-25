@@ -177,6 +177,7 @@ Begin
   memAbout.Lines.Clear;
   memAbout.Lines.Add(Application.exename);
   memAbout.Lines.Add('');
+
   oResourceStrings := TStringList.Create;
   Try
     GetResourceStrings(oResourceStrings);
@@ -198,6 +199,7 @@ Begin
   Else
     pcAbout.ActivePage := tsAbout;
 
+  Caption := 'About:  '+Application.Title;
   lblApplicationTitle.Caption := Application.Title;
 End;
 
