@@ -38,7 +38,7 @@ This repository contains both reusable support units and application-level code.
   **GNU Lesser General Public License, version 3 or later (LGPL-3.0-or-later)**.  
   See `LICENSE.LGPL` and the headers in the individual units.
 
-- Applications that use the `IM_application.lpk` framework (e.g. FileWorkbench, InspectionWorkbench etc.) are developed in their own repositories and are licensed under the  
+- Applications that use the `IM_forms.lpk` and `IM_forms.docked.lpk` framework (e.g. FileWorkbench, InspectionWorkbench etc.) are developed in their own repositories and are licensed under the  
   **GNU General Public License, version 3 or later (GPL-3.0-or-later)**.  
   Refer to each application's `LICENSE` file.
 
