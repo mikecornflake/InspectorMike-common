@@ -130,6 +130,8 @@ Constructor TqpdfSupport.Create;
 Var
   oDef: TThirdPartyDefinition;
 Begin
+  oDef.Kind := tpkCommandLineTool;
+
   // CLI, we don't care if the exe is 32bit or 64bit
   oDef.CPUSensitive := False;
 

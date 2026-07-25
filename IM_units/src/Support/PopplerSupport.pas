@@ -85,7 +85,7 @@ Begin
   oDef.CPUSensitive := False;
 
   // Preparation for default Initialise
-  oDef.KeyFile := 'pdfinfo' + GetExeExt;
+  oDef.KeyFile := 'pdfinfo'+GetExeExt;
   oDef.KeyFolder := 'Poppler\bin';
 
   // Metadata
@@ -93,6 +93,11 @@ Begin
   oDef.Summary := 'This is Poppler, a library for rendering PDF files, and examining or modifying their structure.  Poppler originally came from the XPDF ' + 'sources';
   oDef.ProjectURL := 'https://poppler.freedesktop.org/';
   oDef.CodeURL := 'https://gitlab.freedesktop.org/poppler/poppler';
+
+  // This unit self registers
+  FUsed := True;
+
+  Inherited Create(oDef);
 
   // This unit self registers
   FUsed := True;

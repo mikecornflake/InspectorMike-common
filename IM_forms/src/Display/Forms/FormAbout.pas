@@ -43,7 +43,7 @@ Interface
 
 Uses
   Classes, ComCtrls, Controls, Dialogs, ExtCtrls, FileUtil, SynEdit,
-  SynHighlighterMarkdown, Forms, Graphics, StdCtrls, SysUtils, FrameHTMLs;
+  SynHighlighterMarkdown, Forms, Graphics, StdCtrls, SysUtils, FrameAboutThirdParty;
 
 Type
 
@@ -56,7 +56,8 @@ Type
     ilTabs: TImageList;
     lblHTMLLabel2: TLabel;
     memLicence: TSynEdit;
-    pcThirdParty: TPageControl;
+    pnlTreeView: TPanel;
+    pnlThirdParty: TPanel;
     pcAbout: TPageControl;
     imgAbout: TImage;
     Label1: TLabel;
@@ -66,19 +67,25 @@ Type
     lblHTMLLabel1: TLabel;
     memAbout: TMemo;
     memReadme: TSynEdit;
+    Splitter1: TSplitter;
     synMarkdown: TSynMarkdownSyn;
     tsThirdParty: TTabSheet;
     tsAbout: TTabSheet;
     tsReadme: TTabSheet;
     tsLicence: TTabSheet;
+    tvThirdParty: TTreeView;
     Procedure btnOKClick(Sender: TObject);
+    Procedure FormActivate(Sender: TObject);
     Procedure FormCreate(Sender: TObject);
     Procedure FormDestroy(Sender: TObject);
+    Procedure tvThirdPartySelectionChanged(Sender: TObject);
     Procedure URLLabelMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     Procedure URLLabelMouseEnter(Sender: TObject);
     Procedure URLLabelMouseLeave(Sender: TObject);
   Protected
+    FThirdPartyFrame: TFrameThirdParty;
+    FActivated: Boolean;
   End;
 
 Procedure ShowAbout;
@@ -88,7 +95,7 @@ Implementation
 Uses
   LCLIntf,
   VersionSupport, OSSupport,
-  FrameAboutThirdParty, ThirdPartySupport;
+  ThirdPartySupport;
 
   {$R *.lfm}
 
@@ -105,14 +112,63 @@ Begin
 End;
 
 Procedure TfrmAbout.FormCreate(Sender: TObject);
+
+  Procedure BuildThirdPartyTree(ATree: TTreeView);
+  Var
+    arrKinds: Array[TThirdPartyKind] Of TTreeNode;
+    oThirdParty: TThirdParty;
+    oRootNode, oNode: TTreeNode;
+    oKind: TThirdPartyKind;
+  Begin
+    FillChar(arrKinds, SizeOf(arrKinds), 0);
+
+    ATree.Items.BeginUpdate;
+    Try
+      // First pass: create root nodes in sorted enum order
+      For oKind := Low(TThirdPartyKind) To High(TThirdPartyKind) Do
+      Begin
+        For oThirdParty In ThirdParties Do
+        Begin
+          If oThirdParty.Used And (oThirdParty.Kind = oKind) Then
+          Begin
+            If arrKinds[oKind] = nil Then
+            Begin
+              oRootNode := ATree.Items.Add(nil, ThirdPartyKindNames[oKind]);
+              arrKinds[oKind] := oRootNode;
+
+              oRootNode.ImageIndex := 4 + Integer(oKind);
+              oRootNode.SelectedIndex := 4 + Integer(oKind);
+            End;
+          End;
+        End;
+      End;
+
+      // Second pass: add children under the already sorted roots
+      For oThirdParty In ThirdParties Do
+      Begin
+        If oThirdParty.Used Then
+        Begin
+          oRootNode := arrKinds[oThirdParty.Kind];
+          If oRootNode <> nil Then
+          Begin
+            oNode := ATree.Items.AddChild(oRootNode, oThirdParty.Name);
+            oNode.Data := oThirdParty;
+          End;
+        End;
+      End;
+
+    Finally
+      ATree.Items.EndUpdate;
+    End;
+  End;
+
 Var
   oResourceStrings: TStringList;
   sFolder: String;
-  oTab: TTabSheet;
-  oFrame: TFrameThirdParty;
-  oThirdParty: TThirdParty;
 Begin
   Inherited;
+
+  FActivated := False;
 
   // Register the attribuions for this TForm
   ThirdParties.Include([THIRDPARTY_FATCOW_ICONS]);
@@ -126,23 +182,13 @@ Begin
 
   edtAppExe.Text := Application.ExeName;
 
-  For oThirdParty In ThirdParties Do
-  Begin
-    If (oThirdParty.Used) Then
-    Begin
-      oTab := pcThirdParty.AddTabSheet;
-      oTab.Caption := oThirdParty.Name;
+  BuildThirdPartyTree(tvThirdParty);
+  tsThirdParty.TabVisible := (tvThirdParty.Items.Count > 0);
 
-      oTab.ImageIndex := 4 + Integer(oThirdParty.Kind);
-
-      oFrame := TFrameThirdParty.Create(oTab);
-      oFrame.Parent := oTab;
-      oFrame.Align := alClient;
-      oFrame.Populate(oThirdParty);
-    End;
-  End;
-
-  tsThirdParty.TabVisible := (pcThirdParty.PageCount > 0);
+  FThirdPartyFrame := TFrameThirdParty.Create(pnlThirdParty);
+  FThirdPartyFrame.Parent := pnlThirdParty;
+  FThirdPartyFrame.Align := alClient;
+  FThirdPartyFrame.Visible := False;
 
   If FileExists(sFolder + 'LICENSE.md') Then
   Begin
@@ -199,7 +245,7 @@ Begin
   Else
     pcAbout.ActivePage := tsAbout;
 
-  Caption := 'About:  '+Application.Title;
+  Caption := 'About:  ' + Application.Title;
   lblApplicationTitle.Caption := Application.Title;
 End;
 
@@ -207,9 +253,44 @@ Procedure TfrmAbout.FormDestroy(Sender: TObject);
 Begin
 End;
 
+Procedure TfrmAbout.tvThirdPartySelectionChanged(Sender: TObject);
+Begin
+  If Assigned(tvThirdParty.Selected) And Assigned(tvThirdParty.Selected.Data) Then
+  Begin
+    FThirdPartyFrame.Visible := True;
+    FThirdPartyFrame.Populate(TThirdParty(tvThirdParty.Selected.Data));
+  End
+  Else
+  Begin
+    FThirdPartyFrame.Visible := False;
+
+    If Assigned(tvThirdParty.Selected) Then
+      tvThirdParty.Selected.Expand(True);
+  End;
+End;
+
 Procedure TfrmAbout.btnOKClick(Sender: TObject);
 Begin
   Close;
+End;
+
+Procedure TfrmAbout.FormActivate(Sender: TObject);
+Var
+  oNode: TTreeNode;
+Begin
+  If Not FActivated Then
+  Begin
+    tvThirdParty.FullExpand;
+
+    oNode := tvThirdParty.Items.GetFirstNode;
+    If Assigned(oNode) Then
+    Begin
+      tvThirdParty.Selected := oNode;
+      oNode.MakeVisible;
+    End;
+
+    FActivated := True;
+  End;
 End;
 
 Procedure TfrmAbout.URLLabelMouseLeave(Sender: TObject);
@@ -224,6 +305,8 @@ Begin
   TLabel(Sender).Font.Style := [fsUnderLine];
   TLabel(Sender).Font.Color := clRed;
   TLabel(Sender).Cursor := crHandPoint;
+  TLabel(Sender).Hint := TLabel(Sender).Caption;
+  TLabel(Sender).ShowHint := True;
 End;
 
 Procedure TfrmAbout.URLLabelMouseDown(Sender: TObject; Button: TMouseButton;

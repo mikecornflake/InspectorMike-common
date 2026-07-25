@@ -133,7 +133,8 @@ Const
 Implementation
 
 Uses
-  StringSupport, FileSupport, OSSupport, Math, sqldb, typinfo, {$IFDEF ZEOS}ZAbstractRODataset, {$ENDIF}Forms;
+  StringSupport, FileSupport, OSSupport, Math, sqldb, typinfo,
+  {$IFDEF ZEOS}ZAbstractRODataset, {$ENDIF}Forms;
 
   { TMemTable }
 
@@ -783,8 +784,7 @@ Var
   Begin
     Result := StringReplace(S, '"', '""', [rfReplaceAll]);
 
-    If (Pos(',', S) > 0) Or (Pos('"', S) > 0) Or (Pos(#13, S) > 0) Or
-      (Pos(#10, S) > 0) Then
+    If (Pos(',', S) > 0) Or (Pos('"', S) > 0) Or (Pos(#13, S) > 0) Or (Pos(#10, S) > 0) Then
       Result := '"' + Result + '"';
   End;
 

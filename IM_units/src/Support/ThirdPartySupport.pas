@@ -9,7 +9,8 @@ Uses
 
 Type
   TThirdPartyKind = (tpkCommandLineTool, tpkDatabaseDriver, tpkRuntimeLibrary,
-    tpkLazarusPackage, tpkSourceLibrary, tpkAssetCollection, tpkCollaborator);
+    tpkLazarusPackage, tpkSourceLibrary, tpkIMPackage, tpkAssetCollection, tpkCollaborator);
+
 
   TThirdPartyDefinition = Record
     Name: String;
@@ -108,8 +109,17 @@ Const
 
   THIRDPARTY_AI_CHATGPT = 'ChatGPT';
 
+  // :-)  Figured out I could use this to self-promote AFTER coming up with the
+  // Third Party nomenclature
+  THIRDPARTY_IM_COMMON = 'IM_Common';
+
 Const
-  ThirdPartyDefinitions: Array[0..10] Of TThirdPartyDefinition = (
+  ThirdPartyKindNames: Array[TThirdPartyKind] Of String = (
+    'Command Line Tool', 'Database Driver', 'Runtime Library',
+    'Lazarus Package', 'Source Library', 'Inspector Mike', 'Asset Collection',
+    'Collaboration');
+
+  ThirdPartyDefinitions: Array[0..11] Of TThirdPartyDefinition = (
     (
     Name: THIRDPARTY_LAZARUSFORUM;
     Summary: 'Words alone cannot express my gratitude to the open source community for developing a wide range of versatile tools, and for making these easily available to other developers such as myself. ' + LineEnding + LineEnding + 'In particular I''d like to thank all the helpful individuals on the Lazarus forums.  These people give up their free time willingly, providing help and support.';
@@ -158,10 +168,8 @@ Const
     ), (
     Name: THIRDPARTY_AI_CHATGPT;
     Summary:
-    'Since early 2025, I have been using ChatGPT as a coding assistant. ' +
-    'It is good to feel part of a coding team again. I review, understand ' +
-    'and test all suggested code before including it.  I accept full ' +
-    'responsibility for the result, only publishing code I am willing ' + 'to maintain.';
+    'Since early 2025, I have been using ChatGPT as a coding assistant, and it is good to feel part of a coding team again.' +
+    LineEnding + 'I review, understand and test all suggested code, and I accept full responsibility for the result, only publishing code I am willing to maintain.';
     ProjectURL: 'https://chatgpt.com';
     CodeURL: 'https://openai.com';
     Kind: tpkCollaborator;
@@ -216,7 +224,18 @@ Const
     KeyFile: '';
     KeyFolder: '';
     CPUSensitive: False
-    ));
+    ), (
+    Name: THIRDPARTY_IM_COMMON;
+    Summary: 'Shared code for InspectorMike routines.' + LineEnding +
+    'Split into focussed packages: IM-units, IM_forms, IM_forms.media, IM_forms.docked, IM_database and third party inclusions IM_units.LazSerial && IM_forms.media.mpv';
+    ProjectURL: 'https://github.com/mikecornflake/';
+    CodeURL: 'https://github.com/mikecornflake/InspectorMike-common';
+    Kind: tpkIMPackage;
+    KeyFile: '';
+    KeyFolder: '';
+    CPUSensitive: False
+    )
+    );
 
 Implementation
 
@@ -375,7 +394,7 @@ Initialization
 
   // Ensure these are always attributed
   ThirdParties.Include([THIRDPARTY_LAZARUS, THIRDPARTY_FPC, THIRDPARTY_LAZARUSFORUM,
-    THIRDPARTY_AI_CHATGPT, THIRDPARTY_FPCUPDELUXE]);
+    THIRDPARTY_AI_CHATGPT, THIRDPARTY_FPCUPDELUXE, THIRDPARTY_IM_COMMON]);
 
 Finalization;
   FreeAndNil(FThirdParties);

@@ -14,6 +14,7 @@ Type
 
   TFrameThirdParty = Class(TFrame)
     edtFolder: TEdit;
+    ilTabs: TImageList;
     Label1: TLabel;
     Label2: TLabel;
     lblCodeURL: TLabel;
@@ -51,6 +52,8 @@ End;
 
 Procedure TFrameThirdParty.Populate(AThirdParty: TThirdParty);
 Begin
+  pcMain.ActivePage := tsLinks;
+
   lblProjectURL.Caption := AThirdParty.ProjectURL;
   lblCodeURL.Caption := AThirdParty.CodeURL;
   lblSummary.Caption := AThirdParty.Summary;
@@ -58,6 +61,7 @@ Begin
 
   If FileExists(AThirdParty.Readme) Then
   Begin
+    tsReadme.TabVisible := True;
     If SameText(ExtractFileExt(AThirdParty.Readme), '.md') Then
       memReadme.Highlighter := synMarkdown
     Else
@@ -70,6 +74,7 @@ Begin
 
   If FileExists(AThirdParty.License) Then
   Begin
+    tsLicense.TabVisible := True;
     If SameText(ExtractFileExt(AThirdParty.License), '.md') Then
       memLicense.Highlighter := synMarkdown
     Else
@@ -80,12 +85,8 @@ Begin
   Else
     tsLicense.TabVisible := False;
 
-  pcMain.ActivePage := tsLinks;
-
-  If Not tsLicense.TabVisible And Not tsReadme.TabVisible Then
-  Begin
-    tsLinks.TabVisible := False;
-  End;
+  // Means we need to keep ilTabs here synced with AboutForm.ilTabs
+  tsLinks.ImageIndex := 4 + Integer(AThirdParty.Kind)
 End;
 
 Procedure TFrameThirdParty.URLLabelMouseEnter(Sender: TObject);

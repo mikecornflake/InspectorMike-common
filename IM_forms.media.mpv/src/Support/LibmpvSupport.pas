@@ -82,6 +82,8 @@ Constructor TLibmpvSupport.Create;
 Var
   oDef: TThirdPartyDefinition;
 Begin
+  oDef := Default(TThirdPartyDefinition);
+
   // Dynamically Linked DLL
   oDef.Kind := tpkRuntimeLibrary;
 
@@ -95,13 +97,13 @@ Begin
   // Metadata
   oDef.Name := THIRDPARTY_LIBMPV;
 
-  oDef.Summary := 'mpv is a free (as in freedom) media player for the command line. ' +
-    'It supports a wide variety of media file formats, audio and video codecs, ' +
+  oDef.Summary := 'mpv is a free (as in freedom) media player for the command line or as a library. ' +
+    'mpv supports a wide variety of media file formats, audio and video codecs, ' +
     'and subtitle types.' + LineEnding + LineEnding + '- Version: 0.41.0-697-g13a3e3ad0 ' +
     LineEnding + '- Windows build: Shinchiro developer build';
 
-  FProjectURL := 'https://mpv.io/';
-  FCodeURL := 'hhttps://github.com/mpv-player/mpv';
+  oDef.ProjectURL := 'https://mpv.io/';
+  oDef.CodeURL := 'https://github.com/mpv-player/mpv';
 
   Inherited Create(oDef);
 
@@ -109,9 +111,11 @@ Begin
   FUsed := True;
 
   // Now acknowledge the creators of the libmpv wrapper.
+  oDef := Default(TThirdPartyDefinition);
+
   oDef.Name := THIRDPARTY_UW_MPVPLAYER;
-  oDef.Summary := 'A libmpv media player control for Lazarus' + LineEnding +
-    LineEnding + 'Powerful multimedia playback engine. It supports a wide variety of media file formats, audio and video codecs, and subtitle types';
+  oDef.Summary := 'This is the pascal wrapper for the libmpv media player library' + LineEnding +
+    LineEnding + 'libmpv is a powerful multimedia playback engine. It supports a wide variety of media file formats, audio and video codecs, and subtitle types';
   oDef.ProjectURL := 'https://www.uruworks.net/index.html';
   oDef.CodeURL := 'https://github.com/URUWorks/UW_MPVPlayer';
   oDef.Kind := tpkLazarusPackage;
