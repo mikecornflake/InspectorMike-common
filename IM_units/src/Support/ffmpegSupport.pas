@@ -80,7 +80,7 @@ Type
 
   TFFmpegSupport = Class(TThirdParty)
   Public
-    Procedure DefineDefaults; Override;
+    Constructor Create; Override;
 
     { FFProbe routines }
 
@@ -122,26 +122,31 @@ End;
 
 { TFFmpegSupport }
 
-Procedure TFFmpegSupport.DefineDefaults;
+Constructor TFFmpegSupport.Create;
+Var
+  oDef: TThirdPartyDefinition;
 Begin
-  // This unit self registers
-  FUsed := True;
-
-  FKind := tpkCommandLineTool;
+  oDef.Kind := tpkCommandLineTool;
 
   // CLI, we don't care if the exe is 32bit or 64bit
-  FCPUSensitive := False;
+  oDef.CPUSensitive := False;
 
   // Preparation for default Initialise
-  FKeyFile := 'ffprobe' + GetExeExt;
-  FKeyFolder := 'ffmpeg\bin';
+  oDef.KeyFile := 'ffprobe' + GetExeExt;
+  oDef.KeyFolder := 'ffmpeg\bin';
 
   // Metadata
-  FName := THIRDPARTY_FFMPEG;
-  FSummary := 'FFmpeg is a collection of libraries and tools to process multimedia ' +
+  oDef.Name := THIRDPARTY_FFMPEG;
+  oDef.Summary := 'FFmpeg is a collection of libraries and tools to process multimedia ' +
     'content such as audio, video, subtitles and related metadata.';
-  FProjectURL := 'https://ffmpeg.org';
-  FCodeURL := 'https://github.com/ffmpeg/ffmpeg';
+
+  oDef.ProjectURL := 'https://ffmpeg.org';
+  oDef.CodeURL := 'https://github.com/ffmpeg/ffmpeg';
+
+  Inherited Create(oDef);
+
+  // This unit self registers
+  FUsed := True;
 End;
 
 Function TFFmpegSupport.Probe(sFilename: String): String;

@@ -50,7 +50,7 @@ Type
     FqpdfExe: String;
 
   Public
-    Procedure DefineDefaults; Override;
+    Constructor Create; Override;
     Procedure Initialise; Override;
 
     // Parses qpdf-normalised UTC dates.
@@ -126,24 +126,28 @@ End;
 
 { TqpdfSupport }
 
-Procedure TqpdfSupport.DefineDefaults;
+Constructor TqpdfSupport.Create;
+Var
+  oDef: TThirdPartyDefinition;
 Begin
-  // This unit self registers
-  FUsed := True;
-
   // CLI, we don't care if the exe is 32bit or 64bit
-  FCPUSensitive := False;
+  oDef.CPUSensitive := False;
 
   // Preparation for default Initialise
   // Have to search for the dll as Poppler shares same
   // names as XPDF
-  FKeyFile := 'qpdf' + GetExeExt;
-  FKeyFolder := 'qpdf\bin';
+  oDef.KeyFile := 'qpdf' + GetExeExt;
+  oDef.KeyFolder := 'qpdf\bin';
 
   // Metadata
-  FName := THIRDPARTY_QPDF;
-  FSummary := 'qpdf is a command-line tool and C++ library that performs content-preserving transformations on PDF files. It supports linearization, encryption, and numerous other features. It can also be used for splitting and merging files, creating PDF files (but you have to supply all the content yourself), and inspecting files for study or analysis. qpdf does not render PDFs or perform text extraction, and it does not contain higher-level interfaces for working with page contents. It is a low-level tool for working with the structure of PDF files and can be a valuable tool for anyone who wants to do programmatic or command-line-based manipulation of PDF files.';
-  FCodeURL := 'https://github.com/qpdf/qpdf';
+  oDef.Name := THIRDPARTY_QPDF;
+  oDef.Summary := 'qpdf is a command-line tool and C++ library that performs content-preserving transformations on PDF files. It supports linearization, encryption, and numerous other features. It can also be used for splitting and merging files, creating PDF files (but you have to supply all the content yourself), and inspecting files for study or analysis. qpdf does not render PDFs or perform text extraction, and it does not contain higher-level interfaces for working with page contents. It is a low-level tool for working with the structure of PDF files and can be a valuable tool for anyone who wants to do programmatic or command-line-based manipulation of PDF files.';
+  oDef.CodeURL := 'https://github.com/qpdf/qpdf';
+
+  Inherited Create(oDef);
+
+  // This unit self registers
+  FUsed := True;
 End;
 
 Procedure TqpdfSupport.Initialise;

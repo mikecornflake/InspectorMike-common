@@ -51,7 +51,7 @@ Type
   TXPDFSupport = Class(TThirdParty)
   Private
   Public
-    Procedure DefineDefaults; Override;
+    Constructor Create; Override;
 
     { PDFInfo.exe }
 
@@ -81,25 +81,29 @@ End;
 
 { TFFmpegSupport }
 
-Procedure TXPDFSupport.DefineDefaults;
+Constructor TXPDFSupport.Create;
+Var
+  oDef: TThirdPartyDefinition;
 Begin
-  // This unit self registers
-  FUsed := True;
-
-  FKind := tpkCommandLineTool;
+  oDef.Kind := tpkCommandLineTool;
 
   // CLI, we don't care if the exe is 32bit or 64bit
-  FCPUSensitive := False;
+  oDef.CPUSensitive := False;
 
   // Preparation for default Initialise
-  FKeyFile := 'pdfinfo' + GetExeExt;
-  FKeyFolder := 'XPDF\bin32';
+  oDef.KeyFile := 'pdfinfo' + GetExeExt;
+  oDef.KeyFolder := 'XPDF\bin32';
 
   // Metadata
-  FName := THIRDPARTY_XPDF;
-  FSummary := 'The Xpdf open source project includes a PDF viewer along with a collection of command line tools which perform various functions on PDF files:';
-  FProjectURL := 'https://www.xpdfreader.com';
-  FCodeURL := 'https://www.xpdfreader.com/download.html';
+  oDef.Name := THIRDPARTY_XPDF;
+  oDef.Summary := 'The Xpdf open source project includes a PDF viewer along with a collection of command line tools which perform various functions on PDF files:';
+  oDef.ProjectURL := 'https://www.xpdfreader.com';
+  oDef.CodeURL := 'https://www.xpdfreader.com/download.html';
+
+  Inherited Create(oDef);
+
+  // This unit self registers
+  FUsed := True;
 End;
 
 Function TXPDFSupport.Info(APDFFilename: String): String;

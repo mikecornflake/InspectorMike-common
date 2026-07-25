@@ -49,7 +49,8 @@ Type
 
   TTesseractSupport = Class(TThirdParty)
   Public
-    Procedure DefineDefaults; Override;
+    Constructor Create; Override;
+
     Function BuildOptionsString(AOEM: Integer = 3; APSM: Integer = -1;
       AWhitelist: String = ''): String;
 
@@ -79,25 +80,30 @@ End;
 
 { TTesseractSupport }
 
-Procedure TTesseractSupport.DefineDefaults;
+Constructor TTesseractSupport.Create;
+Var
+  oDef: TThirdPartyDefinition;
 Begin
-  // This unit self registers
-  FUsed := True;
 
-  FKind := tpkCommandLineTool;
+  oDef.Kind := tpkCommandLineTool;
 
   // CLI, we don't care if the exe is 32bit or 64bit
-  FCPUSensitive := False;
+  oDef.CPUSensitive := False;
 
   // Preparation for default Initialise
-  FKeyFile := 'tesseract' + GetExeExt;
-  FKeyFolder := 'Tesseract-OCR';
+  oDef.KeyFile := 'tesseract' + GetExeExt;
+  oDef.KeyFolder := 'Tesseract-OCR';
 
   // Metadata
-  FName := THIRDPARTY_TESSERACT;
-  FSummary := 'Tesseract OCR is the industry-standard free, open-source Optical Character Recognition engine. It leverages advanced LSTM neural networks to extract text from images with up to 99%+ accuracy across 100+ languages. Fully offline and secure, it is the foundation of global document analysis, text extraction, and tesseract ocr download';
-  FProjectURL := 'https://tesseractocr.org/';
-  FCodeURL := 'https://github.com/tesseract-ocr/tesseract';
+  oDef.Name := THIRDPARTY_TESSERACT;
+  oDef.Summary := 'Tesseract OCR is the industry-standard free, open-source Optical Character Recognition engine. It leverages advanced LSTM neural networks to extract text from images with up to 99%+ accuracy across 100+ languages. Fully offline and secure, it is the foundation of global document analysis, text extraction, and tesseract ocr download';
+  oDef.ProjectURL := 'https://tesseractocr.org/';
+  oDef.CodeURL := 'https://github.com/tesseract-ocr/tesseract';
+
+  Inherited Create(oDef);
+
+  // This unit self registers
+  FUsed := True;
 End;
 
 Function TTesseractSupport.BuildOptionsString(AOEM: Integer; APSM: Integer;

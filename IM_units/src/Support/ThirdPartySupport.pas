@@ -58,10 +58,9 @@ Type
     FFolder: String;
 
   Public
-    Constructor Create; Virtual;
-    Constructor Create(ADefinition: TThirdPartyDefinition);
+    Constructor Create; Virtual; Overload;
+    Constructor Create(ADefinition: TThirdPartyDefinition); Overload;
 
-    Procedure DefineDefaults; Virtual;
     Procedure Initialise; Virtual;
 
     Function FullExe(AExeNoExt: String): String;
@@ -100,14 +99,11 @@ Const
   THIRDPARTY_IMAGEMAGICK = 'ImageMagick';
   THIRDPARTY_FATCOW_ICONS = 'FatCow Icons';
 
-  THIRDPARTY_UW_MPVPLAYER = 'UW_MPVPlayer';
-
-
 Const
-  ThirdPartyDefinitions: Array[0..5] Of TThirdPartyDefinition = (
+  ThirdPartyDefinitions: Array[0..4] Of TThirdPartyDefinition = (
     (
     Name: THIRDPARTY_LAZARUSFORUM;
-    Summary: 'Words alone cannot express my gratitude to the open source community for developing a wide range of versatile tools, and for making these easily available to other developers such as myself. ' + LineEnding + 'In particular I''d like to thank all the helpful individuals on the Lazarus forums.  These people give up their free time willingly, providing help and support.';
+    Summary: 'Words alone cannot express my gratitude to the open source community for developing a wide range of versatile tools, and for making these easily available to other developers such as myself. ' + LineEnding + LineEnding + 'In particular I''d like to thank all the helpful individuals on the Lazarus forums.  These people give up their free time willingly, providing help and support.';
     ProjectURL: 'https://forum.lazarus.freepascal.org/index.php';
     CodeURL: 'https://wiki.lazarus.freepascal.org/';
     Kind: tpkLazarusPackage;
@@ -149,16 +145,6 @@ Const
     Kind: tpkAssetCollection;
     KeyFile: '';
     KeyFolder: '';
-    CPUSensitive: False
-    ), (
-    Name: THIRDPARTY_UW_MPVPLAYER;
-    Summary: 'A libmpv media player control for Lazarus' + LineEnding + LineEnding +
-    'Powerful multimedia playback engine. It supports a wide variety of media file formats, audio and video codecs, and subtitle types';
-    ProjectURL: 'https://www.uruworks.net/index.html';
-    CodeURL: 'https://github.com/URUWorks/UW_MPVPlayer';
-    Kind: tpkLazarusPackage;
-    KeyFile: 'Readme.md';
-    KeyFolder: THIRDPARTY_UW_MPVPLAYER;
     CPUSensitive: False
     )
     );
@@ -241,20 +227,13 @@ End;
 
 Constructor TThirdParty.Create;
 Begin
-  FUsed := False;
 
-  ThirdParties.Add(Self);
-
-  // User must override this
-  DefineDefaults;
-
-  // User may optionally override this
-  // But defaults work with Drivers and CLI apps
-  Initialise;
 End;
 
 Constructor TThirdParty.Create(ADefinition: TThirdPartyDefinition);
 Begin
+  FUsed := False;
+
   FName := ADefinition.Name;
   FSummary := ADefinition.Summary;
   FKind := ADefinition.Kind;
@@ -267,12 +246,8 @@ Begin
 
   FCPUSensitive := ADefinition.CPUSensitive;
 
-  Create;
-End;
-
-Procedure TThirdParty.DefineDefaults;
-Begin
-
+  Initialise;
+  ThirdParties.Add(Self);
 End;
 
 Procedure TThirdParty.Initialise;

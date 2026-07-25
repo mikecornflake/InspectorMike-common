@@ -47,7 +47,7 @@ Type
 
   TPopplerSupport = Class(TThirdParty)
   Public
-    Procedure DefineDefaults; Override;
+    Constructor Create; Override;
 
     Function PDFInfo(APDFFilename: String): String;
   End;
@@ -75,25 +75,27 @@ End;
 
 { TPopplerSupport }
 
-Procedure TPopplerSupport.DefineDefaults;
+Constructor TPopplerSupport.Create;
+Var
+  oDef: TThirdPartyDefinition;
 Begin
-  // This unit self registers
-  FUsed := True;
-
-  FKind := tpkCommandLineTool;
+  oDef.Kind := tpkCommandLineTool;
 
   // CLI, we don't care if the exe is 32bit or 64bit
-  FCPUSensitive := False;
+  oDef.CPUSensitive := False;
 
   // Preparation for default Initialise
-  FKeyFile := 'pdfinfo' + GetExeExt;
-  FKeyFolder := 'Poppler\bin';
+  oDef.KeyFile := 'pdfinfo' + GetExeExt;
+  oDef.KeyFolder := 'Poppler\bin';
 
   // Metadata
-  FName := THIRDPARTY_POPPLER;
-  FSummary := 'This is Poppler, a library for rendering PDF files, and examining or modifying their structure.  Poppler originally came from the XPDF ' + 'sources';
-  FProjectURL := 'https://poppler.freedesktop.org/';
-  FCodeURL := 'https://gitlab.freedesktop.org/poppler/poppler';
+  oDef.Name := THIRDPARTY_POPPLER;
+  oDef.Summary := 'This is Poppler, a library for rendering PDF files, and examining or modifying their structure.  Poppler originally came from the XPDF ' + 'sources';
+  oDef.ProjectURL := 'https://poppler.freedesktop.org/';
+  oDef.CodeURL := 'https://gitlab.freedesktop.org/poppler/poppler';
+
+  // This unit self registers
+  FUsed := True;
 End;
 
 Function TPopplerSupport.PDFInfo(APDFFilename: String): String;

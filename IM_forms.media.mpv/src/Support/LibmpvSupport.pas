@@ -52,7 +52,8 @@ Type
 
   TLibmpvSupport = Class(TThirdParty)
   Public
-    Procedure DefineDefaults; Override;
+    Constructor Create; Override;
+
     Procedure Initialise; Override;
   End;
 
@@ -60,6 +61,7 @@ Function LibmpvDLL: TLibmpvSupport;
 
 Const
   THIRDPARTY_LIBMPV = 'libmpv';
+  THIRDPARTY_UW_MPVPLAYER = 'UW_MPVPlayer';
 
 Implementation
 
@@ -76,31 +78,47 @@ End;
 
 { TLibmpvSupport }
 
-Procedure TLibmpvSupport.DefineDefaults;
+Constructor TLibmpvSupport.Create;
+Var
+  oDef: TThirdPartyDefinition;
 Begin
-  // This unit self registers
-  FUsed := True;
-
   // Dynamically Linked DLL
-  FKind := tpkRuntimeLibrary;
+  oDef.Kind := tpkRuntimeLibrary;
 
-  // CLI, we don't care if the exe is 32bit or 64bit
-  FCPUSensitive := True;
+  // DLL - we care if the exe is 32bit or 64bit
+  oDef.CPUSensitive := True;
 
   // Preparation for default Initialise
-  FKeyFile := 'libmpv-2.dll';
-  FKeyFolder := 'mpv';
+  oDef.KeyFile := 'libmpv-2.dll';
+  oDef.KeyFolder := 'mpv';
 
   // Metadata
-  FName := THIRDPARTY_LIBMPV;
+  oDef.Name := THIRDPARTY_LIBMPV;
 
-  FSummary := 'mpv is a free (as in freedom) media player for the command line. ' +
+  oDef.Summary := 'mpv is a free (as in freedom) media player for the command line. ' +
     'It supports a wide variety of media file formats, audio and video codecs, ' +
     'and subtitle types.' + LineEnding + LineEnding + '- Version: 0.41.0-697-g13a3e3ad0 ' +
     LineEnding + '- Windows build: Shinchiro developer build';
 
   FProjectURL := 'https://mpv.io/';
   FCodeURL := 'hhttps://github.com/mpv-player/mpv';
+
+  Inherited Create(oDef);
+
+  // This unit self registers
+  FUsed := True;
+
+  // Now acknowledge the creators of the libmpv wrapper.
+  oDef.Name := THIRDPARTY_UW_MPVPLAYER;
+  oDef.Summary := 'A libmpv media player control for Lazarus' + LineEnding +
+    LineEnding + 'Powerful multimedia playback engine. It supports a wide variety of media file formats, audio and video codecs, and subtitle types';
+  oDef.ProjectURL := 'https://www.uruworks.net/index.html';
+  oDef.CodeURL := 'https://github.com/URUWorks/UW_MPVPlayer';
+  oDef.Kind := tpkLazarusPackage;
+  oDef.KeyFile := 'Readme.md';
+  oDef.KeyFolder := THIRDPARTY_UW_MPVPLAYER;
+  oDef.CPUSensitive := False;
+  TThirdParty.Create(oDef);
 End;
 
 Procedure TLibmpvSupport.Initialise;
