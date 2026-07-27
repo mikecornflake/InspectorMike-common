@@ -90,7 +90,7 @@ Begin
 
   // Metadata
   oDef.Name := THIRDPARTY_POPPLER;
-  oDef.Summary := 'This is Poppler, a library for rendering PDF files, and examining or modifying their structure.  Poppler originally came from the XPDF ' + 'sources';
+  oDef.Summary := 'This is Poppler, a library for rendering PDF files, and examining or modifying their structure.  Poppler originally came from the XPDF sources';
   oDef.ProjectURL := 'https://poppler.freedesktop.org/';
   oDef.CodeURL := 'https://gitlab.freedesktop.org/poppler/poppler';
 
