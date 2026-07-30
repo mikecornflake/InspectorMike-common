@@ -4711,7 +4711,7 @@ object frmAbout: TfrmAbout
       TabVisible = False
       inline memReadme: TSynEdit
         Left = 0
-        Height = 379
+        Height = 354
         Top = 0
         Width = 732
         Align = alClient
@@ -5226,6 +5226,16 @@ object frmAbout: TfrmAbout
           end
         end
       end
+      object edtAppExe: TEdit
+        Left = 0
+        Height = 25
+        Top = 354
+        Width = 732
+        Align = alBottom
+        Color = clBtnFace
+        ReadOnly = True
+        TabOrder = 1
+      end
     end
     object tsAbout: TTabSheet
       Caption = 'Build'
@@ -5313,19 +5323,9 @@ object frmAbout: TfrmAbout
       ClientWidth = 732
       ImageIndex = 0
       TabVisible = False
-      object edtAppExe: TEdit
-        Left = 0
-        Height = 25
-        Top = 354
-        Width = 732
-        Align = alBottom
-        Color = clBtnFace
-        ReadOnly = True
-        TabOrder = 0
-      end
       inline memLicence: TSynEdit
         Left = 0
-        Height = 354
+        Height = 379
         Top = 0
         Width = 732
         Align = alClient
@@ -5337,7 +5337,7 @@ object frmAbout: TfrmAbout
         Font.Style = [fsBold]
         ParentColor = False
         ParentFont = False
-        TabOrder = 1
+        TabOrder = 0
         Gutter.Visible = False
         Gutter.Width = 57
         Gutter.MouseActions = <>

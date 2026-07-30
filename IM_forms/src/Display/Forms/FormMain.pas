@@ -38,7 +38,7 @@ Unit FormMain;
 -------------------------------------------------------------------------------}
 
 {$mode objfpc}{$H+}
-
+{$WARN 5024 off : Parameter "$1" not used}
 Interface
 
 Uses
@@ -110,7 +110,7 @@ Type
     Procedure LoadGlobalSettings(oInifile: TIniFile); Virtual;
     Procedure SaveGlobalSettings(oInifile: TIniFile); Virtual;
 
-    // Stored in %appdata% - Recommended for persisting user UI preferences
+    // Stored in %localappdata% - Recommended for persisting user UI preferences
     Procedure LoadLocalSettings(oInifile: TIniFile); Virtual;
     Procedure SaveLocalSettings(oInifile: TIniFile); Virtual;
   Public

@@ -16,6 +16,7 @@
         <CompilerMessages>
           <IgnoredMessages idx6058="True" idx5024="True" idx5023="True"/>
         </CompilerMessages>
+        <CustomOptions Value="-d$(BuildMode)"/>
       </Other>
     </CompilerOptions>
     <Files>

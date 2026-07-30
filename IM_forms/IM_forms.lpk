@@ -12,6 +12,12 @@
         <OtherUnitFiles Value="src\Display\Forms;src\Display\Frames;src\Classes;src\Support;src\Display\Wizards"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx6058="True" idx5024="True"/>
+        </CompilerMessages>
+        <CustomOptions Value="-d$(BuildMode)"/>
+      </Other>
     </CompilerOptions>
     <Files>
       <Item>
@@ -19,31 +25,15 @@
         <UnitName Value="ControlGridLayout"/>
       </Item>
       <Item>
-        <Filename Value="src\Display\Forms\FormPersistent.lfm"/>
-        <Type Value="LFM"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Display\Forms\FormPersistent.pas"/>
-        <UnitName Value="FormPersistent"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Display\Frames\FrameBase.lfm"/>
-        <Type Value="LFM"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Display\Frames\FrameBase.pas"/>
-        <UnitName Value="FrameBase"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Display\Forms\FormAbout.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="src\Classes\PipelineEventMap.pas"/>
+        <UnitName Value="PipelineEventMap"/>
       </Item>
       <Item>
         <Filename Value="src\Display\Forms\FormAbout.pas"/>
         <UnitName Value="FormAbout"/>
       </Item>
       <Item>
-        <Filename Value="src\Display\Forms\FormMain.lfm"/>
+        <Filename Value="src\Display\Forms\FormAbout.lfm"/>
         <Type Value="LFM"/>
       </Item>
       <Item>
@@ -51,7 +41,27 @@
         <UnitName Value="FormMain"/>
       </Item>
       <Item>
-        <Filename Value="src\Display\Frames\FrameHTMLs.lfm"/>
+        <Filename Value="src\Display\Forms\FormMain.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Forms\FormPersistent.pas"/>
+        <UnitName Value="FormPersistent"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Forms\FormPersistent.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameAboutThirdParty.pas"/>
+        <UnitName Value="FrameAboutThirdParty"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameBase.pas"/>
+        <UnitName Value="FrameBase"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameBase.lfm"/>
         <Type Value="LFM"/>
       </Item>
       <Item>
@@ -59,20 +69,8 @@
         <UnitName Value="FrameHTMLs"/>
       </Item>
       <Item>
-        <Filename Value="src\Support\ControlsSupport.pas"/>
-        <UnitName Value="ControlsSupport"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Display\Wizards\WizardBase.lfm"/>
+        <Filename Value="src\Display\Frames\FrameHTMLs.lfm"/>
         <Type Value="LFM"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Display\Wizards\WizardBase.pas"/>
-        <UnitName Value="WizardBase"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Classes\PipelineEventMap.pas"/>
-        <UnitName Value="PipelineEventMap"/>
       </Item>
       <Item>
         <Filename Value="src\Display\Frames\FramePipelineView.pas"/>
@@ -83,8 +81,16 @@
         <Type Value="LFM"/>
       </Item>
       <Item>
-        <Filename Value="src\Display\Frames\FrameAboutThirdParty.pas"/>
-        <UnitName Value="FrameAboutThirdParty"/>
+        <Filename Value="src\Display\Wizards\WizardBase.pas"/>
+        <UnitName Value="WizardBase"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Wizards\WizardBase.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\ControlsSupport.pas"/>
+        <UnitName Value="ControlsSupport"/>
       </Item>
     </Files>
     <RequiredPkgs>

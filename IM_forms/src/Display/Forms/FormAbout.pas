@@ -240,6 +240,17 @@ Begin
   memAbout.Lines.Add(' with ' + GetCompilerInfo + ' on ' + GetCompiledDate);
   memAbout.Lines.Add(' and using ' + GetLCLVersion + ' and ' + GetWidgetset);
 
+  {$IFDEF DEFAULT}
+  memAbout.Lines.Add(' Build mode: Limited Debug');
+  {$ENDIF}
+  {$IFDEF DEBUG}
+  memAbout.Lines.Add(' Build mode: Full Debug');
+  {$ENDIF}
+  {$IFDEF RELEASE}
+  memAbout.Lines.Add(' Build mode: Release');
+  {$ENDIF}
+
+
   If tsReadme.TabVisible Then
     pcAbout.ActivePage := tsReadme
   Else

@@ -11,6 +11,9 @@
         <OtherUnitFiles Value="src\Display\Frames;src\Support"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Other>
+        <CustomOptions Value="-d$(BuildMode)"/>
+      </Other>
     </CompilerOptions>
     <Files>
       <Item>

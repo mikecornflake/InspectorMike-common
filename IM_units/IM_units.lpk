@@ -13,8 +13,9 @@
       </SearchPaths>
       <Other>
         <CompilerMessages>
-          <IgnoredMessages idx6058="True" idx5044="True" idx3124="True" idx3123="True"/>
+          <IgnoredMessages idx6058="True" idx5057="True" idx5044="True" idx5025="True" idx5024="True" idx4104="True" idx3124="True" idx3123="True"/>
         </CompilerMessages>
+        <CustomOptions Value="-d$(BuildMode)"/>
       </Other>
     </CompilerOptions>
     <Files>
