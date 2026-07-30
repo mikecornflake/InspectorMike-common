@@ -43,7 +43,7 @@ Unit Settings;
 -------------------------------------------------------------------------------}
 
 {$mode objfpc}{$H+}
-
+{$WARN 4104 off : Implicit string type conversion from "$1" to "$2"}
 Interface
 
 Uses

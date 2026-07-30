@@ -336,7 +336,7 @@ End;
 Function TqpdfSupport.AddAttachments(Const AFilename: String;
   APDFAttachments: TPDFAttachments): Boolean;
 Var
-  sFolder, sExt, sOriginal, sParams, sCommand, sTemp: String;
+  sFolder, sExt, sOriginal, sParams, sCommand: String;
   oTemp: TPDFAttachment;
 Begin
   Result := False;
@@ -350,7 +350,6 @@ Begin
   sFolder := ExtractFileDir(AFilename);
   sOriginal := ChangeFileExt(ExtractFileName(AFilename), '');
   sExt := ExtractFileExt(AFilename);
-  sTemp := UniqueFilename(sFolder, sOriginal, sExt, False, 5);
 
   // TODO Compare Existing Attachments then update or append accordingly
   //oExistingAttachments := TPDFAttachments.Create;

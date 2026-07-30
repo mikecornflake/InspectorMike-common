@@ -50,8 +50,8 @@ Unit OSSupport;
 Interface
 
 Uses
-  Classes, SysUtils, UTF8Process, Controls, Graphics, Forms, LCLType, LCLIntf,
-  Types
+  Classes, SysUtils, UTF8Process, Controls, Graphics, Forms, LCLType,
+  LCLIntf
   {$IFDEF WINDOWS}, Windows, ShellAPI{$ENDIF}
   {$IFDEF UNIX}, BaseUnix {$ENDIF}
   ;
@@ -143,7 +143,7 @@ Const
 Implementation
 
 Uses
-  Registry, Process, Clipbrd, StringSupport, FileSupport, SyncObjs;
+  Registry, Process, Clipbrd, StringSupport, FileSupport;
 
 Var
   LBusy: Longint = 0;

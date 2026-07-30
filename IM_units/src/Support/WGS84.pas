@@ -60,7 +60,7 @@ User @stab
            som '' eller ' '
 2011-10-28 Lagt till initiering av medelMeridian till '2.5 gon V' om den inte är angiven
 }
-
+{$WARN 5024 off : Parameter "$1" not used}
 Interface
 
 Uses
@@ -837,7 +837,7 @@ End;
 Procedure TWGS84.FiLambdaH2PlanaXYSWEREF99(Fi, Lambda, H: Extended;
   Var x, y: Extended; system: String);
 Var
-  n, nKvadrat, aTak, Meridian: Extended;
+  n, nKvadrat, aTak: Extended;
   AetaPrim, KsiPrim, deltaLambda: Extended;
   FiIso, sinFi: Extended;
   b1, b2, b3, b4, A, B, C, D, e2, e4, e6, e8: Extended;
