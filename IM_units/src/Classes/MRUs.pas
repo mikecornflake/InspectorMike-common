@@ -7,8 +7,8 @@ Unit MRUs;
     Unit to manage "Most Recently Used..." menu
 
   TODO
-    This isn't working.  Not sure why, and stopped using it.  Still a good idea
-    so lef the unit around
+    2024: This isn't working.  Not sure why, and stopped using it.  Still a good idea
+    so left the unit around
     UPDATE June 2026: This is testing fine.  Previous failure might have been
       because IM_Applications.MainForm.SaveGlobalSettings was modified to only run if --configure was
       called.   If you use IM_Applications.MainForm, you can bypass the
@@ -26,6 +26,7 @@ Unit MRUs;
     2025-11-29: Added this header.
     2026-06-15: Confirmed MRU working fine as part of SimpleVideoPlayer
     2026-06-19: Refactored into split InspectorMike package structure
+    2026-07-29: Added MRU Folder Support
 
   License
     This file is part of IM_units.lpk.
@@ -55,11 +56,13 @@ Uses
 
 Type
 
+  mruKind = (mruFiles, mruFolders);
+
   { TMRU }
 
   TMRU = Class(TObject)
   Private
-    FFiles: Boolean;
+    FKind: mruKind;
     FItems: TStringList;
     FMax: Integer;
   Public
@@ -80,8 +83,9 @@ Type
     Procedure Save(oInifile: TInifile; sSection, sIdent: String);
 
     Property Max: Integer Read FMax Write FMax;
-    Property Files: Boolean Read FFiles Write FFiles;
+    Property Kind: mruKind Read FKind Write FKind;
   End;
+
 
 
 Implementation
@@ -96,9 +100,10 @@ Begin
   FItems := TStringList.Create;
   FItems.Duplicates := dupError;
 
-  FFiles := False;
+  FKind := mruFiles;   // default behaviour preserved
   FMax := 10;
 End;
+
 
 Destructor TMRU.Destroy;
 Begin
@@ -116,11 +121,20 @@ Procedure TMRU.Validate;
 Var
   i: Integer;
 Begin
-  If FFiles Then
-    For i := FItems.Count - 1 Downto 0 Do
-      If Not FileExists(FItems[i]) Then
-        FItems.Delete(i);
+  For i := FItems.Count - 1 Downto 0 Do
+  Begin
+    Case FKind Of
+      mruFiles:
+        If Not FileExists(FItems[i]) Then
+          FItems.Delete(i);
+
+      mruFolders:
+        If Not DirectoryExists(FItems[i]) Then
+          FItems.Delete(i);
+    End;
+  End;
 End;
+
 
 Function TMRU.Value(iIndex: Integer): String;
 Begin
@@ -132,10 +146,17 @@ End;
 
 Function TMRU.Filename(iIndex: Integer): String;
 Begin
-  If FFiles Then
-    Result := ExtractFileName(Value(iIndex))
-  Else
-    Result := Value(iIndex);
+  Case FKind Of
+    mruFiles:
+      Result := ExtractFileName(Value(iIndex));
+
+    mruFolders:
+    Begin
+      Result := Trim(ExtractFileName(ExcludeTrailingPathDelimiter(Value(iIndex))));
+      If Result = '' Then
+        Result := Value(iIndex);
+    End;
+  End;
 End;
 
 Function TMRU.Add(sItem: String): Integer;
