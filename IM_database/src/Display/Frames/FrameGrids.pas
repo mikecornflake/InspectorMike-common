@@ -1159,7 +1159,7 @@ Begin
     grdSQL.Canvas.Brush.Color := CalcSelectionColor(clBtnFace, 32);
     grdSQL.Canvas.Font.Color := clBtnText;
   End
-  Else If Not (gdSelected In AState) Then
+  Else If Not (gdSelected In AState) And Assigned(FDataset) And (FDataset.Active) Then
   Begin
     oField := FDataset.FindField('Colour_ID');
     If Not Assigned(oField) Then
