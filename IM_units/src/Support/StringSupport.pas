@@ -380,7 +380,7 @@ Begin
       exit(True);
 End;
 
-// TODO Suspect this is a duplicate
+// TODO: Suspect this is a duplicate
 Function ValidateHTML(AInput: String): String;
 Begin
   Result := AInput;

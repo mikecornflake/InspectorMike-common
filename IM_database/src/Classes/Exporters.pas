@@ -128,7 +128,7 @@ Type
   End;
 
   { TCSVExporter }
-  // TODO - HTML Exporter functionality has changed, bring CSV Exporter up to date...
+  // TODO: HTML Exporter functionality has changed, bring CSV Exporter up to date...
   TCSVExporter = Class(TTextExporter)
   Protected
     Function Validate(sIn: String): String; Override;
@@ -885,8 +885,6 @@ Initialization
   ExporterFactory.RegisterExporter(TTextExporter);
   ExporterFactory.RegisterExporter(TCSVExporter);
   ExporterFactory.RegisterExporter(THTMLExporter);
-  //TODO - Move to ExportersFPVectorial.pas
-  //ExporterFactory.RegisterExporter(TDocumentExporter);
 
 Finalization;
   ExporterFactory.Free;

@@ -67,10 +67,9 @@ Type
     Function GetActivePageControl: TPageControl;
     Function GetDock(iIndex: Integer): TdckBase;
   Protected
-    FDocks: TList;  // TODO - think about moving this to private
+    FDocks: TList;
     FCategories: TCategoryItems;
 
-    // TODO Remove This (need to have dynamic PageControl functionality first)
     Function PageControl(iCategory: Integer): TPageControl;
 
     Procedure SetStatus(AValue: String); Override;
@@ -376,6 +375,7 @@ End;
 
 Procedure TfrmMultiDock.SetDebug(AValue: String);
 Begin
+  // TODO: DebugLn is deprecated
   DebugLn(FormatDateTime('HH:mm:ss', Now) + FIndent + AValue);
   memDebug2.Lines.Add(FormatDateTime('HH:mm:ss', Now) + FIndent + AValue);
 End;
@@ -582,7 +582,7 @@ Procedure TfrmMultiDock.MoveDock(oDockForm: TdckBase; iCategory: Integer);
 Var
   oPageControl: TPageControl;
 Begin
-  // TODO - If iCategory changed, update FCategories...
+  // TODO: If iCategory changed, update FCategories...
   oPageControl := PageControl(iCategory);
 
   oDockForm.Category := iCategory;

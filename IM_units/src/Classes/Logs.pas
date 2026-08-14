@@ -1,5 +1,6 @@
 Unit Logs;
 
+// TODO: Deprecate this unit
 {-------------------------------------------------------------------------------
   Package   : IM_units
   Unit      : Logs.pas
@@ -10,9 +11,6 @@ Unit Logs;
     Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
     Mike Thompson (mike.cornflake@gmail.com)
-
-  TODO
-    Deprecate this unit
 
     //TODO: Merge the Threadsafe and stability Log code with this
 

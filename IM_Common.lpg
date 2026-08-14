@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectGroup FileVersion="2">
+    <Targets>
+      <Target FileName="IM_units\IM_units.lpk"/>
+      <Target FileName="IM_forms\IM_forms.lpk"/>
+      <Target FileName="IM_forms.docked\IM_forms.docked.lpk"/>
+      <Target FileName="IM_forms.media\IM_forms.media.lpk"/>
+    </Targets>
+  </ProjectGroup>
+</CONFIG>

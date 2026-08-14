@@ -6,7 +6,6 @@ Unit MRUs;
   Description
     Unit to manage "Most Recently Used..." menu
 
-  TODO
     2024: This isn't working.  Not sure why, and stopped using it.  Still a good idea
     so left the unit around
     UPDATE June 2026: This is testing fine.  Previous failure might have been

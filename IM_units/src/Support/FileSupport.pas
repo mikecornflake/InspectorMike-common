@@ -242,7 +242,8 @@ Begin
   Result := DateTimeToStr(ADateTime, GFilenameDateTimeFormat);
 End;
 
-// TODO Linux...
+
+{ #todo : FileCreationDate needs to be implemented for linux }
 Function FileCreationDate(Const AFilename: String): TDateTime;
   {$IFDEF Windows}
 Var

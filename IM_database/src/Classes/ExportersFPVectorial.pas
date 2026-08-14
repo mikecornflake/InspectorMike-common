@@ -197,8 +197,7 @@ Var
   End;
 
 Begin
-  // TODO ATableExportOptions: TTableExportOptions = teActiveNoHeader
-  // not yet supported
+  // TODO: Support ATableExportOptions: TTableExportOptions = teActiveNoHeader
 
   If Not oDataset.Active Then
     Exit;
@@ -281,5 +280,9 @@ Begin
 
   Result := True;
 End;
+
+Initialization
+  //TODO: Why was this commented out?
+  ExporterFactory.RegisterExporter(TDocumentExporter);
 
 End.

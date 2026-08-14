@@ -433,7 +433,7 @@ End;
 
 Procedure TFrameGrid.DatasetAfterEdit(DataSet: TDataSet);
 Begin
-  // TODO Add an Event Here that users of TFrameGrid can call
+  // TODO: Add an Event Here that users of TFrameGrid can call
 End;
 
 Procedure TFrameGrid.InitialiseDBGrid(bHideIDs: Boolean);
@@ -511,7 +511,7 @@ Begin
   If FUseMultilineDefaults = AValue Then Exit;
   FUseMultilineDefaults := AValue;
 
-  // TODO Untangle this...
+  // TODO: Untangle this...
   //If AValue Then
   //  AllowMultiline := MainForm.Options.MultilineGridDefaults;
 
@@ -676,7 +676,7 @@ Begin
     End;
 
     FSortField := Column.FieldName;
-    // TODO - Let the outside world know that SortField has changed.
+    // TODO: Let the outside world know that SortField has changed.
   End;
 
   RefreshUI;
@@ -1093,7 +1093,7 @@ Procedure TFrameGrid.grdSQLPrepareCanvas(Sender: TObject; DataCol: Integer;
   Column: TColumn; AState: TGridDrawState);
 
 //http://forum.lazarus.freepascal.org/index.php/topic,25004.msg151201.html
-// TODO, Place in a support unit.
+// TODO: Place in a support unit.
   Function CalcSelectionColor(c: TColor; ADelta: Byte): TColor;
   Type
     TRGBA = Record

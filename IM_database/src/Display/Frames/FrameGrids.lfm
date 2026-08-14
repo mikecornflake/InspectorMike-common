@@ -112,7 +112,7 @@ inherited FrameGrid: TFrameGrid
           Wrapable = False
           object ToolButton1: TToolButton
             Left = 101
-            Height = 22
+            Height = 8
             Top = 0
             Caption = 'ToolButton1'
             Style = tbsSeparator

@@ -208,7 +208,7 @@ End;
 
 Procedure TdlgSQLFilter.SetFilter(Const AValue: String);
 Begin
-  // TODO Decode incoming filter
+  // TODO: Decode incoming filter
 
   // but in the meantime...
   memFilter.Lines.Text := AValue;

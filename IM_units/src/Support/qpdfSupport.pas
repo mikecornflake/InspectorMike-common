@@ -63,7 +63,7 @@ Type
     // TODO: StringSupport...
     Function QuoteParam(Const AValue: String): String;
 
-    // TODO This should be APDFAttachments.IndexOf()...
+    // TODO: This should be APDFAttachments.IndexOf()...
     Function FindAttachment(APDFAttachments: TPDFAttachments;
       Const AFilename: String): TPDFAttachment;
 
@@ -300,7 +300,7 @@ Begin
   Result += ' --';
 End;
 
-// TODO Make this a TPDFAttachments Function, with
+// TODO: Make this a TPDFAttachments Function, with
 // case sensivity dependant on OS
 Function TqpdfSupport.FindAttachment(APDFAttachments: TPDFAttachments;
   Const AFilename: String): TPDFAttachment;
@@ -351,7 +351,7 @@ Begin
   sOriginal := ChangeFileExt(ExtractFileName(AFilename), '');
   sExt := ExtractFileExt(AFilename);
 
-  // TODO Compare Existing Attachments then update or append accordingly
+  // TODO: Compare Existing Attachments then update or append accordingly
   //oExistingAttachments := TPDFAttachments.Create;
 
   If APDFAttachments.Count > 0 Then

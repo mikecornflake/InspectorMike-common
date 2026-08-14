@@ -14,7 +14,7 @@ Unit FormPersistent;
 
     This assumes Application.MainForm is descended from TFormMain in FormMain.pas
 
-	TODO Refactor IM_forms persistence hierarchy:
+    \\ TODO: Refactor IM_forms persistence hierarchy:
 	- TFormMain should descend from TFormPersistent.
 	- TFormPersistent should remain responsible for scanning owned TFrameBase descendants and delegating LoadSettings/SaveSettings.
 	- Verify TDockBase still works after hierarchy change.

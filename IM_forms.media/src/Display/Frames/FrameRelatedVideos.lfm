@@ -32,8 +32,8 @@ inherited FrameRelatedVideo: TFrameRelatedVideo
       Align = alClient
       ExtendedSelect = False
       ItemHeight = 0
-      OnDblClick = lbRelatedDblClick
       TabOrder = 0
+      OnDblClick = lbRelatedDblClick
     end
     object lblRelatedTitle: TLabel
       Left = 0

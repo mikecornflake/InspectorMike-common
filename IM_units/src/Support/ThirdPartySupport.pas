@@ -153,7 +153,7 @@ Const
     ProjectURL: 'https://imagemagick.org';
     CodeURL: 'https://github.com/imagemagick/imagemagick';
     Kind: tpkCommandLineTool;
-    KeyFile: 'magick.exe'; // TODO Linux
+    KeyFile: 'magick.exe'; // TODO: Linux
     KeyFolder: 'ImageMagick';
     CPUSensitive: False
     ), (

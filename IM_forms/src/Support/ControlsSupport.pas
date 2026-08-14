@@ -1,13 +1,11 @@
 Unit ControlsSupport;
 
+// TODO: Is this still used anywhere?  If not, delete.
 {-------------------------------------------------------------------------------
   Package   : IM_forms
   Unit      : ControlsSupport.pas
   Description
     Helper routines for visual controls
-
-  TODO
-    Is this still used anywhere?  If not, delete.
 
   Source
     Copyright (c) 2026

@@ -163,7 +163,7 @@ Begin
   While (sFile[i] <> '_') And (sFile[i] <> '-') Do
     Dec(i);
 
-  // TODO - add defensive code
+  // TODO: add defensive code
   If i >= 1 Then
     Result := Copy(sFile, 1, i - 1)
   Else
@@ -184,7 +184,7 @@ Function CustomSort(List: TStringList; Index1, Index2: Integer): Integer;
     While (sFile[i] <> '_') And (sFile[i] <> '-') Do
       Dec(i);
 
-    // TODO - add defensive code
+    // TODO: add defensive code
     If i >= 1 Then
       Result := StrToIntDef(Copy(sFile, i + 1, iLen - i), -1)
     Else
