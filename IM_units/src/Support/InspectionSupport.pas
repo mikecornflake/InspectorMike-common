@@ -355,6 +355,14 @@ Begin
   // anything_yyyymmddhhmmss_channel
   For i := 0 To High(Parts) - 1 Do
   Begin
+    // FDVR Allows for modification of filename and users may
+    // insert spaces or dashes between parts
+    If Length(Parts[i]) > 14 Then
+    Begin
+      Parts[i] := Parts[i].Replace('-', '');
+      Parts[i] := Parts[i].Replace(' ', '');
+    End;
+
     If Length(Parts[i]) <> 14 Then
       Continue;
 
