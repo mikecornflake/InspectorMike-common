@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectGroup FileVersion="2">
+    <Targets>
+      <Target FileName="IM.database\IM.database.lpk"/>
+      <Target FileName="IM.forms.media.mpv\IM.forms.media.mpv.lpk"/>
+      <Target FileName="IM.units.LazSerial\IM.units.LazSerial.lpk"/>
+    </Targets>
+  </ProjectGroup>
+</CONFIG>

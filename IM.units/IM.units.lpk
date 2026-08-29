@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="IM.units"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="src\Classes;src\Support"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx6058="True" idx5057="True" idx5044="True" idx5025="True" idx5024="True" idx4104="True" idx3124="True" idx3123="True"/>
+        </CompilerMessages>
+        <CustomOptions Value="-d$(BuildMode)"/>
+      </Other>
+    </CompilerOptions>
+    <Files>
+      <Item>
+        <Filename Value="src\Classes\Logs.pas"/>
+        <UnitName Value="Logs"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Classes\MRUs.pas"/>
+        <UnitName Value="MRUs"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Classes\Settings.pas"/>
+        <UnitName Value="Settings"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\ffmpegSupport.pas"/>
+        <UnitName Value="ffmpegSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\FileSupport.pas"/>
+        <UnitName Value="FileSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\GPSSupport.pas"/>
+        <UnitName Value="GPSSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\OSSupport.pas"/>
+        <UnitName Value="OSSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\StringSupport.pas"/>
+        <UnitName Value="StringSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\TesseractSupport.pas"/>
+        <UnitName Value="TesseractSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\VersionSupport.pas"/>
+        <UnitName Value="VersionSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\WGS84.pas"/>
+        <UnitName Value="WGS84"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\XMLSupport.pas"/>
+        <UnitName Value="XMLSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\XPDFSupport.pas"/>
+        <UnitName Value="XPDFSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\InspectionSupport.pas"/>
+        <UnitName Value="InspectionSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\qpdfSupport.pas"/>
+        <UnitName Value="qpdfSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Classes\PDF.pas"/>
+        <UnitName Value="PDF"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\ImageSupport.pas"/>
+        <UnitName Value="ImageSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\PopplerSupport.pas"/>
+        <UnitName Value="PopplerSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\ThirdPartySupport.pas"/>
+        <UnitName Value="ThirdPartySupport"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="BGRABitmapPack"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCLBase"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

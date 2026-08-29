@@ -5,28 +5,28 @@ Shared code for multiple InspectorMike routines.
 
 Code in this repository is split into several Lazarus packages so projects can depend only on the functionality they need.
 
-### IM_units.lpk
+### IM.units.lpk
 Core standalone utility units and helper classes.
 
-### IM_units.LazSerial.lpk
-Optional serial-port support units. Depends on `IM_units`.
+### IM.units.LazSerial.lpk
+Optional serial-port support units. Depends on `IM.units`.
 
-### IM_forms.lpk
+### IM.forms.lpk
 Base forms, smart about form, persistent forms, common frames, and shared form infrastructure.
 
-### IM_forms.docked.lpk
-Docking-related forms, dialogs, and dock manager support. Depends on `IM_forms`.
+### IM.forms.docked.lpk
+Docking-related forms, dialogs, and dock manager support. Depends on `IM.forms`.
 
-### IM_forms.media.lpk
+### IM.forms.media.lpk
 Media-related frames and support classes, including image, PDF, video, and synchronised video playback.
 
-### IM_forms.media.mpv.lpk
+### IM.forms.media.mpv.lpk
 A frame that handles video playback using libmpv-2.dll and it's wrapper by URUWorks (License MPL-2.0).
 
-### IM_database.lpk
+### IM.database.lpk
 Database helpers, export framework, SQL filtering dialogs, CSV/grid frames, and DBGrid support.
 
-The IM_forms.* packages are licensed under **LGPL-3.0-or-later** and provides the application framework components (TfrmMain, TfrmPersistent, TfrmMultiDock, Frames, etc.) used by InspectorMike applications.
+The IM.forms.* packages are licensed under **LGPL-3.0-or-later** and provides the application framework components (TfrmMain, TfrmPersistent, TfrmMultiDock, Frames, etc.) used by InspectorMike applications.
 
 ---
 
@@ -38,7 +38,7 @@ This repository contains both reusable support units and application-level code.
   **GNU Lesser General Public License, version 3 or later (LGPL-3.0-or-later)**.  
   See `LICENSE.LGPL` and the headers in the individual units.
 
-- Applications that use the `IM_forms.lpk` and `IM_forms.docked.lpk` framework (e.g. FileWorkbench, InspectionWorkbench etc.) are developed in their own repositories and are licensed under the  
+- Applications that use the `IM.forms.lpk` and `IM.forms.docked.lpk` framework (e.g. FileWorkbench, InspectionWorkbench etc.) are developed in their own repositories and are licensed under the  
   **GNU General Public License, version 3 or later (GPL-3.0-or-later)**.  
   Refer to each application's `LICENSE` file.
 
