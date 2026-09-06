@@ -101,8 +101,8 @@ Type
 
     Procedure UpdateOptions(FFormOption: TFormOptions); Virtual;
 
-    Function SettingsFileLocal: String;
-    Function SettingsFileGlobal: String;
+    Function SettingsFileLocal: String; Virtual;
+    Function SettingsFileGlobal: String; Virtual;
 
     Procedure RefreshUI; Virtual;
 
@@ -277,14 +277,14 @@ Var
       // Do all the SaveSettings work in memory
       oInifile.CacheUpdates := True;
       Try
-        SaveGlobalSettings(oIniFile);
+        SaveGlobalSettings(oInifile);
 
         // And flush the settings out in one go
         // This works around an AVG issue whereby
         // it locks the ini file during repeated writes
         // causing a CreateError exception to be thrown
-        If THackIniFile(oIniFile).Dirty Then
-          oIniFile.UpdateFile;
+        If THackIniFile(oInifile).Dirty Then
+          oInifile.UpdateFile;
       Finally
         oInifile.Free;
       End;
@@ -311,7 +311,7 @@ Begin
   // Do all the SaveSettings work in memory
   oInifile.CacheUpdates := True;
   Try
-    SaveLocalSettings(oIniFile);
+    SaveLocalSettings(oInifile);
 
     // And flush the settings out in one go
     // This works around an AVG issue whereby
@@ -389,8 +389,8 @@ Begin
     // Calling Multiple Cursor := seems to stop the nice animated cursor effect
     If (Cursor <> crHourGlass) Then
     Begin
-      Cursor := crHourglass;
-      Screen.Cursor := crHourglass;
+      Cursor := crHourGlass;
+      Screen.Cursor := crHourGlass;
     End;
   End
   Else
@@ -403,7 +403,7 @@ End;
 Procedure TFormMain.SetProgress(AValue: Integer);
 Begin
   If FProgress = AValue Then
-    exit;
+    Exit;
   FProgress := AValue;
 
   pbMain.Visible := (AValue > 0);
@@ -412,7 +412,11 @@ End;
 
 Procedure TFormMain.SetStatus(AValue: String);
 Begin
-  sbMain.SimpleText := AValue;
+  // TODO: Should this be 0 or 1??
+  If sbMain.Panels.Count > 0 Then
+    sbMain.Panels[0].Text := AValue
+  Else
+    sbMain.SimpleText := AValue;
   sbMain.Update;
 End;
 

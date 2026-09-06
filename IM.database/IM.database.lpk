@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="IM.database"/>
     <Type Value="RunAndDesignTime"/>
@@ -67,6 +67,14 @@
       <Item>
         <Filename Value="src\Support\SQLSupport.pas"/>
         <UnitName Value="SQLSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Dialogs\DialogMSSQLConnection.pas"/>
+        <UnitName Value="DialogMSSQLConnection"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Dialogs\DialogMSSQLConnection.lfm"/>
+        <Type Value="LFM"/>
       </Item>
     </Files>
     <RequiredPkgs>

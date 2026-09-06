@@ -122,6 +122,7 @@ Begin
   oDef.KeyFile := 'Readme.md';
   oDef.KeyFolder := THIRDPARTY_UW_MPVPLAYER;
   oDef.CPUSensitive := False;
+
   TThirdParty.Create(oDef);
 End;
 

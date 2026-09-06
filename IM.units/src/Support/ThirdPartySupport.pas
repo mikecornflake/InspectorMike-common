@@ -63,8 +63,8 @@ Type
     Constructor Create; Virtual; Overload;
     Constructor Create(ADefinition: TThirdPartyDefinition); Overload;
 
-    Procedure IncludeAttribution;
     // A do nothing procedure designed to ensure attribution in about box
+    Procedure IncludeAttribution;
 
     Function FullExe(AExeNoExt: String): String;
 
@@ -217,7 +217,7 @@ Const
     CPUSensitive: False
     ), (
     Name: THIRDPARTY_FPCUPDELUXE;
-    Summary: 'fpcupdeluxe is a GUI installer for FPC and Lazarus. It is based on fpcup, written by legendary user @BigChimp R.I.P.' + LineEnding + LineEnding + 'fpcupdeluxe is the only way I install Lazarus and FPC.';
+    Summary: 'fpcupdeluxe is a GUI installer for FPC and Lazarus. It is based on fpcup, originally written by legendary user @BigChimp R.I.P. It is now maintained by @DonAlfredo, and now far exceeds the original code.' + LineEnding + LineEnding + 'fpcupdeluxe is the only way I install Lazarus and FPC.';
     ProjectURL: 'https://forum.lazarus.freepascal.org/index.php/topic,34645.0.html';
     CodeURL: 'https://github.com/LongDirtyAnimAlf/fpcupdeluxe';
     Kind: tpkAssetCollection;
@@ -227,7 +227,7 @@ Const
     ), (
     Name: THIRDPARTY_IM_COMMON;
     Summary: 'Shared code for InspectorMike routines.' + LineEnding +
-    'Split into focussed packages: IM-units, IM.forms, IM.forms.media, IM.forms.docked, IM.database and third party inclusions IM.units.LazSerial && IM.forms.media.mpv';
+    'Split into focussed packages: IM.units, IM.forms, IM.forms.media, IM.forms.docked, IM.database and third party inclusions IM.units.LazSerial && IM.forms.media.mpv';
     ProjectURL: 'https://github.com/mikecornflake/';
     CodeURL: 'https://github.com/mikecornflake/InspectorMike-common';
     Kind: tpkIMPackage;

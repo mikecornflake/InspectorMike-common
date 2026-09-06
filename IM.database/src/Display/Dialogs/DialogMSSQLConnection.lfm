@@ -1,0 +1,129 @@
+object dlgMSSQLConnection: TdlgMSSQLConnection
+  Left = 610
+  Height = 275
+  Top = 180
+  Width = 400
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'MS SQL Server Details'
+  ClientHeight = 275
+  ClientWidth = 400
+  Constraints.MinHeight = 275
+  Constraints.MinWidth = 400
+  Position = poMainFormCenter
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  object btnOK: TButton
+    Left = 221
+    Height = 25
+    Top = 241
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
+    ModalResult = 1
+    TabOrder = 7
+  end
+  object btnCancel: TButton
+    Left = 304
+    Height = 25
+    Top = 241
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 6
+  end
+  object edtServer: TLabeledEdit
+    Left = 14
+    Height = 23
+    Hint = 'Try the IP address if the Hostname doesn''t work.'#13#10'"." does not appear to work'
+    Top = 30
+    Width = 225
+    Anchors = [akTop, akLeft, akRight]
+    EditLabel.Height = 15
+    EditLabel.Width = 225
+    EditLabel.Caption = 'Server'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    EditLabel.Font.Style = [fsBold]
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+  end
+  object edtDatabase: TLabeledEdit
+    Left = 14
+    Height = 23
+    Top = 78
+    Width = 365
+    Anchors = [akTop, akLeft, akRight]
+    EditLabel.Height = 15
+    EditLabel.Width = 365
+    EditLabel.Caption = 'Database'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    EditLabel.Font.Style = [fsBold]
+    TabOrder = 2
+  end
+  object edtPort: TLabeledEdit
+    Left = 264
+    Height = 23
+    Hint = 'This has to be a whole number'
+    Top = 30
+    Width = 115
+    Anchors = [akTop, akRight]
+    EditLabel.Height = 15
+    EditLabel.Width = 115
+    EditLabel.Caption = 'Port'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    EditLabel.Font.Style = [fsBold]
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+  object cbWindowsAuthentication: TCheckBox
+    Left = 14
+    Height = 19
+    Top = 114
+    Width = 171
+    Caption = 'Use Windows Authentication'
+    Checked = True
+    State = cbChecked
+    TabOrder = 3
+    OnChange = cbWindowsAuthenticationChange
+  end
+  object edtPassword: TLabeledEdit
+    Left = 33
+    Height = 23
+    Top = 200
+    Width = 346
+    Anchors = [akTop, akLeft, akRight]
+    EditLabel.Height = 15
+    EditLabel.Width = 346
+    EditLabel.Caption = 'Password'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    EditLabel.Font.Style = [fsBold]
+    Enabled = False
+    TabOrder = 5
+  end
+  object edtUsername: TLabeledEdit
+    Left = 33
+    Height = 23
+    Hint = 'Try the IP address if the Hostname doesn''t work'
+    Top = 152
+    Width = 346
+    Anchors = [akTop, akLeft, akRight]
+    EditLabel.Height = 15
+    EditLabel.Width = 346
+    EditLabel.Caption = 'Username'
+    EditLabel.ParentColor = False
+    EditLabel.ParentFont = False
+    EditLabel.Font.Style = [fsBold]
+    Enabled = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+  end
+end
