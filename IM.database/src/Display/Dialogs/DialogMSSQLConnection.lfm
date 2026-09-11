@@ -1,12 +1,12 @@
 object dlgMSSQLConnection: TdlgMSSQLConnection
   Left = 610
-  Height = 275
+  Height = 381
   Top = 180
   Width = 400
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'MS SQL Server Details'
-  ClientHeight = 275
+  ClientHeight = 381
   ClientWidth = 400
   Constraints.MinHeight = 275
   Constraints.MinWidth = 400
@@ -17,22 +17,22 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
   object btnOK: TButton
     Left = 221
     Height = 25
-    Top = 241
+    Top = 347
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     ModalResult = 1
-    TabOrder = 7
+    TabOrder = 6
   end
   object btnCancel: TButton
     Left = 304
     Height = 25
-    Top = 241
+    Top = 347
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 6
+    TabOrder = 5
   end
   object edtServer: TLabeledEdit
     Left = 14
@@ -50,20 +50,6 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
-  end
-  object edtDatabase: TLabeledEdit
-    Left = 14
-    Height = 23
-    Top = 78
-    Width = 365
-    Anchors = [akTop, akLeft, akRight]
-    EditLabel.Height = 15
-    EditLabel.Width = 365
-    EditLabel.Caption = 'Database'
-    EditLabel.ParentColor = False
-    EditLabel.ParentFont = False
-    EditLabel.Font.Style = [fsBold]
-    TabOrder = 2
   end
   object edtPort: TLabeledEdit
     Left = 264
@@ -85,18 +71,18 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
   object cbWindowsAuthentication: TCheckBox
     Left = 14
     Height = 19
-    Top = 114
+    Top = 64
     Width = 171
     Caption = 'Use Windows Authentication'
     Checked = True
     State = cbChecked
-    TabOrder = 3
+    TabOrder = 2
     OnChange = cbWindowsAuthenticationChange
   end
   object edtPassword: TLabeledEdit
     Left = 33
     Height = 23
-    Top = 200
+    Top = 150
     Width = 346
     Anchors = [akTop, akLeft, akRight]
     EditLabel.Height = 15
@@ -106,13 +92,13 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
     EditLabel.ParentFont = False
     EditLabel.Font.Style = [fsBold]
     Enabled = False
-    TabOrder = 5
+    TabOrder = 4
   end
   object edtUsername: TLabeledEdit
     Left = 33
     Height = 23
     Hint = 'Try the IP address if the Hostname doesn''t work'
-    Top = 152
+    Top = 102
     Width = 346
     Anchors = [akTop, akLeft, akRight]
     EditLabel.Height = 15
@@ -124,6 +110,33 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
     Enabled = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 3
+  end
+  object cboDatabase: TComboBox
+    Left = 14
+    Height = 23
+    Top = 248
+    Width = 365
+    ItemHeight = 15
+    TabOrder = 7
+    Text = 'cboDatabase'
+  end
+  object lblDatabase: TLabel
+    Left = 14
+    Height = 15
+    Top = 228
+    Width = 64
+    Caption = 'lblDatabase'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object btnLookupDatabases: TButton
+    Left = 14
+    Height = 25
+    Top = 189
+    Width = 122
+    Caption = 'Lookup Databases'
+    TabOrder = 8
+    OnClick = btnLookupDatabasesClick
   end
 end

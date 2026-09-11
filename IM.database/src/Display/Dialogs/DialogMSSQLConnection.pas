@@ -6,7 +6,7 @@ Interface
 
 Uses
   Classes, Controls, Dialogs, ExtCtrls, FileUtil, Forms, Graphics, LResources,
-  StdCtrls, EditBtn, SysUtils, ThirdPartySupport;
+  StdCtrls, SysUtils, ThirdPartySupport, sqldb, mssqlconn;
 
 Type
 
@@ -15,12 +15,15 @@ Type
   TdlgMSSQLConnection = Class(TForm)
     btnOK: TButton;
     btnCancel: TButton;
+    btnLookupDatabases: TButton;
     cbWindowsAuthentication: TCheckBox;
+    cboDatabase: TComboBox;
     edtPassword: TLabeledEdit;
-    edtDatabase: TLabeledEdit;
     edtPort: TLabeledEdit;
     edtUsername: TLabeledEdit;
     edtServer: TLabeledEdit;
+    lblDatabase: TLabel;
+    Procedure btnLookupDatabasesClick(Sender: TObject);
     Procedure cbWindowsAuthenticationChange(Sender: TObject);
     Procedure FormCreate(Sender: TObject);
     Procedure FormDestroy(Sender: TObject);
@@ -36,11 +39,11 @@ Type
     Procedure SetServer(AValue: String);
     Procedure SetUsername(AValue: String);
   Public
-    Property Database: String read GetDatabase write SetDatabase;
-    Property Server: String read GetServer write SetServer;
-    Property Username: String read GetUsername write SetUsername;
-    Property Password: String read GetPassword write SetPassword;
-    Property Port: Integer read GetPort write SetPort;
+    Property Database: String Read GetDatabase Write SetDatabase;
+    Property Server: String Read GetServer Write SetServer;
+    Property Username: String Read GetUsername Write SetUsername;
+    Property Password: String Read GetPassword Write SetPassword;
+    Property Port: Integer Read GetPort Write SetPort;
   End;
 
   { TMSSQLSupport }
@@ -72,7 +75,7 @@ Begin
 End;
 
 Function RegisterMSSQLDriver: Boolean;
-begin
+Begin
   Result := False;
 
   If MSSQL.Available Then
@@ -86,12 +89,12 @@ begin
 
       Try
         InitialiseDBLib('dblib.dll');
-      finally
+      Finally
         Result := True;
-      end;
-    end;
+      End;
+    End;
   End;
-end;
+End;
 
 {$R *.lfm}
 
@@ -101,19 +104,90 @@ Procedure TdlgMSSQLConnection.FormCreate(Sender: TObject);
 Begin
 End;
 
+Procedure TdlgMSSQLConnection.FormDestroy(Sender: TObject);
+Begin
+End;
+
 Procedure TdlgMSSQLConnection.cbWindowsAuthenticationChange(Sender: TObject);
 Begin
   edtUsername.Enabled := Not cbWindowsAuthentication.Checked;
   edtPassword.Enabled := Not cbWindowsAuthentication.Checked;
 End;
 
-Procedure TdlgMSSQLConnection.FormDestroy(Sender: TObject);
+Procedure TdlgMSSQLConnection.btnLookupDatabasesClick(Sender: TObject);
+Var
+  oConn: TMSSQLConnection;
+  oTrans: TSQLTransaction;
+  oQuery: TSQLQuery;
 Begin
+  oConn := TMSSQLConnection.Create(nil);
+  oTrans := TSQLTransaction.Create(nil);
+  oQuery := TSQLQuery.Create(nil);
+  Try
+    oConn.Transaction := oTrans;
+
+    If (Pos('\', edtServer.Text) > 0) Or (Pos(':', edtServer.Text) > 0) Then
+      oConn.Hostname := Trim(edtServer.Text)
+    Else
+      oConn.Hostname := Format('%s:%s', [Trim(edtServer.Text), Trim(edtPort.Text)]);
+
+    oConn.DatabaseName := 'master';
+
+    If cbWindowsAuthentication.Checked Then
+    Begin
+      oConn.Username := '';
+      oConn.Password := '';
+    End
+    Else
+    Begin
+      oConn.Username := Trim(edtUsername.Text);
+      oConn.Password := edtPassword.Text;
+    End;
+
+    oQuery.Database := oConn;
+    oQuery.Transaction := oTrans;
+
+    Screen.Cursor := crHourGlass;
+    Try
+      oConn.Open;
+
+      oQuery.SQL.Text :=
+        'select name ' + 'from sys.databases ' + 'where state = 0 and name like ''SFX%'' order by name';
+
+      oQuery.Open;
+
+      cboDatabase.Items.BeginUpdate;
+      Try
+        cboDatabase.Items.Clear;
+
+        While Not oQuery.EOF Do
+        Begin
+          cboDatabase.Items.Add(oQuery.FieldByName('name').AsString);
+          oQuery.Next;
+        End;
+      Finally
+        cboDatabase.Items.EndUpdate;
+      End;
+
+      If cboDatabase.Items.Count > 0 Then
+        cboDatabase.ItemIndex := 0;
+    Finally
+      Screen.Cursor := crDefault;
+    End;
+  Except
+    on E: Exception Do
+      MessageDlg('Database lookup failed', E.Message,
+        mtError, [mbOK], 0);
+  End;
+
+  oQuery.Free;
+  oTrans.Free;
+  oConn.Free;
 End;
 
 Function TdlgMSSQLConnection.GetDatabase: String;
 Begin
-  Result := edtDatabase.Text;
+  Result := cboDatabase.Text;
 End;
 
 Function TdlgMSSQLConnection.GetPassword: String;
@@ -144,7 +218,8 @@ End;
 
 Procedure TdlgMSSQLConnection.SetDatabase(AValue: String);
 Begin
-  edtDatabase.Text := AValue;
+  cboDatabase.Items.Text := AValue;
+  cboDatabase.Text := AValue;
 End;
 
 Procedure TdlgMSSQLConnection.SetPassword(AValue: String);
@@ -197,7 +272,7 @@ Begin
   oDef.CodeURL := 'https://github.com/FreeTDS/freetds';
 
   Inherited Create(oDef);
-end;
+End;
 
 Initialization
   FMSSQL := nil;
