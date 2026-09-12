@@ -396,7 +396,7 @@ Begin
 
         If (oColumn.Visible) And (oColumn.Width < 400) Then
           oColumn.Width := Min(400, Max(oColumn.Width,
-            oGrid.Canvas.TextWidth(oField.AsString) + 12));
+            oGrid.Canvas.TextWidth(oField.DisplayText) + 12));
       End;
 
       oDataset.Next;

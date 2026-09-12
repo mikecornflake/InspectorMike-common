@@ -637,46 +637,27 @@ Begin
   End
   Else If (Column.Field.DataSet Is TCustomBufDataset) Then
   Begin
-    // This code is sorting for TSQLQuery (sqldb)
-    bAscending := Column.Title.ImageIndex = 0;
+    bAscending := Column.Title.ImageIndex <> 0;
 
     ClearSortImage(grdSQL);
 
-    sASC_IndexName := 'ASC_' + Column.FieldName;
-    sDESC_IndexName := 'DESC_' + Column.FieldName;
-
-    //indexes cant sort binary types such as ftmemo,
-    If (Column.Field.DataType In [ftMemo, ftWideMemo, ftBlob, ftVarBytes, ftBytes]) Then
+    If Column.Field.DataType In
+      [ftMemo, ftWideMemo, ftBlob, ftVarBytes, ftBytes] Then
       Exit;
 
     oSQLQuery := TCustomBufDataset(Column.Field.DataSet);
 
-    //check if a Ascending index already exists for this column, if not create one
-    If oSQLQuery.IndexDefs.IndexOf(sASC_IndexName) = -1 Then
-      oSQLQuery.AddIndex(sASC_IndexName, column.FieldName, []);
-
-    //check if a Descending index already exists for this column, if not create one
-    If oSQLQuery.IndexDefs.IndexOf(sDESC_IndexName) = -1 Then
-      oSQLQuery.AddIndex(sDESC_IndexName, column.FieldName, [ixDescending]);
-
-    //ensure index defs are up to date
-    oSQLQuery.IndexDefs.Updated := False;  {<<<----It won't work without this line}
-    oSQLQuery.IndexDefs.Update;
-
-    //use the column image index to toggle ASC/DESC
-    If Not bAscending Then
-    Begin
+    if bAscending then
+    begin
+      oSQLQuery.IndexFieldNames := Column.FieldName;
       Column.Title.ImageIndex := 0;
-      oSQLQuery.IndexName := sASC_IndexName;
-    End
-    Else
-    Begin
-      Column.Title.ImageIndex := 1;
-      oSQLQuery.IndexName := sDESC_IndexName;
-    End;
+    end
+    else
+    begin
+      // Need descending handling here
+    end;
 
     FSortField := Column.FieldName;
-    // TODO: Let the outside world know that SortField has changed.
   End;
 
   RefreshUI;
