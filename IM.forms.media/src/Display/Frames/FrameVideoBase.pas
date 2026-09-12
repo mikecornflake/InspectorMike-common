@@ -82,6 +82,7 @@ Type
     FFilename: String;
     FOnPosition: TPositionEvent;
     FOnStateChanged: TStateEvent;
+    FOnDblCLick: TNotifyEvent;
     FVideoFileCount: Integer;
     FAutoplay: Boolean;
     FChannel: String;
@@ -155,6 +156,7 @@ Type
 
     Property OnPosition: TPositionEvent Read FOnPosition Write FOnPosition;
     Property OnStateChanged: TStateEvent Read FOnStateChanged Write FOnStateChanged;
+    Property OnDblCLick: TNotifyEvent Read FOnDblCLick Write FOnDblCLick;
 
     Property VideoFileCount: Integer Read FVideoFileCount;
   End;

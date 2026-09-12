@@ -62,6 +62,7 @@ Type
     FVideos: TFrameVideoBaseList;
     FMaster: TFrameVideoBase;
     FActive: TFrameVideoBase;
+    FMaximised: TFrameVideoBase;
     FState: TVideoState;
     FSyncTimer: TTimer;
     FSyncSeekThresholdMS: TVideoTime;
@@ -74,6 +75,7 @@ Type
     Procedure MasterPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
     Procedure VideoStateChanged(Sender: TObject; AState: TVideoState);
     Procedure VideoActivateFrame(Sender: TObject);
+    Procedure VideoDblClick(Sender: TObject);
 
     Function LoadedVideoCount: Integer;
     Function AllVideosLoaded: Boolean;
@@ -83,6 +85,7 @@ Type
     Procedure SyncTimerTimer(Sender: TObject);
     Procedure SyncVideos;
 
+    Procedure ToggleMaximise(AVideo: TFrameVideoBase);
   Protected
     Function GetPosition: TVideoTime; Override;
     Procedure SetPosition(AValue: TVideoTime); Override;
@@ -148,6 +151,8 @@ Begin
 
   FVideos := TFrameVideoBaseList.Create(True); // Does own videos.
   FMaster := nil;
+  FMaximised := nil;
+  FActive := nil;
   FState := vsEmpty;
 
   // End user will have to provide an active class
@@ -273,12 +278,36 @@ End;
 
 Procedure TFrameSyncedVideo.ClearVideoCount;
 Begin
+  FMaximised := nil;
   FActive := nil;
   Master := nil;
   FFilename := '';
   FVideoFileCount := 0;
   FReadyToPlay := False;
   SetState(vsEmpty);
+End;
+
+Procedure TFrameSyncedVideo.ToggleMaximise(AVideo: TFrameVideoBase);
+Var
+  i: Integer;
+Begin
+  If FMaximised = AVideo Then
+  Begin
+    FMaximised := nil;
+    AVideo.Align := alNone;
+
+    For i := 0 To FVideoFileCount - 1 Do
+      FVideos[i].Visible := True;
+  End
+  Else
+  Begin
+    FMaximised := AVideo;
+
+    For i := 0 To FVideoFileCount - 1 Do
+      FVideos[i].Visible := (FVideos[i] = FMaximised);
+
+    FMaximised.Align := alClient;
+  End;
 End;
 
 Function TFrameSyncedVideo.GetPosition: TVideoTime;
@@ -439,11 +468,12 @@ Begin
     fmeVideo.Parent := Self;
     fmeVideo.OnStateChanged := @VideoStateChanged;
     fmeVideo.OnActivateFrame := @VideoActivateFrame;
+    fmeVideo.OnDblCLick := @VideoDblClick;
 
     FVideos.Add(fmeVideo);
   End;
 
-  fmeVideo.Autoplay := FAutoplay;
+  fmeVideo.Autoplay := FAutoPlay;
   fmeVideo.Volume := FVolume;
 
   If FVideoFileCount > (FLayout.RowCount * FLayout.ColCount) Then
@@ -566,7 +596,7 @@ Begin
 
   For i := 0 To FVideoFileCount - 1 Do
   Begin
-    fmeVideo := TFrameVideobase(FVideos[i]);
+    fmeVideo := TFrameVideoBase(FVideos[i]);
 
     sExt := ExtractFileExt(AFilename);
 
@@ -698,8 +728,14 @@ End;
 
 Procedure TFrameSyncedVideo.VideoActivateFrame(Sender: TObject);
 Begin
-  If Sender Is TFrameVideobase Then
+  If Sender Is TFrameVideoBase Then
     FActive := TFrameVideoBase(Sender);
+End;
+
+Procedure TFrameSyncedVideo.VideoDblClick(Sender: TObject);
+Begin
+  If Sender Is TFrameVideoBase Then
+    ToggleMaximise(TFrameVideoBase(Sender));
 End;
 
 Procedure TFrameSyncedVideo.SyncTimerTimer(Sender: TObject);

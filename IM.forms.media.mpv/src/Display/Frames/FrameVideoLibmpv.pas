@@ -78,6 +78,7 @@ Type
     Procedure mpvTimeChanged(ASender: TObject; AParam: Integer);
     Procedure ControlMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    Procedure ControlDblClick(Sender: TObject);
 
   Protected
     Procedure SetAutoplay(AValue: Boolean); Override;
@@ -167,6 +168,7 @@ Begin
 
     // Required to fire OnActivateFrame
     FmpvPlayer.OnMouseDown := @ControlMouseDown;
+    FmpvPlayer.OnDblClick := @ControlDblClick;
 
     FState := vsEmpty;
   End;
@@ -197,6 +199,12 @@ Procedure TFrameVideoLibmpv.ControlMouseDown(Sender: TObject; Button: TMouseButt
   Shift: TShiftState; X, Y: Integer);
 Begin
   DoActivateFrame;
+End;
+
+Procedure TFrameVideoLibmpv.ControlDblClick(Sender: TObject);
+Begin
+  If Assigned(FOnDblCLick) Then
+    FOnDblCLick(Self);
 End;
 
 Procedure TFrameVideoLibmpv.FinaliseLoadedState;
