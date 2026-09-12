@@ -60,6 +60,7 @@ Type
 
   TPositionEvent = Procedure(Sender: TObject; PositionMS, DurationMS: TVideoTime) Of Object;
   TStateEvent = Procedure(Sender: TObject; State: TVideoState) Of Object;
+  TVideoLoadedEvent = Procedure(Sender: TObject) Of Object;
 
   TFrameVideoBase = Class;
 
@@ -83,6 +84,7 @@ Type
     FOnPosition: TPositionEvent;
     FOnStateChanged: TStateEvent;
     FOnDblCLick: TNotifyEvent;
+    FOnVideoLoaded: TVideoLoadedEvent;
     FVideoFileCount: Integer;
     FAutoplay: Boolean;
     FChannel: String;
@@ -111,6 +113,7 @@ Type
 
     Procedure DoPosition; Virtual;
     Procedure DoStateChanged; Virtual;
+    Procedure DoVideoLoaded; Virtual;
   Public
     Constructor Create(TheOwner: TComponent); Override;
 
@@ -157,6 +160,7 @@ Type
     Property OnPosition: TPositionEvent Read FOnPosition Write FOnPosition;
     Property OnStateChanged: TStateEvent Read FOnStateChanged Write FOnStateChanged;
     Property OnDblCLick: TNotifyEvent Read FOnDblCLick Write FOnDblCLick;
+    Property OnVideoLoaded: TVideoLoadedEvent Read FOnVideoLoaded Write FOnVideoLoaded;
 
     Property VideoFileCount: Integer Read FVideoFileCount;
   End;
@@ -286,6 +290,12 @@ Begin
   If Assigned(FOnStateChanged) Then
     FOnStateChanged(Self, State);
 End;
+
+procedure TFrameVideoBase.DoVideoLoaded;
+begin
+  if Assigned(FOnVideoLoaded) then
+    FOnVideoLoaded(Self);
+end;
 
 Function TFrameVideoBase.Load(Const AFilename: String; AChannel: String;
   AStartDateTime: TDateTime): Boolean;

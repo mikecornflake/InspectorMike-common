@@ -231,6 +231,8 @@ Begin
     SetState(vsPlaying)
   Else
     SetState(vsPaused);
+
+  DoVideoLoaded;
 End;
 
 Procedure TFrameVideoLibmpv.LoadWatchdogTimer(Sender: TObject);

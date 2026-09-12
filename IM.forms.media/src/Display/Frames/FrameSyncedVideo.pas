@@ -652,7 +652,6 @@ Begin
   Begin
     FReadyToPlay := True;
     Layout(FLayout.RowCount, FLayout.ColCount, FLayout.Sequence);
-    DoPosition;
 
     If FAutoPlay Then
     Begin
@@ -664,6 +663,9 @@ Begin
       FSyncTimer.Enabled := False;
       SetState(vsPaused);
     End;
+
+    DoPosition;
+    DoVideoLoaded;
   End
   Else
     SetState(vsLoading);
