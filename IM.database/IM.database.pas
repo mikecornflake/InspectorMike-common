@@ -9,7 +9,7 @@ interface
 
 uses
   Exporters, ExportersFPVectorial, DBSupport, DialogDBGridColEditor, DialogSQLFilter, FrameCSVs, 
-  FrameGrids, SQLSupport, DialogMSSQLConnection, LazarusPackageIntf;
+  FrameGrids, SQLSupport, MSSQLSupport, LazarusPackageIntf;
 
 implementation
 

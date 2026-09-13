@@ -1,4 +1,4 @@
-Unit DialogMSSQLConnection;
+Unit MSSQLSupport;
 
 {$mode objfpc}{$H+}
 
@@ -15,7 +15,6 @@ Type
   TdlgMSSQLConnection = Class(TForm)
     btnOK: TButton;
     btnCancel: TButton;
-    btnLookupDatabases: TButton;
     cbWindowsAuthentication: TCheckBox;
     cboDatabase: TComboBox;
     edtPassword: TLabeledEdit;
@@ -23,11 +22,13 @@ Type
     edtUsername: TLabeledEdit;
     edtServer: TLabeledEdit;
     lblDatabase: TLabel;
-    Procedure btnLookupDatabasesClick(Sender: TObject);
+    Procedure cboDatabaseDropDown(Sender: TObject);
     Procedure cbWindowsAuthenticationChange(Sender: TObject);
     Procedure FormCreate(Sender: TObject);
     Procedure FormDestroy(Sender: TObject);
   Private
+    Procedure PopulateDatabaseList;
+
     Function GetDatabase: String;
     Function GetPassword: String;
     Function GetPort: Integer;
@@ -114,7 +115,7 @@ Begin
   edtPassword.Enabled := Not cbWindowsAuthentication.Checked;
 End;
 
-Procedure TdlgMSSQLConnection.btnLookupDatabasesClick(Sender: TObject);
+Procedure TdlgMSSQLConnection.PopulateDatabaseList;
 Var
   oConn: TMSSQLConnection;
   oTrans: TSQLTransaction;
@@ -152,7 +153,8 @@ Begin
       oConn.Open;
 
       oQuery.SQL.Text :=
-        'select name ' + 'from sys.databases ' + 'where state = 0 and name like ''SFX%'' order by name';
+        'select name ' + 'from sys.databases ' +
+        'where state = 0 and name like ''SFX%'' order by name';
 
       oQuery.Open;
 
@@ -183,6 +185,12 @@ Begin
   oQuery.Free;
   oTrans.Free;
   oConn.Free;
+End;
+
+Procedure TdlgMSSQLConnection.cboDatabaseDropDown(Sender: TObject);
+Begin
+  If cboDatabase.Items.Count = 0 Then
+    PopulateDatabaseList;
 End;
 
 Function TdlgMSSQLConnection.GetDatabase: String;
@@ -218,7 +226,7 @@ End;
 
 Procedure TdlgMSSQLConnection.SetDatabase(AValue: String);
 Begin
-  cboDatabase.Items.Text := AValue;
+  //cboDatabase.Items.Text := AValue;
   cboDatabase.Text := AValue;
 End;
 

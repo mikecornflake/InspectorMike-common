@@ -8,7 +8,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="src\Display\Dialogs;src\Display\Frames"/>
+        <IncludeFiles Value="src\Display\Dialogs;src\Display\Frames;src\Support"/>
         <OtherUnitFiles Value="src\Classes;src\Support;src\Display\Dialogs;src\Display\Frames"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -69,12 +69,12 @@
         <UnitName Value="SQLSupport"/>
       </Item>
       <Item>
-        <Filename Value="src\Display\Dialogs\DialogMSSQLConnection.pas"/>
-        <UnitName Value="DialogMSSQLConnection"/>
+        <Filename Value="src\Support\MSSQLSupport.lfm"/>
+        <Type Value="LFM"/>
       </Item>
       <Item>
-        <Filename Value="src\Display\Dialogs\DialogMSSQLConnection.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="src\Support\MSSQLSupport.pas"/>
+        <UnitName Value="MSSQLSupport"/>
       </Item>
     </Files>
     <RequiredPkgs>

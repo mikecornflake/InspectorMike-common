@@ -1,12 +1,12 @@
 object dlgMSSQLConnection: TdlgMSSQLConnection
   Left = 610
-  Height = 381
+  Height = 299
   Top = 180
   Width = 400
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'MS SQL Server Details'
-  ClientHeight = 381
+  ClientHeight = 299
   ClientWidth = 400
   Constraints.MinHeight = 275
   Constraints.MinWidth = 400
@@ -17,7 +17,7 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
   object btnOK: TButton
     Left = 221
     Height = 25
-    Top = 347
+    Top = 265
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'OK'
@@ -27,7 +27,7 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
   object btnCancel: TButton
     Left = 304
     Height = 25
-    Top = 347
+    Top = 265
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'Cancel'
@@ -115,28 +115,20 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
   object cboDatabase: TComboBox
     Left = 14
     Height = 23
-    Top = 248
+    Top = 217
     Width = 365
     ItemHeight = 15
     TabOrder = 7
     Text = 'cboDatabase'
+    OnDropDown = cboDatabaseDropDown
   end
   object lblDatabase: TLabel
-    Left = 14
+    Left = 12
     Height = 15
-    Top = 228
-    Width = 64
-    Caption = 'lblDatabase'
+    Top = 197
+    Width = 97
+    Caption = 'Starfix Databases'
     Font.Style = [fsBold]
     ParentFont = False
-  end
-  object btnLookupDatabases: TButton
-    Left = 14
-    Height = 25
-    Top = 189
-    Width = 122
-    Caption = 'Lookup Databases'
-    TabOrder = 8
-    OnClick = btnLookupDatabasesClick
   end
 end
