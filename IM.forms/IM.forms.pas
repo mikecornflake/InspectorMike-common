@@ -8,9 +8,9 @@ unit IM.forms;
 interface
 
 uses
-  ControlGridLayout, PipelineEventMap, FormAbout, FormMain, FormPersistent, 
-  FrameAboutThirdParty, FrameBase, FrameHTMLs, FramePipelineView, WizardBase, 
-  ControlsSupport, LazarusPackageIntf;
+  ControlGridLayout, PipelineEventMap, FormAbout, FormMain, FormPersistent, FrameAboutThirdParty, 
+  FrameBase, FrameHTMLs, FramePipelineView, WizardBase, ControlsSupport, DialogFrameHost, 
+  LazarusPackageIntf;
 
 implementation
 

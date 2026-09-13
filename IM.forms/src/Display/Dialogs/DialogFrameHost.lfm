@@ -1,0 +1,37 @@
+object DialogFrameHost: TDialogFrameHost
+  Left = 390
+  Height = 309
+  Top = 250
+  Width = 379
+  BorderIcons = [biSystemMenu]
+  ClientHeight = 309
+  ClientWidth = 379
+  Position = poMainFormCenter
+  LCLVersion = '4.99.0.0'
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 269
+    Width = 367
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    CancelButton.OnClick = CancelButtonClick
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object PageControl: TPageControl
+    Left = 0
+    Height = 263
+    Top = 0
+    Width = 379
+    Align = alClient
+    TabOrder = 1
+  end
+end

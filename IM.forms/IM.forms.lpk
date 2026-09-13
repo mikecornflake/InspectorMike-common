@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="IM.forms"/>
     <Type Value="RunAndDesignTime"/>
@@ -9,7 +9,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="src\Display\Forms;src\Display\Frames;src\Display\Wizards"/>
-        <OtherUnitFiles Value="src\Display\Forms;src\Display\Frames;src\Classes;src\Support;src\Display\Wizards"/>
+        <OtherUnitFiles Value="src\Display\Forms;src\Display\Frames;src\Display\Dialogs;src\Classes;src\Support;src\Display\Wizards"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
@@ -91,6 +91,10 @@
       <Item>
         <Filename Value="src\Support\ControlsSupport.pas"/>
         <UnitName Value="ControlsSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Dialogs\DialogFrameHost.pas"/>
+        <UnitName Value="DialogFrameHost"/>
       </Item>
     </Files>
     <RequiredPkgs>
