@@ -1,20 +1,18 @@
 inherited FrameMSSQLConnection: TFrameMSSQLConnection
   Height = 275
-  Width = 350
+  Width = 348
   ClientHeight = 275
-  ClientWidth = 350
-  Constraints.MinHeight = 275
-  Constraints.MinWidth = 350
+  ClientWidth = 348
   LCLVersion = '4.99.0.0'
   object edtServer: TLabeledEdit[0]
     Left = 14
     Height = 23
     Hint = 'Try the IP address if the Hostname doesn''t work.'#13#10'"." does not appear to work'
     Top = 30
-    Width = 175
+    Width = 173
     Anchors = [akTop, akLeft, akRight]
     EditLabel.Height = 15
-    EditLabel.Width = 175
+    EditLabel.Width = 173
     EditLabel.Caption = 'Server'
     EditLabel.ParentColor = False
     EditLabel.ParentFont = False
@@ -24,7 +22,7 @@ inherited FrameMSSQLConnection: TFrameMSSQLConnection
     TabOrder = 0
   end
   object edtPort: TLabeledEdit[1]
-    Left = 214
+    Left = 212
     Height = 23
     Hint = 'This has to be a whole number'
     Top = 30
@@ -55,10 +53,10 @@ inherited FrameMSSQLConnection: TFrameMSSQLConnection
     Left = 33
     Height = 23
     Top = 150
-    Width = 296
+    Width = 294
     Anchors = [akTop, akLeft, akRight]
     EditLabel.Height = 15
-    EditLabel.Width = 296
+    EditLabel.Width = 294
     EditLabel.Caption = 'Password'
     EditLabel.ParentColor = False
     EditLabel.ParentFont = False
@@ -71,10 +69,10 @@ inherited FrameMSSQLConnection: TFrameMSSQLConnection
     Height = 23
     Hint = 'Try the IP address if the Hostname doesn''t work'
     Top = 102
-    Width = 296
+    Width = 294
     Anchors = [akTop, akLeft, akRight]
     EditLabel.Height = 15
-    EditLabel.Width = 296
+    EditLabel.Width = 294
     EditLabel.Caption = 'Username'
     EditLabel.ParentColor = False
     EditLabel.ParentFont = False
@@ -88,7 +86,7 @@ inherited FrameMSSQLConnection: TFrameMSSQLConnection
     Left = 14
     Height = 23
     Top = 217
-    Width = 315
+    Width = 313
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
     TabOrder = 5
@@ -99,8 +97,8 @@ inherited FrameMSSQLConnection: TFrameMSSQLConnection
     Left = 12
     Height = 15
     Top = 197
-    Width = 97
-    Caption = 'Starfix Databases'
+    Width = 51
+    Caption = 'Database'
     Font.Style = [fsBold]
     ParentFont = False
   end

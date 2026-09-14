@@ -18,16 +18,37 @@ Type
     ButtonPanel: TButtonPanel;
     PageControl: TPageControl;
     Procedure CancelButtonClick(Sender: TObject);
+    Procedure FormCreate(Sender: TObject);
+    Procedure FormDestroy(Sender: TObject);
+    Procedure FormShow(Sender: TObject);
     Procedure OKButtonClick(Sender: TObject);
+  Private
+    FActivated: Boolean;
+    FFrames: TStringList;
   Public
     Procedure RegisterFrame(AFrame: TFrameBase; Const ACaption: String);
   End;
 
 Implementation
 
-{$R *.lfm}
+Uses
+  Math;
 
-{ TdlgFrameHost }
+  {$R *.lfm}
+
+  { TdlgFrameHost }
+
+Procedure TDialogFrameHost.FormCreate(Sender: TObject);
+Begin
+  FActivated := False;
+
+  FFrames := TStringList.Create(False);
+End;
+
+Procedure TDialogFrameHost.FormDestroy(Sender: TObject);
+Begin
+  FreeAndNil(FFrames);
+End;
 
 Procedure TDialogFrameHost.OKButtonClick(Sender: TObject);
 Begin
@@ -39,43 +60,75 @@ Begin
   ModalResult := mrCancel;
 End;
 
-Type
-  THackPageControl = Class(TPageControl);
-
 Procedure TDialogFrameHost.RegisterFrame(AFrame: TFrameBase; Const ACaption: String);
+Begin
+  FFrames.AddObject(ACaption, AFrame);
+End;
+
+Procedure TDialogFrameHost.FormShow(Sender: TObject);
 Var
   oTab: TTabSheet;
-  rDisplay: TRect;
-  iFrameWidth: Integer;
-  iFrameHeight: Integer;
-  iDisplayWidth: Integer;
-  iDisplayHeight: Integer;
+  iFrameWidth, iFrameHeight: Integer;
+  iMaxFrameWidth, iMaxFrameHeight: Integer;
+  i, iDlgWidth, iDlgHeight, iDisplayWidth, iDisplayHeight, iDlgLeft, iDlgTop: Integer;
+
+  oFrame: TFrameBase;
+  sCaption: String;
 Begin
-  // Capture design size before parenting/alignment
-  iFrameWidth := AFrame.Width;
-  iFrameHeight := AFrame.Height;
+  If FActivated Then
+    Exit;
 
-  oTab := TTabSheet.Create(PageControl);
-  oTab.PageControl := PageControl;
-  oTab.Caption := ACaption;
+  FActivated := True;
 
-  AFrame.Parent := oTab;
+  iDisplayWidth := PageControl.ClientWidth;
+  iDisplayHeight := PageControl.ClientHeight;
 
-  rDisplay := THackPageControl(PageControl).DisplayRect;
+  iMaxFrameWidth := 0;
+  iMaxFrameHeight := 0;
 
-  iDisplayWidth := rDisplay.Right - rDisplay.Left;
-  iDisplayHeight := rDisplay.Bottom - rDisplay.Top;
+  // Delay loading until Form created
+  For i := 0 To FFrames.Count - 1 Do
+  Begin
+    sCaption := FFrames[i];
+    oFrame := TFrameBase(FFrames.Objects[i]);
 
-  If iDisplayWidth < iFrameWidth Then
-    Width := Width + (iFrameWidth - iDisplayWidth);
+    // Capture design size before parenting/alignment
+    iMaxFrameWidth := Max(iMaxFrameWidth, oFrame.Width);
+    iMaxFrameHeight := Max(iMaxFrameHeight, oFrame.Height);
 
-  If iDisplayHeight < iFrameHeight Then
-    Height := Height + (iFrameHeight - iDisplayHeight);
+    oTab := TTabSheet.Create(PageControl);
+    oTab.PageControl := PageControl;
+    oTab.Caption := sCaption;
 
-  Constraints.MinWidth := Width;
-  Constraints.MinHeight := Height;
+    oFrame.Parent := oTab;
+    oFrame.Align := alClient;
+  End;
 
-  AFrame.Align := alClient;
+  If iDisplayWidth < iMaxFrameWidth Then
+    iDlgWidth := Width + (iMaxFrameWidth - iDisplayWidth)
+  Else
+    iDlgWidth := Width;
+
+  If iDisplayHeight < iMaxFrameHeight Then
+    iDlgHeight := Height + (iMaxFrameHeight - iDisplayHeight)
+  Else
+    iDlgHeight := Height;
+
+  If Assigned(Application.MainForm) Then
+  Begin
+    iDlgLeft := Application.MainForm.Left + (Application.MainForm.Width - iDlgWidth) Div 2;
+    iDlgTop := Application.MainForm.Top + (Application.MainForm.Height - iDlgHeight) Div 2;
+  End
+  Else
+  Begin
+    iDlgLeft := Left;
+    iDlgTop := Top;
+  End;
+
+  SetBounds(iDlgLeft, iDlgTop, iDlgWidth, iDlgHeight);
+
+  Constraints.MinWidth := iDlgWidth;
+  Constraints.MinHeight := iDlgHeight;
 End;
 
 End.

@@ -25,6 +25,7 @@ Type
     Procedure FormCreate(Sender: TObject);
     Procedure FormDestroy(Sender: TObject);
   Private
+    FDatabasePrefix: String;
     Procedure PopulateDatabaseList;
 
     Function GetDatabase: String;
@@ -43,6 +44,8 @@ Type
     Property Username: String Read GetUsername Write SetUsername;
     Property Password: String Read GetPassword Write SetPassword;
     Property Port: Integer Read GetPort Write SetPort;
+
+    Property DatabasePrefix: String Read FDatabasePrefix Write FDatabasePrefix;
   End;
 
   { TMSSQLSupport }
@@ -101,6 +104,7 @@ End;
 
 Procedure TFrameMSSQLConnection.FormCreate(Sender: TObject);
 Begin
+  FDatabasePrefix := '';
 End;
 
 Procedure TFrameMSSQLConnection.FormDestroy(Sender: TObject);
@@ -150,9 +154,11 @@ Begin
     Try
       oConn.Open;
 
-      oQuery.SQL.Text :=
-        'select name ' + 'from sys.databases ' +
-        'where state = 0 and name like ''SFX%'' order by name';
+      oQuery.SQL.Clear;
+      oQuery.SQL.Add('select name ' + 'from sys.databases where state = 0 ');
+      If (Trim(FDatabasePrefix) <> '') Then
+        oQuery.SQL.Add(' and name like ''' + FDatabasePrefix + '%'' ');
+      oQuery.SQL.Add('order by name');
 
       oQuery.Open;
 
