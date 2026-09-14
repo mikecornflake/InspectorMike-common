@@ -1,48 +1,20 @@
-object dlgMSSQLConnection: TdlgMSSQLConnection
-  Left = 610
-  Height = 299
-  Top = 180
-  Width = 400
-  BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
-  Caption = 'MS SQL Server Details'
-  ClientHeight = 299
-  ClientWidth = 400
+inherited FrameMSSQLConnection: TFrameMSSQLConnection
+  Height = 275
+  Width = 350
+  ClientHeight = 275
+  ClientWidth = 350
   Constraints.MinHeight = 275
-  Constraints.MinWidth = 400
-  Position = poMainFormCenter
+  Constraints.MinWidth = 350
   LCLVersion = '4.99.0.0'
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
-  object btnOK: TButton
-    Left = 221
-    Height = 25
-    Top = 265
-    Width = 75
-    Anchors = [akRight, akBottom]
-    Caption = 'OK'
-    ModalResult = 1
-    TabOrder = 6
-  end
-  object btnCancel: TButton
-    Left = 304
-    Height = 25
-    Top = 265
-    Width = 75
-    Anchors = [akRight, akBottom]
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 5
-  end
-  object edtServer: TLabeledEdit
+  object edtServer: TLabeledEdit[0]
     Left = 14
     Height = 23
     Hint = 'Try the IP address if the Hostname doesn''t work.'#13#10'"." does not appear to work'
     Top = 30
-    Width = 225
+    Width = 175
     Anchors = [akTop, akLeft, akRight]
     EditLabel.Height = 15
-    EditLabel.Width = 225
+    EditLabel.Width = 175
     EditLabel.Caption = 'Server'
     EditLabel.ParentColor = False
     EditLabel.ParentFont = False
@@ -51,8 +23,8 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
     ShowHint = True
     TabOrder = 0
   end
-  object edtPort: TLabeledEdit
-    Left = 264
+  object edtPort: TLabeledEdit[1]
+    Left = 214
     Height = 23
     Hint = 'This has to be a whole number'
     Top = 30
@@ -68,7 +40,7 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
     ShowHint = True
     TabOrder = 1
   end
-  object cbWindowsAuthentication: TCheckBox
+  object cbWindowsAuthentication: TCheckBox[2]
     Left = 14
     Height = 19
     Top = 64
@@ -79,14 +51,14 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
     TabOrder = 2
     OnChange = cbWindowsAuthenticationChange
   end
-  object edtPassword: TLabeledEdit
+  object edtPassword: TLabeledEdit[3]
     Left = 33
     Height = 23
     Top = 150
-    Width = 346
+    Width = 296
     Anchors = [akTop, akLeft, akRight]
     EditLabel.Height = 15
-    EditLabel.Width = 346
+    EditLabel.Width = 296
     EditLabel.Caption = 'Password'
     EditLabel.ParentColor = False
     EditLabel.ParentFont = False
@@ -94,15 +66,15 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
     Enabled = False
     TabOrder = 4
   end
-  object edtUsername: TLabeledEdit
+  object edtUsername: TLabeledEdit[4]
     Left = 33
     Height = 23
     Hint = 'Try the IP address if the Hostname doesn''t work'
     Top = 102
-    Width = 346
+    Width = 296
     Anchors = [akTop, akLeft, akRight]
     EditLabel.Height = 15
-    EditLabel.Width = 346
+    EditLabel.Width = 296
     EditLabel.Caption = 'Username'
     EditLabel.ParentColor = False
     EditLabel.ParentFont = False
@@ -112,17 +84,18 @@ object dlgMSSQLConnection: TdlgMSSQLConnection
     ShowHint = True
     TabOrder = 3
   end
-  object cboDatabase: TComboBox
+  object cboDatabase: TComboBox[5]
     Left = 14
     Height = 23
     Top = 217
-    Width = 365
+    Width = 315
+    Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
-    TabOrder = 7
+    TabOrder = 5
     Text = 'cboDatabase'
     OnDropDown = cboDatabaseDropDown
   end
-  object lblDatabase: TLabel
+  object lblDatabase: TLabel[6]
     Left = 12
     Height = 15
     Top = 197

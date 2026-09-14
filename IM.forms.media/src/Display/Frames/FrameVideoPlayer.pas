@@ -401,6 +401,8 @@ Begin
   Begin
     fmeVideo.Muted := FMuted;
     fmeVideo.Volume := FVolume;
+
+    fmeVideo.LoadSettings(oInifile);
   End;
 
   RefreshUI;
@@ -410,6 +412,9 @@ Procedure TFrameVideoPlayer.SaveSettings(oInifile: TIniFile);
 Begin
   oInifile.WriteBool(FullIdentKey, 'Muted', FMuted);
   oInifile.WriteInteger(FullIdentKey, 'Volume', FVolume);
+
+  If Assigned(fmeVideo) Then
+    fmeVideo.SaveSettings(oInifile);
 End;
 
 Procedure TFrameVideoPlayer.actPlayClick(Sender: TObject);
@@ -615,7 +620,7 @@ Begin
     Begin
       If dlgSaveLocation.Execute Then
       Begin
-        sPath := IncludeTrailingBackslash(dlgSaveLocation.FileName);
+        sPath := IncludeTrailingBackslash(dlgSaveLocation.Filename);
         FLastImageFolder := sPath;
       End
       Else
@@ -628,7 +633,7 @@ Begin
   Begin
     If dlgSaveLocation.Execute Then
     Begin
-      sPath := IncludeTrailingBackslash(dlgSaveLocation.FileName);
+      sPath := IncludeTrailingBackslash(dlgSaveLocation.Filename);
       FLastImageFolder := sPath;
     End
     Else

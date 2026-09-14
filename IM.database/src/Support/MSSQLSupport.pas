@@ -6,15 +6,13 @@ Interface
 
 Uses
   Classes, Controls, Dialogs, ExtCtrls, FileUtil, Forms, Graphics, LResources,
-  StdCtrls, SysUtils, ThirdPartySupport, sqldb, mssqlconn;
+  StdCtrls, SysUtils, ThirdPartySupport, sqldb, mssqlconn, FrameBase;
 
 Type
 
-  { TdlgMSSQLConnection }
+  { TFrameMSSQLConnection }
 
-  TdlgMSSQLConnection = Class(TForm)
-    btnOK: TButton;
-    btnCancel: TButton;
+  TFrameMSSQLConnection = Class(TFrameBase)
     cbWindowsAuthentication: TCheckBox;
     cboDatabase: TComboBox;
     edtPassword: TLabeledEdit;
@@ -99,23 +97,23 @@ End;
 
 {$R *.lfm}
 
-{ TdlgMSSQLConnection }
+{ TFrameMSSQLConnection }
 
-Procedure TdlgMSSQLConnection.FormCreate(Sender: TObject);
+Procedure TFrameMSSQLConnection.FormCreate(Sender: TObject);
 Begin
 End;
 
-Procedure TdlgMSSQLConnection.FormDestroy(Sender: TObject);
+Procedure TFrameMSSQLConnection.FormDestroy(Sender: TObject);
 Begin
 End;
 
-Procedure TdlgMSSQLConnection.cbWindowsAuthenticationChange(Sender: TObject);
+Procedure TFrameMSSQLConnection.cbWindowsAuthenticationChange(Sender: TObject);
 Begin
   edtUsername.Enabled := Not cbWindowsAuthentication.Checked;
   edtPassword.Enabled := Not cbWindowsAuthentication.Checked;
 End;
 
-Procedure TdlgMSSQLConnection.PopulateDatabaseList;
+Procedure TFrameMSSQLConnection.PopulateDatabaseList;
 Var
   oConn: TMSSQLConnection;
   oTrans: TSQLTransaction;
@@ -187,18 +185,18 @@ Begin
   oConn.Free;
 End;
 
-Procedure TdlgMSSQLConnection.cboDatabaseDropDown(Sender: TObject);
+Procedure TFrameMSSQLConnection.cboDatabaseDropDown(Sender: TObject);
 Begin
   If cboDatabase.Items.Count = 0 Then
     PopulateDatabaseList;
 End;
 
-Function TdlgMSSQLConnection.GetDatabase: String;
+Function TFrameMSSQLConnection.GetDatabase: String;
 Begin
   Result := cboDatabase.Text;
 End;
 
-Function TdlgMSSQLConnection.GetPassword: String;
+Function TFrameMSSQLConnection.GetPassword: String;
 Begin
   If cbWindowsAuthentication.Checked Then
     Result := ''
@@ -206,17 +204,17 @@ Begin
     Result := edtPassword.Text;
 End;
 
-Function TdlgMSSQLConnection.GetPort: Integer;
+Function TFrameMSSQLConnection.GetPort: Integer;
 Begin
   Result := StrToIntDef(edtPort.Text, 1433);
 End;
 
-Function TdlgMSSQLConnection.GetServer: String;
+Function TFrameMSSQLConnection.GetServer: String;
 Begin
   Result := edtServer.Text;
 End;
 
-Function TdlgMSSQLConnection.GetUsername: String;
+Function TFrameMSSQLConnection.GetUsername: String;
 Begin
   If cbWindowsAuthentication.Checked Then
     Result := ''
@@ -224,28 +222,28 @@ Begin
     Result := edtUsername.Text;
 End;
 
-Procedure TdlgMSSQLConnection.SetDatabase(AValue: String);
+Procedure TFrameMSSQLConnection.SetDatabase(AValue: String);
 Begin
   //cboDatabase.Items.Text := AValue;
   cboDatabase.Text := AValue;
 End;
 
-Procedure TdlgMSSQLConnection.SetPassword(AValue: String);
+Procedure TFrameMSSQLConnection.SetPassword(AValue: String);
 Begin
   edtPassword.Text := AValue;
 End;
 
-Procedure TdlgMSSQLConnection.SetPort(AValue: Integer);
+Procedure TFrameMSSQLConnection.SetPort(AValue: Integer);
 Begin
   edtPort.Text := IntToStr(AValue);
 End;
 
-Procedure TdlgMSSQLConnection.SetServer(AValue: String);
+Procedure TFrameMSSQLConnection.SetServer(AValue: String);
 Begin
   edtServer.Text := AValue;
 End;
 
-Procedure TdlgMSSQLConnection.SetUsername(AValue: String);
+Procedure TFrameMSSQLConnection.SetUsername(AValue: String);
 Begin
   edtUsername.Text := Trim(AValue);
 

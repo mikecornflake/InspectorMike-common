@@ -39,21 +39,42 @@ Begin
   ModalResult := mrCancel;
 End;
 
+Type
+  THackPageControl = Class(TPageControl);
+
 Procedure TDialogFrameHost.RegisterFrame(AFrame: TFrameBase; Const ACaption: String);
 Var
   oTab: TTabSheet;
+  rDisplay: TRect;
+  iFrameWidth: Integer;
+  iFrameHeight: Integer;
+  iDisplayWidth: Integer;
+  iDisplayHeight: Integer;
 Begin
+  // Capture design size before parenting/alignment
+  iFrameWidth := AFrame.Width;
+  iFrameHeight := AFrame.Height;
+
   oTab := TTabSheet.Create(PageControl);
   oTab.PageControl := PageControl;
   oTab.Caption := ACaption;
 
-  If PageControl.ClientWidth < AFrame.Width Then
-    Width := AFrame.Width + (Width - PageControl.ClientWidth);
-
-  If PageControl.ClientHeight < AFrame.Height Then
-    Height := AFrame.Height + (Height - PageControl.ClientHeight);
-
   AFrame.Parent := oTab;
+
+  rDisplay := THackPageControl(PageControl).DisplayRect;
+
+  iDisplayWidth := rDisplay.Right - rDisplay.Left;
+  iDisplayHeight := rDisplay.Bottom - rDisplay.Top;
+
+  If iDisplayWidth < iFrameWidth Then
+    Width := Width + (iFrameWidth - iDisplayWidth);
+
+  If iDisplayHeight < iFrameHeight Then
+    Height := Height + (iFrameHeight - iDisplayHeight);
+
+  Constraints.MinWidth := Width;
+  Constraints.MinHeight := Height;
+
   AFrame.Align := alClient;
 End;
 

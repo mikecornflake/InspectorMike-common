@@ -49,8 +49,8 @@ Unit FrameSyncedVideo;
 Interface
 
 Uses
-  Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, FGL,
-  FrameVideoBase, ControlGridLayout;
+  Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, FGL, Inifiles,
+  FrameVideoBase, ControlGridLayout, FrameSettingsSyncedVideo;
 
 Type
   { TFrameSyncedVideo }
@@ -58,6 +58,7 @@ Type
   TFrameSyncedVideo = Class(TFrameVideoBase)
     Procedure FrameResize(Sender: TObject);
   Private
+    FChannelOrder: TStringList;
     FVideoEngineClass: TFrameVideoBaseClass;
     FVideos: TFrameVideoBaseList;
     FMaster: TFrameVideoBase;
@@ -69,6 +70,8 @@ Type
     FReadyToPlay: Boolean;
     FLayout: TControlGridLayout;
 
+    Function CompareVideoChannels(A, B: TFrameVideoBase): Integer;
+    Procedure SortVideosByChannel;
     Procedure SetState(AValue: TVideoState);
     Procedure SetMaster(AValue: TFrameVideoBase);
 
@@ -107,11 +110,17 @@ Type
     Procedure Layout(ARows, ACols: Integer;
       ASequence: TControlLayoutSequence = clsLeftToRightThenDown);
 
+    Procedure LoadSettings(AInifile: TIniFile); Override;
+    Procedure SaveSettings(AInifile: TIniFile); Override;
+
     Procedure ClearUnloadedVideoFrames;
     Procedure ClearVideoCount;
 
     Procedure BeginLoadVideos;
     Procedure EndLoadVideos;
+
+    Procedure PopulateSettingsFrame(AFrame: TFrameSettingsSyncedVideo);
+    Procedure ApplySettingsFrame(AFrame: TFrameSettingsSyncedVideo);
 
     Function Load(Const AFilename: String; AChannel: String = '';
       AStartDateTime: TDateTime = 0): Boolean; Override;
@@ -130,6 +139,8 @@ Type
 
     Property Videos: TFrameVideoBaseList Read FVideos;
     Property Master: TFrameVideoBase Read FMaster Write SetMaster;
+
+    Property ChannelOrder: TStringList Read FChannelOrder;
 
     Property SyncSeekThresholdMS: TVideoTime Read FSyncSeekThresholdMS Write FSyncSeekThresholdMS;
 
@@ -173,11 +184,15 @@ Begin
   FLayout.Sequence := clsLeftToRightThenDown;
   FLayout.PanelMargin := 0;
   FLayout.CellSpacing := 0;
+  FLayout.Extend := True;
 
   FVideoFileCount := 0;
 
   // Use the generic placeholder as this is collection of channels
   FChannel := CHANNEL_PARAM;
+
+  FChannelOrder := TStringList.Create;
+  FChannelOrder.DelimitedText := ',';
 End;
 
 Destructor TFrameSyncedVideo.Destroy;
@@ -186,6 +201,7 @@ Begin
   FreeAndNil(FVideos);
   FreeAndNil(FLayout);
   FreeAndNil(FSyncTimer);
+  FreeAndNil(FChannelOrder);
 
   Inherited Destroy;
 End;
@@ -242,7 +258,6 @@ Begin
   FLayout.RowCount := ARows;
   FLayout.ColCount := ACols;
   FLayout.Sequence := ASequence;
-  FLayout.Extend := True;
 
   //oParent := GetParentForm(self);
 
@@ -254,6 +269,37 @@ Begin
     //  If Assigned(oParent) Then
     //    THackCustomForm(oParent).EndFormUpdate;
   End;
+End;
+
+Procedure TFrameSyncedVideo.LoadSettings(AInifile: TIniFile);
+Var
+  sKey: String;
+Begin
+  Inherited LoadSettings(AInifile);
+
+  sKey := FullIdentKey;
+
+  FLayout.ColCount := AInifile.ReadInteger(sKey, 'Columns', 2);
+  FLayout.RowCount := AInifile.ReadInteger(sKey, 'Rows', 2);;
+  FLayout.Extend := AInifile.ReadBool(sKey, 'Columns', True);
+  FLayout.Sequence := TControlLayoutSequence(
+    AInifile.ReadInteger(sKey, 'Sequence', Ord(clsLeftToRightThenDown)));
+  FChannelOrder.DelimitedText := AInifile.ReadString(sKey, 'ChannelOrder', '');
+End;
+
+Procedure TFrameSyncedVideo.SaveSettings(AInifile: TIniFile);
+Var
+  sKey: String;
+Begin
+  sKey := FullIdentKey;
+
+  AInifile.WriteInteger(sKey, 'Columns', FLayout.ColCount);
+  AInifile.WriteInteger(sKey, 'Rows', FLayout.RowCount);
+  AInifile.WriteBool(sKey, 'Columns', FLayout.Extend);
+  AInifile.WriteInteger(sKey, 'Sequence', Ord(FLayout.Sequence));
+  AInifile.WriteString(sKey, 'ChannelOrder', FChannelOrder.DelimitedText);
+
+  Inherited SaveSettings(AInifile);
 End;
 
 Procedure TFrameSyncedVideo.ClearUnloadedVideoFrames;
@@ -475,6 +521,10 @@ Begin
 
   fmeVideo.Autoplay := FAutoPlay;
   fmeVideo.Volume := FVolume;
+
+  If AChannel<>'' Then
+    If FChannelOrder.IndexOf(AChannel)=-1 Then
+      FChannelOrder.Add(AChannel);
 
   If FVideoFileCount > (FLayout.RowCount * FLayout.ColCount) Then
     FLayout.ColCount := FLayout.ColCount + 1;
@@ -790,11 +840,75 @@ Begin
   SetState(vsLoading);
 End;
 
+Function TFrameSyncedVideo.CompareVideoChannels(A, B: TFrameVideoBase): Integer;
+Var
+  iA, iB: Integer;
+Begin
+  iA := FChannelOrder.IndexOf(A.Channel);
+  iB := FChannelOrder.IndexOf(B.Channel);
+
+  If (iA >= 0) And (iB >= 0) Then
+  Begin
+    If iA < iB Then
+      Exit(-1);
+
+    If iA > iB Then
+      Exit(1);
+
+    Exit(0);
+  End;
+
+  // Known channels always precede unknown channels.
+  If iA >= 0 Then
+    Exit(-1);
+
+  If iB >= 0 Then
+    Exit(1);
+
+  // Both unknown: deterministic alphabetical order.
+  Result := CompareText(A.Channel, B.Channel);
+End;
+
+Procedure TFrameSyncedVideo.SortVideosByChannel;
+Var
+  i, J: Integer;
+Begin
+  For i := 0 To FVideos.Count - 2 Do
+    For J := i + 1 To FVideos.Count - 1 Do
+      If CompareVideoChannels(FVideos[i], FVideos[J]) > 0 Then
+        FVideos.Exchange(i, J);
+End;
+
 Procedure TFrameSyncedVideo.EndLoadVideos;
 Begin
   ClearUnloadedVideoFrames;
+  If FChannelOrder.Count > 0 Then
+    SortVideosByChannel;
+
   Layout(FLayout.RowCount, FLayout.ColCount, FLayout.Sequence);
   CheckAllVideosLoaded;
+End;
+
+Procedure TFrameSyncedVideo.PopulateSettingsFrame(AFrame: TFrameSettingsSyncedVideo);
+Begin
+  AFrame.LayoutCols := FLayout.ColCount;
+  AFrame.LayoutRows := FLayout.RowCount;
+  AFrame.Extend := FLayout.Extend;
+  AFrame.ControlLayoutSequence := FLayout.Sequence;
+  AFrame.AssignChannelOrderFrom(FChannelOrder);
+End;
+
+Procedure TFrameSyncedVideo.ApplySettingsFrame(AFrame: TFrameSettingsSyncedVideo);
+Begin
+  FLayout.ColCount := AFrame.LayoutCols;
+  FLayout.RowCount := AFrame.LayoutRows;
+  FLayout.Sequence := AFrame.ControlLayoutSequence;
+  FLayout.Extend := AFrame.Extend;
+  AFrame.AssignChannelOrderTo(FChannelOrder);
+
+  SortVideosByChannel;
+
+  FLayout.LayoutControls(FVideos, FVideoFileCount);
 End;
 
 End.

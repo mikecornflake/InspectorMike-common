@@ -67,8 +67,8 @@ Type
 
     Procedure RefreshUI; Virtual;
 
-    Procedure LoadSettings(oInifile: TIniFile); Virtual;
-    Procedure SaveSettings(oInifile: TIniFile); Virtual;
+    Procedure LoadSettings(AInifile: TIniFile); Virtual;
+    Procedure SaveSettings(AInifile: TIniFile); Virtual;
 
     // Called on database open/close
     Procedure Open; Virtual;
@@ -96,8 +96,10 @@ Function TFrameBase.GetSettingsKey: String;
 Begin
   If Assigned(FParentForm) Then
     Result := FParentForm.SettingsKey
+  Else If Trim(Name) <> '' Then
+    Result := Name
   Else
-    Result := Name;
+    Result := ClassName;
 End;
 
 Procedure TFrameBase.DoActivateFrame;
@@ -151,7 +153,12 @@ Begin
     s := ParentFullIdentKey(Self);
 
     If (s = '') Then
-      FFullIdentKey := Name
+    Begin
+      If (Trim(Name) <> '') Then
+        FFullIdentKey := Name
+      Else
+        FFullIdentKey := ClassName;
+    End
     Else
       FFullIdentKey := Format('%s.%s', [s, Name]);
   End;
@@ -186,12 +193,12 @@ Begin
 
 End;
 
-Procedure TFrameBase.LoadSettings(oInifile: TIniFile);
+Procedure TFrameBase.LoadSettings(AInifile: TIniFile);
 Begin
 
 End;
 
-Procedure TFrameBase.SaveSettings(oInifile: TIniFile);
+Procedure TFrameBase.SaveSettings(AInifile: TIniFile);
 Begin
 
 End;

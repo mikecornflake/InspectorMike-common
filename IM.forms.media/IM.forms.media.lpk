@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="IM.forms.media"/>
     <Type Value="RunAndDesignTime"/>
@@ -75,6 +75,14 @@
       <Item>
         <Filename Value="src\Display\Forms\FormVolumePopup.pas"/>
         <UnitName Value="FormVolumePopup"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameSettingsSyncedVideo.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameSettingsSyncedVideo.pas"/>
+        <UnitName Value="FrameSettingsSyncedVideo"/>
       </Item>
     </Files>
     <RequiredPkgs>

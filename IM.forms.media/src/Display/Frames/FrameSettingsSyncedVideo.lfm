@@ -1,0 +1,209 @@
+inherited FrameSettingsSyncedVideo: TFrameSettingsSyncedVideo
+  Height = 296
+  Width = 253
+  ClientHeight = 296
+  ClientWidth = 253
+  LCLVersion = '4.99.0.0'
+  ParentShowHint = False
+  ShowHint = True
+  object memChannels: TMemo[0]
+    Left = 12
+    Height = 111
+    Hint = 'You can manually edit this list '
+    Top = 176
+    Width = 197
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ParentShowHint = False
+    ScrollBars = ssAutoBoth
+    ShowHint = True
+    TabOrder = 0
+    OnClick = memChannelsClick
+    OnKeyUp = memChannelsKeyUp
+  end
+  object Label1: TLabel[1]
+    Left = 12
+    Height = 15
+    Top = 152
+    Width = 162
+    Caption = 'Channel load order (by name)'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Label2: TLabel[2]
+    Left = 12
+    Height = 15
+    Top = 16
+    Width = 69
+    Caption = 'Display rows'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Label3: TLabel[3]
+    Left = 136
+    Height = 15
+    Top = 16
+    Width = 46
+    Caption = 'columns'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object edtRows: TSpinEdit[4]
+    Left = 12
+    Height = 23
+    Top = 31
+    Width = 96
+    MaxValue = 6
+    MinValue = 1
+    TabOrder = 1
+    Value = 2
+  end
+  object edtCols: TSpinEdit[5]
+    Left = 136
+    Height = 23
+    Top = 31
+    Width = 73
+    Anchors = [akTop, akLeft, akRight]
+    MaxValue = 6
+    MinValue = 1
+    TabOrder = 2
+    Value = 2
+  end
+  object Label4: TLabel[6]
+    Left = 12
+    Height = 15
+    Top = 65
+    Width = 94
+    Caption = 'Videos displayed:'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object cboOrder: TComboBox[7]
+    Left = 12
+    Height = 23
+    Top = 83
+    Width = 197
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 15
+    ItemIndex = 0
+    Items.Strings = (
+      'Left to right, then down...'
+      'Top to bottom, then right...'
+    )
+    Style = csDropDownList
+    TabOrder = 3
+    Text = 'Left to right, then down...'
+  end
+  object Label5: TLabel[8]
+    Left = 12
+    Height = 1
+    Top = 119
+    Width = 1
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object cbExtend: TCheckBox[9]
+    Left = 12
+    Height = 19
+    Hint = 'If not checked, then last video will remain fixed to grid cell size'
+    Top = 119
+    Width = 113
+    Alignment = taLeftJustify
+    Caption = 'Extend last video'
+    Font.Style = [fsBold]
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+  end
+  object ToolBar1: TToolBar[10]
+    Left = 216
+    Height = 109
+    Top = 176
+    Width = 27
+    Align = alNone
+    Anchors = [akTop, akRight]
+    Caption = 'ToolBar1'
+    Images = itTools
+    TabOrder = 5
+    Orientation = tboVertical
+    object btnSort: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'btnSort'
+      Enabled = False
+      ImageIndex = 4
+      OnClick = btnSortClick
+    end
+    object ToolButton2: TToolButton
+      Left = 1
+      Top = 24
+      Width = 23
+      Caption = 'ToolButton2'
+      Style = tbsSeparator
+    end
+    object btnUp: TToolButton
+      Left = 1
+      Top = 32
+      Caption = 'btnUp'
+      Enabled = False
+      ImageIndex = 1
+      OnClick = btnUpClick
+    end
+    object btnDown: TToolButton
+      Left = 1
+      Top = 54
+      Caption = 'btnDown'
+      Enabled = False
+      ImageIndex = 2
+      OnClick = btnDownClick
+    end
+  end
+  object itTools: TImageList[11]
+    Left = 216
+    Top = 24
+    Bitmap = {
+      4C7A060000001000000010000000220500000000000078DAED58594F9C5518FE
+      8C37C61FE08D779078617A41C28D9148A19D154AA68AC625C60B206CD19868EC
+      85010AB3C00076893586560BB5751710293033C01486A56C850203CA5A064281
+      82B2D9C4345E3CBEEF1906BE59C8CC7CA6C60B4EF28437EFE139CB33EF73BEF3
+      7D9274D41E57CBCECE0643093723230313EE71018EA3E1666666A2B7A71B2D4D
+      8D021C732E126E6E6E2E5C9D1DF86D720CEEF1BB021C738EFBC2F1F3F2F2FECC
+      C9C9415656969893C131E7B82F8225C411E20F41DC5155FD87AD420B0125ADEC
+      04AE78DC021C47C5B5AA707E760892E3AA8088291711F7931418E70621B9AE41
+      BAF58517149B38477D61F966EDB054AE81547F165277B517F5C51039EE0BDF9E
+      13B54A7BCE5FBA0369E02BDABF587BFC5E5FC41ABCB9D80F69E8BA77EE689B55
+      8D548F0BD25D9ABF5CAB889FB8E08434AE94AF41DC820DD224ADDFAA805FA641
+      ACA711D2B452BE16CF786A21CD29E413E7A9A56F217914F2CBF59056BFF382E3
+      685BB1A65DAAA07A65701C7D8B919D9B3151B3CF9D6AD8F73FC7519F1D1A54AD
+      AF20676E42D91942F55FBA3C03A98DEAAF42A3887F6691CE9E8E6B8AF9399E61
+      F2BFF2F9DF98EF83D4775DB1FFF473E4DF41E5FC1767DB208DDC50ECDFE7679B
+      208D29ACFF52159E9D26FF4D907EA5AAC8F9E7D27A796EC95104C94DE7BFBBDA
+      1BF31AB82FECF99F8AF4A906A4AFF7D0D9F3A500C79CE3BE0856102FE672D29C
+      F3355E388B7C1AC447B80B1A4347B563F482E3C8B9076354D27A2B5395700FC6
+      50CE3D6A0A5A7E7E7E1FDFF9F9DECBF77606C79CE3BE707CBE27CFCDCE60EDFE
+      32EE2F2D0A70CC39EE8BE437CFC8C84467C72DD89A1B0538E65C34F5CB6BFEB9
+      BE4E60EFDD21EAFAE5F532121212DEFE97F5FBF45165FDFF9BDD74028CC07C8A
+      D5D0A035A780916A356C85E2DA4A92B036D62060A758DEA7215EFBC63D383716
+      A0B3049FE176237147EBD055F98200C70EE3C1181AE2543F1844FA9D2AA4584E
+      F9F11D6615CD598BDB17120949B87D3159C4BF4F36A2DBECDD4B7281BE5D4F3C
+      E6AA0BF44EBFB9CDAA5D87F92478FD33B632E2AA4903155A29D76152ED447017
+      13EFBBB692E3D89A7562F48A1E76B31AF2F75DADD550C71AA88D3A9F869B811A
+      B4107F7BBA09BFD69C26BEFFF3564D9CB6F5793856A749C37B213564FE96FB47
+      CC7CF33A1C267FBED64CFAAD0DE0E5814B782D84865E7E1236E95DC353FB4E10
+      5F5DA8BBA5A7395378ED96B4200D7DFCADE12AAC3466C36E3C19387E6CC07780
+      98607E3276062F62C3FE1EF1FD6B90EAAF5E2BF4D3EE634FC75E39FFE1500576
+      3A3F0AE26BF7F4B3AF4CC141680DA1A38DD6FCF788158F068B69FFFEEBD7EDE9
+      77BAFF53BCD27F09E9FD9F918E97F7756C2BD33E69A35AB1118FFEB27EBB72BE
+      DE9CB6E8D34F6848E3B18EA9A506DFFF3D11F0DD24F03BC9B1C7FD3DA5D5A26A
+      B01B93A9F693D16E513784F27F08FDB7E41EDEA2FBEAFAE80F683529D0BF2411
+      DBC41FBDAC237E74FA8BDFBF38113B73ED98AC31C0613EBC7EE5FA6B0AF59D7E
+      FE9B6AC6F48D5783EA3F44FDFA10EBE7BF893ACC7FFF5610FFA07EF7FDBF11D2
+      FF635F0BFFD903F6AF8DC8FFA4FFC8552CFF9215E43F717E86F37F7112B6873E
+      C76A531E5A02FC935CA073EA64FE27DD3A0EEA46DD6BA3FFBF59F812B6FBCFE3
+      81FD5DDC2C3A2E3CE8B2A87B0ED12F5676FEE2AF910BD81D28C71F5D466C38DE
+      A7B8028F28D765F6EE436335FC247BFEB802EF18CDE4FD5DD7196CB67F804DE7
+      8722B653CE77E7518779FEF8C678D8F3B140B38CBB7F7E1EF2FC918FC1DEB799
+      5441772DAFFFBDCF1F99E7A3B9EF1F3BCCF3FF00CF8B6881
+    }
+  end
+end

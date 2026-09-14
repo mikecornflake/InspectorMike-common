@@ -92,6 +92,9 @@ Type
 
 Implementation
 
+Uses
+  Math;
+
 { TControlGridLayout }
 
 Constructor TControlGridLayout.Create(AParent: TWinControl);
@@ -99,12 +102,14 @@ Begin
   Inherited Create;
 
   FParent := AParent;
-  FRowCount := 1;
-  FColCount := 1;
+  FRowCount := 2;
+  FColCount := 2;
+  FExtend := True;
+
   FSequence := clsLeftToRightThenDown;
+
   FPanelMargin := 0;
   FCellSpacing := 4;
-  FExtend := False;
 End;
 
 Procedure TControlGridLayout.SetRowCount(AValue: Integer);
@@ -143,25 +148,34 @@ Begin
   End;
 End;
 
-Procedure TControlGridLayout.LayoutControls(AControls: TControlList; AControlCountLimit: Integer = -1);
+Procedure TControlGridLayout.LayoutControls(AControls: TControlList;
+  AControlCountLimit: Integer = -1);
 Var
   i: Integer;
   Row: Integer;
   Col: Integer;
+
   CellW: Integer;
   CellH: Integer;
+
+  GridColCount: Integer;
+  GridRowCount: Integer;
+
   LayoutCellW: Integer;
   LayoutCellH: Integer;
   LayoutColCount: Integer;
   LayoutRowCount: Integer;
+
   LastRow: Integer;
   LastCol: Integer;
   ItemsInLastRow: Integer;
   ItemsInLastCol: Integer;
+
   LeftPos: Integer;
   TopPos: Integer;
   WorkW: Integer;
   WorkH: Integer;
+
   oControl: TControl;
 Begin
   If Not Assigned(FParent) Then
@@ -176,21 +190,51 @@ Begin
   If (AControlCountLimit < 0) Or (AControlCountLimit > AControls.Count) Then
     AControlCountLimit := AControls.Count;
 
-  If AControlCountLimit=0 Then
+  If AControlCountLimit = 0 Then
     Exit;
 
-  If AControlCountLimit > (FRowCount * FColCount) Then
-    AControlCountLimit := FRowCount * FColCount;
+  { -----------------------------------------------------------
+    Determine the actual grid required.
 
-  WorkW := FParent.ClientWidth - (FPanelMargin * 2) - (FCellSpacing * (FColCount - 1));
+    FRowCount/FColCount remain the user's preferred settings.
+    ----------------------------------------------------------- }
 
-  WorkH := FParent.ClientHeight - (FPanelMargin * 2) - (FCellSpacing * (FRowCount - 1));
+  Case FSequence Of
+
+    clsLeftToRightThenDown:
+    Begin
+      { Preserve preferred column count, but don't create
+        columns which cannot possibly be used. }
+      GridColCount := Min(FColCount, AControlCountLimit);
+
+      { Ceiling division }
+      GridRowCount := (AControlCountLimit + GridColCount - 1) Div GridColCount;
+    End;
+
+
+    clsTopToBottomThenRight:
+    Begin
+      { Preserve preferred row count, but don't create
+        rows which cannot possibly be used. }
+      GridRowCount := Min(FRowCount, AControlCountLimit);
+
+      { Ceiling division }
+      GridColCount := (AControlCountLimit + GridRowCount - 1) Div GridRowCount;
+    End;
+    Else
+      Exit;
+  End;
+
+  WorkW := FParent.ClientWidth - (FPanelMargin * 2) - (FCellSpacing * (GridColCount - 1));
+
+  WorkH := FParent.ClientHeight - (FPanelMargin * 2) - (FCellSpacing * (GridRowCount - 1));
 
   If (WorkW <= 0) Or (WorkH <= 0) Then
     Exit;
 
-  CellW := WorkW Div FColCount;
-  CellH := WorkH Div FRowCount;
+  CellW := WorkW Div GridColCount;
+  CellH := WorkH Div GridRowCount;
+
 
   For i := 0 To AControlCountLimit - 1 Do
   Begin
@@ -198,69 +242,93 @@ Begin
       Raise Exception.CreateFmt('Item %d is nil', [i]);
 
     If Not (TObject(AControls[i]) Is TControl) Then
-      Raise Exception.CreateFmt(
-        'Item %d is %s, not TControl',
+      Raise Exception.CreateFmt('Item %d is %s, not TControl',
         [i, TObject(AControls[i]).ClassName]);
 
     oControl := TControl(AControls[i]);
 
-    If Not Assigned(oControl) Then
-      Continue;
+    { Calculate position using the effective grid rather
+      than FRowCount/FColCount. }
 
-    GetCellPosition(i, Row, Col);
+    Case FSequence Of
+
+      clsLeftToRightThenDown:
+      Begin
+        Row := i Div GridColCount;
+        Col := i Mod GridColCount;
+      End;
+
+      clsTopToBottomThenRight:
+      Begin
+        Col := i Div GridRowCount;
+        Row := i Mod GridRowCount;
+      End;
+
+    End;
 
     LayoutCellW := CellW;
     LayoutCellH := CellH;
-    LayoutColCount := FColCount;
-    LayoutRowCount := FRowCount;
+    LayoutColCount := GridColCount;
+    LayoutRowCount := GridRowCount;
 
     If FExtend Then
     Begin
       Case FSequence Of
+
         clsLeftToRightThenDown:
         Begin
-          ItemsInLastRow := AControlCountLimit Mod FColCount;
+          ItemsInLastRow := AControlCountLimit Mod GridColCount;
 
           If ItemsInLastRow <> 0 Then
           Begin
-            LastRow := AControlCountLimit Div FColCount;
+            LastRow := AControlCountLimit Div GridColCount;
 
             If Row = LastRow Then
             Begin
               LayoutColCount := ItemsInLastRow;
-              LayoutCellW :=
-                (FParent.ClientWidth - (FPanelMargin * 2) -
+
+              LayoutCellW := (FParent.ClientWidth - (FPanelMargin * 2) -
                 (FCellSpacing * (LayoutColCount - 1))) Div LayoutColCount;
+
+              { Position within the extended row }
+              Col := i Mod GridColCount;
             End;
           End;
         End;
 
         clsTopToBottomThenRight:
         Begin
-          ItemsInLastCol := AControlCountLimit Mod FRowCount;
+          ItemsInLastCol := AControlCountLimit Mod GridRowCount;
 
           If ItemsInLastCol <> 0 Then
           Begin
-            LastCol := AControlCountLimit Div FRowCount;
+            LastCol := AControlCountLimit Div GridRowCount;
 
             If Col = LastCol Then
             Begin
               LayoutRowCount := ItemsInLastCol;
-              LayoutCellH :=
-                (FParent.ClientHeight - (FPanelMargin * 2) -
+
+              LayoutCellH := (FParent.ClientHeight - (FPanelMargin * 2) -
                 (FCellSpacing * (LayoutRowCount - 1))) Div LayoutRowCount;
+
+              { Position within the extended column }
+              Row := i Mod GridRowCount;
             End;
           End;
         End;
+
       End;
     End;
 
     LeftPos := FPanelMargin + (Col * (LayoutCellW + FCellSpacing));
+
     TopPos := FPanelMargin + (Row * (LayoutCellH + FCellSpacing));
 
     oControl.Parent := FParent;
     oControl.Align := alNone;
+
     oControl.SetBounds(LeftPos, TopPos, LayoutCellW, LayoutCellH);
+
     oControl.Visible := True;
   End;
 End;
