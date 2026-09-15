@@ -9,9 +9,11 @@ Uses
 
 Type
 
-  { TdlgImageSelection }
+  { TDialogImageSelection }
 
-  TdlgImageSelection = Class(TForm)
+  { TDialogImageSelection }
+
+  TDialogImageSelection = Class(TForm)
     ButtonPanel1: TButtonPanel;
     Procedure FormCreate(Sender: TObject);
     Procedure FormDestroy(Sender: TObject);
@@ -25,6 +27,8 @@ Type
   Public
     Procedure AddImage(Const AFilename: String; Const ACaption: String; Const ASelected: Boolean);
 
+    Procedure LoadFromFolder(Const AFolder: String);
+
     Property CaptionSelected: String Read GetCaptionSelected Write SetCaptionSelected;
     Property CaptionNotSelected: String Read GetCaptionNotSelected Write SetCaptionNotSelected;
 
@@ -32,16 +36,17 @@ Type
     Property Image[AIndex: Integer]: TViewerImage Read GetImage;
   End;
 
-Var
-  dlgImageSelection: TdlgImageSelection;
-
 Implementation
 
-{$R *.lfm}
+Uses
+  FileSupport;
 
-{ TdlgImageSelection }
+  {$R *.lfm}
 
-Procedure TdlgImageSelection.FormCreate(Sender: TObject);
+
+  { TDialogImageSelection }
+
+Procedure TDialogImageSelection.FormCreate(Sender: TObject);
 Begin
   fmeImageViewer := TFrameImageViewer.Create(self);
   fmeImageViewer.Parent := self;
@@ -51,37 +56,37 @@ Begin
   fmeImageViewer.SelectionMode := ismMultiple;
 End;
 
-Procedure TdlgImageSelection.FormDestroy(Sender: TObject);
+Procedure TDialogImageSelection.FormDestroy(Sender: TObject);
 Begin
   FreeAndNil(fmeImageViewer);
 End;
 
-Function TdlgImageSelection.GetCaptionNotSelected: String;
+Function TDialogImageSelection.GetCaptionNotSelected: String;
 Begin
   Result := fmeImageViewer.CaptionNotSelected;
 End;
 
-Function TdlgImageSelection.GetCaptionSelected: String;
+Function TDialogImageSelection.GetCaptionSelected: String;
 Begin
   Result := fmeImageViewer.CaptionSelected;
 End;
 
-Function TdlgImageSelection.GetImage(AIndex: Integer): TViewerImage;
+Function TDialogImageSelection.GetImage(AIndex: Integer): TViewerImage;
 Begin
   Result := fmeImageViewer.Image[AIndex];
 End;
 
-Procedure TdlgImageSelection.SetCaptionNotSelected(Const AValue: String);
+Procedure TDialogImageSelection.SetCaptionNotSelected(Const AValue: String);
 Begin
   fmeImageViewer.CaptionNotSelected := AValue;
 End;
 
-Procedure TdlgImageSelection.SetCaptionSelected(Const AValue: String);
+Procedure TDialogImageSelection.SetCaptionSelected(Const AValue: String);
 Begin
   fmeImageViewer.CaptionSelected := AValue;
 End;
 
-Procedure TdlgImageSelection.AddImage(Const AFilename: String; Const ACaption: String;
+Procedure TDialogImageSelection.AddImage(Const AFilename: String; Const ACaption: String;
   Const ASelected: Boolean);
 Var
   oImage: TViewerImage;
@@ -90,7 +95,33 @@ Begin
   oImage.Selected := ASelected;
 End;
 
-Function TdlgImageSelection.ImageCount: Integer;
+Procedure TDialogImageSelection.LoadFromFolder(Const AFolder: String);
+Var
+  SearchRec: TSearchRec;
+  sFolder: String;
+  sExt, sFile: String;
+Begin
+  sFolder := IncludeTrailingPathDelimiter(AFolder);
+
+  If FindFirst(sFolder + '*.*', faAnyFile, SearchRec) = 0 Then
+  Begin
+    Try
+      Repeat
+        If (SearchRec.Attr And faDirectory) = 0 Then
+        Begin
+          sExt := ExtractFileExt(SearchRec.Name);
+          sFile := SearchRec.Name;
+          If IsImage(sExt) Then
+            AddImage(sFolder + sFile, sFile, Not sFile.Contains('Aux', True));
+        End;
+      Until FindNext(SearchRec) <> 0;
+    Finally
+      FindClose(SearchRec);
+    End;
+  End;
+End;
+
+Function TDialogImageSelection.ImageCount: Integer;
 Begin
   Result := fmeImageViewer.ImageCount;
 End;

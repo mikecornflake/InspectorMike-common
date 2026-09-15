@@ -35,6 +35,7 @@ Uses
   Types, FormVolumePopup, IniFiles;
 
 Type
+  TOnGrabImage = Procedure(Sender: TObject; Const AFolder: String) Of Object;
 
   { TFrameVideoPlayer }
 
@@ -103,7 +104,9 @@ Type
   Private
     FAutoplay: Boolean;
     FFilename: String;
+    FImageGrabFolder: String;
     FLastImageFolder: String;
+    FOnGrabImage: TOnGrabImage;
     FOnStop: TNotifyEvent;
     FVideoEngineClass: TFrameVideoBaseClass;
     fmeVideo: TFrameVideoBase;
@@ -116,9 +119,12 @@ Type
 
     Function EnsurePlaybackFrame: Boolean;
     Function GetFilename: String;
+    Function GetImageGrabHint: String;
     Function GetShowLabel: Boolean;
     Function GetVideoFileCount: Integer;
     Procedure SetAutoplay(AValue: Boolean);
+    Procedure SetImageFolder(Const AValue: String);
+    Procedure SetImageGrabHint(Const AValue: String);
     Procedure SetVideoEngineClass(AValue: TFrameVideoBaseClass);
     Procedure SetShowLabel(AValue: Boolean);
 
@@ -154,6 +160,11 @@ Type
     Property PlaybackFrame: TFrameVideoBase Read fmeVideo;
 
     Property VideoFileCount: Integer Read GetVideoFileCount;
+
+    // Can contain have a %TIMESTAMP% which is replaced with yyyymmddhhmmss
+    Property ImageGrabFolder: String Read FImageGrabFolder Write SetImageFolder;
+    Property OnGrabImage: TOnGrabImage Read FOnGrabImage Write FOnGrabImage;
+    Property ImageGrabHint: String Read GetImageGrabHint Write SetImageGrabHint;
   End;
 
 Const
@@ -164,7 +175,7 @@ Const
 Implementation
 
 Uses
-  OSSupport, Math, Clipbrd;
+  OSSupport, Math, Clipbrd, DateUtils;
 
 
   {$R *.lfm}
@@ -181,6 +192,7 @@ Begin
   FAutoplay := True;
   FLastImageFolder := '';
   FOnStop := nil;
+  FOnGrabImage := nil;
 
   lblStatus.Caption := '';
   lblTime.Caption := '';
@@ -605,18 +617,48 @@ End;
 
 Procedure TFrameVideoPlayer.btnGrabClick(Sender: TObject);
 Var
-  sPath: String;
+  sPath, sTimeStamp: String;
 Begin
   If Not Assigned(fmeVideo) Then
     Exit;
 
-  If dlgSaveLocation.InitialDir = '' Then
-    dlgSaveLocation.InitialDir :=
-      IncludeTrailingBackslash(ExtractFilePath(fmeVideo.Filename));
-
-  If mnuGrabOnlyAskOnce.Checked Then
+  If FImageGrabFolder <> '' Then
   Begin
-    If FLastImageFolder = '' Then
+    // Calling app has given us a fixed save folder
+    sTimeStamp := FormatDateTime('yyyymmdd', now);
+    sTimeStamp += FormatDateTime('HHnnss', now);
+    sPath := FImageGrabFolder.Replace('%TIMESTAMP%', sTimeStamp);
+
+    ForceDirectories(sPath);
+
+    If fmeVideo.SaveFrameToFile(sPath) Then
+      If Assigned(FOnGrabImage) Then
+        FOnGrabImage(Self, sPath);
+  End
+  Else
+  Begin
+    // No fixed save folder, use our original workflow
+
+    If dlgSaveLocation.InitialDir = '' Then
+      dlgSaveLocation.InitialDir :=
+        IncludeTrailingBackslash(ExtractFilePath(fmeVideo.Filename));
+
+    If mnuGrabOnlyAskOnce.Checked Then
+    Begin
+      If FLastImageFolder = '' Then
+      Begin
+        If dlgSaveLocation.Execute Then
+        Begin
+          sPath := IncludeTrailingBackslash(dlgSaveLocation.Filename);
+          FLastImageFolder := sPath;
+        End
+        Else
+          sPath := '';
+      End
+      Else
+        sPath := FLastImageFolder;
+    End
+    Else If mnuGrabAlwaysAsk.Checked Then
     Begin
       If dlgSaveLocation.Execute Then
       Begin
@@ -627,26 +669,15 @@ Begin
         sPath := '';
     End
     Else
-      sPath := FLastImageFolder;
-  End
-  Else If mnuGrabAlwaysAsk.Checked Then
-  Begin
-    If dlgSaveLocation.Execute Then
-    Begin
-      sPath := IncludeTrailingBackslash(dlgSaveLocation.Filename);
-      FLastImageFolder := sPath;
-    End
-    Else
-      sPath := '';
-  End
-  Else
-    sPath := IncludeTrailingBackslash(ExtractFilePath(fmeVideo.Filename));
+      sPath := IncludeTrailingBackslash(ExtractFilePath(fmeVideo.Filename));
 
-  // By default, leave it to the player to determine filename
-  If fmeVideo.SaveFrameToFile(sPath) Then
-    lblStatus.Caption := 'Saved image to ' + sPath
-  Else
-    lblStatus.Caption := 'Failed to grab image';
+    // By default, leave it to the player to determine filename
+    If fmeVideo.SaveFrameToFile(sPath) Then
+      lblStatus.Caption := 'Saved image to ' + sPath
+    Else
+      lblStatus.Caption := 'Failed to grab image';
+  End;
+
 
   RefreshUI;
 End;
@@ -674,6 +705,11 @@ Begin
   Result := FFilename;
 End;
 
+Function TFrameVideoPlayer.GetImageGrabHint: String;
+Begin
+  Result := btnGrab.Hint;
+End;
+
 Function TFrameVideoPlayer.GetShowLabel: Boolean;
 Begin
   Result := lblStatus.Visible;
@@ -693,6 +729,26 @@ Begin
 
   If Assigned(fmeVideo) Then
     fmeVideo.Autoplay := FAutoplay;
+End;
+
+Procedure TFrameVideoPlayer.SetImageFolder(Const AValue: String);
+Begin
+  If FImageGrabFolder = AValue Then
+    Exit;
+
+  FImageGrabFolder := AValue;
+
+  If (AValue <> '') Then
+  Begin
+    btnGrab.Hint := AValue;
+    btnGrab.DropdownMenu := nil;
+    btnGrab.Style := tbsButton;
+  End;
+End;
+
+Procedure TFrameVideoPlayer.SetImageGrabHint(Const AValue: String);
+Begin
+  btnGrab.Hint := AValue;
 End;
 
 Procedure TFrameVideoPlayer.SetShowLabel(AValue: Boolean);

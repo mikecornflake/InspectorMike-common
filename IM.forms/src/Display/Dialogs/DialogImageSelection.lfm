@@ -1,12 +1,12 @@
-object dlgImageSelection: TdlgImageSelection
+object DialogImageSelection: TDialogImageSelection
   Left = 390
-  Height = 413
+  Height = 475
   Top = 250
-  Width = 640
+  Width = 694
   BorderIcons = [biSystemMenu]
-  Caption = 'dlgImageSelection'
-  ClientHeight = 413
-  ClientWidth = 640
+  Caption = 'Select Images'
+  ClientHeight = 475
+  ClientWidth = 694
   Position = poMainFormCenter
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
@@ -14,8 +14,8 @@ object dlgImageSelection: TdlgImageSelection
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
-    Top = 373
-    Width = 628
+    Top = 435
+    Width = 682
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

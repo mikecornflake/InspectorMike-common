@@ -225,7 +225,7 @@ Begin
   Begin
     oThumbnail := oThumbnail.FilterGrayscale;
 
-    oThumbnail.FillRect(oThumbnail.ClipRect, BGRA(0, 0, 0, 100),
+    oThumbnail.FillRect(oThumbnail.ClipRect, BGRA(0, 0, 0, 150),
       dmDrawWithTransparency);
   End;
 
@@ -266,13 +266,16 @@ Begin
 
   { Caption }
   If oImage.Selected Then
+  Begin
     grdImages.Canvas.Font.Color := clBlack
+  end
   Else
+  Begin
     grdImages.Canvas.Font.Color := clGrayText;
+  end;
 
   // Center the caption in the cell
   iLeft := aRect.Left + ((aRect.Width - grdImages.Canvas.TextWidth(oImage.Caption)) Div 2);
-
   grdImages.Canvas.TextOut(iLeft, aRect.Top + FThumbnailBorder + FThumbnailHeight +
     2, oImage.Caption);
 End;
