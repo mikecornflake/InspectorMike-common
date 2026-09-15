@@ -6,7 +6,7 @@ Interface
 
 Uses
   Classes, SysUtils, Forms, Controls, Grids, ComCtrls, Menus, ActnList, fgl, BGRABitmap, Types,
-  Inifiles, LCLType, LCLIntf, Graphics;
+  Inifiles, LCLType, LCLIntf, Graphics, LazLogger;
 
 Type
 
@@ -43,19 +43,41 @@ Type
 
   TFrameImageViewer = Class(TFrame)
     actImages: TActionList;
+    actAddimage: TAction;
+    actRefreshList: TAction;
+    actRenameImage: TAction;
+    actDeleteImage: TAction;
     actOpenFolder: TAction;
     actViewImage: TAction;
     grdImages: TDrawGrid;
+    ImageList: TImageList;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    Separator1: TMenuItem;
     mnuOpenFolder: TMenuItem;
     mnuViewImage: TMenuItem;
     pmImages: TPopupMenu;
+    ToolBar: TToolBar;
+    btnRefresh: TToolButton;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
 
+    Procedure actAddimageExecute(Sender: TObject);
+    Procedure actDeleteImageExecute(Sender: TObject);
     Procedure actOpenFolderExecute(Sender: TObject);
+    Procedure actRefreshListExecute(Sender: TObject);
+    Procedure actRenameImageExecute(Sender: TObject);
     Procedure FrameResize(Sender: TObject);
     Procedure actViewImageClick(Sender: TObject);
     Procedure grdImagesClick(Sender: TObject);
     Procedure grdImagesDrawCell(Sender: TObject; aCol, aRow: Integer;
       aRect: TRect; aState: TGridDrawState);
+    Procedure grdImagesGetCellHint(Sender: TObject; aCol, aRow: Integer; Var HintText: String);
 
     Procedure grdImagesMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -64,11 +86,16 @@ Type
     FCaptionNotSelected: String;
     FCaptionSelected: String;
     FImages: TViewerImageList;
+    FOnRequestAddImage: TNotifyEvent;
+    FOnRequestRefreshImages: TNotifyEvent;
     FSelectionMode: TImageSelectionMode;
     FThumbnailBorder: Integer;
     FThumbnailHeight: Integer;
     FThumbnailWidth: Integer;
     Function GetImage(AIndex: Integer): TViewerImage;
+    Function GetShowToolbar: Boolean;
+    Procedure RefreshUI;
+    Procedure SetShowToolbar(Const AValue: Boolean);
     Procedure SetThumbnailBorder(Const AValue: Integer);
     Procedure UpdateGridLayout;
 
@@ -94,14 +121,21 @@ Type
     Property CaptionSelected: String Read FCaptionSelected Write FCaptionSelected;
     Property CaptionNotSelected: String Read FCaptionNotSelected Write FCaptionNotSelected;
 
+    Property ShowToolbar: Boolean Read GetShowToolbar Write SetShowToolbar;
+
     // Checkbox on each image
     Property SelectionMode: TImageSelectionMode Read FSelectionMode Write FSelectionMode;
+
+    Property OnRequestAddImage: TNotifyEvent Read FOnRequestAddImage Write FOnRequestAddImage;
+    Property OnRequestRefreshImages: TNotifyEvent Read FOnRequestRefreshImages
+      Write FOnRequestRefreshImages;
   End;
 
 Implementation
 
 Uses
-  BGRAThumbnail, BGRABitmapTypes, OSSupport;
+  BGRAThumbnail, BGRABitmapTypes, OSSupport, LazFileUtils, FileUtil, FileSupport,
+  Dialogs, FormMain;
 
   {$R *.lfm}
 
@@ -159,6 +193,8 @@ Begin
   FCaptionNotSelected := 'Do not save';
 
   FImages := TViewerImageList.Create(True);
+
+  RefreshUI;
 End;
 
 Destructor TFrameImageViewer.Destroy;
@@ -199,6 +235,7 @@ Begin
   grdImages.RowCount := iRows;
 
   grdImages.Invalidate;
+  RefreshUI;
 End;
 
 Procedure TFrameImageViewer.grdImagesDrawCell(Sender: TObject; aCol, aRow: Integer;
@@ -210,16 +247,28 @@ Var
   oThumbnail: TBGRABitmap;
   R: TRect;
   sSelectionCaption: String;
+  colBack: TColor;
 Begin
-  { Clear the complete cell }
-  grdImages.Canvas.FillRect(aRect);
+  colBack := clWhite;
 
   iIndex := (aRow * grdImages.ColCount) + aCol;
   If iIndex >= FImages.Count Then
+  Begin
+    { Clear the complete cell }
+    grdImages.Canvas.FillRect(aRect);
+
     Exit;
+  End;
 
   oImage := FImages[iIndex];
   oThumbnail := oImage.GetThumbnail(FThumbnailWidth, FThumbnailHeight);
+
+  { Clear the complete cell }
+  If (FSelectionMode <> ismNone) And (Not oImage.Selected) Then
+    colBack := clLtGray;
+
+  grdImages.Canvas.Brush.Color := colBack;
+  grdImages.Canvas.FillRect(aRect);
 
   If (FSelectionMode <> ismNone) And (Not oImage.Selected) Then
   Begin
@@ -256,7 +305,7 @@ Begin
 
       If sSelectionCaption <> '' Then
       Begin
-        grdImages.Canvas.Brush.Color := clWhite;
+        grdImages.Canvas.Brush.Color := colBack;
         grdImages.Canvas.Font.Color := clBlack;
 
         grdImages.Canvas.TextOut(R.Right + 2, R.Top + 2, '  ' + sSelectionCaption + ' ');
@@ -266,18 +315,20 @@ Begin
 
   { Caption }
   If oImage.Selected Then
-  Begin
     grdImages.Canvas.Font.Color := clBlack
-  end
   Else
-  Begin
     grdImages.Canvas.Font.Color := clGrayText;
-  end;
 
   // Center the caption in the cell
   iLeft := aRect.Left + ((aRect.Width - grdImages.Canvas.TextWidth(oImage.Caption)) Div 2);
   grdImages.Canvas.TextOut(iLeft, aRect.Top + FThumbnailBorder + FThumbnailHeight +
     2, oImage.Caption);
+End;
+
+Procedure TFrameImageViewer.grdImagesGetCellHint(Sender: TObject; aCol, aRow: Integer;
+  Var HintText: String);
+Begin
+  HintText := grdImages.Hint;
 End;
 
 Procedure TFrameImageViewer.grdImagesMouseDown(Sender: TObject; Button: TMouseButton;
@@ -300,12 +351,41 @@ End;
 Procedure TFrameImageViewer.pmImagesPopup(Sender: TObject);
 Var
   iIndex: Integer;
-  oImage: TViewerImage;
 Begin
   iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
 
-  actViewImage.Enabled := (iIndex < FImages.Count);
-  actOpenFolder.Enabled := (iIndex < FImages.Count);
+  RefreshUI;
+End;
+
+Procedure TFrameImageViewer.RefreshUI;
+Var
+  iIndex: Integer;
+  bHasImages, bImageSelected: Boolean;
+Begin
+  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
+
+  bHasImages := (FImages.Count > 0);
+  bImageSelected := (iIndex < FImages.Count);
+
+  actViewImage.Enabled := Enabled And bHasImages And bImageSelected;
+  actOpenFolder.Enabled := Enabled And bHasImages And bImageSelected;
+
+  actDeleteImage.Enabled := Enabled And bHasImages And bImageSelected;
+  actRenameImage.Enabled := Enabled And bHasImages And bImageSelected;
+  actAddimage.Enabled := Enabled And Assigned(FOnRequestAddImage);
+  actRefreshList.Enabled := Enabled And Assigned(FOnRequestRefreshImages);
+
+  actDeleteImage.Visible := ToolBar.Visible;
+  actRenameImage.Visible := ToolBar.Visible;
+  actAddimage.Visible := ToolBar.Visible;
+  actAddimage.Visible := ToolBar.Visible;
+  actRefreshList.Visible := ToolBar.Visible;
+End;
+
+Procedure TFrameImageViewer.SetShowToolbar(Const AValue: Boolean);
+Begin
+  ToolBar.Visible := AValue;
+  RefreshUI;
 End;
 
 Procedure TFrameImageViewer.FrameResize(Sender: TObject);
@@ -327,6 +407,92 @@ Begin
 
   If Assigned(oImage) Then
     LaunchFile('explorer.exe', Format('/e,/select,"%s"', [oImage.FileName]));
+End;
+
+Procedure TFrameImageViewer.actRefreshListExecute(Sender: TObject);
+Begin
+  If Assigned(FOnRequestRefreshImages) Then
+    FOnRequestRefreshImages(Self);
+End;
+
+Procedure TFrameImageViewer.actRenameImageExecute(Sender: TObject);
+Var
+  iIndex: Integer;
+  oImage: TViewerImage;
+  sFilename, sFolder, sNewFilename, sMessage: String;
+Begin
+  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
+
+  If iIndex >= FImages.Count Then
+    Exit;
+
+  oImage := FImages[iIndex];
+
+  sFilename := ExtractFileName(oImage.FileName);
+  sFolder := IncludeTrailingBackslash(ExtractFileDir(oImage.FileName));
+
+  sNewFilename := InputBox('Rename Image', 'New filename', sFilename);
+
+  sNewFilename := MakeFilenameSafe(sNewFilename);
+
+  If (sNewFilename <> '') And (sNewFilename <> sFilename) Then
+    If Not FileExists(sFolder + sNewFilename) Then
+    Begin
+      If RenameFile(oImage.FileName, sFolder + sNewFilename) Then
+      Begin
+        sMessage := 'File ' + oImage.FileName + ' renamed to ' + sNewFilename;
+        oImage.FileName := sFolder + sNewFilename;
+        oImage.Caption := sNewFilename;
+
+        grdImages.Invalidate;
+      End
+      Else
+      Begin
+        sMessage := 'Unable to rename ' + oImage.FileName;
+        ShowMessage(sMessage);
+      End;
+
+      Debugln('Image Viewer: ' + sMessage);
+    End;
+End;
+
+Procedure TFrameImageViewer.actAddimageExecute(Sender: TObject);
+Begin
+  If Assigned(FOnRequestAddImage) Then
+    FOnRequestAddImage(Self);
+End;
+
+Procedure TFrameImageViewer.actDeleteImageExecute(Sender: TObject);
+Var
+  iIndex: Integer;
+  oImage: TViewerImage;
+  sMessage: String;
+Begin
+  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
+
+  If iIndex >= FImages.Count Then
+    Exit;
+
+  oImage := FImages[iIndex];
+
+  If QuestionDlg('Delete Image', 'Are you sure you wish to delete this image?'+LineEnding+oImage.Filename,
+    mtConfirmation, [mrYes, mrNo], 0) = mrYes Then
+  Begin
+    If DeleteFile(oImage.Filename) Then
+    Begin
+      sMessage := 'Image '+oImage.FileName+' deleted';
+      FImages.Delete(iIndex);
+
+      UpdateGridLayout;
+    end
+    Else
+    Begin
+      sMessage := 'Unable to delete '+oImage.Filename;
+      ShowMessage(sMessage);
+    end;
+
+    DebugLn('Image Viewer: ' + sMessage);
+  End;
 End;
 
 Procedure TFrameImageViewer.actViewImageClick(Sender: TObject);
@@ -362,6 +528,7 @@ Begin
     oImage.Selected := Not oImage.Selected;
 
     grdImages.InvalidateCell(grdImages.Col, grdImages.Row);
+    RefreshUI;
   End;
 End;
 
@@ -380,6 +547,11 @@ Begin
     Result := FImages[AIndex]
   Else
     Result := nil;
+End;
+
+Function TFrameImageViewer.GetShowToolbar: Boolean;
+Begin
+  Result := ToolBar.Visible;;
 End;
 
 Procedure TFrameImageViewer.SetThumbnailSize(Const AWidth, AHeight: Integer);
@@ -405,9 +577,9 @@ Begin
 
   FImages.Add(oImage);
 
-  UpdateGridLayout;
-
   Result := oImage;
+
+  UpdateGridLayout;
 End;
 
 Procedure TFrameImageViewer.ClearImages;

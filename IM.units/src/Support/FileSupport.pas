@@ -84,6 +84,7 @@ Function FindSupportFileInFolders(Const AGroupFolder: String; Const ASubFolder: 
 
 // OS Safety
 Function FixOSPathDelimiter(AInput: String): String;
+Function MakeFilenameSafe(Const AInput: String; AReplacement: Char = '_'): String;
 
 // turns <EXEDIR> into actual exe folder and back again
 Function ExpandFolder(sFolder: String): String;
@@ -199,7 +200,7 @@ Begin
   Else
     sDir := '';
 
-  If (AUseGuid) Or (sDir = '') Then
+  If (AUseGUID) Or (sDir = '') Then
   Begin
     CreateGUID(GUID);
     sGUID := GUIDToString(GUID);
@@ -369,6 +370,18 @@ Begin
   {$ELSE}
   Result := StringReplace(AInput, '\', '/', [rfReplaceAll]);
   {$ENDIF}
+End;
+
+Function MakeFilenameSafe(Const AInput: String; AReplacement: Char): String;
+Var
+  i: Integer;
+Begin
+  Result := AInput;
+
+  For i := 1 To Length(Result) Do
+    If (Ord(Result[i]) < 32) Or (Result[i] In ['<', '>', ':', '"', '/',
+      '\', '|', '?', '*']) Then
+      Result[i] := AReplacement;
 End;
 
 Function ExpandFolder(sFolder: String): String;
@@ -671,11 +684,11 @@ Begin
         Begin
           // Directory; exit with failure on error
           If Not DeleteDirectoryEx(sFilename, AFilemask, True) Then
-            exit;
+            Exit;
         End
         Else
         If Not DeleteFileUTF8(sFilename) Then
-          exit;
+          Exit;
       End;
     Until FindNextUTF8(oSearchRec) <> 0;
   FindCloseUTF8(oSearchRec);
@@ -692,7 +705,7 @@ Begin
 
           If (oSearchRec.Attr And faDirectory) > 0 Then
             If Not DeleteDirectoryEx(sFilename, AFilemask, True) Then
-              exit// Directory; exit with failure on error
+              Exit// Directory; exit with failure on error
           ;
         End;
       Until FindNextUTF8(oSearchRec) <> 0;
@@ -702,7 +715,7 @@ Begin
   // Remove "root" directory; exit with failure on error:
   If ARemoveEmptyRoot Then
     If (Not RemoveDirUTF8(AFolder)) Then
-      exit;
+      Exit;
   Result := True;
 End;
 

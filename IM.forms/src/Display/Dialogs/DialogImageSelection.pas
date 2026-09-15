@@ -52,6 +52,7 @@ Begin
   fmeImageViewer.Parent := self;
   fmeImageViewer.Align := alClient;
   fmeImageViewer.Name := 'fmeImageViewer';
+  fmeImageViewer.ShowToolbar := False;
 
   fmeImageViewer.SelectionMode := ismMultiple;
 End;
@@ -86,8 +87,8 @@ Begin
   fmeImageViewer.CaptionSelected := AValue;
 End;
 
-Procedure TDialogImageSelection.AddImage(Const AFilename: String; Const ACaption: String;
-  Const ASelected: Boolean);
+Procedure TDialogImageSelection.AddImage(Const AFilename: String;
+  Const ACaption: String; Const ASelected: Boolean);
 Var
   oImage: TViewerImage;
 Begin

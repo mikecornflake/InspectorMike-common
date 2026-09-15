@@ -146,6 +146,8 @@ Type
     Function Clear: Boolean;
     Procedure Pause;
 
+    Function RequestImageGrab: Boolean;
+
     Procedure LoadSettings(oInifile: TIniFile); Override;
     Procedure SaveSettings(oInifile: TIniFile); Override;
 
@@ -404,6 +406,14 @@ Begin
   RefreshUI;
 End;
 
+Function TFrameVideoPlayer.RequestImageGrab: Boolean;
+Begin
+  Result := btnGrab.Enabled;
+
+  If Result Then
+    btnGrabClick(btnGrab);
+End;
+
 Procedure TFrameVideoPlayer.LoadSettings(oInifile: TIniFile);
 Begin
   FMuted := oInifile.ReadBool(FullIdentKey, 'Muted', False);
@@ -618,6 +628,7 @@ End;
 Procedure TFrameVideoPlayer.btnGrabClick(Sender: TObject);
 Var
   sPath, sTimeStamp: String;
+  bImageGrabSuccessful: Boolean;
 Begin
   If Not Assigned(fmeVideo) Then
     Exit;
@@ -625,19 +636,27 @@ Begin
   If FImageGrabFolder <> '' Then
   Begin
     // Calling app has given us a fixed save folder
-    sTimeStamp := FormatDateTime('yyyymmdd', now);
-    sTimeStamp += FormatDateTime('HHnnss', now);
+
+    sTimeStamp := FormatDateTime('yyyymmdd', now) + FormatDateTime('HHnnss', now);
     sPath := FImageGrabFolder.Replace('%TIMESTAMP%', sTimeStamp);
 
     ForceDirectories(sPath);
 
-    If fmeVideo.SaveFrameToFile(sPath) Then
+    SetBusy;
+    Try
+      bImageGrabSuccessful := fmeVideo.SaveFrameToFile(sPath);
+    Finally
+      ClearBusy;
+    End;
+
+    If bImageGrabSuccessful Then
       If Assigned(FOnGrabImage) Then
         FOnGrabImage(Self, sPath);
   End
   Else
   Begin
-    // No fixed save folder, use our original workflow
+    // Without a fixed save folder provided by the application,
+    // use our original, default, workflow
 
     If dlgSaveLocation.InitialDir = '' Then
       dlgSaveLocation.InitialDir :=
@@ -671,13 +690,19 @@ Begin
     Else
       sPath := IncludeTrailingBackslash(ExtractFilePath(fmeVideo.Filename));
 
+    SetBusy;
+    Try
+      bImageGrabSuccessful := fmeVideo.SaveFrameToFile(sPath);
+    Finally
+      ClearBusy;
+    End;
+
     // By default, leave it to the player to determine filename
-    If fmeVideo.SaveFrameToFile(sPath) Then
+    If bImageGrabSuccessful Then
       lblStatus.Caption := 'Saved image to ' + sPath
     Else
       lblStatus.Caption := 'Failed to grab image';
   End;
-
 
   RefreshUI;
 End;
