@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="IM.units"/>
     <Type Value="RunAndDesignTime"/>
@@ -94,6 +94,10 @@
       <Item>
         <Filename Value="src\Support\ThirdPartySupport.pas"/>
         <UnitName Value="ThirdPartySupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Support\LoggingSupport.pas"/>
+        <UnitName Value="LoggingSupport"/>
       </Item>
     </Files>
     <RequiredPkgs>

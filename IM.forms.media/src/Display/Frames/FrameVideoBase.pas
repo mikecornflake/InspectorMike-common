@@ -43,7 +43,7 @@ Interface
 
 Uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  FrameBase, ControlsSupport;
+  FrameBase, ControlsSupport, LazLoggerBase;
 
 Type
   TVideoTime = Int64; // milliseconds
@@ -168,6 +168,9 @@ Type
 Const
   CHANNEL_PARAM: String = '<channel>';
 
+Var
+  DBG_VIDEO: PLazLoggerLogGroup;
+
 Implementation
 
 {$R *.lfm}
@@ -231,11 +234,15 @@ End;
 
 Procedure TFrameVideoBase.SetVolume(AValue: Integer);
 Begin
+  //{$IFNDEF RELEASE}DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', AValue]);{$ENDIF}
+
   FVolume := EnsureRange(AValue, 0, 100);
 End;
 
 Procedure TFrameVideoBase.SetAutoplay(AValue: Boolean);
 Begin
+  //{$IFNDEF RELEASE}DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', AValue]);{$ENDIF}
+
   FAutoplay := AValue;
 End;
 
@@ -246,6 +253,9 @@ End;
 
 Procedure TFrameVideoBase.SetPosition(AValue: TVideoTime);
 Begin
+  {$IFNDEF RELEASE}
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', AValue]);
+  {$ENDIF}
   // Abstract base: descendant handles seeking.
 End;
 
@@ -291,15 +301,20 @@ Begin
     FOnStateChanged(Self, State);
 End;
 
-procedure TFrameVideoBase.DoVideoLoaded;
-begin
-  if Assigned(FOnVideoLoaded) then
+Procedure TFrameVideoBase.DoVideoLoaded;
+Begin
+  If Assigned(FOnVideoLoaded) Then
     FOnVideoLoaded(Self);
-end;
+End;
 
 Function TFrameVideoBase.Load(Const AFilename: String; AChannel: String;
   AStartDateTime: TDateTime): Boolean;
 Begin
+  {$IFNDEF RELEASE}
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', ' ', AFilename, ' ',
+    AChannel, ' ', AStartDateTime]);
+  {$ENDIF}
+
   FFilename := AFilename;
   FStartDateTime := AStartDateTime;
   FChannel := AChannel;
@@ -315,26 +330,46 @@ End;
 
 Function TFrameVideoBase.Play: Boolean;
 Begin
+  {$IFNDEF RELEASE}
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel]);
+  {$ENDIF}
+
   Result := False;
 End;
 
 Function TFrameVideoBase.Pause: Boolean;
 Begin
+  {$IFNDEF RELEASE}
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel]);
+  {$ENDIF}
+
   Result := False;
 End;
 
 Function TFrameVideoBase.Resume: Boolean;
 Begin
+  {$IFNDEF RELEASE}
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel]);
+  {$ENDIF}
+
   Result := False;
 End;
 
 Function TFrameVideoBase.Stop: Boolean;
 Begin
+  {$IFNDEF RELEASE}
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel]);
+  {$ENDIF}
+
   Result := False;
 End;
 
 Function TFrameVideoBase.Clear: Boolean;
 Begin
+  {$IFNDEF RELEASE}
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel]);
+  {$ENDIF}
+
   FFilename := '';
   Result := True;
 End;
@@ -421,5 +456,8 @@ Procedure TFrameVideoBaseList.AddVideo(AVideo: TFrameVideoBase);
 Begin
   Inherited Add(AVideo);
 End;
+
+Initialization
+  DBG_VIDEO := DebugLogger.FindOrRegisterLogGroup('VIDEO', True);
 
 End.

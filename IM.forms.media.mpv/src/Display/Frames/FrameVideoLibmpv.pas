@@ -120,7 +120,7 @@ Implementation
 
 Uses
   LibmpvSupport, VideoEngineFactory, FileSupport,
-  Math;
+  Math, LazLogger;
 
   { TFrameVideoLibmpv }
 
@@ -262,6 +262,9 @@ End;
 
 Procedure TFrameVideoLibmpv.SetPosition(AValue: TVideoTime);
 Begin
+  {$IFNDEF RELEASE}
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel, ' ', AValue]);
+  {$ENDIF}
   If CanSeek And Assigned(FmpvPlayer) Then
     FmpvPlayer.SeekInMs(AValue);
 End;

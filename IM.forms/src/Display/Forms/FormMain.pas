@@ -51,6 +51,7 @@ Type
 
   { TOptions }
 
+  // TODO: Deprecated - remove
   TOptions = Class
   Private
     FMultilineGridDefaults: Boolean;
@@ -67,9 +68,6 @@ Type
 
   TFormMain = Class(TForm)
     ilImages: TImageList;
-    mnuMultilineGridsFalse: TMenuItem;
-    mnuMultilineGrids: TMenuItem;
-    mnuMultilineGridsTrue: TMenuItem;
     mnuOptions: TMenuItem;
     mnuAbout: TMenuItem;
     mnuHelp: TMenuItem;
@@ -79,7 +77,6 @@ Type
     Procedure FormActivate(Sender: TObject);
     Procedure FormCloseQuery(Sender: TObject; Var CanClose: Boolean);
     Procedure mnuAboutClick(Sender: TObject);
-    Procedure mnuMultilineGridsValueClick(Sender: TObject);
   Private
     FBusy: Integer;
     FProgress: Integer;
@@ -89,7 +86,6 @@ Type
     Function GetBusy: Boolean;
     Function GetStatus: String;
   Protected
-    FOptions: TOptions;
     FSettingsLoaded: Boolean;
     FIndent: String;
     FAlwaysSaveSettings: Boolean;
@@ -98,8 +94,6 @@ Type
     Procedure SetBusy(Const AValue: Boolean); Virtual;
     Procedure SetProgress(AValue: Integer); Virtual;
     Procedure SetStatus(AValue: String); Virtual;
-
-    Procedure UpdateOptions(FFormOption: TFormOptions); Virtual;
 
     Function SettingsFileLocal: String; Virtual;
     Function SettingsFileGlobal: String; Virtual;
@@ -117,8 +111,6 @@ Type
     Constructor Create(AOwner: TComponent); Override;
     Destructor Destroy; Override;
 
-    Property Options: TOptions Read FOptions;
-
     Property Progress: Integer Read FProgress Write SetProgress;
     Property Status: String Read GetStatus Write SetStatus;
 
@@ -130,7 +122,7 @@ Function MainForm: TFormMain;
 Implementation
 
 Uses
-  Math, FormAbout, FileSupport, ThirdPartySupport;
+  Math, FormAbout, FileSupport, ThirdPartySupport, LoggingSupport, LazLogger;
 
   {$R *.lfm}
 
@@ -177,12 +169,11 @@ Begin
 
   FAlwaysSaveSettings := False;
 
-  FOptions := TOptions.Create;
+  InitialiseLogging;
 End;
 
 Destructor TFormMain.Destroy;
 Begin
-  FreeAndNil(FOptions);
 
   Inherited Destroy;
 End;
@@ -213,15 +204,6 @@ Begin
   ShowAbout;
 End;
 
-
-Procedure TFormMain.mnuMultilineGridsValueClick(Sender: TObject);
-Begin
-  FOptions.MultilineGridDefaults := Not FOptions.MultilineGridDefaults;
-
-  UpdateOptions([olMultilineGrid]);
-
-  RefreshUI;
-End;
 
 Procedure TFormMain.DoLoadSettings;
 Var
@@ -334,11 +316,6 @@ Begin
 
 End;
 
-Procedure TFormMain.UpdateOptions(FFormOption: TFormOptions);
-Begin
-
-End;
-
 Procedure TFormMain.LoadLocalSettings(oInifile: TIniFile);
 Var
   iLeft, iWidth, iTop, iHeight: Integer;
@@ -411,6 +388,8 @@ Begin
 End;
 
 Procedure TFormMain.SetStatus(AValue: String);
+Var
+  sTemp: String;
 Begin
   // TODO: Should this be 0 or 1??
   If sbMain.Panels.Count > 0 Then
@@ -418,6 +397,10 @@ Begin
   Else
     sbMain.SimpleText := AValue;
   sbMain.Update;
+
+  sTemp := AValue.Trim([#10, #13, ' ']);
+  If sTemp <> '' Then
+    DebugLn(sTemp);
 End;
 
 Function TFormMain.SettingsFileLocal: String;
@@ -432,8 +415,9 @@ End;
 
 Procedure TFormMain.RefreshUI;
 Begin
-  mnuMultilineGridsTrue.Checked := FOptions.MultilineGridDefaults;
-  mnuMultilineGridsFalse.Checked := Not FOptions.MultilineGridDefaults;
+  {$IFNDEF RELEASE}
+  DebugLn([ClassName, '.', {$I %CURRENTROUTINE%}]);
+  {$ENDIF}
 End;
 
 Function TFormMain.GetBusy: Boolean;

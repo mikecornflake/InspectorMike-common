@@ -128,22 +128,6 @@ object FormMain: TFormMain
     Top = 84
     object mnuOptions: TMenuItem
       Caption = '&Options'
-      object mnuMultilineGrids: TMenuItem
-        Caption = 'Multiline Grids'
-        object mnuMultilineGridsTrue: TMenuItem
-          Caption = 'Default Yes'
-          GroupIndex = 1
-          RadioItem = True
-          OnClick = mnuMultilineGridsValueClick
-        end
-        object mnuMultilineGridsFalse: TMenuItem
-          Caption = 'Default No'
-          Checked = True
-          GroupIndex = 1
-          RadioItem = True
-          OnClick = mnuMultilineGridsValueClick
-        end
-      end
     end
     object mnuHelp: TMenuItem
       Caption = '&Help'
