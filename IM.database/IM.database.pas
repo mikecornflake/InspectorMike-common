@@ -8,8 +8,9 @@ unit IM.database;
 interface
 
 uses
-  Exporters, ExportersFPVectorial, DBSupport, DialogDBGridColEditor, DialogSQLFilter, FrameCSVs, 
-  FrameGrids, SQLSupport, MSSQLSupport, LazarusPackageIntf;
+  Exporters, ExportersFPVectorial, DBSupport, DialogDBGridColEditor, 
+  DialogSQLFilter, FrameCSVs, FrameGrids, SQLSupport, MSSQLSupport, 
+  FrameVerticalDBGrid, LazarusPackageIntf;
 
 implementation
 

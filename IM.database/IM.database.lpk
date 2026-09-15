@@ -76,6 +76,14 @@
         <Filename Value="src\Support\MSSQLSupport.pas"/>
         <UnitName Value="MSSQLSupport"/>
       </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameVerticalDBGrid.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameVerticalDBGrid.pas"/>
+        <UnitName Value="FrameVerticalDBGrid"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

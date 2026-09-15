@@ -1,0 +1,30 @@
+object dlgImageSelection: TdlgImageSelection
+  Left = 390
+  Height = 413
+  Top = 250
+  Width = 640
+  BorderIcons = [biSystemMenu]
+  Caption = 'dlgImageSelection'
+  ClientHeight = 413
+  ClientWidth = 640
+  Position = poMainFormCenter
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 373
+    Width = 628
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+end

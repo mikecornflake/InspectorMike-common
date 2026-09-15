@@ -1,0 +1,58 @@
+object FrameImageViewer: TFrameImageViewer
+  Left = 0
+  Height = 394
+  Top = 0
+  Width = 454
+  ClientHeight = 394
+  ClientWidth = 454
+  LCLVersion = '4.99.0.0'
+  TabOrder = 0
+  OnResize = FrameResize
+  DesignLeft = 396
+  DesignTop = 10
+  object grdImages: TDrawGrid
+    Left = 0
+    Height = 394
+    Top = 0
+    Width = 454
+    Align = alClient
+    AutoEdit = False
+    ColCount = 0
+    FixedCols = 0
+    FixedRows = 0
+    Options = [goVertLine, goHorzLine, goSmoothScroll, goSelectionActive]
+    PopupMenu = pmImages
+    RowCount = 0
+    TabOrder = 0
+    OnClick = grdImagesClick
+    OnDrawCell = grdImagesDrawCell
+    OnMouseDown = grdImagesMouseDown
+  end
+  object pmImages: TPopupMenu
+    Images = frmStarfixAnomalies.ilImages
+    OnPopup = pmImagesPopup
+    Left = 152
+    Top = 144
+    object mnuViewImage: TMenuItem
+      Action = actViewImage
+    end
+    object mnuOpenFolder: TMenuItem
+      Action = actOpenFolder
+    end
+  end
+  object actImages: TActionList
+    Images = frmStarfixAnomalies.ilImages
+    Left = 152
+    Top = 96
+    object actViewImage: TAction
+      Caption = 'View Image...'
+      ImageIndex = 3
+      OnExecute = actViewImageClick
+    end
+    object actOpenFolder: TAction
+      Caption = 'Open Folder...'
+      ImageIndex = 4
+      OnExecute = actOpenFolderExecute
+    end
+  end
+end
