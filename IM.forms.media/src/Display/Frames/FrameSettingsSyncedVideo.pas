@@ -82,6 +82,9 @@ Procedure TFrameSettingsSyncedVideo.RefreshUI;
 Var
   I: Integer;
 Begin
+  if not memChannels.HandleAllocated then
+    Exit;
+
   I := memChannels.CaretPos.Y;
 
   btnUp.Enabled := (memChannels.Lines.Count > 0) And (I > 0);

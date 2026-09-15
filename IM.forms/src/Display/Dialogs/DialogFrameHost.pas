@@ -68,7 +68,6 @@ End;
 Procedure TDialogFrameHost.FormShow(Sender: TObject);
 Var
   oTab: TTabSheet;
-  iFrameWidth, iFrameHeight: Integer;
   iMaxFrameWidth, iMaxFrameHeight: Integer;
   i, iDlgWidth, iDlgHeight, iDisplayWidth, iDisplayHeight, iDlgLeft, iDlgTop: Integer;
 
