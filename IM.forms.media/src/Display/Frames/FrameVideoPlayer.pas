@@ -531,9 +531,9 @@ Begin
   If ssCtrl In ShiftState Then
     Result := 1000
   Else If ssShift In ShiftState Then
-    Result := 6000
+    Result := 5000
   Else
-    Result := 3000;
+    Result := 2000;
 End;
 
 Procedure TFrameVideoPlayer.actStepBackClick(Sender: TObject);
