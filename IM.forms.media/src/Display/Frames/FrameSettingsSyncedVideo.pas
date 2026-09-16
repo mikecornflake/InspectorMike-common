@@ -6,19 +6,19 @@ Interface
 
 Uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Buttons, Spin, ComCtrls, FrameBase,
-  ControlGridLayout;
+  ControlGridLayout, Graphics;
 
 Type
 
   { TFrameSettingsSyncedVideo }
 
   TFrameSettingsSyncedVideo = Class(TFrameBase)
-    cboOrder: TComboBox;
+    cboSequence: TComboBox;
     cbExtend: TCheckBox;
     itTools: TImageList;
     Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
+    lblRows: TLabel;
+    lblCols: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     memChannels: TMemo;
@@ -32,6 +32,7 @@ Type
     Procedure btnUpClick(Sender: TObject);
     Procedure btnDownClick(Sender: TObject);
     Procedure btnSortClick(Sender: TObject);
+    Procedure cboSequenceChange(Sender: TObject);
     Procedure memChannelsClick(Sender: TObject);
     Procedure memChannelsKeyUp(Sender: TObject; Var Key: Word; Shift: TShiftState);
   Private
@@ -43,7 +44,8 @@ Type
     Procedure SetCols(Const AValue: Integer);
     Procedure SetExtend(Const AValue: Boolean);
     Procedure SetRows(Const AValue: Integer);
-
+  Protected
+    Procedure DoActivateFrame; Override;
   Public
     Procedure RefreshUI; Override;
 
@@ -82,7 +84,27 @@ Procedure TFrameSettingsSyncedVideo.RefreshUI;
 Var
   I: Integer;
 Begin
-  if not memChannels.HandleAllocated then
+    If (cboSequence.ItemIndex = 0) Then
+  Begin
+    edtRows.Enabled := False;
+    edtRows.Color := clDkGray;
+
+    edtCols.Enabled := True;
+    edtCols.Color := clWhite;
+  End
+  Else
+  Begin
+    edtRows.Enabled := True;
+    edtRows.Color := clWhite;
+
+    edtCols.Enabled := False;
+    edtCols.Color := clDkGray;
+  End;
+
+  lblRows.Enabled := edtRows.Enabled;
+  lblCols.Enabled := edtCols.Enabled;
+
+  If Not memChannels.HandleAllocated Then
     Exit;
 
   I := memChannels.CaretPos.Y;
@@ -94,7 +116,8 @@ End;
 
 Procedure TFrameSettingsSyncedVideo.SetCLS(Const AValue: TControlLayoutSequence);
 Begin
-  cboOrder.ItemIndex := Ord(AValue);
+  cboSequence.ItemIndex := Ord(AValue);
+  RefreshUI;
 End;
 
 Procedure TFrameSettingsSyncedVideo.SetCols(Const AValue: Integer);
@@ -110,6 +133,13 @@ End;
 Procedure TFrameSettingsSyncedVideo.SetRows(Const AValue: Integer);
 Begin
   edtRows.Value := AValue;
+End;
+
+Procedure TFrameSettingsSyncedVideo.DoActivateFrame;
+Begin
+  Inherited DoActivateFrame;
+
+  RefreshUI;
 End;
 
 Procedure TFrameSettingsSyncedVideo.btnSortClick(Sender: TObject);
@@ -128,6 +158,11 @@ Begin
   RefreshUI;
 End;
 
+Procedure TFrameSettingsSyncedVideo.cboSequenceChange(Sender: TObject);
+Begin
+  RefreshUI;
+End;
+
 Procedure TFrameSettingsSyncedVideo.memChannelsClick(Sender: TObject);
 Begin
   RefreshUI;
@@ -141,7 +176,7 @@ End;
 
 Function TFrameSettingsSyncedVideo.GetCLS: TControlLayoutSequence;
 Begin
-  Result := TControlLayoutSequence(cboOrder.ItemIndex);
+  Result := TControlLayoutSequence(cboSequence.ItemIndex);
 End;
 
 Function TFrameSettingsSyncedVideo.GetCols: Integer;

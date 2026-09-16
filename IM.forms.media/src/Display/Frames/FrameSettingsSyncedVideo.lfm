@@ -29,28 +29,28 @@ inherited FrameSettingsSyncedVideo: TFrameSettingsSyncedVideo
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Label2: TLabel[2]
+  object lblRows: TLabel[2]
     Left = 12
     Height = 15
-    Top = 16
-    Width = 69
-    Caption = 'Display rows'
+    Top = 64
+    Width = 63
+    Caption = 'Fixed Rows'
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Label3: TLabel[3]
+  object lblCols: TLabel[3]
     Left = 136
     Height = 15
-    Top = 16
-    Width = 46
-    Caption = 'columns'
+    Top = 64
+    Width = 80
+    Caption = 'Fixed Columns'
     Font.Style = [fsBold]
     ParentFont = False
   end
   object edtRows: TSpinEdit[4]
     Left = 12
     Height = 23
-    Top = 31
+    Top = 79
     Width = 96
     MaxValue = 6
     MinValue = 1
@@ -60,7 +60,7 @@ inherited FrameSettingsSyncedVideo: TFrameSettingsSyncedVideo
   object edtCols: TSpinEdit[5]
     Left = 136
     Height = 23
-    Top = 31
+    Top = 79
     Width = 73
     Anchors = [akTop, akLeft, akRight]
     MaxValue = 6
@@ -71,16 +71,16 @@ inherited FrameSettingsSyncedVideo: TFrameSettingsSyncedVideo
   object Label4: TLabel[6]
     Left = 12
     Height = 15
-    Top = 65
+    Top = 8
     Width = 94
     Caption = 'Videos displayed:'
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object cboOrder: TComboBox[7]
+  object cboSequence: TComboBox[7]
     Left = 12
     Height = 23
-    Top = 83
+    Top = 26
     Width = 197
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 15
@@ -92,6 +92,7 @@ inherited FrameSettingsSyncedVideo: TFrameSettingsSyncedVideo
     Style = csDropDownList
     TabOrder = 3
     Text = 'Left to right, then down...'
+    OnChange = cboSequenceChange
   end
   object Label5: TLabel[8]
     Left = 12
