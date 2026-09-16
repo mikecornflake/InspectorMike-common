@@ -257,6 +257,9 @@ End;
 // care of WP @ https://forum.lazarus.freepascal.org/index.php?topic=36394.0
 Procedure TMemTable.ClearAllRecords;
 Begin
+  If Not FTable.Active Then
+    Exit;
+
   FTable.DisableControls;
   FTable.Filter := '';
   FTable.Filtered := False;
