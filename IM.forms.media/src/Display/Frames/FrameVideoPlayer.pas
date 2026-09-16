@@ -131,6 +131,8 @@ Type
     Procedure ShowVolumePopup;
     Function StepDelta: Integer;
 
+    Procedure VideoMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     Procedure VideoPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
     Procedure VideoStateChanged(Sender: TObject; State: TVideoState);
     Procedure VolumePopupChanged(AOwner: TObject; AVolume: Integer; AMuted: Boolean);
@@ -238,6 +240,7 @@ Begin
 
   fmeVideo.OnPosition := @VideoPosition;
   fmeVideo.OnStateChanged := @VideoStateChanged;
+  fmeVideo.OnVideoMouseDown := @VideoMouseDown;
 
   If FFilename <> '' Then
     fmeVideo.Load(FFilename);
@@ -545,6 +548,13 @@ Begin
 
     fmeVideo.Position := Max(0, fmeVideo.Position - StepDelta);
   End;
+End;
+
+Procedure TFrameVideoPlayer.VideoMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+Begin
+  If (Button = mbMiddle) And (actPlayPause.Enabled) Then
+    actPlayPause.Execute;
 End;
 
 Procedure TFrameVideoPlayer.pnlVideoMouseEnter(Sender: TObject);

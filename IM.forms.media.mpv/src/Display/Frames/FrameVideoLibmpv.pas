@@ -199,12 +199,15 @@ Procedure TFrameVideoLibmpv.ControlMouseDown(Sender: TObject; Button: TMouseButt
   Shift: TShiftState; X, Y: Integer);
 Begin
   DoActivateFrame;
+
+  If Assigned(FOnVideoMouseDown) Then
+    FOnVideoMouseDown(Self, Button, Shift, X, Y);
 End;
 
 Procedure TFrameVideoLibmpv.ControlDblClick(Sender: TObject);
 Begin
-  If Assigned(FOnDblCLick) Then
-    FOnDblCLick(Self);
+  If Assigned(FOnVideoDblCLick) Then
+    FOnVideoDblCLick(Self);
 End;
 
 Procedure TFrameVideoLibmpv.FinaliseLoadedState;
@@ -263,7 +266,7 @@ End;
 Procedure TFrameVideoLibmpv.SetPosition(AValue: TVideoTime);
 Begin
   {$IFNDEF RELEASE}
-  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel, ' ', AValue]);
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%} + ': ', FChannel, ' ', AValue]);
   {$ENDIF}
   If CanSeek And Assigned(FmpvPlayer) Then
     FmpvPlayer.SeekInMs(AValue);
@@ -364,12 +367,12 @@ Function TFrameVideoLibmpv.Clear: Boolean;
 Begin
   Result := Inherited Clear;
 
-  Result := Result And Assigned(FMPVPlayer);
+  Result := Result And Assigned(FmpvPlayer);
 
   If Not Result Then
     Exit;
 
-  FMPVPlayer.mpv_command_(['stop']);
+  FmpvPlayer.mpv_command_(['stop']);
 
   FFilename := '';
   FVideoFileCount := 0;

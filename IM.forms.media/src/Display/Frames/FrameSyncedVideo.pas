@@ -79,7 +79,8 @@ Type
     Procedure VideoStateChanged(Sender: TObject; AState: TVideoState);
     Procedure VideoActivateFrame(Sender: TObject);
     Procedure VideoDblClick(Sender: TObject);
-
+    Procedure VideoMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer);
     Function LoadedVideoCount: Integer;
     Function AllVideosLoaded: Boolean;
     Procedure CheckAllVideosLoaded;
@@ -514,7 +515,8 @@ Begin
     fmeVideo.Parent := Self;
     fmeVideo.OnStateChanged := @VideoStateChanged;
     fmeVideo.OnActivateFrame := @VideoActivateFrame;
-    fmeVideo.OnDblCLick := @VideoDblClick;
+    fmeVideo.OnVideoDblCLick := @VideoDblClick;
+    fmeVideo.OnVideoMouseDown := @VideoMouseDown;
 
     FVideos.Add(fmeVideo);
   End;
@@ -522,8 +524,8 @@ Begin
   fmeVideo.Autoplay := FAutoPlay;
   fmeVideo.Volume := FVolume;
 
-  If AChannel<>'' Then
-    If FChannelOrder.IndexOf(AChannel)=-1 Then
+  If AChannel <> '' Then
+    If FChannelOrder.IndexOf(AChannel) = -1 Then
       FChannelOrder.Add(AChannel);
 
   If FVideoFileCount > (FLayout.RowCount * FLayout.ColCount) Then
@@ -789,6 +791,12 @@ Begin
   If Sender Is TFrameVideoBase Then
     ToggleMaximise(TFrameVideoBase(Sender));
 End;
+
+Procedure TFrameSyncedVideo.VideoMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  If Assigned(FOnVideoMouseDown) Then
+    FOnVideoMouseDown(Sender, Button, Shift, X, Y);
+end;
 
 Procedure TFrameSyncedVideo.SyncTimerTimer(Sender: TObject);
 Begin

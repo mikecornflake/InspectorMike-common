@@ -61,7 +61,7 @@ Type
     Function GetFullIdentKey: String; Virtual;
     Function GetSettingsKey: String; Virtual;
 
-    Procedure DoActivateFrame;
+    Procedure DoActivateFrame; Virtual;
   Public
     Constructor Create(TheOwner: TComponent); Override;
 

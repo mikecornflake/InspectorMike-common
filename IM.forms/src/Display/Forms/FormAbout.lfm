@@ -4717,18 +4717,12 @@ object frmAbout: TfrmAbout
         Align = alClient
         Font.Height = -13
         Font.Name = 'Courier New'
-        Font.Pitch = fpFixed
         Font.Quality = fqNonAntialiased
         Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
         TabOrder = 0
         Gutter.Visible = False
-        Gutter.Width = 57
-        Gutter.MouseActions = <>
-        RightGutter.Width = 0
-        RightGutter.MouseActions = <>
-        Keystrokes = <        
+        KeyStrokes.ForceSaveToLfm = True
+        KeyStrokes = <        
           item
             Command = ecUp
             ShortCut = 38
@@ -5149,80 +5143,20 @@ object frmAbout: TfrmAbout
             Command = ecColSelEditorBottom
             ShortCut = 57379
           end>
-        MouseActions = <>
-        MouseTextActions = <>
-        MouseSelActions = <>
         Lines.Strings = (
           'memReadme'
         )
-        VisibleSpecialChars = [vscSpace, vscTabAtLast]
         ReadOnly = True
-        SelectedColor.ForePriority = 50
-        SelectedColor.BackPriority = 50
-        SelectedColor.FramePriority = 50
-        SelectedColor.BoldPriority = 50
-        SelectedColor.ItalicPriority = 50
-        SelectedColor.UnderlinePriority = 50
-        SelectedColor.StrikeOutPriority = 50
-        SelectedColor.ExtendPastEol = True
-        IncrementColor.ExtendPastEol = False
-        BracketHighlightStyle = sbhsBoth
-        BracketMatchColor.Foreground = clNone
-        BracketMatchColor.Background = clNone
-        BracketMatchColor.Style = [fsBold]
-        FoldedCodeColor.Foreground = clGray
-        FoldedCodeColor.Background = clNone
-        FoldedCodeColor.FrameColor = clGray
-        MouseLinkColor.Foreground = clBlue
-        MouseLinkColor.Background = clNone
-        LineHighlightColor.Foreground = clNone
-        LineHighlightColor.Background = clNone
         inline SynLeftGutterPartList1: TSynGutterPartList
           object SynGutterMarks1: TSynGutterMarks
-            Width = 24
-            MouseActions = <>
-            MaxExtraMarksColums = 0
-            Options = [sgmoDeDuplicateMarksOnOverflow]
-            MarkupInfo.Background = clBtnFace
-            MarkupInfoCurrentLine.Foreground = clNone
-            MarkupInfoCurrentLine.Background = clNone
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 17
-            MouseActions = <>
-            MarkupInfo.Background = clBtnFace
-            MarkupInfoCurrentLine.Foreground = clNone
-            MarkupInfoCurrentLine.Background = clNone
-            DigitCount = 2
-            ShowOnlyLineNumbersMultiplesOf = 1
-            ZeroStart = False
-            LeadingZeros = False
           end
           object SynGutterChanges1: TSynGutterChanges
-            Width = 4
-            MouseActions = <>
-            ModifiedColor = 59900
-            SavedColor = clGreen
-            MarkupInfo.Foreground = clGreen
-            MarkupInfo.FrameColor = 59900
-            MarkupInfoCurrentLine.Foreground = clNone
-            MarkupInfoCurrentLine.Background = clNone
           end
           object SynGutterSeparator1: TSynGutterSeparator
-            Width = 2
-            MouseActions = <>
-            MarkupInfo.Foreground = clGray
-            MarkupInfo.Background = clWhite
-            MarkupInfoCurrentLine.Foreground = clNone
-            MarkupInfoCurrentLine.Background = clNone
           end
           object SynGutterCodeFolding1: TSynGutterCodeFolding
-            MouseActions = <>
-            MarkupInfo.Foreground = clGray
-            MarkupInfoCurrentLine.Foreground = clNone
-            MarkupInfoCurrentLine.Background = clNone
-            MouseActionsExpanded = <>
-            MouseActionsCollapsed = <>
           end
         end
       end
@@ -5332,18 +5266,12 @@ object frmAbout: TfrmAbout
         Font.CharSet = ANSI_CHARSET
         Font.Height = -13
         Font.Name = 'Courier New'
-        Font.Pitch = fpFixed
         Font.Quality = fqDraft
         Font.Style = [fsBold]
-        ParentColor = False
-        ParentFont = False
         TabOrder = 0
         Gutter.Visible = False
-        Gutter.Width = 57
-        Gutter.MouseActions = <>
-        RightGutter.Width = 0
-        RightGutter.MouseActions = <>
-        Keystrokes = <        
+        KeyStrokes.ForceSaveToLfm = True
+        KeyStrokes = <        
           item
             Command = ecUp
             ShortCut = 38
@@ -5764,78 +5692,18 @@ object frmAbout: TfrmAbout
             Command = ecColSelEditorBottom
             ShortCut = 57379
           end>
-        MouseActions = <>
-        MouseTextActions = <>
-        MouseSelActions = <>
-        VisibleSpecialChars = [vscSpace, vscTabAtLast]
         ReadOnly = True
         ScrollBars = ssAutoBoth
-        SelectedColor.ForePriority = 50
-        SelectedColor.BackPriority = 50
-        SelectedColor.FramePriority = 50
-        SelectedColor.BoldPriority = 50
-        SelectedColor.ItalicPriority = 50
-        SelectedColor.UnderlinePriority = 50
-        SelectedColor.StrikeOutPriority = 50
-        SelectedColor.ExtendPastEol = True
-        IncrementColor.ExtendPastEol = False
-        BracketHighlightStyle = sbhsBoth
-        BracketMatchColor.Foreground = clNone
-        BracketMatchColor.Background = clNone
-        BracketMatchColor.Style = [fsBold]
-        FoldedCodeColor.Foreground = clGray
-        FoldedCodeColor.Background = clNone
-        FoldedCodeColor.FrameColor = clGray
-        MouseLinkColor.Foreground = clBlue
-        MouseLinkColor.Background = clNone
-        LineHighlightColor.Foreground = clNone
-        LineHighlightColor.Background = clNone
         inline SynLeftGutterPartList1: TSynGutterPartList
           object SynGutterMarks1: TSynGutterMarks
-            Width = 24
-            MouseActions = <>
-            MaxExtraMarksColums = 0
-            Options = [sgmoDeDuplicateMarksOnOverflow]
-            MarkupInfo.Background = clBtnFace
-            MarkupInfoCurrentLine.Foreground = clNone
-            MarkupInfoCurrentLine.Background = clNone
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 17
-            MouseActions = <>
-            MarkupInfo.Background = clBtnFace
-            MarkupInfoCurrentLine.Foreground = clNone
-            MarkupInfoCurrentLine.Background = clNone
-            DigitCount = 2
-            ShowOnlyLineNumbersMultiplesOf = 1
-            ZeroStart = False
-            LeadingZeros = False
           end
           object SynGutterChanges1: TSynGutterChanges
-            Width = 4
-            MouseActions = <>
-            ModifiedColor = 59900
-            SavedColor = clGreen
-            MarkupInfo.Foreground = clGreen
-            MarkupInfo.FrameColor = 59900
-            MarkupInfoCurrentLine.Foreground = clNone
-            MarkupInfoCurrentLine.Background = clNone
           end
           object SynGutterSeparator1: TSynGutterSeparator
-            Width = 2
-            MouseActions = <>
-            MarkupInfo.Foreground = clGray
-            MarkupInfo.Background = clWhite
-            MarkupInfoCurrentLine.Foreground = clNone
-            MarkupInfoCurrentLine.Background = clNone
           end
           object SynGutterCodeFolding1: TSynGutterCodeFolding
-            MouseActions = <>
-            MarkupInfo.Foreground = clGray
-            MarkupInfoCurrentLine.Foreground = clNone
-            MarkupInfoCurrentLine.Background = clNone
-            MouseActionsExpanded = <>
-            MouseActionsCollapsed = <>
           end
         end
       end

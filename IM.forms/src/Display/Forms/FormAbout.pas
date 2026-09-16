@@ -250,7 +250,6 @@ Begin
   memAbout.Lines.Add(' Build mode: Release');
   {$ENDIF}
 
-
   If tsReadme.TabVisible Then
     pcAbout.ActivePage := tsReadme
   Else
