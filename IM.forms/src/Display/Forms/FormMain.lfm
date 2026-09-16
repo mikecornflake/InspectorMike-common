@@ -131,6 +131,13 @@ object FormMain: TFormMain
     end
     object mnuHelp: TMenuItem
       Caption = '&Help'
+      object mnuViewLog: TMenuItem
+        Caption = 'View application log...'
+        OnClick = mnuViewLogClick
+      end
+      object mnuHelpSeparator1: TMenuItem
+        Caption = '-'
+      end
       object mnuAbout: TMenuItem
         Caption = '&About'
         OnClick = mnuAboutClick

@@ -31,16 +31,41 @@ Procedure InitialiseLogging(ATimestamp: TLogTimestamp = ltTime);
 Implementation
 
 Uses
-  SysUtils, Forms;
+  SysUtils, Forms, VersionSupport;
 
 Var
   FTimestamp: TLogTimestamp;
+  FInitialised: Boolean = False;
 
 Procedure InitialiseLogging(ATimestamp: TLogTimestamp = ltTime);
 Begin
   FTimestamp := ATimestamp;
 
   DebugLogger.LogName := ChangeFileExt(Application.ExeName, '.log');
+
+  If Not FInitialised Then
+  Begin
+    DebugLn(['']);
+    DebugLn(['============================================================']);
+    DebugLn(['Application started']);
+    DebugLn(['Executable : ', Application.ExeName]);
+    DebugLn(['Version    : ', GetFileVersion]);
+    DebugLn(['Build mode : ',
+      {$IFDEF RELEASE}
+      'Release'
+      {$ELSE}
+      'Debug/Default'
+      {$ENDIF}
+      ]);
+    DebugLn(['OS         : ', GetOS]);
+    DebugLn(['CPU        : ', GetCPU]);
+    DebugLn(['FPC        : ', GetCompilerInfo]);
+    DebugLn(['Lazarus    : ', GetLCLVersion]);
+    DebugLn(['============================================================']);
+
+    FInitialised := True;
+  End;
+
   DebugLogger.OnDebugLnEx := @FLoggingSupport.DebugLnEx;
 End;
 

@@ -68,6 +68,8 @@ Type
 
   TFormMain = Class(TForm)
     ilImages: TImageList;
+    mnuViewLog: TMenuItem;
+    mnuHelpSeparator1: TMenuItem;
     mnuOptions: TMenuItem;
     mnuAbout: TMenuItem;
     mnuHelp: TMenuItem;
@@ -77,6 +79,7 @@ Type
     Procedure FormActivate(Sender: TObject);
     Procedure FormCloseQuery(Sender: TObject; Var CanClose: Boolean);
     Procedure mnuAboutClick(Sender: TObject);
+    procedure mnuViewLogClick(Sender: TObject);
   Private
     FBusy: Integer;
     FProgress: Integer;
@@ -122,7 +125,7 @@ Function MainForm: TFormMain;
 Implementation
 
 Uses
-  Math, FormAbout, FileSupport, ThirdPartySupport, LoggingSupport, LazLogger;
+  Math, FormAbout, FileSupport, ThirdPartySupport, LoggingSupport, LazLogger, OSSupport;
 
   {$R *.lfm}
 
@@ -204,6 +207,17 @@ Begin
   ShowAbout;
 End;
 
+procedure TFormMain.mnuViewLogClick(Sender: TObject);
+var
+  sFilename: String;
+begin
+  sFilename := ChangeFileExt(Application.ExeName, '.log');
+
+  if FileExists(sFilename) then
+    LaunchDocument(sFilename)
+  else
+    ShowMessage('Application log does not exist yet.');
+end;
 
 Procedure TFormMain.DoLoadSettings;
 Var
