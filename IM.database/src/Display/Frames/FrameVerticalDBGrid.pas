@@ -49,6 +49,9 @@ Type
 
 Implementation
 
+Uses
+  DBSupport;
+
 {$R *.lfm}
 
 { TFrameVerticalDBGrid }
@@ -194,20 +197,8 @@ Begin
 End;
 
 Procedure TFrameVerticalDBGrid.CopyTableToClipboard;
-Var
-  i: Integer;
-  slTemp: TStringList;
 Begin
-  slTemp := TStringList.Create;
-  Try
-    slTemp.Add('Name' + #9 + 'Value');
-
-    For i := grdVertical.FixedRows To grdVertical.RowCount - 1 Do
-      slTemp.Add(grdVertical.Cells[0, i] + #9 + grdVertical.Cells[1, i]);
-    Clipboard.AsText := slTemp.Text;
-  Finally
-    slTemp.Free;
-  End;
+  PasteDatasetIntoClipboardVertical(FDataset);
 End;
 
 

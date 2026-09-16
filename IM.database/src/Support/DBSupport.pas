@@ -100,10 +100,12 @@ Function SortBufDataSet(DataSet: TBufDataset; Const FieldName: String;
 // HTML routines
 Procedure AppendDatasetAsHTML(oDest: TStringList; oDataset: TDataset;
   bOnlyActiveRow: Boolean = False; bIncludeHeader: Boolean = True);
+Procedure AppendDatasetAsVerticalHTML(oDest: TStringList; oDataset: TDataset);
 
 // Tab Separated Text Routines
 Procedure AppendDatasetAsTabSeparatedText(oDest: TStringList; oDataset: TDataset;
   bOnlyActiveRow: Boolean = False; bIncludeHeader: Boolean = True);
+Procedure AppendDatasetAsVerticalTabSeparatedText(oDest: TStringList; oDataset: TDataset);
 
 // Menu Routines
 Procedure AddFieldNamesToMenu(oDataset: TDataset; oPopupMenu: TPopupMenu;
@@ -115,6 +117,7 @@ Procedure AddFieldNamesToSubMenu(oDataset: TDataset; AMenuItem: TMenuItem;
 Procedure PasteDatasetIntoClipboard(oDataset: TDataset; bOnlyActiveRow: Boolean = False;
   bIncludeHeader: Boolean = True);
 Procedure PasteRowIntoClipboard(oDataset: TDataset; bIncludeHeader: Boolean = True);
+Procedure PasteDatasetIntoClipboardVertical(oDataset: TDataset);
 
 // Populate Controls
 Procedure Populate(ACombobox: TCombobox; ADataset: TDataset; AField: String;
@@ -322,7 +325,7 @@ End;
 
 Function ValueAsFloat(oDataset: TDataset; sField: String; ADefault: Extended): Extended;
 Begin
-  Result := StrToFloatDef(Value(ODataset, sField, ''), ADefault);
+  Result := StrToFloatDef(Value(oDataset, sField, ''), ADefault);
 End;
 
 Procedure InitialiseDBGrid(oGrid: TDBGrid; oDataset: TDataset; bHideIDs: Boolean = False);
@@ -578,6 +581,77 @@ Begin
   End;
 End;
 
+Procedure AppendDatasetAsVerticalHTML(oDest: TStringList; oDataset: TDataset);
+
+  Function Validate(Const sIn: String): String;
+  Begin
+    Result := FindReplace(sIn, '<', '&lt;');
+    Result := FindReplace(Result, '>', '&gt;');
+    Result := FindReplace(Result, #10, '<br style="mso-data-placement:same-cell;" />');
+  End;
+
+Var
+  iField: Integer;
+  oField: TField;
+  sClass: String;
+Begin
+  If oDataset.Active Then
+  Begin
+    oDest.Add('  <table class="StyleTable">');
+
+    For iField := 0 To oDataset.FieldCount - 1 Do
+    Begin
+      oField := oDataset.Fields[iField];
+
+      If oField.Visible Then
+      Begin
+        If oField.DataType = ftString Then
+          sClass := 'text'
+        Else If oField.DataType In [ftInteger, ftFloat, ftCurrency,
+          ftSmallint, ftLargeint] Then
+          sClass := 'number'
+        Else
+          sClass := 'unknown';
+
+        oDest.Add('    <tr>');
+        oDest.Add('      <th class="text">' + Validate(oField.DisplayName) + '</th>');
+        oDest.Add('      <td class="' + sClass + '">' +
+          Validate(oField.AsString) + '</td>');
+        oDest.Add('    </tr>');
+      End;
+    End;
+
+    oDest.Add('  </table>');
+  End;
+End;
+
+Procedure AppendDatasetAsVerticalTabSeparatedText(oDest: TStringList; oDataset: TDataset);
+Var
+  iField: Integer;
+  oField: TField;
+  sValue: String;
+Begin
+  If oDataset.Active Then
+  Begin
+    For iField := 0 To oDataset.FieldCount - 1 Do
+    Begin
+      oField := oDataset.Fields[iField];
+
+      If oField.Visible Then
+      Begin
+        sValue := oField.AsString;
+
+        // Don't allow embedded tabs/newlines to break the table
+        sValue := FindReplace(sValue, #9, ' ');
+        sValue := FindReplace(sValue, #13, '');
+        sValue := FindReplace(sValue, #10, ' ');
+
+        oDest.Add(oField.DisplayName + #9 + sValue);
+      End;
+    End;
+  End;
+End;
+
 Procedure PasteDatasetIntoClipboard(oDataset: TDataset; bOnlyActiveRow: Boolean = False;
   bIncludeHeader: Boolean = True);
 Var
@@ -591,7 +665,7 @@ Begin
     oTSV := TStringList.Create;
     Try
       AppendDatasetAsTabSeparatedText(oTSV, oDataset, bOnlyActiveRow, bIncludeHeader);
-      ClipBoard.AsText := oTSV.Text;
+      Clipboard.AsText := oTSV.Text;
     Finally
       oTSV.Free;
     End;
@@ -612,6 +686,34 @@ End;
 Procedure PasteRowIntoClipboard(oDataset: TDataset; bIncludeHeader: Boolean);
 Begin
   PasteDatasetIntoClipboard(oDataset, True, bIncludeHeader);
+End;
+
+Procedure PasteDatasetIntoClipboardVertical(oDataset: TDataset);
+Var
+  oTSV, oHTML: TStringList;
+Begin
+  If oDataset.Active Then
+  Begin
+    Clipboard.Clear;
+
+    // Plain text version
+    oTSV := TStringList.Create;
+    Try
+      AppendDatasetAsVerticalTabSeparatedText(oTSV, oDataset);
+      Clipboard.AsText := oTSV.Text;
+    Finally
+      oTSV.Free;
+    End;
+
+    // HTML version
+    oHTML := TStringList.Create;
+    Try
+      AppendDatasetAsVerticalHTML(oHTML, oDataset);
+      CopyHTMLToClipboard(oHTML);
+    Finally
+      oHTML.Free;
+    End;
+  End;
 End;
 
 Procedure AddFieldNamesToMenu(oDataset: TDataset; oPopupMenu: TPopupMenu;
@@ -664,7 +766,7 @@ End;
 
 Function CountRecords(ADataset: TDataset): Integer;
 Var
-  oBookmark: TBookMark;
+  oBookmark: TBookmark;
   i: Integer;
 Begin
   Result := -1;
