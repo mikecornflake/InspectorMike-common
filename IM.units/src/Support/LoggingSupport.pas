@@ -87,4 +87,8 @@ End;
 Initialization
   FLoggingSupport := TLoggingSupport.Create;
   InitialiseLogging;
+
+finalization;
+  FreeAndNil(FLoggingSupport);
+
 End.
