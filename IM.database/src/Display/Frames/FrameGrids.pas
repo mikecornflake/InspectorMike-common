@@ -137,10 +137,12 @@ Type
     FUseMultilineDefaults: Boolean;
 
     Function GetEditable: Boolean;
+    function GetFilter: String;
     Function GetFilterMRU: String;
     Procedure RefreshParent;
     Procedure SetAllowMultiline(AValue: Boolean);
     Procedure SetGridToSingleLine;
+    procedure SetInnerFilter(const AValue: String);
     Procedure SetUseMultilineDefaults(AValue: Boolean);
 
     Procedure SetControlsEditable(AValue: Boolean);
@@ -195,10 +197,13 @@ Type
       Write SetUseMultilineDefaults;
     Property AllowMultiline: Boolean Read FAllowMultiline Write SetAllowMultiline;
 
+    Property Filter: String Read GetFilter Write SetInnerFilter;
+
     Property OnDblClick: TNotifyEvent Read FOnDblClick Write FOnDblClick;
     Property OnGridMouseDown: TMouseEvent Read FOnGridMouseDown Write FOnGridMouseDown;
     Property OnGridStartDrag: TNotifyEvent Read FOnGridStartDrag Write SetOnGridStartDrag;
     Property OnAfterFilter: TNotifyEvent Read FOnAfterFilter Write FOnAfterFilter;
+
   End;
 
 Implementation
@@ -563,6 +568,14 @@ Begin
   Result := FEditable;
 End;
 
+function TFrameGrid.GetFilter: String;
+begin
+  If Assigned(FDataset) Then
+    Result := FDataset.Filter
+  Else
+    Result := '';
+end;
+
 Procedure TFrameGrid.SetFilterMRU(Const AValue: String);
 Begin
   FFilterMRU.DelimitedText := AValue;
@@ -596,7 +609,6 @@ Var
   bAscending: Boolean;
   oSQLQuery: TCustomBufDataset;
   oZQuery: TZAbstractRODataset;
-  sASC_IndexName, sDESC_IndexName: String;
   sTemp: String;
 Begin
   // Defensive code
@@ -1069,6 +1081,11 @@ Begin
   grdSQL.Canvas.TextStyle := tsTemp;
   grdSQL.Invalidate;
 End;
+
+procedure TFrameGrid.SetInnerFilter(const AValue: String);
+begin
+  SetFilter(AValue, []);
+end;
 
 Procedure TFrameGrid.grdSQLPrepareCanvas(Sender: TObject; DataCol: Integer;
   Column: TColumn; AState: TGridDrawState);
