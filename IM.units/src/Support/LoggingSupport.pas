@@ -41,7 +41,7 @@ Procedure InitialiseLogging(ATimestamp: TLogTimestamp = ltTime);
 Begin
   FTimestamp := ATimestamp;
 
-  DebugLogger.LogName := ChangeFileExt(Application.ExeName, '.log');
+  //DebugLogger.LogName := ChangeFileExt(Application.ExeName, '.log');
 
   If Not FInitialised Then
   Begin
