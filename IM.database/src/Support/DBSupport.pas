@@ -88,7 +88,8 @@ Function ValueAsInteger(oDataset: TDataset; sField: String; iDefault: Integer = 
 Function ValueAsFloat(oDataset: TDataset; sField: String; ADefault: Extended): Extended;
 
 // Dataset Navigation
-Procedure GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String; Const ADateTime: TDateTime; Const AThreshold: TDateTime);
+Procedure GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String;
+  Const ADateTime: TDateTime; Const AThreshold: TDateTime);
 
 // DBGrid routines
 Procedure InitialiseDBGrid(oGrid: TDBGrid; oDataset: TDataset; bHideIDs: Boolean = False);
@@ -142,6 +143,9 @@ Type
 Const
   TBoolYesNo: Array[False..True] Of String = ('N', 'Y');
   TBoolTrueFalse: Array[False..True] Of String = ('F', 'T');
+
+  // Hidden field for the cloned filter dataset
+  MASTER_RECNO_FIELD = '__MasterRecNo_ID';
 
 Implementation
 
@@ -249,14 +253,14 @@ Var
 Begin
   FTable.CreateDataset;
 
-  // Floats are being returned to silly dp...
-  For i := 0 To FTable.Fields.Count - 1 Do
-  Begin
-    oField := FTable.Fields[i];
-
-    If oField.DataType In [ftWord, ftFloat, ftCurrency] Then
-      oField.OnGetText := @DoOnGetText;
-  End;
+  //// Floats are being returned to silly dp...
+  //For i := 0 To FTable.Fields.Count - 1 Do
+  //Begin
+  //  oField := FTable.Fields[i];
+  //
+  //  If oField.DataType In [ftWord, ftFloat, ftCurrency] Then
+  //    oField.OnGetText := @DoOnGetText;
+  //End;
 End;
 
 Function TMemTable.RecordCount: Integer;
@@ -962,7 +966,8 @@ End;
 // AThreshold < 0 : always go to nearest record
 // AThreshold = 0 : only exact match
 // AThreshold > 0 : nearest record within threshold
-Procedure GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String; Const ADateTime: TDateTime; Const AThreshold: TDateTime);
+Procedure GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String;
+  Const ADateTime: TDateTime; Const AThreshold: TDateTime);
 Var
   dtBestDiff, dtDiff: TDateTime;
   bmOriginal, bmBest: TBookmark;
@@ -1019,7 +1024,8 @@ Var
   bmOriginal: TBookmark;
 Begin
   Assert(Assigned(ASource), 'DBSupport.BuildFilteredDataset: Need to pass a created ASource.');
-  Assert(Assigned(ADestination), 'DBSupport.BuildFilteredDataset: Need to pass a created ADestination.');
+  Assert(Assigned(ADestination),
+    'DBSupport.BuildFilteredDataset: Need to pass a created ADestination.');
 
   If (Not Assigned(ASource)) Or (Not ASource.Active) Then
     Exit;
@@ -1030,6 +1036,7 @@ Begin
   bmOriginal := ASource.GetBookmark;
 
   ASource.DisableControls;
+  ADestination.DisableControls;
   Try
     // Build destination structure from source
     ADestination.Close;
@@ -1038,6 +1045,8 @@ Begin
     For i := 0 To ASource.FieldCount - 1 Do
       With ASource.Fields[i] Do
         ADestination.FieldDefs.Add(FieldName, DataType, Size, Required);
+
+    ADestination.FieldDefs.Add(MASTER_RECNO_FIELD, ftInteger);
 
     ADestination.CreateDataset;
 
@@ -1050,10 +1059,13 @@ Begin
     While Not ASource.EOF Do
     Begin
       ADestination.Append;
+
       Try
         For i := 0 To ASource.FieldCount - 1 Do
           If Not ASource.Fields[i].IsNull Then
             ADestination.Fields[i].Value := ASource.Fields[i].Value;
+
+        ADestination.FieldByName(MASTER_RECNO_FIELD).AsInteger := ASource.RecNo;
 
         ADestination.Post;
       Except
@@ -1074,6 +1086,7 @@ Begin
 
     ASource.FreeBookmark(bmOriginal);
     ASource.EnableControls;
+    ADestination.EnableControls;
   End;
 End;
 
