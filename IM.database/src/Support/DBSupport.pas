@@ -82,10 +82,13 @@ Type
     Property FieldByName[AFieldName: String]: TField Read GetFieldByName; Default;
   End;
 
-// Database Routines
+// Database Routines (safe calls - essentially TryGetXXX with Default)
 Function Value(oDataset: TDataset; sField: String; sDefault: String = ''): String;
 Function ValueAsInteger(oDataset: TDataset; sField: String; iDefault: Integer = -1): Integer;
 Function ValueAsFloat(oDataset: TDataset; sField: String; ADefault: Extended): Extended;
+
+// Dataset Navigation
+Procedure GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String; Const ADateTime: TDateTime; Const AThreshold: TDateTime);
 
 // DBGrid routines
 Procedure InitialiseDBGrid(oGrid: TDBGrid; oDataset: TDataset; bHideIDs: Boolean = False);
@@ -946,6 +949,58 @@ Begin
     End;
   Finally
     ClearBusy;
+  End;
+End;
+
+// AThreshold < 0 : always go to nearest record
+// AThreshold = 0 : only exact match
+// AThreshold > 0 : nearest record within threshold
+Procedure GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String; Const ADateTime: TDateTime; Const AThreshold: TDateTime);
+Var
+  dtBestDiff, dtDiff: TDateTime;
+  bmOriginal, bmBest: TBookmark;
+  oStart, oKP: TField;
+  dStartKP: Extended;
+Begin
+  If (Not ADataset.Active) Or ADataset.IsEmpty Then
+    Exit;
+
+  oStart := ADataset.FieldByName(ATimeFieldname);
+
+  bmOriginal := ADataset.GetBookmark;
+  bmBest := ADataset.GetBookmark;
+  dtBestDiff := MaxDouble;
+
+  ADataset.DisableControls;
+  Try
+    ADataset.First;
+
+    While Not ADataset.EOF Do
+    Begin
+      If Not oStart.IsNull Then
+      Begin
+        dtDiff := Abs(oStart.AsDateTime - ADateTime);
+
+        If dtDiff < dtBestDiff Then
+        Begin
+          dtBestDiff := dtDiff;
+
+          ADataset.FreeBookmark(bmBest);
+          bmBest := ADataset.GetBookmark;
+        End;
+      End;
+
+      ADataset.Next;
+    End;
+
+    If (AThreshold < 0) Or (dtBestDiff <= AThreshold) Then
+      ADataset.GotoBookmark(bmBest)
+    Else
+      ADataset.GotoBookmark(bmOriginal);
+  Finally
+    ADataset.FreeBookmark(bmBest);
+    ADataset.FreeBookmark(bmOriginal);
+    ADataset.EnableControls;
   End;
 End;
 

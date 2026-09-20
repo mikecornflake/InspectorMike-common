@@ -124,6 +124,7 @@ Type
     FOnVideoPositionChange: TOnVideoPositionChange;
     FVideoEngineClass: TFrameVideoBaseClass;
     fmeVideo: TFrameVideoBase;
+    FVideoTrackbarSeek: Boolean;
     FVolumePopup: TfrmVolumePopup;
     FMuted: Boolean;
     FVolume: Integer;
@@ -148,7 +149,7 @@ Type
     Procedure PanelKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
     Procedure VideoMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    Procedure VideoPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
+    Procedure VideoPositionChange(Sender: TObject; PositionMS, DurationMS: TVideoTime);
     Procedure VideoStateChanged(Sender: TObject; State: TVideoState);
     Procedure VolumePopupChanged(AOwner: TObject; AVolume: Integer; AMuted: Boolean);
   Public
@@ -187,6 +188,8 @@ Type
 
     Property OnVideoPositionChange: TOnVideoPositionChange
       Read FOnVideoPositionChange Write FOnVideoPositionChange;
+
+    Property VideoTrackbarSeek: Boolean Read FVideoTrackbarSeek;
   End;
 
 Const
@@ -247,6 +250,7 @@ Begin
   FVolume := 100;
 
   TabStop := True;
+  FVideoTrackbarSeek := False;
 
   RefreshUI;
 End;
@@ -277,7 +281,7 @@ Begin
   fmeVideo.Muted := FMuted;
   fmeVideo.Volume := FVolume;
 
-  fmeVideo.OnPosition := @VideoPosition;
+  fmeVideo.OnPosition := @VideoPositionChange;
   fmeVideo.OnStateChanged := @VideoStateChanged;
   fmeVideo.OnVideoMouseDown := @VideoMouseDown;
 
@@ -658,6 +662,7 @@ End;
 
 Procedure TFrameVideoPlayer.trackVideoChange(Sender: TObject);
 Begin
+  {$IFNDEF RELEASE}DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}]);{$ENDIF}
   If FUpdatingTracker Then
     Exit;
 
@@ -672,6 +677,7 @@ Begin
 
   FLastSeekTick := GetTickCount64;
 
+    If Assigned(fmeVideo) And fmeVideo.CanSeek Then
   fmeVideo.Position := trackVideo.Position;
 End;
 
@@ -680,6 +686,7 @@ Procedure TFrameVideoPlayer.trackVideoMouseDown(Sender: TObject; Button: TMouseB
 Var
   NewPos: Integer;
 Begin
+  {$IFNDEF RELEASE}DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}]);{$ENDIF}
   FLastSeekTick := 0;
 
   If Button <> mbLeft Then
@@ -696,6 +703,7 @@ Begin
   Else If NewPos > trackVideo.Max Then
     NewPos := trackVideo.Max;
 
+  FVideoTrackbarSeek := True;
   trackVideo.Position := NewPos;
 
   If Assigned(fmeVideo) And fmeVideo.CanSeek Then
@@ -858,7 +866,7 @@ Begin
   lblStatus.Visible := AValue;
 End;
 
-Procedure TFrameVideoPlayer.VideoPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
+Procedure TFrameVideoPlayer.VideoPositionChange(Sender: TObject; PositionMS, DurationMS: TVideoTime);
 
   Function ToTime(Const ATimeMS: TVideoTime): String;
   Begin
@@ -870,14 +878,20 @@ Procedure TFrameVideoPlayer.VideoPosition(Sender: TObject; PositionMS, DurationM
 
 Var
   dtPositionAsTime: TDateTime;
+  sChannel: String;
 Begin
   FUpdatingTracker := True;
   Try
     dtPositionAsTime := fmeVideo.StartDateTime + (PositionMS / MSecsPerDay);
 
+    If Sender Is TFrameVideoBase Then
+      sChannel := TFrameVideoBase(Sender).Channel
+    Else
+      sChannel := 'Unknown Sender';
+
     {$IFNDEF RELEASE}
     DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}, ' ',
-      PositionMS, ' ', TimeToStr(dtPositionAsTime)]);
+      sChannel, ' ', PositionMS, ' ', TimeToStr(dtPositionAsTime)]);
     {$ENDIF}
 
     If DurationMS > 0 Then
@@ -898,11 +912,9 @@ Begin
   If Assigned(FOnVideoPositionChange) Then
     FOnVideoPositionChange(Self, dtPositionAsTime);
 
-  //If fmeVideo.StartDateTime = 0 Then
-  // lblTime.Caption := ToTime(PositionMS) + LineEnding + ToTime(DurationMS)
-  //Else
-  lblTime.Caption := TimeToStr(dtPositionAsTime) + LineEnding + TimeToStr(fmeVideo.EndDateTime);
+  FVideoTrackbarSeek := False;
 
+  lblTime.Caption := TimeToStr(dtPositionAsTime) + LineEnding + TimeToStr(fmeVideo.EndDateTime);
   lblTime.Repaint;
 End;
 
