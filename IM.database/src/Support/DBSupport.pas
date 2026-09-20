@@ -135,7 +135,7 @@ Procedure ExportDatasetToCSV(ADataset: TDataset; Const AFileName: String);
 // Populate a new Dataset with the results of the filter, then hook
 // the new Dataset to the Grid
 // https://forum.lazarus.freepascal.org/index.php?action=post;quote=130193;topic=17615.30;last_msg=130201
-Procedure BuildFilteredDataset(ASource, ADestination: TBufDataset; Const AFilter: String);
+Procedure BuildFilteredDataset(ASource: TDataset; ADestination: TBufDataset; Const AFilter: String);
 
 Type
   TBoolType = (btYesNo, btTrueFalse);
@@ -1016,7 +1016,7 @@ Begin
   End;
 End;
 
-Procedure BuildFilteredDataset(ASource, ADestination: TBufDataset; Const AFilter: String);
+Procedure BuildFilteredDataset(ASource: TDataset; ADestination: TBufDataset; Const AFilter: String);
 Var
   i: Integer;
   sOldFilter: String;
