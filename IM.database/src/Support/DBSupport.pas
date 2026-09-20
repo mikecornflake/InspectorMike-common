@@ -129,6 +129,13 @@ Procedure Populate(ACombobox: TCombobox; ADataset: TDataset; AField: String;
 // Export routine
 Procedure ExportDatasetToCSV(ADataset: TDataset; Const AFileName: String);
 
+// DBGrid has scrollbar issues seeking with a Filtered Dataset
+// If we know the sources are small enough, this allows an alternative:
+// Populate a new Dataset with the results of the filter, then hook
+// the new Dataset to the Grid
+// https://forum.lazarus.freepascal.org/index.php?action=post;quote=130193;topic=17615.30;last_msg=130201
+Procedure BuildFilteredDataset(ASource, ADestination: TBufDataset; Const AFilter: String);
+
 Type
   TBoolType = (btYesNo, btTrueFalse);
 
@@ -1001,6 +1008,72 @@ Begin
     ADataset.FreeBookmark(bmBest);
     ADataset.FreeBookmark(bmOriginal);
     ADataset.EnableControls;
+  End;
+End;
+
+Procedure BuildFilteredDataset(ASource, ADestination: TBufDataset; Const AFilter: String);
+Var
+  i: Integer;
+  sOldFilter: String;
+  bOldFiltered: Boolean;
+  bmOriginal: TBookmark;
+Begin
+  Assert(Assigned(ASource), 'DBSupport.BuildFilteredDataset: Need to pass a created ASource.');
+  Assert(Assigned(ADestination), 'DBSupport.BuildFilteredDataset: Need to pass a created ADestination.');
+
+  If (Not Assigned(ASource)) Or (Not ASource.Active) Then
+    Exit;
+
+  // Preserve source state
+  sOldFilter := ASource.Filter;
+  bOldFiltered := ASource.Filtered;
+  bmOriginal := ASource.GetBookmark;
+
+  ASource.DisableControls;
+  Try
+    // Build destination structure from source
+    ADestination.Close;
+    ADestination.FieldDefs.Clear;
+
+    For i := 0 To ASource.FieldCount - 1 Do
+      With ASource.Fields[i] Do
+        ADestination.FieldDefs.Add(FieldName, DataType, Size, Required);
+
+    ADestination.CreateDataset;
+
+    // Temporarily filter the source
+    ASource.Filter := AFilter;
+    ASource.Filtered := AFilter <> '';
+
+    ASource.First;
+
+    While Not ASource.EOF Do
+    Begin
+      ADestination.Append;
+      Try
+        For i := 0 To ASource.FieldCount - 1 Do
+          If Not ASource.Fields[i].IsNull Then
+            ADestination.Fields[i].Value := ASource.Fields[i].Value;
+
+        ADestination.Post;
+      Except
+        ADestination.Cancel;
+        Raise;
+      End;
+
+      ASource.Next;
+    End;
+
+  Finally
+    // Restore source exactly as we found it
+    ASource.Filtered := bOldFiltered;
+    ASource.Filter := sOldFilter;
+
+    If ASource.BookmarkValid(bmOriginal) Then
+      ASource.GotoBookmark(bmOriginal);
+
+    ASource.FreeBookmark(bmOriginal);
+    ASource.EnableControls;
   End;
 End;
 
