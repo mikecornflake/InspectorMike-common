@@ -79,8 +79,8 @@ Type
     Procedure VideoStateChanged(Sender: TObject; AState: TVideoState);
     Procedure VideoActivateFrame(Sender: TObject);
     Procedure VideoDblClick(Sender: TObject);
-    Procedure VideoMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer);
+    Procedure VideoMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     Function LoadedVideoCount: Integer;
     Function AllVideosLoaded: Boolean;
     Procedure CheckAllVideosLoaded;
@@ -170,13 +170,13 @@ Begin
   // End user will have to provide an active class
   FVideoEngineClass := nil;
 
-  FSyncSeekThresholdMS := 1000;
+  FSyncSeekThresholdMS := 1500;
   FReadyToPlay := False;
   FAutoPlay := False;
 
   FSyncTimer := TTimer.Create(Self);
   FSyncTimer.Enabled := False;
-  FSyncTimer.Interval := 500;
+  FSyncTimer.Interval := 1000;
   FSyncTimer.OnTimer := @SyncTimerTimer;
 
   FLayout := TControlGridLayout.Create(Self);
@@ -792,11 +792,12 @@ Begin
     ToggleMaximise(TFrameVideoBase(Sender));
 End;
 
-Procedure TFrameSyncedVideo.VideoMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
+Procedure TFrameSyncedVideo.VideoMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+Begin
   If Assigned(FOnVideoMouseDown) Then
     FOnVideoMouseDown(Sender, Button, Shift, X, Y);
-end;
+End;
 
 Procedure TFrameSyncedVideo.SyncTimerTimer(Sender: TObject);
 Begin
@@ -810,12 +811,15 @@ Var
   SlavePos: TDateTime;
   DriftMS: TVideoTime;
   Slave: TFrameVideoBase;
+  iEffectiveThresholdMS: Int64;
 Begin
   If Not Assigned(FMaster) Then
     Exit;
 
   If FMaster.State <> vsPlaying Then
     Exit;
+
+  iEffectiveThresholdMS := Round(FSyncSeekThresholdMS * Sqrt(Rate));
 
   MasterPos := FMaster.PositionAsTime;
 
@@ -835,7 +839,7 @@ Begin
     SlavePos := Slave.PositionAsTime;
     DriftMS := Round(Abs(MasterPos - SlavePos) * MSecsPerDay);
 
-    If DriftMS > FSyncSeekThresholdMS Then
+    If DriftMS > iEffectiveThresholdMS Then
       Slave.PositionAsTime := MasterPos;
   End;
 End;
@@ -881,10 +885,15 @@ Procedure TFrameSyncedVideo.SortVideosByChannel;
 Var
   i, J: Integer;
 Begin
-  For i := 0 To FVideos.Count - 2 Do
-    For J := i + 1 To FVideos.Count - 1 Do
-      If CompareVideoChannels(FVideos[i], FVideos[J]) > 0 Then
-        FVideos.Exchange(i, J);
+  If FVideos.Count > 0 Then
+  Begin
+    For i := 0 To FVideos.Count - 2 Do
+      For J := i + 1 To FVideos.Count - 1 Do
+        If CompareVideoChannels(FVideos[i], FVideos[J]) > 0 Then
+          FVideos.Exchange(i, J);
+
+    Master := FVideos[0];
+  End;
 End;
 
 Procedure TFrameSyncedVideo.EndLoadVideos;

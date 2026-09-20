@@ -79,7 +79,7 @@ Type
     Procedure FormActivate(Sender: TObject);
     Procedure FormCloseQuery(Sender: TObject; Var CanClose: Boolean);
     Procedure mnuAboutClick(Sender: TObject);
-    procedure mnuViewLogClick(Sender: TObject);
+    Procedure mnuViewLogClick(Sender: TObject);
   Private
     FBusy: Integer;
     FProgress: Integer;
@@ -207,17 +207,17 @@ Begin
   ShowAbout;
 End;
 
-procedure TFormMain.mnuViewLogClick(Sender: TObject);
-var
+Procedure TFormMain.mnuViewLogClick(Sender: TObject);
+Var
   sFilename: String;
-begin
-  sFilename := ChangeFileExt(Application.ExeName, '.log');
+Begin
+  sFilename := DebugLogger.LogName;
 
-  if FileExists(sFilename) then
+  If FileExists(sFilename) Then
     LaunchDocument(sFilename)
-  else
+  Else
     ShowMessage('Application log does not exist yet.');
-end;
+End;
 
 Procedure TFormMain.DoLoadSettings;
 Var

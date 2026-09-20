@@ -1,7 +1,6 @@
 inherited FrameSyncedVideo: TFrameSyncedVideo
   Width = 320
   LCLVersion = '4.99.0.0'
-  OnMouseDown = nil
   OnResize = FrameResize
   DesignLeft = 329
   DesignTop = 145

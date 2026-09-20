@@ -41,7 +41,9 @@ Procedure InitialiseLogging(ATimestamp: TLogTimestamp = ltTime);
 Begin
   FTimestamp := ATimestamp;
 
-  //DebugLogger.LogName := ChangeFileExt(Application.ExeName, '.log');
+  DebugLogger.CloseLogFileBetweenWrites:=True;
+  DebugLogger.LogName := IncludeTrailingPathDelimiter(GetAppConfigDir(False)) +
+    ChangeFileExt(ExtractFilename(Application.ExeName), '.log');
 
   If Not FInitialised Then
   Begin
@@ -88,7 +90,7 @@ Initialization
   FLoggingSupport := TLoggingSupport.Create;
   InitialiseLogging;
 
-finalization;
+Finalization;
   FreeAndNil(FLoggingSupport);
 
 End.

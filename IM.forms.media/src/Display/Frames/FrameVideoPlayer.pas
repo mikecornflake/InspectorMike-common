@@ -36,6 +36,7 @@ Uses
 
 Type
   TOnGrabImage = Procedure(Sender: TObject; Const AFolder: String) Of Object;
+  TOnVideoPositionChange = Procedure(Sender: TObject; ADateTime: TDateTime) Of Object;
 
   { TFrameVideoPlayer }
 
@@ -108,6 +109,7 @@ Type
     FLastImageFolder: String;
     FOnGrabImage: TOnGrabImage;
     FOnStop: TNotifyEvent;
+    FOnVideoPositionChange: TOnVideoPositionChange;
     FVideoEngineClass: TFrameVideoBaseClass;
     fmeVideo: TFrameVideoBase;
     FVolumePopup: TfrmVolumePopup;
@@ -169,6 +171,9 @@ Type
     Property ImageGrabFolder: String Read FImageGrabFolder Write SetImageFolder;
     Property OnGrabImage: TOnGrabImage Read FOnGrabImage Write FOnGrabImage;
     Property ImageGrabHint: String Read GetImageGrabHint Write SetImageGrabHint;
+
+    Property OnVideoPositionChange: TOnVideoPositionChange
+      Read FOnVideoPositionChange Write FOnVideoPositionChange;
   End;
 
 Const
@@ -818,6 +823,9 @@ Begin
   Finally
     FUpdatingTracker := False;
   End;
+
+  If Assigned(FOnVideoPositionChange) Then
+    FOnVideoPositionChange(Self, fmeVideo.PositionAsTime);
 
   If fmeVideo.StartDateTime = 0 Then
     lblTime.Caption := ToTime(PositionMS) + LineEnding + ToTime(DurationMS)
