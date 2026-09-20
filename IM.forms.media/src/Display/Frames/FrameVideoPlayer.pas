@@ -216,6 +216,8 @@ Begin
   FMuted := False;
   FVolume := 100;
 
+  TabStop := True;
+
   RefreshUI;
 End;
 
