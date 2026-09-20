@@ -256,7 +256,7 @@ End;
 Procedure TFrameVideoBase.SetPosition(AValue: TVideoTime);
 Begin
   {$IFNDEF RELEASE}
-  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', AValue]);
+  //DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', AValue]);
   {$ENDIF}
   // Abstract base: descendant handles seeking.
 End;
