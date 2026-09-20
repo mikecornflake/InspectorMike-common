@@ -475,23 +475,23 @@ Begin
 
   oImage := FImages[iIndex];
 
-  If QuestionDlg('Delete Image', 'Are you sure you wish to delete this image?'+LineEnding+oImage.Filename,
-    mtConfirmation, [mrYes, mrNo], 0) = mrYes Then
+  If QuestionDlg('Delete Image', 'Are you sure you wish to delete this image?' +
+    LineEnding + oImage.FileName, mtConfirmation, [mrYes, mrNo], 0) = mrYes Then
   Begin
-    If DeleteFile(oImage.Filename) Then
+    If DeleteFile(oImage.FileName) Then
     Begin
-      sMessage := 'Image '+oImage.FileName+' deleted';
+      sMessage := 'Image ' + oImage.FileName + ' deleted';
       FImages.Delete(iIndex);
 
       UpdateGridLayout;
-    end
+    End
     Else
     Begin
-      sMessage := 'Unable to delete '+oImage.Filename;
+      sMessage := 'Unable to delete ' + oImage.FileName;
       ShowMessage(sMessage);
-    end;
+    End;
 
-    DebugLn('Image Viewer: ' + sMessage);
+    Debugln('Image Viewer: ' + sMessage);
   End;
 End;
 

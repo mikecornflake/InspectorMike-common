@@ -196,7 +196,7 @@ Begin
   Inherited Destroy;
 End;
 
-constructor TPipelineEventMap.Create(AOwner: TComponent);
+Constructor TPipelineEventMap.Create(AOwner: TComponent);
 Begin
   Inherited Create(AOwner);
 
@@ -228,7 +228,7 @@ Begin
   FEventCount := 0;
 End;
 
-destructor TPipelineEventMap.Destroy;
+Destructor TPipelineEventMap.Destroy;
 Begin
   FreeRows;
   FRows.Free;
@@ -236,7 +236,7 @@ Begin
   Inherited Destroy;
 End;
 
-procedure TPipelineEventMap.FreeRows;
+Procedure TPipelineEventMap.FreeRows;
 Var
   i: Integer;
 Begin
@@ -247,12 +247,12 @@ Begin
   FEventCount := 0;
 End;
 
-procedure TPipelineEventMap.BeginUpdate;
+Procedure TPipelineEventMap.BeginUpdate;
 Begin
   Inc(FUpdateCount);
 End;
 
-procedure TPipelineEventMap.EndUpdate;
+Procedure TPipelineEventMap.EndUpdate;
 Begin
   If FUpdateCount > 0 Then
     Dec(FUpdateCount);
@@ -265,7 +265,7 @@ Begin
   End;
 End;
 
-procedure TPipelineEventMap.Clear;
+Procedure TPipelineEventMap.Clear;
 Begin
   FreeRows;
   FDataMinValue := 0;
@@ -280,8 +280,7 @@ Begin
   End;
 End;
 
-function TPipelineEventMap.FindOrCreateRow(const ATitle: String
-  ): TPipelineEventRow;
+Function TPipelineEventMap.FindOrCreateRow(Const ATitle: String): TPipelineEventRow;
 Var
   i: Integer;
 Begin
@@ -296,7 +295,7 @@ Begin
   FRows.Add(Result);
 End;
 
-procedure TPipelineEventMap.AddData(ATitle: String; AStart, AEnd: Extended);
+Procedure TPipelineEventMap.AddData(ATitle: String; AStart, AEnd: Extended);
 Var
   Row: TPipelineEventRow;
   Range: TPipelineEventRange;
@@ -333,17 +332,17 @@ Begin
   End;
 End;
 
-function TPipelineEventMap.Count: Integer;
+Function TPipelineEventMap.Count: Integer;
 Begin
   Result := FEventCount;
 End;
 
-function TPipelineEventMap.RowCount: Integer;
+Function TPipelineEventMap.RowCount: Integer;
 Begin
   Result := FRows.Count;
 End;
 
-procedure TPipelineEventMap.CalculateRange;
+Procedure TPipelineEventMap.CalculateRange;
 Var
   i, j: Integer;
   Row: TPipelineEventRow;
@@ -391,7 +390,7 @@ Begin
   FEndValue := MaxKP;
 End;
 
-procedure TPipelineEventMap.SetStartValue(AValue: Extended);
+Procedure TPipelineEventMap.SetStartValue(AValue: Extended);
 Begin
   If SameValue(FStartValue, AValue) Then
     Exit;
@@ -408,7 +407,7 @@ Begin
   End;
 End;
 
-procedure TPipelineEventMap.SetEndValue(AValue: Extended);
+Procedure TPipelineEventMap.SetEndValue(AValue: Extended);
 Begin
   If SameValue(FEndValue, AValue) Then
     Exit;
@@ -425,12 +424,12 @@ Begin
   End;
 End;
 
-function TPipelineEventMap.GetMidValue: Extended;
+Function TPipelineEventMap.GetMidValue: Extended;
 Begin
   Result := (FStartValue + FEndValue) / 2;
 End;
 
-procedure TPipelineEventMap.SetMidValue(AValue: Extended);
+Procedure TPipelineEventMap.SetMidValue(AValue: Extended);
 Var
   HalfRange: Extended;
 Begin
@@ -445,7 +444,7 @@ Begin
   End;
 End;
 
-procedure TPipelineEventMap.SetShowTitles(AValue: Boolean);
+Procedure TPipelineEventMap.SetShowTitles(AValue: Boolean);
 Begin
   If FShowTitles = AValue Then
     Exit;
@@ -458,7 +457,7 @@ Begin
   End;
 End;
 
-procedure TPipelineEventMap.SetShowMidpoint(AValue: Boolean);
+Procedure TPipelineEventMap.SetShowMidpoint(AValue: Boolean);
 Begin
   If FShowMidpoint = AValue Then
     Exit;
@@ -471,7 +470,7 @@ Begin
   End;
 End;
 
-function TPipelineEventMap.ScaleHeight: Integer;
+Function TPipelineEventMap.ScaleHeight: Integer;
 Begin
   If FShowScale Then
     Result := SCALE_HEIGHT_PIXELS
@@ -479,7 +478,7 @@ Begin
     Result := 0;
 End;
 
-function TPipelineEventMap.RowHeight: Integer;
+Function TPipelineEventMap.RowHeight: Integer;
 Var
   AvailableHeight: Integer;
 Begin
@@ -491,12 +490,12 @@ Begin
     Result := Max(MIN_ROW_HEIGHT, AvailableHeight Div FRows.Count);
 End;
 
-function TPipelineEventMap.GraphRect: TRect;
+Function TPipelineEventMap.GraphRect: TRect;
 Begin
   Result := Rect(FTitleWidth, ScaleHeight, ClientWidth, ClientHeight);
 End;
 
-function TPipelineEventMap.ValueToX(AValue: Extended): Integer;
+Function TPipelineEventMap.ValueToX(AValue: Extended): Integer;
 Var
   R: TRect;
   Fraction: Extended;
@@ -510,7 +509,7 @@ Begin
   Result := R.Left + Round(Fraction * (R.Right - R.Left));
 End;
 
-function TPipelineEventMap.XToValue(AX: Integer): Extended;
+Function TPipelineEventMap.XToValue(AX: Integer): Extended;
 Var
   R: TRect;
   Fraction: Extended;
@@ -524,7 +523,7 @@ Begin
   Result := FStartValue + Fraction * (FEndValue - FStartValue);
 End;
 
-function TPipelineEventMap.RowAtY(AY: Integer): TPipelineEventRow;
+Function TPipelineEventMap.RowAtY(AY: Integer): TPipelineEventRow;
 Var
   Index: Integer;
 Begin
@@ -539,7 +538,7 @@ Begin
     Result := TPipelineEventRow(FRows[Index]);
 End;
 
-function TPipelineEventMap.XYToTitle(AX, AY: Integer): String;
+Function TPipelineEventMap.XYToTitle(AX, AY: Integer): String;
 Var
   Row: TPipelineEventRow;
 Begin
@@ -550,7 +549,7 @@ Begin
     Result := Row.Title;
 End;
 
-function TPipelineEventMap.GetKP(AX, AY: Integer): Extended;
+Function TPipelineEventMap.GetKP(AX, AY: Integer): Extended;
 Var
   GR: TRect;
 Begin
@@ -562,7 +561,7 @@ Begin
   Result := XToValue(AX);
 End;
 
-procedure TPipelineEventMap.ZoomIn(AX, AY, APercent: Integer);
+Procedure TPipelineEventMap.ZoomIn(AX, AY, APercent: Integer);
 Var
   Centre: Extended;
   Range: Extended;
@@ -585,7 +584,7 @@ Begin
   Invalidate;
 End;
 
-procedure TPipelineEventMap.ZoomOut(AX, AY, APercent: Integer);
+Procedure TPipelineEventMap.ZoomOut(AX, AY, APercent: Integer);
 Var
   Centre: Extended;
   Range: Extended;
@@ -605,28 +604,28 @@ Begin
   Invalidate;
 End;
 
-procedure TPipelineEventMap.CopyToClipboard;
-begin
+Procedure TPipelineEventMap.CopyToClipboard;
+Begin
   RebuildBuffer;
   Clipboard.Assign(FBackBuffer);
-end;
+End;
 
-procedure TPipelineEventMap.SaveToFile(const AFilename: String);
-var
+Procedure TPipelineEventMap.SaveToFile(Const AFilename: String);
+Var
   PNG: TPortableNetworkGraphic;
-begin
+Begin
   RebuildBuffer;
 
   PNG := TPortableNetworkGraphic.Create;
-  try
+  Try
     PNG.Assign(FBackBuffer);
     PNG.SaveToFile(AFilename);
-  finally
+  Finally
     PNG.Free;
-  end;
-end;
+  End;
+End;
 
-procedure TPipelineEventMap.RebuildBuffer;
+Procedure TPipelineEventMap.RebuildBuffer;
 Var
   i, j: Integer;
   Row: TPipelineEventRow;
@@ -789,7 +788,7 @@ Begin
   End;
 End;
 
-procedure TPipelineEventMap.Paint;
+Procedure TPipelineEventMap.Paint;
 Begin
   If (FBackBuffer.Width <> ClientWidth) Or (FBackBuffer.Height <> ClientHeight) Then
     RebuildBuffer;
@@ -797,7 +796,7 @@ Begin
   Canvas.Draw(0, 0, FBackBuffer);
 End;
 
-procedure TPipelineEventMap.Resize;
+Procedure TPipelineEventMap.Resize;
 Begin
   Inherited Resize;
   RebuildBuffer;

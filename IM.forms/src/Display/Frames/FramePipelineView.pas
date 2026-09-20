@@ -198,7 +198,7 @@ Begin
   FMaxKP := FPipelineDisplay.DataMaxValue;
   FLoaded := FCount > 0;
 
-  SetDisplayRange(FMinKP, FMinKP+0.1);
+  SetDisplayRange(FMinKP, FMinKP + 0.1);
   UpdateData;
   RecalcScrollbar;
 End;
