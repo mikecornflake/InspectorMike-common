@@ -790,7 +790,10 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       Caption = 'actStepBack'
       Hint = 'Step back:'#13#10'  Default 3 seconds'#13#10'  Shift+click 6 seconds'#13#10'  Ctrl+click 1 second'
       ImageIndex = 1
-      ShortCut = 37
+      SecondaryShortCuts.Strings = (
+        'LEFT'
+      )
+      ShortCut = 83
       OnExecute = actStepBackClick
     end
     object actStepForward: TAction
@@ -798,7 +801,10 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       Caption = 'actStepForward'
       Hint = 'Step forward:'#13#10'  Default 3 seconds'#13#10'  Shift+click 6 seconds'#13#10'  Ctrl+click 1 second'
       ImageIndex = 2
-      ShortCut = 39
+      SecondaryShortCuts.Strings = (
+        'RIGHT'
+      )
+      ShortCut = 68
       OnExecute = actStepForwardClick
     end
     object actCopyToClipboard: TAction
