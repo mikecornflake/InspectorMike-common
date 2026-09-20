@@ -24,7 +24,9 @@ Type
   End;
 
 Var
-  FLoggingSupport: TLoggingSupport;
+  DBG_VIDEO: PLazLoggerLogGroup;
+  DBG_VIDEO_PLAYER: PLazLoggerLogGroup;
+  DBG_APPLICATION: PLazLoggerLogGroup;
 
 Procedure InitialiseLogging(ATimestamp: TLogTimestamp = ltTime);
 
@@ -35,18 +37,28 @@ Uses
 
 Var
   FTimestamp: TLogTimestamp;
+  FLoggingSupport: TLoggingSupport;
   FInitialised: Boolean = False;
 
 Procedure InitialiseLogging(ATimestamp: TLogTimestamp = ltTime);
+Var
+  sFilename: String;
 Begin
   FTimestamp := ATimestamp;
 
-  DebugLogger.CloseLogFileBetweenWrites:=True;
-  DebugLogger.LogName := IncludeTrailingPathDelimiter(GetAppConfigDir(False)) +
-    ChangeFileExt(ExtractFilename(Application.ExeName), '.log');
-
   If Not FInitialised Then
   Begin
+    DebugLogger.CloseLogFileBetweenWrites := True;
+    sFilename := IncludeTrailingPathDelimiter(GetAppConfigDir(False)) +
+      ChangeFileExt(ExtractFilename(Application.ExeName), '.log');
+
+    DebugLogger.LogName := sFilename;
+    DebugLogger.OnDebugLnEx := @FLoggingSupport.DebugLnEx;
+
+    DBG_VIDEO := DebugLogger.FindOrRegisterLogGroup('VIDEO', True);
+    DBG_VIDEO_PLAYER := DebugLogger.FindOrRegisterLogGroup('VIDEO_PLAYER', True);
+    DBG_APPLICATION := DebugLogger.FindOrRegisterLogGroup('APPLICATION', True);
+
     DebugLn(['']);
     DebugLn(['============================================================']);
     DebugLn(['Application started']);
@@ -67,8 +79,6 @@ Begin
 
     FInitialised := True;
   End;
-
-  DebugLogger.OnDebugLnEx := @FLoggingSupport.DebugLnEx;
 End;
 
 { TLoggingSupport }
@@ -88,7 +98,6 @@ End;
 
 Initialization
   FLoggingSupport := TLoggingSupport.Create;
-  InitialiseLogging;
 
 Finalization;
   FreeAndNil(FLoggingSupport);

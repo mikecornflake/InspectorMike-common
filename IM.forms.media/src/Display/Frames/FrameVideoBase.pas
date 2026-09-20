@@ -170,15 +170,12 @@ Type
 Const
   CHANNEL_PARAM: String = '<channel>';
 
-Var
-  DBG_VIDEO: PLazLoggerLogGroup;
-
 Implementation
 
 {$R *.lfm}
 
 Uses
-  DateUtils, Math, FileSupport, Clipbrd;
+  DateUtils, Math, FileSupport, Clipbrd, LoggingSupport;
 
   { TFrameVideoBase }
 
@@ -313,7 +310,7 @@ Function TFrameVideoBase.Load(Const AFilename: String; AChannel: String;
   AStartDateTime: TDateTime): Boolean;
 Begin
   {$IFNDEF RELEASE}
-  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', ' ', AFilename, ' ',
+  DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', ' ', AFilename, ' ',
     AChannel, ' ', AStartDateTime]);
   {$ENDIF}
 
@@ -458,8 +455,5 @@ Procedure TFrameVideoBaseList.AddVideo(AVideo: TFrameVideoBase);
 Begin
   Inherited Add(AVideo);
 End;
-
-Initialization
-  DBG_VIDEO := DebugLogger.FindOrRegisterLogGroup('VIDEO', True);
 
 End.

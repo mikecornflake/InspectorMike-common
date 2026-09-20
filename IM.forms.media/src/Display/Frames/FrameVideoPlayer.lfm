@@ -4,7 +4,6 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
   ClientHeight = 250
   ClientWidth = 642
   TabStop = True
-  OnMouseEnter = pnlVideoMouseEnter
   DesignLeft = 366
   DesignTop = 239
   object lblStatus: TLabel[0]
@@ -26,7 +25,6 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     PopupMenu = pmnuPlayer
     TabOrder = 0
     TabStop = True
-    OnMouseEnter = pnlVideoMouseEnter
     OnMouseWheel = pnlVideoMouseWheel
   end
   object pnlToolbar: TPanel[2]
@@ -84,7 +82,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object btnSep2: TToolButton
         Left = 335
-        Height = 32
+        Height = 8
         Top = 0
         Caption = 'btnSep2'
         Style = tbsSeparator
@@ -101,7 +99,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object btnSep1: TToolButton
         Left = 73
-        Height = 32
+        Height = 8
         Top = 0
         Style = tbsSeparator
       end
@@ -115,7 +113,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object btnSep3: TToolButton
         Left = 279
-        Height = 32
+        Height = 8
         Top = 0
         Caption = 'btnSep3'
         Style = tbsSeparator
@@ -145,7 +143,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object ToolButton1: TToolButton
         Left = 225
-        Height = 32
+        Height = 8
         Top = 0
         Caption = 'ToolButton1'
         Style = tbsSeparator

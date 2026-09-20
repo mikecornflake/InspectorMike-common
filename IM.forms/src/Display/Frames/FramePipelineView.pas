@@ -128,7 +128,7 @@ Type
 Implementation
 
 Uses
-  Math;
+  Math, LoggingSupport, LazLogger;
 
   {$R *.lfm}
 
@@ -461,8 +461,14 @@ Begin
   If Not HasData Then
     Exit;
 
+  {$IFNDEF RELEASE}
+  DebugLn([ClassName, '.', {$I %CURRENTROUTINE%}, ' ', Format('%.3f', [AValue])]);
+  {$ENDIF}
+
   FPipelineDisplay.MidValue := AValue;
   RecalcScrollbar;
+
+  Repaint;
 End;
 
 End.

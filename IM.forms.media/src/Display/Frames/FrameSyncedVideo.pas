@@ -151,7 +151,7 @@ Type
 Implementation
 
 Uses
-  DateUtils;
+  DateUtils, LoggingSupport, LazLogger;
 
   {$R *.lfm}
 
@@ -369,6 +369,9 @@ Procedure TFrameSyncedVideo.SetPosition(AValue: TVideoTime);
 Var
   i: Integer;
 Begin
+  {$IFNDEF RELEASE}
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%} + ': ', ' ', AValue]);
+  {$ENDIF}
   For i := 0 To FVideoFileCount - 1 Do
     If FVideos[i].CanSeek Then
       FVideos[i].Position := AValue;

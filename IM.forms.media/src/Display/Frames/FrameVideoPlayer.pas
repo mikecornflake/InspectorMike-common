@@ -32,11 +32,23 @@ Interface
 Uses
   Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs,
   ComCtrls, StdCtrls, ExtCtrls, Menus, ActnList, FrameBase, FrameVideoBase,
-  Types, FormVolumePopup, IniFiles;
+  Types, FormVolumePopup, IniFiles, LMessages, LCLType, GraphType;
 
 Type
   TOnGrabImage = Procedure(Sender: TObject; Const AFolder: String) Of Object;
   TOnVideoPositionChange = Procedure(Sender: TObject; ADateTime: TDateTime) Of Object;
+
+Type
+
+  { TVideoPanel }
+
+  TVideoPanel = Class(TPanel)
+  Protected
+    //Procedure KeyDown(Var Key: Word; Shift: TShiftState); Override;
+    Procedure WMGetDlgCode(Var Message: TLMNoParams); Message LM_GETDLGCODE;
+  Public
+    Property OnKeyDown;
+  End;
 
   { TFrameVideoPlayer }
 
@@ -96,13 +108,13 @@ Type
     Procedure mnuGrabClick(Sender: TObject);
     Procedure pnlToolbarResize(Sender: TObject);
     Procedure actStepBackClick(Sender: TObject);
-    Procedure pnlVideoMouseEnter(Sender: TObject);
     Procedure pnlVideoMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; Var Handled: Boolean);
     Procedure trackVideoChange(Sender: TObject);
     Procedure trackVideoMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   Private
+    FPanel: TVideoPanel;
     FAutoplay: Boolean;
     FFilename: String;
     FImageGrabFolder: String;
@@ -133,6 +145,7 @@ Type
     Procedure ShowVolumePopup;
     Function StepDelta: Integer;
 
+    Procedure PanelKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
     Procedure VideoMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     Procedure VideoPosition(Sender: TObject; PositionMS, DurationMS: TVideoTime);
@@ -184,16 +197,33 @@ Const
 Implementation
 
 Uses
-  OSSupport, Math, Clipbrd, DateUtils;
+  OSSupport, Math, Clipbrd, DateUtils, LazLogger, LoggingSupport;
 
 
   {$R *.lfm}
 
-  { TFrameVideoPlayer }
+  { TVideoPanel }
+
+Procedure TVideoPanel.WMGetDlgCode(Var Message: TLMNoParams);
+Begin
+  Inherited;
+  Message.Result := Message.Result Or DLGC_WANTARROWS;
+End;
+
+{ TFrameVideoPlayer }
 
 Constructor TFrameVideoPlayer.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
+
+  FPanel := TVideoPanel.Create(Self);
+  FPanel.OnKeyDown := @PanelKeyDown;
+  FPanel.Align := alClient;
+  FPanel.BevelOuter := bvNone;
+  FPanel.Caption := '';
+  FPanel.Parent := pnlVideo;
+  FPanel.TabStop := True;
+  FPanel.SetFocus;
 
   fmeVideo := nil;
   FVideoEngineClass := nil;
@@ -224,6 +254,8 @@ End;
 Destructor TFrameVideoPlayer.Destroy;
 Begin
   FreeAndNil(fmeVideo);
+  FreeAndNil(FPanel);
+
   Inherited Destroy;
 End;
 
@@ -237,8 +269,8 @@ Begin
   If Not Assigned(FVideoEngineClass) Then
     Exit(False);
 
-  fmeVideo := FVideoEngineClass.Create(pnlVideo);
-  fmeVideo.Parent := pnlVideo;
+  fmeVideo := FVideoEngineClass.Create(FPanel);
+  fmeVideo.Parent := FPanel;
   fmeVideo.Name := 'fmeVideo';
   fmeVideo.Align := alClient;
   fmeVideo.Autoplay := FAutoplay;
@@ -251,6 +283,9 @@ Begin
 
   If FFilename <> '' Then
     fmeVideo.Load(FFilename);
+
+  FPanel.TabStop := True;
+  FPanel.SetFocus;
 
   Result := True;
 End;
@@ -546,10 +581,39 @@ Begin
     Result := 2000;
 End;
 
+Procedure TFrameVideoPlayer.PanelKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
+Begin
+  {$IFNDEF RELEASE}
+  DebugLn([ClassName, '.', {$I %CURRENTROUTINE%}, ' Key=', Key]);
+  {$ENDIF}
+  Case Key Of
+    VK_LEFT:
+    Begin
+      actStepBack.Execute;
+      Key := 0;
+    End;
+
+    VK_RIGHT:
+    Begin
+      actStepForward.Execute;
+      Key := 0;
+    End;
+
+    VK_SPACE:
+    Begin
+      actPlayPause.Execute;
+      Key := 0;
+    End;
+  End;
+End;
+
 Procedure TFrameVideoPlayer.actStepBackClick(Sender: TObject);
 Begin
   If Assigned(fmeVideo) And fmeVideo.CanSeek Then
   Begin
+    {$IFNDEF RELEASE}
+    DebugLn([ClassName, '.', {$I %CURRENTROUTINE%}]);
+    {$ENDIF}
     If fmeVideo.State = vsPlaying Then
       fmeVideo.Pause;
 
@@ -560,14 +624,10 @@ End;
 Procedure TFrameVideoPlayer.VideoMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 Begin
+  FPanel.SetFocus;
+
   If (Button = mbMiddle) And (actPlayPause.Enabled) Then
     actPlayPause.Execute;
-End;
-
-Procedure TFrameVideoPlayer.pnlVideoMouseEnter(Sender: TObject);
-Begin
-  If pnlVideo.CanFocus Then
-    pnlVideo.SetFocus;
 End;
 
 Procedure TFrameVideoPlayer.actStepForwardClick(Sender: TObject);
@@ -805,12 +865,21 @@ Procedure TFrameVideoPlayer.VideoPosition(Sender: TObject; PositionMS, DurationM
     If ATimeMS < 0 Then
       Result := '--:--:--'
     Else
-      Result := FormatDateTime('HH:mm:ss', (ATimeMS / 1000) / SecsPerDay);
+      Result := FormatDateTime('HH:mm:ss', (ATimeMS / MSecsPerDay));
   End;
 
+Var
+  dtPositionAsTime: TDateTime;
 Begin
   FUpdatingTracker := True;
   Try
+    dtPositionAsTime := fmeVideo.StartDateTime + (PositionMS / MSecsPerDay);
+
+    {$IFNDEF RELEASE}
+    DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}, ' ',
+      PositionMS, ' ', TimeToStr(dtPositionAsTime)]);
+    {$ENDIF}
+
     If DurationMS > 0 Then
       trackVideo.Max := DurationMS
     Else
@@ -827,13 +896,14 @@ Begin
   End;
 
   If Assigned(FOnVideoPositionChange) Then
-    FOnVideoPositionChange(Self, fmeVideo.PositionAsTime);
+    FOnVideoPositionChange(Self, dtPositionAsTime);
 
-  If fmeVideo.StartDateTime = 0 Then
-    lblTime.Caption := ToTime(PositionMS) + LineEnding + ToTime(DurationMS)
-  Else
-    lblTime.Caption := TimeToStr(fmeVideo.PositionAsTime) + LineEnding +
-      TimeToStr(fmeVideo.EndDateTime);
+  //If fmeVideo.StartDateTime = 0 Then
+  // lblTime.Caption := ToTime(PositionMS) + LineEnding + ToTime(DurationMS)
+  //Else
+  lblTime.Caption := TimeToStr(dtPositionAsTime) + LineEnding + TimeToStr(fmeVideo.EndDateTime);
+
+  lblTime.Repaint;
 End;
 
 Procedure TFrameVideoPlayer.VideoStateChanged(Sender: TObject; State: TVideoState);
