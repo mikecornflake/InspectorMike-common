@@ -8,10 +8,10 @@ unit IM.units;
 interface
 
 uses
-  Logs, MRUs, Settings, ffmpegSupport, FileSupport, GPSSupport, OSSupport, 
-  StringSupport, TesseractSupport, VersionSupport, WGS84, XMLSupport, 
-  XPDFSupport, InspectionSupport, qpdfSupport, PDF, ImageSupport, 
-  PopplerSupport, ThirdPartySupport, LoggingSupport, LazarusPackageIntf;
+  Logs, MRUs, Settings, ffmpegSupport, FileSupport, GPSSupport, OSSupport, StringSupport, 
+  TesseractSupport, VersionSupport, WGS84, XMLSupport, XPDFSupport, InspectionSupport, 
+  qpdfSupport, PDF, ImageSupport, PopplerSupport, ThirdPartySupport, LoggingSupport, IMMessaging, 
+  LazarusPackageIntf;
 
 implementation
 

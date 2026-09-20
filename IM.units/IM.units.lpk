@@ -8,6 +8,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <IncludeFiles Value="src\Classes"/>
         <OtherUnitFiles Value="src\Classes;src\Support"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -98,6 +99,10 @@
       <Item>
         <Filename Value="src\Support\LoggingSupport.pas"/>
         <UnitName Value="LoggingSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Classes\IMMessaging.pas"/>
+        <UnitName Value="IMMessaging"/>
       </Item>
     </Files>
     <RequiredPkgs>
