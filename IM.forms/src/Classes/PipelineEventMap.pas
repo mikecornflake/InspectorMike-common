@@ -51,6 +51,7 @@ Type
   Public
     StartKP: Extended;
     EndKP: Extended;
+    Anomaly: Boolean;
   End;
 
   TPipelineEventRow = Class
@@ -117,7 +118,7 @@ Type
     Destructor Destroy; Override;
 
     Procedure BeginUpdate;
-    Procedure AddData(ATitle: String; AStart, AEnd: Extended);
+    Procedure AddData(ATitle: String; AStart, AEnd: Extended; AAnomaly: Boolean=False);
     Procedure EndUpdate;
     Procedure Clear;
 
@@ -295,7 +296,7 @@ Begin
   FRows.Add(Result);
 End;
 
-Procedure TPipelineEventMap.AddData(ATitle: String; AStart, AEnd: Extended);
+Procedure TPipelineEventMap.AddData(ATitle: String; AStart, AEnd: Extended; AAnomaly: Boolean=False);
 Var
   Row: TPipelineEventRow;
   Range: TPipelineEventRange;
@@ -305,6 +306,7 @@ Begin
 
   Range := TPipelineEventRange.Create;
   Range.StartKP := AStart;
+  Range.Anomaly:=AAnomaly;
 
   Case FGraphMode Of
     pdStartEnd:
@@ -752,7 +754,12 @@ Begin
         R.Right := R.Left + 1;
 
       FBackBuffer.Canvas.Brush.Style := bsSolid;
-      FBackBuffer.Canvas.Brush.Color := clHighlight;
+
+      If Range.Anomaly Then
+        FBackBuffer.Canvas.Brush.Color := TColor($008080FF)
+      Else
+        FBackBuffer.Canvas.Brush.Color := clHighlight;
+
       FBackBuffer.Canvas.FillRect(R);
     End;
 

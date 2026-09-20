@@ -112,7 +112,7 @@ Type
     Destructor Destroy; Override;
 
     Procedure BeginUpdate;
-    Procedure AddData(ATitle: String; AStart, AEnd: Extended);
+    Procedure AddData(ATitle: String; AStart, AEnd: Extended; AAnomaly: Boolean = False);
     Procedure EndUpdate;
     Function Count: Integer;
     Procedure Clear;
@@ -184,9 +184,9 @@ Begin
   FPipelineDisplay.BeginUpdate;
 End;
 
-Procedure TFramePipelineView.AddData(ATitle: String; AStart, AEnd: Extended);
+Procedure TFramePipelineView.AddData(ATitle: String; AStart, AEnd: Extended; AAnomaly: Boolean);
 Begin
-  FPipelineDisplay.AddData(ATitle, AStart, AEnd);
+  FPipelineDisplay.AddData(ATitle, AStart, AEnd, AAnomaly);
 End;
 
 Procedure TFramePipelineView.EndUpdate;
