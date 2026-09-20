@@ -17,12 +17,14 @@ Type
 
   TIMMessageClass = Class Of TIMMessage;
 
+  TIMMessageEvent = procedure(AMessage: TIMMessage) of object;
+
   { TMessageSubscription }
 
   TMessageSubscription = Class
     Subscriber: TObject;
     MessageClass: TIMMessageClass;
-    Callback: TNotifyEvent;
+    Callback: TIMMessageEvent;
   End;
 
   { TMessageSubscriptions }
@@ -39,7 +41,7 @@ Type
     Destructor Destroy; Override;
 
     Procedure Subscribe(ASubscriber: TObject; AMessageClass: TIMMessageClass;
-      ACallback: TNotifyEvent);
+      ACallback: TIMMessageEvent);
 
     Procedure Broadcast(AMessage: TIMMessage);
   End;
@@ -63,7 +65,7 @@ Begin
 End;
 
 Procedure TMessageBus.Subscribe(ASubscriber: TObject; AMessageClass: TIMMessageClass;
-  ACallback: TNotifyEvent);
+  ACallback: TIMMessageEvent);
 Var
   oSubscription: TMessageSubscription;
 Begin
