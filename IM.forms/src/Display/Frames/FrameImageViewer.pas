@@ -108,6 +108,8 @@ Type
     Function AddImage(Const AFilename, ACaption: String): TViewerImage;
     Procedure ClearImages;
 
+    Procedure RefreshImages;
+
     Function ImageCount: Integer;
     Property Image[AIndex: Integer]: TViewerImage Read GetImage;
 
@@ -588,6 +590,11 @@ Begin
 
   UpdateGridLayout;
 End;
+
+Procedure TFrameImageViewer.RefreshImages;
+begin
+  actRefreshList.Execute;
+end;
 
 Function TFrameImageViewer.ImageCount: Integer;
 Begin

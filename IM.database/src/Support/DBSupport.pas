@@ -88,8 +88,8 @@ Function ValueAsInteger(oDataset: TDataset; sField: String; iDefault: Integer = 
 Function ValueAsFloat(oDataset: TDataset; sField: String; ADefault: Extended): Extended;
 
 // Dataset Navigation
-Procedure GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String;
-  Const ADateTime: TDateTime; Const AThreshold: TDateTime);
+Function GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String;
+  Const ADateTime: TDateTime; Const AThreshold: TDateTime): Boolean;
 
 // DBGrid routines
 Procedure InitialiseDBGrid(oGrid: TDBGrid; oDataset: TDataset; bHideIDs: Boolean = False);
@@ -967,20 +967,25 @@ End;
 // AThreshold < 0 : always go to nearest record
 // AThreshold = 0 : only exact match
 // AThreshold > 0 : nearest record within threshold
-Procedure GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String;
-  Const ADateTime: TDateTime; Const AThreshold: TDateTime);
+// Returns true if a new record was selected
+Function GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String;
+  Const ADateTime: TDateTime; Const AThreshold: TDateTime): Boolean;
 Var
   dtBestDiff, dtDiff: TDateTime;
   bmOriginal, bmBest: TBookmark;
   oStart, oKP: TField;
   dStartKP: Extended;
+  iOriginalRecNo: Longint;
 Begin
+  Result := False;
+
   If (Not ADataset.Active) Or ADataset.IsEmpty Then
     Exit;
 
   oStart := ADataset.FieldByName(ATimeFieldname);
 
   bmOriginal := ADataset.GetBookmark;
+  iOriginalRecNo := ADataset.RecNo;
   bmBest := ADataset.GetBookmark;
   dtBestDiff := MaxDouble;
 
@@ -1007,7 +1012,10 @@ Begin
     End;
 
     If (AThreshold < 0) Or (dtBestDiff <= AThreshold) Then
-      ADataset.GotoBookmark(bmBest)
+    Begin
+      ADataset.GotoBookmark(bmBest);
+      Result := (iOriginalRecNo <> ADataset.RecNo);
+    End
     Else
       ADataset.GotoBookmark(bmOriginal);
   Finally
