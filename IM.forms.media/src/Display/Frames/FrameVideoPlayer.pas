@@ -225,7 +225,6 @@ Begin
   FPanel.Caption := '';
   FPanel.Parent := pnlVideo;
   FPanel.TabStop := True;
-  FPanel.SetFocus;
 
   fmeVideo := nil;
   FVideoEngineClass := nil;
@@ -286,9 +285,6 @@ Begin
 
   If FFilename <> '' Then
     fmeVideo.Load(FFilename);
-
-  FPanel.TabStop := True;
-  FPanel.SetFocus;
 
   Result := True;
 End;
@@ -627,7 +623,8 @@ End;
 Procedure TFrameVideoPlayer.VideoMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 Begin
-  FPanel.SetFocus;
+  If FPanel.CanFocus Then
+    FPanel.SetFocus;
 
   If (Button = mbMiddle) And (actPlayPause.Enabled) Then
     actPlayPause.Execute;
@@ -661,7 +658,9 @@ End;
 
 Procedure TFrameVideoPlayer.trackVideoChange(Sender: TObject);
 Begin
-  {$IFNDEF RELEASE}DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}]);{$ENDIF}
+  {$IFNDEF RELEASE}
+  DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}]);
+  {$ENDIF}
   If FUpdatingTracker Then
     Exit;
 
@@ -676,8 +675,8 @@ Begin
 
   FLastSeekTick := GetTickCount64;
 
-    If Assigned(fmeVideo) And fmeVideo.CanSeek Then
-  fmeVideo.Position := trackVideo.Position;
+  If Assigned(fmeVideo) And fmeVideo.CanSeek Then
+    fmeVideo.Position := trackVideo.Position;
 End;
 
 Procedure TFrameVideoPlayer.trackVideoMouseDown(Sender: TObject; Button: TMouseButton;
@@ -685,7 +684,9 @@ Procedure TFrameVideoPlayer.trackVideoMouseDown(Sender: TObject; Button: TMouseB
 Var
   NewPos: Integer;
 Begin
-  {$IFNDEF RELEASE}DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}]);{$ENDIF}
+  {$IFNDEF RELEASE}
+  DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}]);
+  {$ENDIF}
   FLastSeekTick := 0;
 
   If Button <> mbLeft Then
@@ -865,7 +866,8 @@ Begin
   lblStatus.Visible := AValue;
 End;
 
-Procedure TFrameVideoPlayer.VideoPositionChange(Sender: TObject; PositionMS, DurationMS: TVideoTime);
+Procedure TFrameVideoPlayer.VideoPositionChange(Sender: TObject;
+  PositionMS, DurationMS: TVideoTime);
 
   Function ToTime(Const ATimeMS: TVideoTime): String;
   Begin
