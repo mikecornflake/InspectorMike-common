@@ -329,16 +329,25 @@ Procedure TFramePipelineView.PipelineDisplayMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 Var
   dKP: Extended;
+  sTitle: String;
+  Range: TPipelineEventRange;
 Begin
   dKP := FPipelineDisplay.GetKP(X, Y);
 
   If dKP = -1 Then
-    FPipelineDisplay.Hint := ''
-  Else
   Begin
-    FPipelineDisplay.Hint := Format('KP%0.3f', [dKP]);
-    FPipelineDisplay.ShowHint := True;
+    FPipelineDisplay.Hint := '';
+    Exit;
   End;
+
+  Range := FPipelineDisplay.RangeAtXY(X, Y, sTitle);
+
+  If Assigned(Range) Then
+    FPipelineDisplay.Hint := Format('%s - KP%0.3f', [sTitle, dKP])
+  Else
+    FPipelineDisplay.Hint := Format('KP%0.3f', [dKP]);
+
+  FPipelineDisplay.ShowHint := True;
 End;
 
 Procedure TFramePipelineView.RefreshUI;

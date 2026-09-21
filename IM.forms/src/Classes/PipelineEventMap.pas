@@ -118,14 +118,15 @@ Type
     Destructor Destroy; Override;
 
     Procedure BeginUpdate;
-    Procedure AddData(ATitle: String; AStart, AEnd: Extended; AAnomaly: Boolean=False);
+    Procedure AddData(ATitle: String; AStart, AEnd: Extended; AAnomaly: Boolean = False);
     Procedure EndUpdate;
     Procedure Clear;
 
     Function Count: Integer;
     Function RowCount: Integer;
 
-    Function XYToTitle(AX, AY: Integer): String;
+    Function RangeAtXY(AX, AY: Integer; Out ATitle: String): TPipelineEventRange;
+    Function TitleAtXY(AX, AY: Integer): String;
     Function GetKP(AX, AY: Integer): Extended;
 
     Procedure ZoomIn(AX, AY, APercent: Integer);
@@ -296,7 +297,8 @@ Begin
   FRows.Add(Result);
 End;
 
-Procedure TPipelineEventMap.AddData(ATitle: String; AStart, AEnd: Extended; AAnomaly: Boolean=False);
+Procedure TPipelineEventMap.AddData(ATitle: String; AStart, AEnd: Extended;
+  AAnomaly: Boolean = False);
 Var
   Row: TPipelineEventRow;
   Range: TPipelineEventRange;
@@ -306,7 +308,7 @@ Begin
 
   Range := TPipelineEventRange.Create;
   Range.StartKP := AStart;
-  Range.Anomaly:=AAnomaly;
+  Range.Anomaly := AAnomaly;
 
   Case FGraphMode Of
     pdStartEnd:
@@ -540,7 +542,7 @@ Begin
     Result := TPipelineEventRow(FRows[Index]);
 End;
 
-Function TPipelineEventMap.XYToTitle(AX, AY: Integer): String;
+Function TPipelineEventMap.TitleAtXY(AX, AY: Integer): String;
 Var
   Row: TPipelineEventRow;
 Begin
@@ -549,6 +551,37 @@ Begin
   Row := RowAtY(AY);
   If Assigned(Row) Then
     Result := Row.Title;
+End;
+
+Function TPipelineEventMap.RangeAtXY(AX, AY: Integer; Out ATitle: String): TPipelineEventRange;
+Var
+  Row: TPipelineEventRow;
+  Range: TPipelineEventRange;
+  dKP: Extended;
+  i: Integer;
+Begin
+  Result := nil;
+  ATitle := '';
+
+  Row := RowAtY(AY);
+  If Not Assigned(Row) Then
+    Exit;
+
+  dKP := GetKP(AX, AY);
+  If dKP < 0 Then
+    Exit;
+
+  For i := 0 To Row.Ranges.Count - 1 Do
+  Begin
+    Range := TPipelineEventRange(Row.Ranges[i]);
+
+    If (dKP >= Min(Range.StartKP, Range.EndKP)) And
+      (dKP <= Max(Range.StartKP, Range.EndKP)) Then
+    Begin
+      ATitle := Row.Title;
+      Exit(Range);
+    End;
+  End;
 End;
 
 Function TPipelineEventMap.GetKP(AX, AY: Integer): Extended;

@@ -137,12 +137,12 @@ Type
     FUseMultilineDefaults: Boolean;
 
     Function GetEditable: Boolean;
-    function GetFilter: String;
+    Function GetFilter: String;
     Function GetFilterMRU: String;
     Procedure RefreshParent;
     Procedure SetAllowMultiline(AValue: Boolean);
     Procedure SetGridToSingleLine;
-    procedure SetInnerFilter(const AValue: String);
+    Procedure SetInnerFilter(Const AValue: String);
     Procedure SetUseMultilineDefaults(AValue: Boolean);
 
     Procedure SetControlsEditable(AValue: Boolean);
@@ -161,7 +161,7 @@ Type
 
     // To workaround an Oracle/Zeos issue....
     Procedure DatasetOnGetText(Sender: TField; Var aText: Ansistring; DisplayText: Boolean);
-    Procedure DatasetAfterEdit(DataSet: TDataSet);
+    Procedure DatasetAfterEdit(DataSet: TDataset);
   Public
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
@@ -171,7 +171,7 @@ Type
     Procedure LoadSettings(oInifile: TIniFile); Override;
     Procedure SaveSettings(oInifile: TIniFile); Override;
 
-    Property Dataset: TDataset Read FDataset Write SetDataset;
+    Property DataSet: TDataset Read FDataset Write SetDataset;
     Function RecordCount: Integer;
     Property FilterMRU: String Read GetFilterMRU Write SetFilterMRU;
 
@@ -326,7 +326,7 @@ Begin
   // Use FParentSemaphore to wrap vulnerable code (See RefreshParent...)
   RefreshParent;
 
-  bDatasetAlive := Assigned(FDataset);
+  bDatasetAlive := assigned(FDataset);
   If bDatasetAlive Then
     bDatasetAlive := (FDataset.Active) And (Not FDataset.ControlsDisabled);
 
@@ -390,11 +390,11 @@ Begin
   // TODO: Cache this count, and only recalc when directed
   Result := -1;
 
-  If Not Assigned(FDataset) Then
-    Exit;
+  If Not assigned(FDataset) Then
+    exit;
 
   If Not (FDataset.Active) Then
-    Exit;
+    exit;
 
   If (FDataset Is TZAbstractRODataset) Then
     Result := FDataset.RecordCount
@@ -424,8 +424,8 @@ Var
   i: Integer;
   oField: TField;
 Begin
-  If Not Assigned(FDataset) Then
-    Exit;
+  If Not assigned(FDataset) Then
+    exit;
 
   For i := 0 To FDataset.FieldCount - 1 Do
   Begin
@@ -436,7 +436,7 @@ Begin
   End;
 End;
 
-Procedure TFrameGrid.DatasetAfterEdit(DataSet: TDataSet);
+Procedure TFrameGrid.DatasetAfterEdit(DataSet: TDataset);
 Begin
   // TODO: Add an Event Here that users of TFrameGrid can call
 End;
@@ -452,7 +452,7 @@ Begin
   For i := 0 To grdSQL.Columns.Count - 1 Do
   Begin
     oColumn := grdSQL.Columns[i];
-    bTemp := Assigned(oColumn.Field) And
+    bTemp := assigned(oColumn.Field) And
       (FReadOnlyFields.IndexOf(oColumn.Field.FieldName) <> -1);
     oColumn.ReadOnly := bTemp;
   End;
@@ -482,7 +482,7 @@ End;
 Procedure TFrameGrid.ClearSort;
 Begin
   If (FDataset = nil) Then
-    Exit;
+    exit;
 
   ClearSortImage(grdSQL);
 
@@ -513,7 +513,7 @@ End;
 
 Procedure TFrameGrid.SetUseMultilineDefaults(AValue: Boolean);
 Begin
-  If FUseMultilineDefaults = AValue Then Exit;
+  If FUseMultilineDefaults = AValue Then exit;
   FUseMultilineDefaults := AValue;
 
   // TODO: Untangle this...
@@ -525,7 +525,7 @@ End;
 
 Procedure TFrameGrid.SetAllowMultiline(AValue: Boolean);
 Begin
-  If FAllowMultiline = AValue Then Exit;
+  If FAllowMultiline = AValue Then exit;
 
   FAllowMultiline := AValue;
 
@@ -538,7 +538,7 @@ End;
 Function TFrameGrid.Status(bIncRecount: Boolean): String;
 Begin
   Result := '';
-  If Assigned(FDataset) And (FDataset.Active) Then
+  If assigned(FDataset) And (FDataset.Active) Then
   Begin
     If bIncRecount Then
       Result := Result + Format('%d of %d records.  ', [FDataset.RecNo, RecordCount]);
@@ -568,13 +568,13 @@ Begin
   Result := FEditable;
 End;
 
-function TFrameGrid.GetFilter: String;
-begin
-  If Assigned(FDataset) Then
+Function TFrameGrid.GetFilter: String;
+Begin
+  If assigned(FDataset) Then
     Result := FDataset.Filter
   Else
     Result := '';
-end;
+End;
 
 Procedure TFrameGrid.SetFilterMRU(Const AValue: String);
 Begin
@@ -612,12 +612,12 @@ Var
   sTemp: String;
 Begin
   // Defensive code
-  If (Not Assigned(Column)) Or (Not Assigned(Column.Field)) Or
-    (Not Assigned(Column.Field.DataSet)) Then
-    Exit;
+  If (Not assigned(Column)) Or (Not assigned(Column.Field)) Or
+    (Not assigned(Column.Field.DataSet)) Then
+    exit;
 
   If Not Column.Field.DataSet.Active Then
-    Exit;
+    exit;
 
   If (Column.Field.DataSet Is TZAbstractRODataset) Then
   Begin
@@ -653,21 +653,20 @@ Begin
 
     ClearSortImage(grdSQL);
 
-    If Column.Field.DataType In
-      [ftMemo, ftWideMemo, ftBlob, ftVarBytes, ftBytes] Then
-      Exit;
+    If Column.Field.DataType In [ftMemo, ftWideMemo, ftBlob, ftVarBytes, ftBytes] Then
+      exit;
 
     oSQLQuery := TCustomBufDataset(Column.Field.DataSet);
 
-    if bAscending then
-    begin
+    If bAscending Then
+    Begin
       oSQLQuery.IndexFieldNames := Column.FieldName;
       Column.Title.ImageIndex := 0;
-    end
-    else
-    begin
+    End
+    Else
+    Begin
       // Need descending handling here
-    end;
+    End;
 
     FSortField := Column.FieldName;
   End;
@@ -703,13 +702,13 @@ Var
   oField: TField;
 Begin
   If Not assigned(FDataset) Then
-    Exit;
+    exit;
 
-  If (dsGrid.Dataset.Active) Then
+  If (dsGrid.DataSet.Active) Then
   Begin
     oField := grdSQL.SelectedField;
 
-    If Assigned(oField) Then
+    If assigned(oField) Then
       Clipboard.AsText := oField.AsString
     Else
       Clipboard.AsText := 'No valid cell selected';
@@ -754,7 +753,7 @@ End;
 Procedure TFrameGrid.SetOnGridStartDrag(AValue: TNotifyEvent);
 Begin
   If FOnGridStartDrag = AValue Then
-    Exit;
+    exit;
 
   FOnGridStartDrag := AValue;
 End;
@@ -763,7 +762,7 @@ Procedure TFrameGrid.pmnuGridPopup(Sender: TObject);
 Begin
   mnuURL.Enabled := (FMouseRow <> 0) And FDataset.Active;
   If mnuURL.Enabled Then
-    mnuURL.Visible := Assigned(FDataset.FindField('URL'))
+    mnuURL.Visible := assigned(FDataset.FindField('URL'))
   Else
     mnuURL.Visible := False;
   mnuSepURL.Visible := mnuURL.Visible;
@@ -867,7 +866,7 @@ Begin
   sCurr := FDataset.Filter;
   If (sCurr = sFilter) And (FDataset.FilterOptions = AFilterOptions) And
     (FDataset.Filtered = (sFilter <> '')) Then
-    Exit;
+    exit;
 
   grdSQL.SelectedRows.Clear;
 
@@ -913,13 +912,13 @@ Begin
   SetFilterHint(sFilter);
   RefreshUI;
 
-  If Assigned(FOnAfterFilter) Then
+  If assigned(FOnAfterFilter) Then
     FOnAfterFilter(Self);
 End;
 
 Procedure TFrameGrid.cboFieldsChange(Sender: TObject);
 Begin
-  If (FDataset.Active) And (Assigned(FDataset.FindField(cboFields.Text))) Then
+  If (FDataset.Active) And (assigned(FDataset.FindField(cboFields.Text))) Then
     DBMemo.DataField := cboFields.Text
   Else
     DBMemo.DataField := '';
@@ -935,7 +934,7 @@ Begin
   Begin
     oField := DBMemo.Field;
 
-    If Assigned(oField) Then
+    If assigned(oField) Then
       DBMemo.CopyToClipboard
     Else
       Clipboard.AsText := 'Memo not active';
@@ -947,13 +946,13 @@ Var
   oField: TField;
 Begin
   If Not assigned(dsGrid.DataSet) Then
-    Exit;
+    exit;
 
-  If (dsGrid.Dataset.Active) And (ssCtrl In Shift) And ((Key = Ord('C')) Or (Key = Ord('c'))) Then
+  If (dsGrid.DataSet.Active) And (ssCtrl In Shift) And ((Key = Ord('C')) Or (Key = Ord('c'))) Then
   Begin
     oField := grdSQL.SelectedField;
 
-    If Assigned(oField) Then
+    If assigned(oField) Then
       Clipboard.AsText := oField.AsString
     Else
       Clipboard.AsText := 'No valid cell selected';
@@ -963,7 +962,7 @@ End;
 Procedure TFrameGrid.dsGridDataChange(Sender: TObject; Field: TField);
 Begin
   If FDataChanging Then
-    Exit;
+    exit;
 
   FDataChanging := True;
   Try
@@ -984,15 +983,15 @@ End;
 
 Procedure TFrameGrid.grdSQLDblClick(Sender: TObject);
 Begin
-  If Assigned(FOnDblClick) And Assigned(FDataset) And (FDataset.Active) Then
+  If assigned(FOnDblClick) And assigned(FDataset) And (FDataset.Active) Then
     FOnDblClick(grdSQL);
 End;
 
 Procedure TFrameGrid.grdSQLMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 Begin
-  If Not Assigned(FDataset) Then
-    Exit;
+  If Not assigned(FDataset) Then
+    exit;
 
   grdSQL.MouseToCell(X, Y, FMouseCol, FMouseRow);
 
@@ -1005,7 +1004,7 @@ Begin
     grdSQL.SelectedIndex := FMouseCol - 1;
   End;
 
-  If Assigned(FOnGridMouseDown) Then
+  If assigned(FOnGridMouseDown) Then
     FOnGridMouseDown(Sender, Button, Shift, X, Y);
 
   If (FMouseRow > 0) And (Button = mbLeft) Then
@@ -1026,7 +1025,7 @@ Begin
   //Application.MainForm.Caption := Format('X: %d, %d.  MOUSE: %d, %d', [X, Y, FMouse.X, FMouse.Y]);
   Inherited;
 
-  If Assigned(FOnGridStartDrag) And (FMouse.X <> -1) Then
+  If assigned(FOnGridStartDrag) And (FMouse.X <> -1) Then
     If (Abs(FMouse.X - X) > 9) Or (Abs(FMouse.Y - Y) > 9) Then
     Begin
       grdSQL.BeginDrag(False);
@@ -1065,7 +1064,7 @@ Var
   tsTemp: TTextStyle;
   iRowHeight: Integer;
 Begin
-  FGridIsMultiLine := False;
+  FGridIsMultiline := False;
 
   tsTemp := grdSQL.Canvas.TextStyle;
   tsTemp.EndEllipsis := True;
@@ -1082,10 +1081,10 @@ Begin
   grdSQL.Invalidate;
 End;
 
-procedure TFrameGrid.SetInnerFilter(const AValue: String);
-begin
+Procedure TFrameGrid.SetInnerFilter(Const AValue: String);
+Begin
   SetFilter(AValue, []);
-end;
+End;
 
 Procedure TFrameGrid.grdSQLPrepareCanvas(Sender: TObject; DataCol: Integer;
   Column: TColumn; AState: TGridDrawState);
@@ -1140,10 +1139,10 @@ Begin
       THackDBGrid(grdSQL).DefaultRowHeight := 6 + ((iLines + 1) * iRowHeight);
       THackDBGrid(grdSQL).RowHeights[0] := 6 + iRowHeight;
 
-      FGridIsMultiLine := True;
+      FGridIsMultiline := True;
     End;
 
-    If FGridIsMultiLine Then
+    If FGridIsMultiline Then
     Begin
       tsTemp.SingleLine := False;
       tsTemp.Wordbreak := True;
@@ -1157,13 +1156,13 @@ Begin
     grdSQL.Canvas.Brush.Color := CalcSelectionColor(clBtnFace, 32);
     grdSQL.Canvas.Font.Color := clBtnText;
   End
-  Else If Not (gdSelected In AState) And Assigned(FDataset) And (FDataset.Active) Then
+  Else If Not (gdSelected In AState) And assigned(FDataset) And (FDataset.Active) Then
   Begin
     oField := FDataset.FindField('Colour_ID');
-    If Not Assigned(oField) Then
+    If Not assigned(oField) Then
       oField := FDataset.FindField('Color_ID');
 
-    If Assigned(oField) Then
+    If assigned(oField) Then
     Begin
       sColor := Lowercase(Trim(oField.Text));
       oColor := clNone;

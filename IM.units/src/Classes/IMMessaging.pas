@@ -17,7 +17,7 @@ Type
 
   TIMMessageClass = Class Of TIMMessage;
 
-  TIMMessageEvent = procedure(AMessage: TIMMessage) of object;
+  TIMMessageEvent = Procedure(AMessage: TIMMessage) Of Object;
 
   { TMessageSubscription }
 
@@ -51,7 +51,7 @@ Implementation
 Uses
   LazLogger;
 
-{ TMessageBus }
+  { TMessageBus }
 
 Constructor TMessageBus.Create;
 Begin
@@ -81,8 +81,8 @@ Var
   oSubscription: TMessageSubscription;
 Begin
   For oSubscription In FSubscriptions Do
-    If (AMessage.Sender <> oSubscription.Subscriber) And (AMessage Is
-      oSubscription.MessageClass) Then
+    If (AMessage.Sender <> oSubscription.Subscriber) And
+      (AMessage Is oSubscription.MessageClass) Then
     Begin
       {$IFNDEF RELEASE}
       DebugLn([ClassName, '.', {$I %CURRENTROUTINE%}, ' Sending ',
