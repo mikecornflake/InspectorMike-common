@@ -202,7 +202,6 @@ Implementation
 Uses
   OSSupport, Math, Clipbrd, DateUtils, LazLogger, LoggingSupport;
 
-
   {$R *.lfm}
 
   { TVideoPanel }
