@@ -722,7 +722,8 @@ Begin
       FBackBuffer.Canvas.Pen.Color := clBtnShadow;
       FBackBuffer.Canvas.Line(X1, ScaleHeight - 5, X1, ScaleHeight);
 
-      S := FormatFloat('0.###', TickValue);
+      S := FormatFloat('0.000', TickValue);
+
       TextW := FBackBuffer.Canvas.TextWidth(S);
 
       If Tick = 0 Then
