@@ -63,10 +63,17 @@ Type
     Destructor Destroy; Override;
   End;
 
+  TRangeClickEvent = Procedure(Sender: TObject; ARange: TPipelineEventRange;
+    ATitle: String) Of Object;
+
   { TPipelineEventMap }
 
   TPipelineEventMap = Class(TCustomControl)
   Private
+    FHotRange: TPipelineEventRange;
+    FHotTitle: String;
+    FOnRangeClick: TRangeClickEvent;
+
     FRows: TFPList;
     FUpdateCount: Integer;
     FBackBuffer: TBitmap;
@@ -113,6 +120,10 @@ Type
     Procedure Paint; Override;
     Procedure Resize; Override;
 
+    Procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); Override;
+    Procedure MouseMove(Shift: TShiftState; X, Y: Integer); Override;
+    Procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); Override;
+    Procedure MouseLeave; Override;
   Public
     Constructor Create(AOwner: TComponent); Override;
     Destructor Destroy; Override;
@@ -162,6 +173,8 @@ Type
     Property ShowTitles: Boolean Read FShowTitles Write SetShowTitles Default True;
     Property ShowMidpoint: Boolean Read FShowMidpoint Write SetShowMidpoint Default True;
 
+    Property OnRangeClick: TRangeClickEvent Read FOnRangeClick Write FOnRangeClick;
+
     Property OnClick;
     Property OnDblClick;
     Property OnMouseDown;
@@ -175,8 +188,8 @@ Uses
   Clipbrd;
 
 Const
-  TITLE_PADDING = 12;
-  MIN_ROW_HEIGHT = 18;
+  TITLE_PADDING = 18;
+  MIN_ROW_HEIGHT = 17;
   SCALE_HEIGHT_PIXELS = 22;
   MIN_VISIBLE_RANGE = 0.000001;
 
@@ -228,6 +241,8 @@ Begin
 
   FTitleWidth := 0;
   FEventCount := 0;
+
+  FOnRangeClick := nil;
 End;
 
 Destructor TPipelineEventMap.Destroy;
@@ -741,8 +756,7 @@ Begin
   Begin
     FBackBuffer.Canvas.Pen.Color := clBtnShadow;
     FBackBuffer.Canvas.Pen.Style := psSolid;
-    FBackBuffer.Canvas.Line(FTitleWidth - 1, ScaleHeight,
-      FTitleWidth - 1, ClientHeight);
+    FBackBuffer.Canvas.Line(FTitleWidth - 1, ScaleHeight, FTitleWidth - 1, ClientHeight);
   End;
 
   For i := 0 To FRows.Count - 1 Do
@@ -759,10 +773,15 @@ Begin
     Begin
       TextY := Y1 + ((RowHeight - FBackBuffer.Canvas.TextHeight(Row.Title)) Div 2);
 
+      If SameText(Row.Title, FHotTitle) Then
+        FBackBuffer.Canvas.Font.Style := FBackBuffer.Canvas.Font.Style + [fsBold];
+
       FBackBuffer.Canvas.Brush.Style := bsClear;
       FBackBuffer.Canvas.Font.Color := clWindowText;
       FBackBuffer.Canvas.TextOut(4, TextY, Row.Title);
       FBackBuffer.Canvas.Brush.Style := bsSolid;
+
+      FBackBuffer.Canvas.Font.Style := FBackBuffer.Canvas.Font.Style - [fsBold];
     End;
 
     For j := 0 To Row.Ranges.Count - 1 Do
@@ -789,10 +808,25 @@ Begin
 
       FBackBuffer.Canvas.Brush.Style := bsSolid;
 
+      // Normal fill
       If Range.Anomaly Then
         FBackBuffer.Canvas.Brush.Color := TColor($008080FF)
       Else
         FBackBuffer.Canvas.Brush.Color := clHighlight;
+
+      // Hover indication
+      If Range = FHotRange Then
+      Begin
+        FBackBuffer.Canvas.Pen.Color := clBlack;
+        FBackBuffer.Canvas.Pen.Width := 2;
+      End
+      Else
+      Begin
+        FBackBuffer.Canvas.Pen.Color := clBtnShadow;
+        FBackBuffer.Canvas.Pen.Width := 1;
+      End;
+
+      FBackBuffer.Canvas.Rectangle(R);
 
       FBackBuffer.Canvas.FillRect(R);
     End;
@@ -841,6 +875,62 @@ Procedure TPipelineEventMap.Resize;
 Begin
   Inherited Resize;
   RebuildBuffer;
+End;
+
+Procedure TPipelineEventMap.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+Begin
+  Inherited MouseDown(Button, Shift, X, Y);
+End;
+
+Procedure TPipelineEventMap.MouseMove(Shift: TShiftState; X, Y: Integer);
+Var
+  sTitle: String;
+  oRange: TPipelineEventRange;
+Begin
+  Inherited MouseMove(Shift, X, Y);
+
+  oRange := RangeAtXY(X, Y, sTitle);
+
+  If oRange <> FHotRange Then
+  Begin
+    FHotRange := oRange;
+
+    If Assigned(FHotRange) Then
+      FHotTitle := sTitle
+    Else
+      FHotTitle := '';
+
+    RebuildBuffer;
+    Invalidate;
+
+    If Assigned(FHotRange) Then
+      Cursor := crHandPoint
+    Else
+      Cursor := crDefault;
+  End;
+End;
+
+Procedure TPipelineEventMap.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+Begin
+  Inherited MouseUp(Button, Shift, X, Y);
+
+  // TODO Raise Event
+  If Assigned(FOnRangeClick) And Assigned(FHotRange) Then
+    FOnRangeClick(Self, FHotRange, FHotTitle);
+End;
+
+Procedure TPipelineEventMap.MouseLeave;
+Begin
+  Inherited MouseLeave;
+
+  If Assigned(FHotRange) Then
+  Begin
+    FHotRange := nil;
+    FHotTitle := '';
+
+    Cursor := crDefault;
+    Invalidate;
+  End;
 End;
 
 End.
