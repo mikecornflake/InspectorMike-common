@@ -44,6 +44,7 @@ Type
       ACallback: TIMMessageEvent);
 
     Procedure Broadcast(AMessage: TIMMessage);
+    Procedure Broadcast(ASender: TObject; AMessageClass: TIMMessageClass);
   End;
 
 Implementation
@@ -92,6 +93,19 @@ Begin
 
       oSubscription.Callback(AMessage);
     End;
+End;
+
+Procedure TMessageBus.Broadcast(ASender: TObject; AMessageClass: TIMMessageClass);
+var
+  oMessage: TIMMessage;
+Begin
+  oMessage := AMessageClass.Create;
+  Try
+    oMessage.Sender := ASender;
+    Broadcast(oMessage);
+  Finally
+    oMessage.Free;
+  End;
 End;
 
 End.
