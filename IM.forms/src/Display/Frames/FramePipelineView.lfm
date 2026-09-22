@@ -203,6 +203,11 @@ inherited FramePipelineView: TFramePipelineView
       Caption = '100m'
       OnClick = mnuRangeClick
     end
+    object mnu250m: TMenuItem
+      Tag = 250
+      Caption = '250m'
+      OnClick = mnuRangeClick
+    end
     object mnu500m: TMenuItem
       Tag = 500
       Caption = '500m'
@@ -211,11 +216,6 @@ inherited FramePipelineView: TFramePipelineView
     object mnu1km: TMenuItem
       Tag = 1000
       Caption = '1km'
-      OnClick = mnuRangeClick
-    end
-    object mnu2km: TMenuItem
-      Tag = 2000
-      Caption = '2km'
       OnClick = mnuRangeClick
     end
     object mnuZoomExtents2: TMenuItem

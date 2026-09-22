@@ -52,10 +52,10 @@ Type
     acZoomIn: TAction;
     acZoomOut: TAction;
     ilPipelineDisplay: TImageList;
+    mnu250m: TMenuItem;
     pmnuCopyToClipboard: TMenuItem;
     Separator1: TMenuItem;
     mnuZoomExtents2: TMenuItem;
-    mnu2km: TMenuItem;
     mnu1km: TMenuItem;
     mnu50m: TMenuItem;
     mnu500m: TMenuItem;
