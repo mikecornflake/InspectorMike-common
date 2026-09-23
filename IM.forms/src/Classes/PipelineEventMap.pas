@@ -42,7 +42,7 @@ Unit PipelineEventMap;
 Interface
 
 Uses
-  Classes, SysUtils, Controls, Graphics, Types, Math;
+  Classes, SysUtils, Controls, StdCtrls, Graphics, Types, Math, Forms;
 
 Type
   TPipelineDisplayType = (pdStartEnd, pdStartLength);
@@ -70,6 +70,8 @@ Type
 
   TPipelineEventMap = Class(TCustomControl)
   Private
+    FScrollBar: TScrollBar;
+
     FHotRange: TPipelineEventRange;
     FHotTitle: String;
     FOnRangeClick: TRangeClickEvent;
@@ -112,6 +114,7 @@ Type
     Function GraphRect: TRect;
     Function ScaleHeight: Integer;
     Function RowHeight: Integer;
+    Procedure UpdateScrollBar;
     Function ValueToX(AValue: Extended): Integer;
     Function XToValue(AX: Integer): Extended;
     Function RowAtY(AY: Integer): TPipelineEventRow;
@@ -120,10 +123,11 @@ Type
     Procedure Paint; Override;
     Procedure Resize; Override;
 
-    Procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); Override;
     Procedure MouseMove(Shift: TShiftState; X, Y: Integer); Override;
     Procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); Override;
     Procedure MouseLeave; Override;
+    Procedure ScrollBarChange(Sender: TObject);
+
   Public
     Constructor Create(AOwner: TComponent); Override;
     Destructor Destroy; Override;
@@ -216,6 +220,13 @@ Begin
   Inherited Create(AOwner);
 
   ControlStyle := ControlStyle + [csOpaque];
+
+  FScrollBar := TScrollBar.Create(Self);
+  FScrollBar.Parent := Self;
+  FScrollBar.Kind := sbVertical;
+  FScrollBar.Align := alRight;
+  FScrollBar.Visible := False;
+  FScrollBar.OnChange := @ScrollBarChange;
 
   FRows := TFPList.Create;
   FBackBuffer := TBitmap.Create;
@@ -551,7 +562,7 @@ Begin
   If AY < ScaleHeight Then
     Exit;
 
-  Index := (AY - ScaleHeight) Div RowHeight;
+  Index := (AY - ScaleHeight + FScrollBar.Position) Div RowHeight;
 
   If (Index >= 0) And (Index < FRows.Count) Then
     Result := TPipelineEventRow(FRows[Index]);
@@ -694,6 +705,8 @@ Begin
   If (ClientWidth <= 0) Or (ClientHeight <= 0) Then
     Exit;
 
+  UpdateScrollBar;
+
   FBackBuffer.SetSize(ClientWidth, ClientHeight);
 
   FBackBuffer.Canvas.Brush.Style := bsSolid;
@@ -763,8 +776,11 @@ Begin
   Begin
     Row := TPipelineEventRow(FRows[i]);
 
-    Y1 := ScaleHeight + i * RowHeight;
+    Y1 := ScaleHeight + i * RowHeight - FScrollBar.Position;
     Y2 := Y1 + RowHeight;
+
+    If Y2 < ScaleHeight Then
+      Continue;
 
     If Y1 > ClientHeight Then
       Break;
@@ -810,9 +826,9 @@ Begin
 
       // Normal fill
       If Range.Anomaly Then
-        FBackBuffer.Canvas.Brush.Color := TColor($008080FF)
+        FBackBuffer.Canvas.Brush.Color := TColor($008080FF) // Anomaly Red
       Else
-        FBackBuffer.Canvas.Brush.Color := clHighlight;
+        FBackBuffer.Canvas.Brush.Color := clHighlight;  // Default Blue
 
       // Hover indication
       If Range = FHotRange Then
@@ -877,11 +893,6 @@ Begin
   RebuildBuffer;
 End;
 
-Procedure TPipelineEventMap.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-Begin
-  Inherited MouseDown(Button, Shift, X, Y);
-End;
-
 Procedure TPipelineEventMap.MouseMove(Shift: TShiftState; X, Y: Integer);
 Var
   sTitle: String;
@@ -929,8 +940,38 @@ Begin
     FHotTitle := '';
 
     Cursor := crDefault;
+    RebuildBuffer;
     Invalidate;
   End;
+End;
+
+Procedure TPipelineEventMap.UpdateScrollBar;
+Var
+  iContentHeight: Integer;
+  iAvailableHeight: Integer;
+Begin
+  iAvailableHeight := ClientHeight - ScaleHeight;
+  iContentHeight := FRows.Count * RowHeight;
+
+  FScrollBar.Visible := iContentHeight > iAvailableHeight;
+
+  If FScrollBar.Visible Then
+  Begin
+    FScrollBar.Min := 0;
+    FScrollBar.Max := iContentHeight - iAvailableHeight;
+    FScrollBar.PageSize := iAvailableHeight;
+  End
+  Else
+    FScrollBar.Position := 0;
+End;
+
+Procedure TPipelineEventMap.ScrollBarChange(Sender: TObject);
+Begin
+  FHotRange := nil;
+  FHotTitle := '';
+
+  RebuildBuffer;
+  Invalidate;
 End;
 
 End.
