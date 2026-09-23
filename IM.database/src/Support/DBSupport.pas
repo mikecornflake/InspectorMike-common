@@ -88,8 +88,8 @@ Function ValueAsInteger(oDataset: TDataset; sField: String; iDefault: Integer = 
 Function ValueAsFloat(oDataset: TDataset; sField: String; ADefault: Extended): Extended;
 
 // Dataset Navigation
-Function GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String;
-  Const ADateTime: TDateTime; Const AThreshold: TDateTime): Boolean;
+Function GotoNearestValue(ADataset: TDataset; Const AFieldName: String;
+  Const AValue: Double; Const AThreshold: Double): Boolean;
 
 // DBGrid routines
 Procedure InitialiseDBGrid(oGrid: TDBGrid; oDataset: TDataset; bHideIDs: Boolean = False);
@@ -968,13 +968,12 @@ End;
 // AThreshold = 0 : only exact match
 // AThreshold > 0 : nearest record within threshold
 // Returns true if a new record was selected
-Function GotoNearestTime(ADataset: TDataset; Const ATimeFieldname: String;
-  Const ADateTime: TDateTime; Const AThreshold: TDateTime): Boolean;
+Function GotoNearestValue(ADataset: TDataset; Const AFieldName: String;
+  Const AValue: Double; Const AThreshold: Double): Boolean;
 Var
-  dtBestDiff, dtDiff: TDateTime;
+  dBestDiff, dDiff: Double;
   bmOriginal, bmBest: TBookmark;
-  oStart, oKP: TField;
-  dStartKP: Extended;
+  oField: TField;
   iOriginalRecNo: Longint;
 Begin
   Result := False;
@@ -982,12 +981,12 @@ Begin
   If (Not ADataset.Active) Or ADataset.IsEmpty Then
     Exit;
 
-  oStart := ADataset.FieldByName(ATimeFieldname);
+  oField := ADataset.FieldByName(AFieldName);
 
   bmOriginal := ADataset.GetBookmark;
   iOriginalRecNo := ADataset.RecNo;
   bmBest := ADataset.GetBookmark;
-  dtBestDiff := MaxDouble;
+  dBestDiff := MaxDouble;
 
   ADataset.DisableControls;
   Try
@@ -995,13 +994,13 @@ Begin
 
     While Not ADataset.EOF Do
     Begin
-      If Not oStart.IsNull Then
+      If Not oField.IsNull Then
       Begin
-        dtDiff := Abs(oStart.AsDateTime - ADateTime);
+        dDiff := Abs(oField.AsFloat - AValue);
 
-        If dtDiff < dtBestDiff Then
+        If dDiff < dBestDiff Then
         Begin
-          dtBestDiff := dtDiff;
+          dBestDiff := dDiff;
 
           ADataset.FreeBookmark(bmBest);
           bmBest := ADataset.GetBookmark;
@@ -1011,7 +1010,7 @@ Begin
       ADataset.Next;
     End;
 
-    If (AThreshold < 0) Or (dtBestDiff <= AThreshold) Then
+    If (AThreshold < 0) Or (dBestDiff <= AThreshold) Then
     Begin
       ADataset.GotoBookmark(bmBest);
       Result := (iOriginalRecNo <> ADataset.RecNo);
