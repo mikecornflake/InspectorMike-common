@@ -833,7 +833,7 @@ Begin
 
       FBackBuffer.Canvas.Brush.Style := bsSolid;
 
-      // Normal fill
+      // Range fill colour
       If Range.Anomaly Then
         FBackBuffer.Canvas.Brush.Color := TColor($008080FF) // Anomaly Red
       Else
