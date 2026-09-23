@@ -249,27 +249,16 @@ Begin
   DoPosition;
 End;
 
-//Type
-//  THackCustomForm = Class(TCustomForm);
-
 Procedure TFrameSyncedVideo.Layout(ARows, ACols: Integer; ASequence: TControlLayoutSequence);
-//Var
-//  oParent: TCustomForm;
 Begin
   FLayout.RowCount := ARows;
   FLayout.ColCount := ACols;
   FLayout.Sequence := ASequence;
 
-  //oParent := GetParentForm(self);
+  If Assigned(FMaximised) Then
+    Exit;
 
-  //If Assigned(oParent) Then
-  //  THackCustomForm(oParent).BeginFormUpdate;
-  Try
-    FLayout.LayoutControls(FVideos, FVideoFileCount);
-  Finally
-    //  If Assigned(oParent) Then
-    //    THackCustomForm(oParent).EndFormUpdate;
-  End;
+  FLayout.LayoutControls(FVideos, FVideoFileCount);
 End;
 
 Procedure TFrameSyncedVideo.LoadSettings(AInifile: TIniFile);
