@@ -5,7 +5,7 @@ Unit FrameVerticalDBGrid;
 Interface
 
 Uses
-  Classes, SysUtils, Forms, Controls, ValEdit, DB, Grids, Graphics, Clipbrd, ActnList, Menus;
+  Classes, SysUtils, Forms, Controls, ValEdit, DB, Grids, Graphics, Clipbrd, ActnList, Menus, Types;
 
 Type
 
@@ -23,6 +23,8 @@ Type
 
     Procedure actCopyRowToClipboardExecute(Sender: TObject);
     Procedure actCopyTableToClipboardExecute(Sender: TObject);
+
+      procedure grdVerticalDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
     Procedure grdVerticalPrepareCanvas(Sender: TObject; aCol, aRow: Integer;
       aState: TGridDrawState);
     Procedure pmVerticalPopup(Sender: TObject);
@@ -110,6 +112,27 @@ Begin
   CopyTableToClipboard;
 End;
 
+procedure TFrameVerticalDBGrid.grdVerticalDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
+Var
+  S: String;
+  X, Y: Integer;
+Begin
+  If (ACol <> 0) Or (ARow = 0) Then
+    Exit;
+
+  S := TValueListEditor(Sender).Cells[ACol, ARow];
+
+  With TValueListEditor(Sender).Canvas Do
+  Begin
+    FillRect(ARect);
+
+    X := ARect.Right - TextWidth(S) - 4;
+    Y := ARect.Top + ((ARect.Height - TextHeight(S)) Div 2);
+
+    TextOut(X, Y, S);
+  End;
+end;
+
 Procedure TFrameVerticalDBGrid.actCopyRowToClipboardExecute(Sender: TObject);
 Begin
   CopyActiveRowToClipboard;
@@ -147,7 +170,7 @@ Procedure TFrameVerticalDBGrid.RefreshGrid;
     For i := 0 To ADataset.FieldCount - 1 Do
       If ADataset.Fields[i].Visible Then
       Begin
-        iWidth := AEditor.Canvas.TextWidth(ADataset.Fields[i].DisplayLabel) + 16;
+        iWidth := AEditor.Canvas.TextWidth('    '+ADataset.Fields[i].DisplayLabel) + 20;
 
         If iWidth > Result Then
           Result := iWidth;
@@ -173,17 +196,15 @@ Begin
       oField := FDataset.Fields[i];
 
       If oField.Visible Then
-        grdVertical.Strings.Add(oField.DisplayLabel +
+        grdVertical.Strings.Add('    '+oField.DisplayLabel +
           grdVertical.Strings.NameValueSeparator + oField.DisplayText);
     End;
   Finally
     grdVertical.Strings.EndUpdate;
   End;
 
-  grdVertical.ColWidths[0] :=
-    CalcNameColumnWidth(grdVertical, FDataset);
-  grdVertical.ColWidths[1] :=
-    grdVertical.ClientWidth - grdVertical.ColWidths[0] - grdVertical.GridLineWidth;
+  grdVertical.ColWidths[0] := CalcNameColumnWidth(grdVertical, FDataset);
+  grdVertical.ColWidths[1] := grdVertical.ClientWidth - grdVertical.ColWidths[0] - grdVertical.GridLineWidth;
 End;
 
 

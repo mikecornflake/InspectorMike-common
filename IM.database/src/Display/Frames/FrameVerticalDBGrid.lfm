@@ -20,6 +20,7 @@ object FrameVerticalDBGrid: TFrameVerticalDBGrid
     PopupMenu = pmVertical
     RowCount = 2
     TabOrder = 0
+    OnDrawCell = grdVerticalDrawCell
     OnPrepareCanvas = grdVerticalPrepareCanvas
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect, goAlwaysShowEditor, goThumbTracking]
     ColWidths = (
