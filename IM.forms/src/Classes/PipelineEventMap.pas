@@ -597,6 +597,8 @@ Begin
   If dKP < 0 Then
     Exit;
 
+  ATitle := Row.Title;
+
   For i := 0 To Row.Ranges.Count - 1 Do
   Begin
     Range := TPipelineEventRange(Row.Ranges[i]);
@@ -604,7 +606,6 @@ Begin
     If (dKP >= Min(Range.StartKP, Range.EndKP)) And
       (dKP <= Max(Range.StartKP, Range.EndKP)) Then
     Begin
-      ATitle := Row.Title;
       Exit(Range);
     End;
   End;
@@ -785,7 +786,15 @@ Begin
     If Y1 > ClientHeight Then
       Break;
 
-    If FShowTitles Then
+    // Highlight hot row
+    If SameText(Row.Title, FHotTitle) Then
+    Begin
+      FBackBuffer.Canvas.Brush.Style := bsSolid;
+      FBackBuffer.Canvas.Brush.Color := clBtnFace;
+      FBackBuffer.Canvas.FillRect(Rect(0, Max(Y1+1, ScaleHeight), ClientWidth, Min(Y2, ClientHeight)));
+    End;
+
+    If FShowTitles And (Y1 >= ScaleHeight) Then
     Begin
       TextY := Y1 + ((RowHeight - FBackBuffer.Canvas.TextHeight(Row.Title)) Div 2);
 
@@ -817,7 +826,7 @@ Begin
         X2 := TempX;
       End;
 
-      R := Rect(X1, Y1 + 3, X2, Y2 - 3);
+      R := Rect(X1, Max(Y1 + 3, ScaleHeight), X2, Y2 - 3);
 
       If R.Right <= R.Left Then
         R.Right := R.Left + 1;
@@ -834,7 +843,7 @@ Begin
       If Range = FHotRange Then
       Begin
         FBackBuffer.Canvas.Pen.Color := clBlack;
-        FBackBuffer.Canvas.Pen.Width := 2;
+        FBackBuffer.Canvas.Pen.Width := 3;
       End
       Else
       Begin
@@ -897,27 +906,40 @@ Procedure TPipelineEventMap.MouseMove(Shift: TShiftState; X, Y: Integer);
 Var
   sTitle: String;
   oRange: TPipelineEventRange;
+  bRedraw: Boolean;
 Begin
   Inherited MouseMove(Shift, X, Y);
 
+  bRedraw := False;
+
   oRange := RangeAtXY(X, Y, sTitle);
+
+  If FHotTitle <> sTitle Then
+  Begin
+    FHotTitle := sTitle;
+    bRedraw := True;
+  End;
 
   If oRange <> FHotRange Then
   Begin
     FHotRange := oRange;
+    bRedraw := True;
 
-    If Assigned(FHotRange) Then
-      FHotTitle := sTitle
-    Else
-      FHotTitle := '';
-
-    RebuildBuffer;
-    Invalidate;
+    //If Assigned(FHotRange) Then
+    //  FHotTitle := sTitle
+    //Else
+    //  FHotTitle := '';
 
     If Assigned(FHotRange) Then
       Cursor := crHandPoint
     Else
       Cursor := crDefault;
+  End;
+
+  If bRedraw Then
+  Begin
+    RebuildBuffer;
+    Invalidate;
   End;
 End;
 
