@@ -114,6 +114,7 @@ Type
     Procedure trackVideoMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   Private
+    FGrabImageBtnEnabled: Boolean;
     FPanel: TVideoPanel;
     FAutoplay: Boolean;
     FFilename: String;
@@ -138,6 +139,7 @@ Type
     Function GetShowLabel: Boolean;
     Function GetVideoFileCount: Integer;
     Procedure SetAutoplay(AValue: Boolean);
+    Procedure SetGrabImageBtnEnabled(Const AValue: Boolean);
     Procedure SetImageFolder(Const AValue: String);
     Procedure SetImageGrabHint(Const AValue: String);
     Procedure SetVideoEngineClass(AValue: TFrameVideoBaseClass);
@@ -184,6 +186,7 @@ Type
     // Can contain have a %TIMESTAMP% which is replaced with yyyymmddhhmmss
     Property ImageGrabFolder: String Read FImageGrabFolder Write SetImageFolder;
     Property OnGrabImage: TOnGrabImage Read FOnGrabImage Write FOnGrabImage;
+    Property GrabImageBtnEnabled: Boolean Read FGrabImageBtnEnabled Write SetGrabImageBtnEnabled;
     Property ImageGrabHint: String Read GetImageGrabHint Write SetImageGrabHint;
 
     Property OnVideoPositionChange: TOnVideoPositionChange
@@ -249,6 +252,8 @@ Begin
 
   TabStop := True;
   FVideoTrackbarSeek := False;
+
+  FGrabImageBtnEnabled := True;
 
   RefreshUI;
 End;
@@ -358,7 +363,7 @@ Begin
   Else
     actPlayPause.ImageIndex := 0;//play
 
-  btnGrab.Enabled := bCanGrab;
+  btnGrab.Enabled := bCanGrab And FGrabImageBtnEnabled;
   btnOpenInExplorer.Enabled := bHasFile;
   actCopyToClipboard.Enabled := bCanGrab;
   actVolume.Enabled := bHasFile;
@@ -839,6 +844,16 @@ Begin
 
   If Assigned(fmeVideo) Then
     fmeVideo.Autoplay := FAutoplay;
+End;
+
+Procedure TFrameVideoPlayer.SetGrabImageBtnEnabled(Const AValue: Boolean);
+Begin
+  If FGrabImageBtnEnabled = AValue Then
+    Exit;
+
+  FGrabImageBtnEnabled := AValue;
+
+  RefreshUI;
 End;
 
 Procedure TFrameVideoPlayer.SetImageFolder(Const AValue: String);
