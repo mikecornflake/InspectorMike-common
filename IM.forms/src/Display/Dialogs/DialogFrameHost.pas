@@ -62,6 +62,8 @@ End;
 
 Procedure TDialogFrameHost.RegisterFrame(AFrame: TFrameBase; Const ACaption: String);
 Begin
+  // Temporarily assign Parent to allow controls to load
+  AFrame.Parent := Self;
   FFrames.AddObject(ACaption, AFrame);
 End;
 
