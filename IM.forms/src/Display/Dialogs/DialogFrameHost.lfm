@@ -1,10 +1,10 @@
 object DialogFrameHost: TDialogFrameHost
   Left = 390
-  Height = 213
+  Height = 128
   Top = 250
   Width = 218
   BorderIcons = [biSystemMenu]
-  ClientHeight = 213
+  ClientHeight = 128
   ClientWidth = 218
   Position = poMainFormCenter
   LCLVersion = '4.99.0.0'
@@ -14,7 +14,7 @@ object DialogFrameHost: TDialogFrameHost
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 34
-    Top = 173
+    Top = 88
     Width = 206
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -31,7 +31,7 @@ object DialogFrameHost: TDialogFrameHost
   end
   object PageControl: TPageControl
     Left = 0
-    Height = 167
+    Height = 82
     Top = 0
     Width = 218
     Align = alClient
