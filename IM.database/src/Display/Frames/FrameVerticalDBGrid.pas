@@ -199,8 +199,8 @@ Begin
       oField := FDataset.Fields[i];
 
       If oField.Visible Then
-        grdVertical.Strings.Add('  ' + oField.DisplayLabel + grdVertical.Strings.NameValueSeparator +
-          oField.DisplayText);
+        grdVertical.Strings.Add('  ' + oField.DisplayLabel +
+          grdVertical.Strings.NameValueSeparator + oField.DisplayText);
     End;
   Finally
     grdVertical.Strings.EndUpdate;
