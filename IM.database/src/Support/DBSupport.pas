@@ -1087,8 +1087,9 @@ Begin
 
   Finally
     // Restore source exactly as we found it
-    ASource.Filtered := bOldFiltered;
+    ASource.Filtered := False;
     ASource.Filter := sOldFilter;
+    ASource.Filtered := bOldFiltered;
 
     If ASource.BookmarkValid(bmOriginal) Then
       ASource.GotoBookmark(bmOriginal);
@@ -1096,6 +1097,8 @@ Begin
     ASource.FreeBookmark(bmOriginal);
     ASource.EnableControls;
     ADestination.EnableControls;
+
+
   End;
 End;
 
