@@ -351,10 +351,10 @@ Begin
 End;
 
 Procedure TFrameImageViewer.pmImagesPopup(Sender: TObject);
-Var
-  iIndex: Integer;
+//Var
+//  iIndex: Integer;
 Begin
-  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
+  //  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
 
   RefreshUI;
 End;
@@ -592,9 +592,9 @@ Begin
 End;
 
 Procedure TFrameImageViewer.RefreshImages;
-begin
+Begin
   actRefreshList.Execute;
-end;
+End;
 
 Function TFrameImageViewer.ImageCount: Integer;
 Begin

@@ -791,7 +791,8 @@ Begin
     Begin
       FBackBuffer.Canvas.Brush.Style := bsSolid;
       FBackBuffer.Canvas.Brush.Color := clBtnFace;
-      FBackBuffer.Canvas.FillRect(Rect(0, Max(Y1+1, ScaleHeight), ClientWidth, Min(Y2, ClientHeight)));
+      FBackBuffer.Canvas.FillRect(Rect(0, Max(Y1 + 1, ScaleHeight), ClientWidth,
+        Min(Y2, ClientHeight)));
     End;
 
     If FShowTitles And (Y1 >= ScaleHeight) Then

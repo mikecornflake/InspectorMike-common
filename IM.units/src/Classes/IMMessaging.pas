@@ -43,6 +43,8 @@ Type
     Procedure Subscribe(ASubscriber: TObject; AMessageClass: TIMMessageClass;
       ACallback: TIMMessageEvent);
 
+    // TODO: Implement Unsubscribe when required
+
     Procedure Broadcast(AMessage: TIMMessage);
     Procedure Broadcast(ASender: TObject; AMessageClass: TIMMessageClass);
   End;
@@ -82,8 +84,8 @@ Var
   oSubscription: TMessageSubscription;
 Begin
   For oSubscription In FSubscriptions Do
-    If (AMessage.Sender <> oSubscription.Subscriber) And
-      (AMessage Is oSubscription.MessageClass) Then
+    If (AMessage.Sender <> oSubscription.Subscriber) And (AMessage Is
+      oSubscription.MessageClass) Then
     Begin
       {$IFNDEF RELEASE}
       DebugLn([ClassName, '.', {$I %CURRENTROUTINE%}, ' Sending ',
@@ -96,7 +98,7 @@ Begin
 End;
 
 Procedure TMessageBus.Broadcast(ASender: TObject; AMessageClass: TIMMessageClass);
-var
+Var
   oMessage: TIMMessage;
 Begin
   oMessage := AMessageClass.Create;

@@ -97,9 +97,9 @@ Type
 
     Function GetGraphMode: TPipelineDisplayType;
     Function GetKP: Extended;
-    function GetRangeClick: TRangeClickEvent;
+    Function GetRangeClick: TRangeClickEvent;
     Function HasData: Boolean;
-    procedure SetRangeClick(const AValue: TRangeClickEvent);
+    Procedure SetRangeClick(Const AValue: TRangeClickEvent);
     Function VisibleRange: Extended;
     Function FullRange: Extended;
 
@@ -172,10 +172,10 @@ Begin
   Result := FCount > 0;
 End;
 
-procedure TFramePipelineView.SetRangeClick(const AValue: TRangeClickEvent);
-begin
+Procedure TFramePipelineView.SetRangeClick(Const AValue: TRangeClickEvent);
+Begin
   FPipelineDisplay.OnRangeClick := AValue;
-end;
+End;
 
 Function TFramePipelineView.VisibleRange: Extended;
 Begin
@@ -473,10 +473,10 @@ Begin
   Result := FPipelineDisplay.MidValue;
 End;
 
-function TFramePipelineView.GetRangeClick: TRangeClickEvent;
-begin
+Function TFramePipelineView.GetRangeClick: TRangeClickEvent;
+Begin
   Result := FPipelineDisplay.OnRangeClick;
-end;
+End;
 
 Procedure TFramePipelineView.SetKP(AValue: Extended);
 Begin
