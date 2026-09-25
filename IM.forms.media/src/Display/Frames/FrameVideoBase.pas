@@ -310,8 +310,8 @@ Function TFrameVideoBase.Load(Const AFilename: String; AChannel: String;
   AStartDateTime: TDateTime): Boolean;
 Begin
   {$IFNDEF RELEASE}
-  DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', ' ', AFilename, ' ',
-    AChannel, ' ', AStartDateTime]);
+  DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%} + ': ', ' ',
+    AFilename, ' ', AChannel, ' ', AStartDateTime]);
   {$ENDIF}
 
   FFilename := AFilename;
@@ -330,7 +330,7 @@ End;
 Function TFrameVideoBase.Play: Boolean;
 Begin
   {$IFNDEF RELEASE}
-  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel]);
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%} + ': ', FChannel]);
   {$ENDIF}
 
   Result := False;
@@ -339,7 +339,7 @@ End;
 Function TFrameVideoBase.Pause: Boolean;
 Begin
   {$IFNDEF RELEASE}
-  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel]);
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%} + ': ', FChannel]);
   {$ENDIF}
 
   Result := False;
@@ -348,7 +348,7 @@ End;
 Function TFrameVideoBase.Resume: Boolean;
 Begin
   {$IFNDEF RELEASE}
-  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel]);
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%} + ': ', FChannel]);
   {$ENDIF}
 
   Result := False;
@@ -357,7 +357,7 @@ End;
 Function TFrameVideoBase.Stop: Boolean;
 Begin
   {$IFNDEF RELEASE}
-  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel]);
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%} + ': ', FChannel]);
   {$ENDIF}
 
   Result := False;
@@ -366,7 +366,7 @@ End;
 Function TFrameVideoBase.Clear: Boolean;
 Begin
   {$IFNDEF RELEASE}
-  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%}+': ', FChannel]);
+  DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%} + ': ', FChannel]);
   {$ENDIF}
 
   FFilename := '';
