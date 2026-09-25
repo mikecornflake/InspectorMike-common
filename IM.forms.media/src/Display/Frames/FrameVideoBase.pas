@@ -441,7 +441,10 @@ Begin
   If (FChannel <> CHANNEL_PARAM) And (Trim(FChannel) <> '') Then
     sBase := sBase + '_' + Trim(FChannel);
 
-  Result := UniqueFilename(AFolder, sBase + '_', AExt, False, 2);
+  Result := IncludeTrailingPathDelimiter(AFolder) + sBase + AExt;
+
+  If FileExists(Result) Then
+    Result := UniqueFilename(AFolder, sBase + '_', AExt, False);
 End;
 
 { TFrameVideoBaseList }
