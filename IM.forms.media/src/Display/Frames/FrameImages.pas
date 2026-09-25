@@ -188,7 +188,7 @@ Begin
 
     If sboxImage.VertScrollBar.Visible Then
     Begin
-      If assigned(FScrollToNext) Then
+      If Assigned(FScrollToNext) Then
       Begin
         If (iDirection = -1) And (iPosition = 0) Then
           FScrollToNext(Self, True)
@@ -203,7 +203,7 @@ Begin
         With sboxImage.VertScrollBar Do
           Position := Position + (30 * iDirection);
     End
-    Else If assigned(FScrollToNext) Then
+    Else If Assigned(FScrollToNext) Then
       FScrollToNext(Self, (iDirection = -1));
   End
   Else If ssCtrl In Shift Then
@@ -353,7 +353,7 @@ End;
 
 Procedure TFrameImage.ResizeImage;
 
-  Function ScaleInt(aValue: Double): Integer;
+  Function ScaleInt(AValue: Double): Integer;
   Begin
     Result := Trunc(FScale * AValue);
   End;

@@ -379,8 +379,8 @@ Begin
   Result := AInput;
 
   For i := 1 To Length(Result) Do
-    If (Ord(Result[i]) < 32) Or (Result[i] In ['<', '>', ':', '"', '/',
-      '\', '|', '?', '*']) Then
+    If (Ord(Result[i]) < 32) Or (Result[i] In ['<', '>', ':', '"', '/', '\',
+      '|', '?', '*']) Then
       Result[i] := AReplacement;
 End;
 

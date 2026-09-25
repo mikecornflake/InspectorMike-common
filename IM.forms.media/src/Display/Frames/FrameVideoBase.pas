@@ -310,8 +310,8 @@ Function TFrameVideoBase.Load(Const AFilename: String; AChannel: String;
   AStartDateTime: TDateTime): Boolean;
 Begin
   {$IFNDEF RELEASE}
-  DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%} + ': ', ' ',
-    AFilename, ' ', AChannel, ' ', AStartDateTime]);
+  DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%} + ': ',
+    ' ', AFilename, ' ', AChannel, ' ', AStartDateTime]);
   {$ENDIF}
 
   FFilename := AFilename;

@@ -29,6 +29,7 @@ inherited FrameImage: TFrameImage
     ClientHeight = 322
     ClientWidth = 377
     Color = clGray
+    ParentBackground = False
     ParentColor = False
     PopupMenu = mnuImage
     TabOrder = 0
@@ -40,16 +41,16 @@ inherited FrameImage: TFrameImage
       Width = 90
       AntialiasingMode = amOn
       Enabled = False
-      OnMouseWheel = sboxImageMouseWheel
       PopupMenu = mnuImage
       Proportional = True
       Stretch = True
+      OnMouseWheel = sboxImageMouseWheel
     end
   end
   object mnuImage: TPopupMenu[2]
     OnPopup = mnuImagePopup
-    left = 92
-    top = 101
+    Left = 92
+    Top = 101
     object mnuCopyToClipboard: TMenuItem
       Caption = 'Copy To Clipboard'
       OnClick = mnuCopyToClipboardClick
