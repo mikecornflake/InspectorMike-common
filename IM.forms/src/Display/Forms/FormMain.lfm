@@ -135,6 +135,10 @@ object FormMain: TFormMain
         Caption = 'View application log...'
         OnClick = mnuViewLogClick
       end
+      object mnuCache: TMenuItem
+        Caption = 'Open cache folder...'
+        OnClick = mnuCacheClick
+      end
       object mnuHelpSeparator1: TMenuItem
         Caption = '-'
       end

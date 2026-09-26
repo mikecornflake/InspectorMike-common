@@ -68,6 +68,7 @@ Type
 
   TFormMain = Class(TForm)
     ilImages: TImageList;
+    mnuCache: TMenuItem;
     mnuViewLog: TMenuItem;
     mnuHelpSeparator1: TMenuItem;
     mnuOptions: TMenuItem;
@@ -79,6 +80,7 @@ Type
     Procedure FormActivate(Sender: TObject);
     Procedure FormCloseQuery(Sender: TObject; Var CanClose: Boolean);
     Procedure mnuAboutClick(Sender: TObject);
+    Procedure mnuCacheClick(Sender: TObject);
     Procedure mnuViewLogClick(Sender: TObject);
   Private
     FBusy: Integer;
@@ -216,6 +218,18 @@ End;
 Procedure TFormMain.mnuAboutClick(Sender: TObject);
 Begin
   ShowAbout;
+End;
+
+Procedure TFormMain.mnuCacheClick(Sender: TObject);
+Var
+  sFolder: String;
+Begin
+  sFolder := ExtractFileDir(DebugLogger.LogName);
+
+  If DirectoryExists(sFolder) Then
+    LaunchFile('explorer.exe', Format('/e,"%s"', [sFolder]))
+  Else
+    ShowMessage('Cache folder has not been created/used');
 End;
 
 Procedure TFormMain.mnuViewLogClick(Sender: TObject);
