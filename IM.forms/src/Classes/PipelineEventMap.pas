@@ -683,7 +683,7 @@ Begin
 
     Clipboard.Assign(FBackBuffer);
   Finally
-    FShowMidpoint := True;
+    FShowMidpoint := bOrig;
   End;
 End;
 
