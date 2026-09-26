@@ -82,7 +82,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object btnSep2: TToolButton
         Left = 335
-        Height = 8
+        Height = 32
         Top = 0
         Caption = 'btnSep2'
         Style = tbsSeparator
@@ -99,7 +99,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object btnSep1: TToolButton
         Left = 73
-        Height = 8
+        Height = 32
         Top = 0
         Style = tbsSeparator
       end
@@ -113,7 +113,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object btnSep3: TToolButton
         Left = 279
-        Height = 8
+        Height = 32
         Top = 0
         Caption = 'btnSep3'
         Style = tbsSeparator
@@ -143,7 +143,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object ToolButton1: TToolButton
         Left = 225
-        Height = 8
+        Height = 32
         Top = 0
         Caption = 'ToolButton1'
         Style = tbsSeparator
@@ -786,24 +786,24 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     end
     object actStepBack: TAction
       Category = 'Playback'
-      Caption = 'actStepBack'
-      Hint = 'Step back:'#13#10'  Default 3 seconds'#13#10'  Shift+click 6 seconds'#13#10'  Ctrl+click 1 second'
+      Caption = 'Step back 2 seconds'
+      Hint = 'Step back:'#13#10'  Default 2 seconds'#13#10'  Shift+click 5 seconds'#13#10'  Ctrl+click 1 second'
       ImageIndex = 1
       SecondaryShortCuts.Strings = (
         'LEFT'
       )
-      ShortCut = 83
+      ShortCut = 37
       OnExecute = actStepBackClick
     end
     object actStepForward: TAction
       Category = 'Playback'
-      Caption = 'actStepForward'
-      Hint = 'Step forward:'#13#10'  Default 3 seconds'#13#10'  Shift+click 6 seconds'#13#10'  Ctrl+click 1 second'
+      Caption = 'Step forward 2 seconds'
+      Hint = 'Step forward:'#13#10'  Default 2 seconds'#13#10'  Shift+click 5 seconds'#13#10'  Ctrl+click 1 second'
       ImageIndex = 2
       SecondaryShortCuts.Strings = (
         'RIGHT'
       )
-      ShortCut = 68
+      ShortCut = 39
       OnExecute = actStepForwardClick
     end
     object actCopyToClipboard: TAction
@@ -828,6 +828,15 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     end
     object mnuResetRate: TMenuItem
       Action = actResetRate
+    end
+    object Separator2: TMenuItem
+      Caption = '-'
+    end
+    object mnuStepForward: TMenuItem
+      Action = actStepForward
+    end
+    object mnuStepBack: TMenuItem
+      Action = actStepBack
     end
     object Separator1: TMenuItem
       Caption = '-'

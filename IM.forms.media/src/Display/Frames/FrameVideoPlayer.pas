@@ -72,6 +72,9 @@ Type
     ilToolbar32: TImageList;
     lblStatus: TLabel;
     lblTime: TLabel;
+    mnuStepForward: TMenuItem;
+    mnuStepBack: TMenuItem;
+    Separator2: TMenuItem;
     mnuCopyToClipboard: TMenuItem;
     Separator1: TMenuItem;
     mnuResetRate: TMenuItem;

@@ -99,6 +99,7 @@ Type
     FTitleWidth: Integer;
     FEventCount: Integer;
 
+    Procedure ClearHotState;
     Procedure SetStartValue(AValue: Extended);
     Procedure SetEndValue(AValue: Extended);
     Function GetMidValue: Extended;
@@ -467,6 +468,9 @@ Begin
   FStartValue := AValue - HalfRange;
   FEndValue := AValue + HalfRange;
 
+  // reset hot state
+  ClearHotState;
+
   If FUpdateCount = 0 Then
   Begin
     RebuildBuffer;
@@ -667,9 +671,20 @@ Begin
 End;
 
 Procedure TPipelineEventMap.CopyToClipboard;
+Var
+  bOrig: Boolean;
 Begin
-  RebuildBuffer;
-  Clipboard.Assign(FBackBuffer);
+  ClearHotState;
+
+  bOrig := FShowMidpoint;
+  FShowMidpoint := False;
+  Try
+    RebuildBuffer;
+
+    Clipboard.Assign(FBackBuffer);
+  Finally
+    FShowMidpoint := True;
+  End;
 End;
 
 Procedure TPipelineEventMap.SaveToFile(Const AFilename: String);
@@ -926,11 +941,6 @@ Begin
     FHotRange := oRange;
     bRedraw := True;
 
-    //If Assigned(FHotRange) Then
-    //  FHotTitle := sTitle
-    //Else
-    //  FHotTitle := '';
-
     If Assigned(FHotRange) Then
       Cursor := crHandPoint
     Else
@@ -957,12 +967,18 @@ Procedure TPipelineEventMap.MouseLeave;
 Begin
   Inherited MouseLeave;
 
+  ClearHotState;
+End;
+
+Procedure TPipelineEventMap.ClearHotState;
+Begin
+  FHotTitle := '';
   If Assigned(FHotRange) Then
   Begin
     FHotRange := nil;
-    FHotTitle := '';
 
     Cursor := crDefault;
+
     RebuildBuffer;
     Invalidate;
   End;
@@ -990,8 +1006,7 @@ End;
 
 Procedure TPipelineEventMap.ScrollBarChange(Sender: TObject);
 Begin
-  FHotRange := nil;
-  FHotTitle := '';
+  ClearHotState;
 
   RebuildBuffer;
   Invalidate;
