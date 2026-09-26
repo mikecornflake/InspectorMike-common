@@ -1040,8 +1040,7 @@ Begin
       ADataset.Next;
     End;
 
-    If bFound And
-      ((AThreshold < 0) Or (dBestDiff <= AThreshold)) Then
+    If bFound And ((AThreshold < 0) Or (dBestDiff <= AThreshold)) Then
     Begin
       ADataset.GotoBookmark(bmBest);
       Result := iOriginalRecNo <> ADataset.RecNo;

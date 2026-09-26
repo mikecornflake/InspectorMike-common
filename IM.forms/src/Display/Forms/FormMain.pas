@@ -128,7 +128,7 @@ Type
 
 Function MainForm: TFormMain;
 
-CONST
+Const
   INDENT_INC = 1;
   INDENT_DEC = -1;
   INDENT_NONE = 0;
@@ -435,7 +435,7 @@ Begin
 
   If sTemp <> '' Then
     If ADoIndent > 0 Then
-    DebugLnEnter(sTemp)
+      DebugLnEnter(sTemp)
     Else If ADoIndent < 0 Then
       DebugLnExit(sTemp)
     Else
