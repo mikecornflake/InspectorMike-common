@@ -87,9 +87,15 @@ Function Value(oDataset: TDataset; sField: String; sDefault: String = ''): Strin
 Function ValueAsInteger(oDataset: TDataset; sField: String; iDefault: Integer = -1): Integer;
 Function ValueAsFloat(oDataset: TDataset; sField: String; ADefault: Extended): Extended;
 
-// Dataset Navigation
+// Dataset Navigation - see constants before negative AThreshold rules
 Function GotoNearestValue(ADataset: TDataset; Const AFieldName: String;
   Const AValue: Double; Const AThreshold: Double): Boolean;
+
+Const
+  // Constants for GotoNearestValue
+  SEEK_NEAREST = -1;
+  SEEK_FIRST_AFTER = -2; // strictly greater than AValue
+  SEEK_LAST_BEFORE = -3; // less than or equal to AValue
 
 // DBGrid routines
 Procedure InitialiseDBGrid(oGrid: TDBGrid; oDataset: TDataset; bHideIDs: Boolean = False);
@@ -147,6 +153,7 @@ Const
 
   // Hidden field for the cloned filter dataset
   MASTER_RECNO_FIELD = '__MasterRecNo_ID';
+
 
 Implementation
 
@@ -320,7 +327,7 @@ Begin
   Else
     oField := oDataset.FindField(sField);
 
-  If Assigned(oField) And Not VarIsNull(oField.Value) Then
+  If Assigned(oField) And Not oField.IsNull Then
     Result := oField.AsString
   Else
     Result := sDefault;
@@ -335,15 +342,25 @@ Begin
   Else
     oField := oDataset.FindField(sField);
 
-  If Assigned(oField) And Not VarIsNull(oField.Value) Then
+  If Assigned(oField) And Not oField.IsNull Then
     Result := oField.AsInteger
   Else
     Result := iDefault;
 End;
 
 Function ValueAsFloat(oDataset: TDataset; sField: String; ADefault: Extended): Extended;
+Var
+  oField: TField;
 Begin
-  Result := StrToFloatDef(Value(oDataset, sField, ''), ADefault);
+  If sField = '' Then
+    oField := oDataset.Fields[0]
+  Else
+    oField := oDataset.FindField(sField);
+
+  If Assigned(oField) And Not oField.IsNull Then
+    Result := oField.AsFloat
+  Else
+    Result := ADefault;
 End;
 
 Procedure InitialiseDBGrid(oGrid: TDBGrid; oDataset: TDataset; bHideIDs: Boolean = False);
@@ -975,6 +992,7 @@ Var
   bmOriginal, bmBest: TBookmark;
   oField: TField;
   iOriginalRecNo: Longint;
+  bFound, bCandidate: Boolean;
 Begin
   Result := False;
 
@@ -982,11 +1000,11 @@ Begin
     Exit;
 
   oField := ADataset.FieldByName(AFieldName);
-
   bmOriginal := ADataset.GetBookmark;
-  iOriginalRecNo := ADataset.RecNo;
   bmBest := ADataset.GetBookmark;
+  iOriginalRecNo := ADataset.RecNo;
   dBestDiff := MaxDouble;
+  bFound := False;
 
   ADataset.DisableControls;
   Try
@@ -996,24 +1014,37 @@ Begin
     Begin
       If Not oField.IsNull Then
       Begin
-        dDiff := Abs(oField.AsFloat - AValue);
+        dDiff := oField.AsFloat - AValue;
 
-        If dDiff < dBestDiff Then
+        If AThreshold = SEEK_FIRST_AFTER Then
+          bCandidate := dDiff > 0
+        Else If AThreshold = SEEK_LAST_BEFORE Then
+          bCandidate := dDiff <= 0
+        Else
+          bCandidate := True;
+
+        If bCandidate Then
         Begin
-          dBestDiff := dDiff;
+          dDiff := Abs(dDiff);
 
-          ADataset.FreeBookmark(bmBest);
-          bmBest := ADataset.GetBookmark;
+          If dDiff < dBestDiff Then
+          Begin
+            dBestDiff := dDiff;
+            bFound := True;
+            ADataset.FreeBookmark(bmBest);
+            bmBest := ADataset.GetBookmark;
+          End;
         End;
       End;
 
       ADataset.Next;
     End;
 
-    If (AThreshold < 0) Or (dBestDiff <= AThreshold) Then
+    If bFound And
+      ((AThreshold < 0) Or (dBestDiff <= AThreshold)) Then
     Begin
       ADataset.GotoBookmark(bmBest);
-      Result := (iOriginalRecNo <> ADataset.RecNo);
+      Result := iOriginalRecNo <> ADataset.RecNo;
     End
     Else
       ADataset.GotoBookmark(bmOriginal);
