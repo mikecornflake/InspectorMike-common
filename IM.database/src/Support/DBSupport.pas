@@ -248,9 +248,9 @@ Begin
 End;
 
 Procedure TMemTable.Open;
-Var
-  i: Integer;
-  oField: TField;
+//Var
+//  i: Integer;
+//  oField: TField;
 Begin
   FTable.CreateDataset;
 
@@ -1097,7 +1097,6 @@ Begin
     ASource.FreeBookmark(bmOriginal);
     ASource.EnableControls;
     ADestination.EnableControls;
-
   End;
 End;
 

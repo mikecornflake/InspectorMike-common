@@ -114,6 +114,12 @@ Type
     Constructor Create(AOwner: TComponent); Override;
     Destructor Destroy; Override;
 
+    // ADoIndent < 0 = Decrease Indent (INDENT_DEC)
+    // ADoIndent = 0 = No indent (normal logging) (none or INDENT_NONE)
+    // ADoIndent >0 = Increase Indent (INDENT_INC)
+    Procedure SetStatusAndLog(AMessage: String; ADoIndent: Integer = 0;
+      AImmediateClear: Boolean = False);
+
     Property Progress: Integer Read FProgress Write SetProgress;
     Property Status: String Read GetStatus Write SetStatus;
 
@@ -121,6 +127,11 @@ Type
   End;
 
 Function MainForm: TFormMain;
+
+CONST
+  INDENT_INC = 1;
+  INDENT_DEC = -1;
+  INDENT_NONE = 0;
 
 Implementation
 
@@ -402,8 +413,6 @@ Begin
 End;
 
 Procedure TFormMain.SetStatus(AValue: String);
-Var
-  sTemp: String;
 Begin
   // TODO: Should this be 0 or 1??
   If sbMain.Panels.Count > 0 Then
@@ -411,10 +420,30 @@ Begin
   Else
     sbMain.SimpleText := AValue;
   sbMain.Update;
+End;
 
-  sTemp := AValue.Trim([#10, #13, ' ']);
+Procedure TFormMain.SetStatusAndLog(AMessage: String; ADoIndent: Integer;
+  AImmediateClear: Boolean);
+Var
+  sTemp: String;
+Begin
+  // Update UI
+  Status := AMessage;
+
+  // Now the Log File
+  sTemp := AMessage.Trim([#10, #13, ' ']);
+
   If sTemp <> '' Then
-    DebugLn(sTemp);
+    If ADoIndent > 0 Then
+    DebugLnEnter(sTemp)
+    Else If ADoIndent < 0 Then
+      DebugLnExit(sTemp)
+    Else
+      DebugLn(sTemp);
+
+  // Clear UI
+  If AImmediateClear Then
+    Status := '';
 End;
 
 Function TFormMain.SettingsFileLocal: String;

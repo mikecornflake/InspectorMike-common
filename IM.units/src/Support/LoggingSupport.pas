@@ -42,16 +42,18 @@ Var
 
 Procedure InitialiseLogging(ATimestamp: TLogTimestamp = ltTime);
 Var
-  sFilename: String;
+  sFilename, sDir, sFileBase: String;
 Begin
   FTimestamp := ATimestamp;
 
   If Not FInitialised Then
   Begin
     DebugLogger.CloseLogFileBetweenWrites := True;
-    sFilename := IncludeTrailingPathDelimiter(GetAppConfigDir(False)) +
-      ChangeFileExt(ExtractFilename(Application.ExeName), '.log');
+    sDir := IncludeTrailingPathDelimiter(GetAppConfigDir(False));
+    sFileBase := ChangeFileExt(ExtractFilename(Application.ExeName), '');
+    sFilename := sDir + sFileBase + ' - ' + FormatDateTime('yyyymmdd hhnnss', now) + '.log';
 
+    DebugLogger.CurrentIndentLevel;
     DebugLogger.LogName := sFilename;
     DebugLogger.OnDebugLnEx := @FLoggingSupport.DebugLnEx;
 
@@ -89,8 +91,8 @@ Var
   sTimestamp: String = '';
 Begin
   Case FTimestamp Of
-    ltTime: sTimestamp := FormatDateTime('hh:nn:ss.zzz', Now) + ': ';
-    ltDateTime: sTimestamp := FormatDateTime('yyyy-mm-dd hh:nn:ss.zzz', Now) + ': ';
+    ltTime: sTimestamp := FormatDateTime('hh:nn:ss.zzz', now) + ': ';
+    ltDateTime: sTimestamp := FormatDateTime('yyyy-mm-dd hh:nn:ss.zzz', now) + ': ';
   End;
 
   LogIndent := sTimestamp + LogIndent;
