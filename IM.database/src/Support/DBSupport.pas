@@ -1098,7 +1098,6 @@ Begin
     ASource.EnableControls;
     ADestination.EnableControls;
 
-
   End;
 End;
 
