@@ -122,6 +122,7 @@ Var
   oConn: TMSSQLConnection;
   oTrans: TSQLTransaction;
   oQuery: TSQLQuery;
+  iIndex: Integer;
 Begin
   oConn := TMSSQLConnection.Create(nil);
   oTrans := TSQLTransaction.Create(nil);
@@ -176,7 +177,14 @@ Begin
       End;
 
       If cboDatabase.Items.Count > 0 Then
-        cboDatabase.ItemIndex := 0;
+      Begin
+        iIndex := cboDatabase.Items.IndexOf(cboDatabase.Text);
+
+        If iIndex >= 0 Then
+          cboDatabase.ItemIndex := iIndex
+        Else
+          cboDatabase.ItemIndex := 0;
+      End;
     Finally
       Screen.Cursor := crDefault;
     End;
