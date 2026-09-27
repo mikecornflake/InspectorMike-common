@@ -2,11 +2,9 @@ Unit LibmpvSupport;
 
 {-------------------------------------------------------------------------------
   Package   : IM.units
-  Unit      : LazSerialSupport.pas
+  Unit      : LibmpvSupport.pas
   Description
-    My first Class Helper
-
-    Helper unit for LazSerial.pas
+    Support unit for URUWorks libMPV
 
   Source
     Copyright (c) 2026
@@ -14,6 +12,7 @@ Unit LibmpvSupport;
     Mike Thompson (mike.cornflake@gmail.com)
 
   History
+    TODO: CHECK THE ACTUAL HISTORY IN GITHUB, THIS FEELS COPY/PASTE
     2026-06-05: Creation and upload to Githib InspectorMike-Common
                    as part of  IM.common.lpk
     2026-06-19: Added this header & refactored
@@ -21,7 +20,7 @@ Unit LibmpvSupport;
     2026-07-23: Refactored into new TThirdParty Class
 
   License
-    This file is part of IM.units.lpk.
+    This file is part of IM.forms.media.mpv.lpk.
 
     This library is free software: you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as published by
