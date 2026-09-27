@@ -545,7 +545,7 @@ Var
 Begin
   If Assigned(tvTOC.Selected) Then
   Begin
-    iPage := PtrInt(tvTOC.Selected.Data);
+    iPage := Integer(PtrInt(tvTOC.Selected.Data));
     SetPage(iPage);
   End;
 End;

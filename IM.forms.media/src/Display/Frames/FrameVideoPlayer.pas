@@ -897,18 +897,20 @@ Procedure TFrameVideoPlayer.VideoPositionChange(Sender: TObject;
 
 Var
   dtPositionAsTime: TDateTime;
+  {$IFNDEF RELEASE}
   sChannel: String;
+  {$ENDIF}
 Begin
   FUpdatingTracker := True;
   Try
     dtPositionAsTime := fmeVideo.StartDateTime + (PositionMS / MSecsPerDay);
 
+    {$IFNDEF RELEASE}
     If Sender Is TFrameVideoBase Then
       sChannel := TFrameVideoBase(Sender).Channel
     Else
       sChannel := 'Unknown Sender';
 
-    {$IFNDEF RELEASE}
     DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}, ' ',
       sChannel, ' ', PositionMS, ' ', TimeToStr(dtPositionAsTime)]);
     {$ENDIF}
