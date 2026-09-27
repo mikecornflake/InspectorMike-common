@@ -39,6 +39,7 @@ Unit StringSupport;
 -------------------------------------------------------------------------------}
 {$mode ObjFPC}{$H+}
 {$codepage utf8}
+{$modeswitch typehelpers}
 
 Interface
 
@@ -61,6 +62,16 @@ Function BeginsWith(Const ASource, ATextAtStart: String): Boolean;
 
 // Date Time helpers
 Function FormatDateTimeAsISO8601(dt: TDateTime): String;
+Type
+
+  { TDateTimeHelper }
+
+  TDateTimeHelper = Type Helper For TDateTime
+  Public
+    Function AsTextDate: String;
+    Function AsTextTime: String;
+    Function AsTextDateTime: String;
+  End;
 
 // File Helpers
 Function BuildPathFromParts(AParts: TStringList; ACount: Integer): String;
@@ -419,6 +430,23 @@ Begin
   Finally
     R.Free;
   End;
+End;
+
+{ TDateTimeHelper }
+
+Function TDateTimeHelper.AsTextDate: String;
+Begin
+  Result := FormatDateTime('yyyy-mm-dd', Self);
+End;
+
+Function TDateTimeHelper.AsTextTime: String;
+Begin
+  Result := FormatDateTime('hh:nn:ss', Self);
+End;
+
+Function TDateTimeHelper.AsTextDateTime: String;
+Begin
+  Result := FormatDateTime('yyyy-mm-dd hh:nn:ss', Self);
 End;
 
 Initialization
