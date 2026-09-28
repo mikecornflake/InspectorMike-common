@@ -198,11 +198,16 @@ End;
 
 Destructor TFrameSyncedVideo.Destroy;
 Begin
-  FSyncTimer.Enabled := False;
-  FreeAndNil(FVideos);
-  FreeAndNil(FLayout);
-  FreeAndNil(FSyncTimer);
-  FreeAndNil(FChannelOrder);
+  BeginUpdate;
+  Try
+    FSyncTimer.Enabled := False;
+    FreeAndNil(FVideos);
+    FreeAndNil(FLayout);
+    FreeAndNil(FSyncTimer);
+    FreeAndNil(FChannelOrder);
+  Finally
+    EndUpdate;
+  End;
 
   Inherited Destroy;
 End;
@@ -844,6 +849,21 @@ Begin
   SetState(vsLoading);
 End;
 
+Procedure TFrameSyncedVideo.EndLoadVideos;
+Begin
+  //BeginUpdate;
+  Try
+    ClearUnloadedVideoFrames;
+    If FChannelOrder.Count > 0 Then
+      SortVideosByChannel;
+
+    Layout(FLayout.RowCount, FLayout.ColCount, FLayout.Sequence);
+    CheckAllVideosLoaded;
+  Finally
+    //EndUpdate;
+  End;
+End;
+
 Function TFrameSyncedVideo.CompareVideoChannels(A, B: TFrameVideoBase): Integer;
 Var
   iA, iB: Integer;
@@ -886,16 +906,6 @@ Begin
 
     Master := FVideos[0];
   End;
-End;
-
-Procedure TFrameSyncedVideo.EndLoadVideos;
-Begin
-  ClearUnloadedVideoFrames;
-  If FChannelOrder.Count > 0 Then
-    SortVideosByChannel;
-
-  Layout(FLayout.RowCount, FLayout.ColCount, FLayout.Sequence);
-  CheckAllVideosLoaded;
 End;
 
 Procedure TFrameSyncedVideo.PopulateSettingsFrame(AFrame: TFrameSettingsSyncedVideo);

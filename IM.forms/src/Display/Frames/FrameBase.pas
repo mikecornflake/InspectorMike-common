@@ -53,6 +53,8 @@ Type
     Procedure FrameEnter(Sender: TObject);
     Procedure FrameExit(Sender: TObject);
   Protected
+    FUpdateCount: Integer;
+
     FParentForm: TFormPersistent;
     FFullIdentKey: String;
     FOnActivateFrame: TNotifyEvent;
@@ -62,6 +64,8 @@ Type
     Function GetSettingsKey: String; Virtual;
 
     Procedure DoActivateFrame; Virtual;
+    Procedure BeginUpdate;
+    Procedure EndUpdate;
   Public
     Constructor Create(TheOwner: TComponent); Override;
 
@@ -87,6 +91,9 @@ Type
   End;
 
 Implementation
+
+Uses
+  LCLType, LCLIntf;
 
 {$R *.lfm}
 
@@ -184,8 +191,43 @@ Constructor TFrameBase.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
+  FUpdateCount := 0;
+
   FParentForm := FindParentForm(TheOwner);
   FFrameActive := False;
+End;
+
+Procedure TFrameBase.BeginUpdate;
+Begin
+  Inc(FUpdateCount);
+
+  If FUpdateCount = 1 Then
+  Begin
+    DisableAlign;
+
+    {$IFDEF WINDOWS}
+    SendMessage(Handle, $000B, 0, 0);  // WM_SETREDRAW
+    {$ENDIF}
+  End;
+End;
+
+
+Procedure TFrameBase.EndUpdate;
+Begin
+  If FUpdateCount <= 0 Then
+    Exit;
+
+  Dec(FUpdateCount);
+
+  If FUpdateCount = 0 Then
+  Begin
+    {$IFDEF WINDOWS}
+    SendMessage(Handle, $000B, 1, 0);  // WM_SETREDRAW
+    {$ENDIF}
+
+    EnableAlign;
+    Invalidate;
+  End;
 End;
 
 Procedure TFrameBase.RefreshUI;
