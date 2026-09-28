@@ -136,11 +136,15 @@ Procedure Populate(ACombobox: TCombobox; ADataset: TDataset; AField: String;
 // Export routine
 Procedure ExportDatasetToCSV(ADataset: TDataset; Const AFileName: String);
 
-// DBGrid has scrollbar issues seeking with a Filtered Dataset
-// If we know the sources are small enough, this allows an alternative:
-// Populate a new Dataset with the results of the filter, then hook
-// the new Dataset to the Grid
-// https://forum.lazarus.freepascal.org/index.php?action=post;quote=130193;topic=17615.30;last_msg=130201
+// Initial use-case:
+//   DBGrid has scrollbar issues seeking with a Filtered Dataset
+//   If we know the sources are small enough, this allows an alternative:
+//   Populate a new Dataset with the results of the filter, then hook
+//   the new Dataset to the Grid
+//   https://forum.lazarus.freepascal.org/index.php?action=post;quote=130193;topic=17615.30;last_msg=130201
+//
+// This routine has proved useful beyond initial use case above and
+// can be used to clone an entire dataset with AFilter=''
 Procedure BuildFilteredDataset(ASource: TDataset; ADestination: TBufDataset;
   Const AFilter: String);
 
