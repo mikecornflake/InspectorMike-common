@@ -366,6 +366,10 @@ Begin
   {$IFNDEF RELEASE}
   DebugLn(DBG_VIDEO, [ClassName, '.', {$I %CURRENTROUTINE%} + ': ', ' ', AValue]);
   {$ENDIF}
+
+  If AValue < 0 Then
+    Exit;
+
   For i := 0 To FVideoFileCount - 1 Do
     If FVideos[i].CanSeek Then
       FVideos[i].Position := AValue;
