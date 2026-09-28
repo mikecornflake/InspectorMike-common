@@ -357,15 +357,24 @@ End;
 
 Procedure TFormMain.LoadLocalSettings(oInifile: TIniFile);
 Var
-  iLeft, iWidth, iTop, iHeight: Integer;
+  iLeft, iTop: Integer;
+  iClientWidth, iClientHeight: Integer;
 Begin
-  // Default, load Window Settings
+  // Restore the position of the window.
   iLeft := oInifile.ReadInteger(Name, 'Left', Application.MainForm.Left);
   iTop := oInifile.ReadInteger(Name, 'Top', Application.MainForm.Top);
-  iWidth := oInifile.ReadInteger(Name, 'Width', Application.MainForm.Width);
-  iHeight := oInifile.ReadInteger(Name, 'Height', Application.MainForm.Height);
 
-  SetBounds(iLeft, iTop, iWidth, iHeight);
+  // Width and Height contain the CLIENT dimensions.
+  // This avoids dependencies on the current Windows border/titlebar
+  // dimensions, which may vary with themes such as WindowBlinds.
+  iClientWidth := oInifile.ReadInteger(Name, 'Width', Application.MainForm.ClientWidth);
+  iClientHeight := oInifile.ReadInteger(Name, 'Height', Application.MainForm.ClientHeight);
+
+  Application.MainForm.Left := iLeft;
+  Application.MainForm.Top := iTop;
+  Application.MainForm.ClientWidth := iClientWidth;
+  Application.MainForm.ClientHeight := iClientHeight;
+
   MakeFullyVisible;
 
   If oInifile.ReadBool(Name, 'Maximised', False) Then
@@ -374,16 +383,20 @@ Begin
     Application.MainForm.WindowState := wsNormal;
 End;
 
+
 Procedure TFormMain.SaveLocalSettings(oInifile: TIniFile);
 Begin
   oInifile.WriteBool(Name, 'Maximised', Application.MainForm.WindowState = wsMaximized);
 
-  If WindowState <> wsMaximized Then
+  If Application.MainForm.WindowState <> wsMaximized Then
   Begin
     oInifile.WriteInteger(Name, 'Left', Application.MainForm.Left);
     oInifile.WriteInteger(Name, 'Top', Application.MainForm.Top);
-    oInifile.WriteInteger(Name, 'Width', Application.MainForm.Width);
-    oInifile.WriteInteger(Name, 'Height', Application.MainForm.Height);
+
+    // Store the usable client area rather than the decorated
+    // outer dimensions of the window.
+    oInifile.WriteInteger(Name, 'Width', Application.MainForm.ClientWidth);
+    oInifile.WriteInteger(Name, 'Height', Application.MainForm.ClientHeight);
   End;
 End;
 

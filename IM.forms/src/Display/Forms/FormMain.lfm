@@ -7,7 +7,7 @@ object FormMain: TFormMain
   ClientHeight = 302
   ClientWidth = 487
   Menu = mnuMain
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery
   object pbMain: TProgressBar
