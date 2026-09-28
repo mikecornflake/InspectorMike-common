@@ -136,7 +136,7 @@ Type
     Procedure lvThumbNailsData(Sender: TObject; Item: TListItem);
     Procedure lvThumbNailsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     Procedure pcNavigationChange(Sender: TObject);
-    procedure pmAttachmentsPopup(Sender: TObject);
+    Procedure pmAttachmentsPopup(Sender: TObject);
     Procedure sbPDFResize(Sender: TObject);
     Procedure tvTOCSelectionChanged(Sender: TObject);
   Private
@@ -242,7 +242,7 @@ Var
   sFilename, sAttachmentKey, sDescription, sWarning: String;
   oExistingAttachment, oAttachment: TPDFAttachment;
 Begin
-  iFileCount := Length(Filenames);
+  iFileCount := Length(FileNames);
 
   If iFileCount = 0 Then
     Exit;
@@ -257,9 +257,9 @@ Begin
   If MessageDlg('Add Attachment', sWarning, mtConfirmation, [mbYes, mbNo], 0) = mrNo Then
     Exit;
 
-  For i := Low(Filenames) To High(Filenames) Do
+  For i := Low(FileNames) To High(FileNames) Do
   Begin
-    sFilename := Filenames[i];
+    sFilename := FileNames[i];
 
     sAttachmentKey := ExtractFileName(sFilename);
 
@@ -529,10 +529,10 @@ Begin
     pcNavigation.Width := Max(300, pcNavigation.Width);
 End;
 
-procedure TFramePDFViewer.pmAttachmentsPopup(Sender: TObject);
-begin
+Procedure TFramePDFViewer.pmAttachmentsPopup(Sender: TObject);
+Begin
   RefreshUI;
-end;
+End;
 
 Procedure TFramePDFViewer.sbPDFResize(Sender: TObject);
 Begin
@@ -710,8 +710,8 @@ Begin
   iDigits := Length(IntToStr(FPageCount));
 
   Result :=
-    IncludeTrailingPathDelimiter(ADir) + APrefix + '-' + Format('%.*d',
-    [iDigits, APage]) + '.png';
+    IncludeTrailingPathDelimiter(ADir) + APrefix + '-' +
+    Format('%.*d', [iDigits, APage]) + '.png';
 End;
 
 Function TFramePDFViewer.ConvertPageToImage(sDir: String; iPage: Integer): String;
@@ -844,7 +844,7 @@ Begin
 
   If dlgOpen.Execute Then
   Begin
-    sFilename := dlgOpen.FileName;
+    sFilename := dlgOpen.Filename;
     sAttachmentKey := ExtractFileName(sFilename);
 
     oExistingAttachment := qpdf.FindAttachment(FAttachments, sAttachmentKey);
@@ -948,11 +948,11 @@ Begin
 
   dlgSave.Filter := FILES_ALL;
   dlgSave.Options := dlgSave.Options + [ofOverwritePrompt];
-  dlgSave.FileName := sFilename;
+  dlgSave.Filename := sFilename;
 
   If dlgSave.Execute Then
   Begin
-    sFilename := dlgSave.FileName;
+    sFilename := dlgSave.Filename;
     If qpdf.ExtractAttachment(FFilename, oAttachment.Filename, sFilename) Then
       ShowMessageFmt('Attachment "%s" has been exported as:%s %s',
         [oAttachment.Filename, LineEnding, sFilename]);
@@ -973,7 +973,7 @@ Begin
 
   oImportAttachments := TPDFAttachments.Create(True);
   Try
-    If Not qpdf.LoadAttachmentsForImport(dlgOpen.FileName, FTempDir, oImportAttachments) Then
+    If Not qpdf.LoadAttachmentsForImport(dlgOpen.Filename, FTempDir, oImportAttachments) Then
     Begin
       MessageDlg('Import Attachments', 'The attachments could not be read from the selected PDF.',
         mtError, [mbOK], 0);

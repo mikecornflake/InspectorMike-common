@@ -95,9 +95,9 @@ Implementation
 Uses
   LCLType, LCLIntf;
 
-{$R *.lfm}
+  {$R *.lfm}
 
-{ TFrameBase }
+  { TFrameBase }
 
 Function TFrameBase.GetSettingsKey: String;
 Begin

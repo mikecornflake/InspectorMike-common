@@ -105,8 +105,8 @@ Begin
     Exit;
 
   For oSubscription In FSubscriptions Do
-    If (AMessage.Sender <> oSubscription.Subscriber) And (AMessage Is
-      oSubscription.MessageClass) Then
+    If (AMessage.Sender <> oSubscription.Subscriber) And
+      (AMessage Is oSubscription.MessageClass) Then
     Begin
       {$IFNDEF RELEASE}
       DebugLn([ClassName, '.', {$I %CURRENTROUTINE%}, ' Sending ',
