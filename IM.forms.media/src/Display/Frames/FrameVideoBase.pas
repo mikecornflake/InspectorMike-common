@@ -6,6 +6,29 @@ Unit FrameVideoBase;
   Description
     Abstract base frame for video playback implementations.
 
+    Video communications should be assumed asynchronous.
+
+    Never assume observed behaviour from one playback engine (ie mpv) will
+    be the same across other engines (ie vlc, mplayer etc)
+
+    Even if a specific video playback engine is synchronous in
+    setting a property, never assume the corresponding getter
+    has been updated.
+
+    Treat getters as cached observations of backend state.
+
+    Mantra:
+    Commands are requests. Events are facts.
+
+    Video.PositionAsTime := ATime;   // request
+    Video.Play;                       // request
+    Video.Pause;                      // request
+
+    // Later...
+    OnPositionChanged(...)            // observed fact
+    OnStateChanged(...)               // observed fact
+    OnVideoReady(...)                 // observed fact
+
   Source
     Copyright (c) 2026
     Inspector Mike 2.0 Pty Ltd
