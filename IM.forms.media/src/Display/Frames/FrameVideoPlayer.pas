@@ -132,6 +132,7 @@ Type
     FVolumePopup: TfrmVolumePopup;
     FMuted: Boolean;
     FVolume: Integer;
+    FLastForcedRefresh: QWord;
 
     FUpdatingTracker: Boolean;
     FLastSeekTick: QWord;
@@ -593,23 +594,36 @@ Begin
   {$IFNDEF RELEASE}
   DebugLn([ClassName, '.', {$I %CURRENTROUTINE%}, ' Key=', Key]);
   {$ENDIF}
-  Case Key Of
-    VK_LEFT:
-    Begin
-      actStepBack.Execute;
-      Key := 0;
+  If Assigned(fmeVideo) And fmeVideo.CanSeek And fmeVideo.HasVideo Then
+  Begin
+    Case Key Of
+      VK_LEFT:
+      Begin
+        actStepBack.Execute;
+        Key := 0;
+      End;
+
+      VK_RIGHT:
+      Begin
+        actStepForward.Execute;
+        Key := 0;
+      End;
+
+      VK_SPACE:
+      Begin
+        actPlayPause.Execute;
+        Key := 0;
+      End;
     End;
 
-    VK_RIGHT:
+    // Not normally a preferred option - but constant keydown seems to block main thread
+    // This is better than application.processmessages though
+    // FLastForcedRefresh introduced to limit "hammering" mainform with refreshes
+    If (Key = 0) And (GetTickCount64 - FLastForcedRefresh >= 500) And
+      Assigned(Application.MainForm) Then
     Begin
-      actStepForward.Execute;
-      Key := 0;
-    End;
-
-    VK_SPACE:
-    Begin
-      actPlayPause.Execute;
-      Key := 0;
+      FLastForcedRefresh := GetTickCount64;
+      Application.MainForm.Refresh;
     End;
   End;
 End;
@@ -652,7 +666,7 @@ End;
 Procedure TFrameVideoPlayer.pnlVideoMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; Var Handled: Boolean);
 Begin
-  If Assigned(fmeVideo) And fmeVideo.CanSeek Then
+  If Assigned(fmeVideo) And fmeVideo.CanSeek And fmeVideo.HasVideo Then
   Begin
     If fmeVideo.State = vsPlaying Then
       fmeVideo.Pause;
@@ -661,6 +675,16 @@ Begin
       fmeVideo.Position := Min(fmeVideo.Duration, fmeVideo.Position + StepDelta)
     Else
       fmeVideo.Position := Max(0, fmeVideo.Position - StepDelta);
+
+    // Not normally a preferred option - but constant wheelmouse seems to block main thread
+    // This is better than application.processmessages though
+    // FLastForcedRefresh introduced to limit "hammering" mainform with refreshes
+    If (GetTickCount64 - FLastForcedRefresh >= 500) And Assigned(Application.MainForm) Then
+    Begin
+      FLastForcedRefresh := GetTickCount64;
+      Application.MainForm.Refresh;
+    End;
+
   End;
 End;
 
