@@ -276,7 +276,7 @@ Begin
 
   FLayout.ColCount := AInifile.ReadInteger(sKey, 'Columns', 2);
   FLayout.RowCount := AInifile.ReadInteger(sKey, 'Rows', 2);;
-  FLayout.Extend := AInifile.ReadBool(sKey, 'Columns', True);
+  FLayout.Extend := AInifile.ReadBool(sKey, 'Extend', True);
   FLayout.Sequence := TControlLayoutSequence(
     AInifile.ReadInteger(sKey, 'Sequence', Ord(clsLeftToRightThenDown)));
   FChannelOrder.DelimitedText := AInifile.ReadString(sKey, 'ChannelOrder', '');
@@ -290,7 +290,7 @@ Begin
 
   AInifile.WriteInteger(sKey, 'Columns', FLayout.ColCount);
   AInifile.WriteInteger(sKey, 'Rows', FLayout.RowCount);
-  AInifile.WriteBool(sKey, 'Columns', FLayout.Extend);
+  AInifile.WriteBool(sKey, 'Extend', FLayout.Extend);
   AInifile.WriteInteger(sKey, 'Sequence', Ord(FLayout.Sequence));
   AInifile.WriteString(sKey, 'ChannelOrder', FChannelOrder.DelimitedText);
 
