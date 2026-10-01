@@ -57,7 +57,7 @@ Uses
   ;
 
 // Uses quick and dirty TProcess code
-Procedure LaunchFile(sFilename: String; sParameters: String = ''); Deprecated;
+Procedure LaunchFile(sFilename: String; sParameters: String = '');
 
 // Uses ShellExecute(0, 'open'...
 Procedure LaunchDocument(sFilename: String);

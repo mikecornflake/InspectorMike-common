@@ -1065,6 +1065,7 @@ Var
   sOldFilter: String;
   bOldFiltered: Boolean;
   bmOriginal: TBookmark;
+  oMasterRecNoField: TField;
 Begin
   Assert(Assigned(ASource), 'DBSupport.BuildFilteredDataset: Need to pass a created ASource.');
   Assert(Assigned(ADestination),
@@ -1089,13 +1090,16 @@ Begin
       With ASource.Fields[i] Do
         ADestination.FieldDefs.Add(FieldName, DataType, Size, Required);
 
-    ADestination.FieldDefs.Add(MASTER_RECNO_FIELD, ftInteger);
+    If ASource.FindField(MASTER_RECNO_FIELD) = nil Then
+      ADestination.FieldDefs.Add(MASTER_RECNO_FIELD, ftInteger);
 
     ADestination.CreateDataset;
 
     // Temporarily filter the source
     ASource.Filter := AFilter;
     ASource.Filtered := AFilter <> '';
+
+    oMasterRecNoField := ASource.FindField(MASTER_RECNO_FIELD);
 
     ASource.First;
 
@@ -1108,7 +1112,10 @@ Begin
           If Not ASource.Fields[i].IsNull Then
             ADestination.Fields[i].Value := ASource.Fields[i].Value;
 
-        ADestination.FieldByName(MASTER_RECNO_FIELD).AsInteger := ASource.RecNo;
+        If oMasterRecNoField <> nil Then
+          ADestination.FieldByName(MASTER_RECNO_FIELD).AsInteger := oMasterRecNoField.AsInteger
+        Else
+          ADestination.FieldByName(MASTER_RECNO_FIELD).AsInteger := ASource.RecNo;
 
         ADestination.Post;
       Except
