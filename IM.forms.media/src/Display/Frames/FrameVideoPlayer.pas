@@ -582,7 +582,7 @@ Begin
   ShiftState := GetKeyShiftState;
 
   If ssCtrl In ShiftState Then
-    Result := 1000
+    Result := 500
   Else If ssShift In ShiftState Then
     Result := 5000
   Else

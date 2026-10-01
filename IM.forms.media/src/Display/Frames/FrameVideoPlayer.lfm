@@ -787,7 +787,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     object actStepBack: TAction
       Category = 'Playback'
       Caption = 'Step back 2 seconds'
-      Hint = 'Step back:'#13#10'  Default 2 seconds'#13#10'  Shift+click 5 seconds'#13#10'  Ctrl+click 1 second'
+      Hint = 'Step back:'#13#10'  Default 2 seconds'#13#10'  Shift+click 5 seconds'#13#10'  Ctrl+click 1/2 second'
       ImageIndex = 1
       SecondaryShortCuts.Strings = (
         'LEFT'
@@ -798,7 +798,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
     object actStepForward: TAction
       Category = 'Playback'
       Caption = 'Step forward 2 seconds'
-      Hint = 'Step forward:'#13#10'  Default 2 seconds'#13#10'  Shift+click 5 seconds'#13#10'  Ctrl+click 1 second'
+      Hint = 'Step forward:'#13#10'  Default 2 seconds'#13#10'  Shift+click 5 seconds'#13#10'  Ctrl+click 1/2 second'
       ImageIndex = 2
       SecondaryShortCuts.Strings = (
         'RIGHT'
