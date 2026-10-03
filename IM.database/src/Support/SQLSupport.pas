@@ -50,7 +50,11 @@ Interface
 Uses
   Classes, SysUtils, DB;
 
-Function SQLIdentifier(Const AName: String): String;
+{ Validates text before inserting it into SQL as an identifier/object name.
+  SQL query parameters cannot be used for identifiers.
+  This is a conservative character whitelist, not a SQL syntax validator. }
+function SQLIdentifier(const AName: String): String;
+
 Function SQLQuote(Const AValue: String): String;
 Function SQLLiteral(Const AValue: String): String;
 Function SQLRawExpression(Const AExpression: String): String;
@@ -61,7 +65,7 @@ Function InsertSQL(ATable: String; ADataset: TDataset): String;
 Function InsertSQLWhereNotExists(ATable: String; ADataset: TDataset;
   AOracle: Boolean = True): String;
 
-Function FormatSQLLiterals(ASQL: String; Const AValues: Array Of Const): String;
+//Function FormatSQLLiterals(ASQL: String; Const AValues: Array Of Const): String;
 
 Implementation
 
@@ -269,63 +273,63 @@ Begin
       [sTable, sNames, sValues, sTable, sWhere]);
 End;
 
-Function FormatSQLLiterals(ASQL: String; Const AValues: Array Of Const): String;
-Var
-  arrStrings: Array Of String;
-  arrArgs: Array Of TVarRec;
-  i: Integer;
-Begin
-  { Converts string/char arguments to SQL literals before passing to Format.
-    This is retained for generating SQL scripts. It is not a replacement for
-    parameterised queries. }
-
-  SetLength(arrStrings{%H-}, Length(AValues));
-  SetLength(arrArgs{%H-}, Length(AValues));
-
-  For i := Low(AValues) To High(AValues) Do
-  Begin
-    arrArgs[i] := AValues[i];
-
-    Case AValues[i].vType Of
-      vtAnsiString:
-      Begin
-        arrStrings[i] := SQLLiteral(AnsiString(AValues[i].vAnsiString));
-        arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
-        arrArgs[i].vType := vtAnsiString;
-      End;
-
-      vtString:
-      Begin
-        arrStrings[i] := SQLLiteral(String(AValues[i].vString^));
-        arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
-        arrArgs[i].vType := vtAnsiString;
-      End;
-
-      vtPChar:
-      Begin
-        arrStrings[i] := SQLLiteral(String(AValues[i].vPChar));
-        arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
-        arrArgs[i].vType := vtAnsiString;
-      End;
-
-      vtChar:
-      Begin
-        arrStrings[i] := SQLLiteral(AValues[i].vChar);
-        arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
-        arrArgs[i].vType := vtAnsiString;
-      End;
-
-      vtWideChar:
-      Begin
-        arrStrings[i] := SQLLiteral(UnicodeString(AValues[i].vWideChar));
-        arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
-        arrArgs[i].vType := vtAnsiString;
-      End;
-
-    End;
-  End;
-
-  Result := Format(ASQL, arrArgs);
-End;
+//Function FormatSQLLiterals(ASQL: String; Const AValues: Array Of Const): String;
+//Var
+//  arrStrings: Array Of String;
+//  arrArgs: Array Of TVarRec;
+//  i: Integer;
+//Begin
+//  { Converts string/char arguments to SQL literals before passing to Format.
+//    This is retained for generating SQL scripts. It is not a replacement for
+//    parameterised queries. }
+//
+//  SetLength(arrStrings{%H-}, Length(AValues));
+//  SetLength(arrArgs{%H-}, Length(AValues));
+//
+//  For i := Low(AValues) To High(AValues) Do
+//  Begin
+//    arrArgs[i] := AValues[i];
+//
+//    Case AValues[i].vType Of
+//      vtAnsiString:
+//      Begin
+//        arrStrings[i] := SQLLiteral(AnsiString(AValues[i].vAnsiString));
+//        arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
+//        arrArgs[i].vType := vtAnsiString;
+//      End;
+//
+//      vtString:
+//      Begin
+//        arrStrings[i] := SQLLiteral(String(AValues[i].vString^));
+//        arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
+//        arrArgs[i].vType := vtAnsiString;
+//      End;
+//
+//      vtPChar:
+//      Begin
+//        arrStrings[i] := SQLLiteral(String(AValues[i].vPChar));
+//        arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
+//        arrArgs[i].vType := vtAnsiString;
+//      End;
+//
+//      vtChar:
+//      Begin
+//        arrStrings[i] := SQLLiteral(AValues[i].vChar);
+//        arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
+//        arrArgs[i].vType := vtAnsiString;
+//      End;
+//
+//      vtWideChar:
+//      Begin
+//        arrStrings[i] := SQLLiteral(UnicodeString(AValues[i].vWideChar));
+//        arrArgs[i].vAnsiString := Pointer(arrStrings[i]);
+//        arrArgs[i].vType := vtAnsiString;
+//      End;
+//
+//    End;
+//  End;
+//
+//  Result := Format(ASQL, arrArgs);
+//End;
 
 End.
