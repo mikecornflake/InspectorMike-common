@@ -160,6 +160,7 @@ Begin
   AInfo.Channel := '';
   AInfo.FormatName := '';
   AInfo.DateTimeText := '';
+  AInfo.FoundChannel := False;
 End;
 
 Function TokenIsCount(Const S: String): Boolean;

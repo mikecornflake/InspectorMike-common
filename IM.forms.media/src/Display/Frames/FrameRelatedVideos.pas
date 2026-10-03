@@ -81,9 +81,12 @@ Type
 
 Implementation
 
-{$R *.lfm}
+Uses
+  VideoEngineFactory;
 
-{ TFrameRelatedVideo }
+  {$R *.lfm}
+
+  { TFrameRelatedVideo }
 
 Constructor TFrameRelatedVideo.Create(TheOwner: TComponent);
 Begin
@@ -95,6 +98,8 @@ Begin
   fmeVideoPlayer.Align := alClient;
   fmeVideoPlayer.Autoplay := False;
   fmeVideoPlayer.OnStop := @OnStop;
+
+  fmeVideoPlayer.VideoEngineClass := TVideoEngineFactory.DefaultClass;
 
   FTempDir := '';
   FPlaylist := '';
@@ -273,7 +278,7 @@ Begin
           End;
         End
         Else
-          FPlayList := '';
+          FPlaylist := '';
       Finally
         oFiles.Free;
       End;
