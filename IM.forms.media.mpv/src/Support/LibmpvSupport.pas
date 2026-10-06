@@ -56,6 +56,12 @@ Type
     Procedure Initialise; Override;
   End;
 
+// Extract audio as pcm from any video file mpv can handle
+// Save it as a Wav File
+// Audio properties from input video file are preserved
+// (ie # of channels, sampling frequency etc)
+Function Libmpv_ExtractAudio(AInputVideoFile: String; AOutputWaveFile: String): Boolean;
+
 Function LibmpvDLL: TLibmpvSupport;
 
 Const
@@ -65,7 +71,7 @@ Const
 Implementation
 
 Uses
-  Forms, OSSupport, FileSupport, FileUtil, libMPV.Client;
+  Forms, OSSupport, FileSupport, FileUtil, libMPV.Client, Math;
 
 Var
   FLibmpv: TLibmpvSupport;
@@ -96,8 +102,8 @@ Begin
   // Metadata
   oDef.Name := THIRDPARTY_LIBMPV;
 
-  oDef.Summary := 'mpv is a free (as in freedom) media player for the command line or as a library. ' +
-    'mpv supports a wide variety of media file formats, audio and video codecs, ' +
+  oDef.Summary := 'mpv is a free (as in freedom) media player for the command line or as a library. '
+    + 'mpv supports a wide variety of media file formats, audio and video codecs, ' +
     'and subtitle types.' + LineEnding + LineEnding + '- Version: 0.41.0-697-g13a3e3ad0 ' +
     LineEnding + '- Windows build: Shinchiro developer build';
 
@@ -113,8 +119,9 @@ Begin
   oDef := Default(TThirdPartyDefinition);
 
   oDef.Name := THIRDPARTY_UW_MPVPLAYER;
-  oDef.Summary := 'This is the pascal wrapper for the libmpv media player library' + LineEnding +
-    LineEnding + 'libmpv is a powerful multimedia playback engine. It supports a wide variety of media file formats, audio and video codecs, and subtitle types';
+  oDef.Summary := 'This is the pascal wrapper for the libmpv media player library' +
+    LineEnding + LineEnding +
+    'libmpv is a powerful multimedia playback engine. It supports a wide variety of media file formats, audio and video codecs, and subtitle types';
   oDef.ProjectURL := 'https://www.uruworks.net/index.html';
   oDef.CodeURL := 'https://github.com/URUWorks/UW_MPVPlayer';
   oDef.Kind := tpkLazarusPackage;
@@ -139,6 +146,108 @@ Begin
 
       FAvailable := (Load_libMPV(sFile) = MPV_ERROR_SUCCESS);
     End;
+  End;
+End;
+
+// Extract Audio as pcm from any video file mpv can handle
+// Save it as a Wav File
+// Audio properties as per input video file
+// (ie # of channels, sampling frequency etc)
+// Chatgpt 5.6 Sol Oct 2026
+Function Libmpv_ExtractAudio(AInputVideoFile: String; AOutputWaveFile: String): Boolean;
+Var
+  mpv: Pmpv_handle;
+  Args: Array[0..2] Of PChar;
+  Err: Integer;
+  Event: Pmpv_event;
+  Finished: Boolean;
+Begin
+  Result := False;
+
+  If Not IsLibMPV_Loaded Then
+    Exit;
+
+  If Not FileExists(AInputVideoFile) Then
+    Exit;
+
+  SetExceptionMask(GetExceptionMask + [exInvalidOp]);
+
+  mpv := mpv_create();
+  If mpv = nil Then
+    Raise Exception.Create('Unable to create mpv instance');
+
+  Try
+    // We don't want video decoded/displayed.
+    mpv_set_option_string(mpv^, 'video', 'no');
+
+    // Decode audio to a PCM/WAVE file.
+    mpv_set_option_string(mpv^, 'ao', 'pcm');
+    mpv_set_option_string(mpv^, 'ao-pcm-file', PChar(AOutputWaveFile));
+
+    // For waveform generation, mono is enough.
+    mpv_set_option_string(mpv^, 'audio-channels', 'mono');
+
+    Err := mpv_initialize(mpv^);
+    If Err < 0 Then
+      Raise Exception.CreateFmt('mpv_initialize failed: %s', [mpv_error_string(Err)]);
+
+    Args[0] := 'loadfile';
+    Args[1] := PChar(AInputVideoFile);
+    Args[2] := nil;
+
+    Err := mpv_command(mpv^, @Args[0]);
+    If Err < 0 Then
+      Raise Exception.CreateFmt('loadfile failed: %s', [mpv_error_string(Err)]);
+
+    // loadfile starts processing, but we now need to wait for EOF.
+    Finished := False;
+
+    While Not Finished Do
+    Begin
+      // Wait up to 1 second for an event.
+      Event := mpv_wait_event(mpv^, 1.0);
+
+      If Event = nil Then
+        Continue;
+
+      Case Event^.event_id Of
+
+        //MPV_EVENT_NONE:
+        //Begin
+        //  //WriteLn(' Timeout');
+        //End;
+        //
+        //MPV_EVENT_FILE_LOADED:
+        //Begin
+        //  //WriteLn(' File loaded');
+        //End;
+        //
+        //MPV_EVENT_START_FILE:
+        //Begin
+        //  //WriteLn(' Start of file');
+        //End;
+
+        MPV_EVENT_END_FILE:
+        Begin
+          //WriteLn(' End of file');
+          Finished := True;
+        End;
+
+        MPV_EVENT_SHUTDOWN:
+        Begin
+          //WriteLn('MPV shutdown');
+          Finished := True;
+        End;
+//
+//        Else
+//        Begin
+//          //WriteLn(' Unknown event', Event^.event_id);
+//        End;
+      End;
+    End;
+    Result := True;
+  Finally
+    mpv_terminate_destroy(mpv^);
   End;
 End;
 

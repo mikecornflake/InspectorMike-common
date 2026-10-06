@@ -137,7 +137,7 @@ Implementation
 
 Uses
   BGRAThumbnail, BGRABitmapTypes, OSSupport, LazFileUtils, FileUtil, FileSupport,
-  Dialogs, FormMain;
+  Dialogs;
 
   {$R *.lfm}
 

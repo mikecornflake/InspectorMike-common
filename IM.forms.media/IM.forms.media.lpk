@@ -84,6 +84,10 @@
         <Filename Value="src\Display\Frames\FrameSettingsSyncedVideo.pas"/>
         <UnitName Value="FrameSettingsSyncedVideo"/>
       </Item>
+      <Item>
+        <Filename Value="src\Classes\AudioWaveform.pas"/>
+        <UnitName Value="AudioWaveform"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

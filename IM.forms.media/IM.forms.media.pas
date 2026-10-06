@@ -9,7 +9,7 @@ interface
 
 uses
   FrameImages, FramePDFViewer, FrameRelatedVideos, FrameSyncedVideo, FrameVideoPlayer, 
-  FrameVideoBase, VideoEngineFactory, FormVolumePopup, FrameSettingsSyncedVideo, 
+  FrameVideoBase, VideoEngineFactory, FormVolumePopup, FrameSettingsSyncedVideo, AudioWaveform, 
   LazarusPackageIntf;
 
 implementation

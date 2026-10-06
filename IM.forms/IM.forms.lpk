@@ -112,6 +112,10 @@
         <Filename Value="src\Display\Frames\FrameImageViewer.pas"/>
         <UnitName Value="FrameImageViewer"/>
       </Item>
+      <Item>
+        <Filename Value="src\Classes\TimeTrackbar.pas"/>
+        <UnitName Value="TimeTrackbar"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
