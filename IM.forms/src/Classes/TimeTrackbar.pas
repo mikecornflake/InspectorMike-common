@@ -28,6 +28,7 @@ Type
     FBackBuffer: TBitmap;
     FDragging: Boolean;
 
+    Function GetPositionPercent: Single;
     Procedure SeekToFraction(AFraction: Double);
     Procedure SeekToTime(AValue: TDateTime);
     Procedure MouseSeek(X: Integer);
@@ -36,6 +37,7 @@ Type
     Procedure SetEndDateTime(Const AValue: TDateTime);
     Procedure SetPosition(Const AValue: TDateTime);
     Procedure RebuildBuffer;
+    Procedure SetPositionAsPercent(Const AValue: Single);
     Procedure SetStartDateTime(Const AValue: TDateTime);
   Protected
     Procedure DoEnter; Override;
@@ -54,6 +56,7 @@ Type
     Property StartDateTime: TDateTime Read FStartDateTime Write SetStartDateTime;
     Property EndDateTime: TDateTime Read FEndDateTime Write SetEndDateTime;
     Property Position: TDateTime Read FPosition Write SetPosition;
+    Property PositionPercent: Single Read GetPositionPercent Write SetPositionAsPercent;
 
     Property Decorator: TRenderer Read FDecorator Write SetDecorator;
 
@@ -262,6 +265,39 @@ Begin
 
   If Assigned(FOnChange) Then
     FOnChange(Self);
+End;
+
+Function TTimeTrackbar.GetPositionPercent: Single;
+Var
+  dtDuration: TDateTime;
+Begin
+  dtDuration := FEndDateTime - FStartDateTime;
+
+  If dtDuration > 0 Then
+    Result := 100 * (FPosition - FStartDateTime) / (dtDuration)
+  Else
+    Result := 0;
+End;
+
+Procedure TTimeTrackbar.SetPositionAsPercent(Const AValue: Single);
+Var
+  dtDuration: TDateTime;
+Begin
+  If InRange(AValue, 0, 100) Then
+  Begin
+    dtDuration := FEndDateTime - FStartDateTime;
+    If dtDuration > 0 Then
+      FPosition := FStartDateTime + AValue / 100 * dtDuration
+    Else
+      FPosition := 0;
+  End
+  Else If AValue <= 0 Then
+    FPosition := FStartDateTime
+  Else
+    FPosition := FEndDateTime;
+
+  RebuildBuffer;
+  Invalidate;
 End;
 
 Procedure TTimeTrackbar.SeekToTime(AValue: TDateTime);
