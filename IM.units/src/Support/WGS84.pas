@@ -64,7 +64,7 @@ User @stab
 Interface
 
 Uses
-  {Windows,} Messages, SysUtils, Classes, Graphics, Controls, Math;
+  {Windows,} SysUtils, Classes, Graphics, Controls, Math;
 
 Const
   XTranslToRR92: Extended = -419.375;

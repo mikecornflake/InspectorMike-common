@@ -224,12 +224,12 @@ Procedure TWaveformManager.ReceiveWaveform(AVideofilename: String;
 Var
   oCacheItem: TWaveformCacheItem;
 Begin
-    // Find returns a COPY of the data
+  // Find returns a COPY of the data
   oCacheItem := FCache.Find(AVideofilename);
   If Assigned(oCacheItem) Then
     oCacheItem := FCache.Extract(oCacheItem)
   Else
-   oCacheItem := TWaveformCacheItem.Create;
+    oCacheItem := TWaveformCacheItem.Create;
 
   oCacheItem.VideoFilename := AVideofilename;
   oCacheItem.WaveformBuckets := AWaveformBuckets;
@@ -312,6 +312,8 @@ Begin
 
     If Terminated Then
       Break;
+
+    oRequest := nil;
 
     While PopRequest(oRequest) Do
     Begin

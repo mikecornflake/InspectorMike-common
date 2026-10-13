@@ -336,7 +336,7 @@ End;
 Function TqpdfSupport.AddAttachments(Const AFilename: String;
   APDFAttachments: TPDFAttachments): Boolean;
 Var
-  sFolder, sExt, sOriginal, sParams, sCommand: String;
+  sParams, sCommand: String;
   oTemp: TPDFAttachment;
 Begin
   Result := False;
@@ -346,10 +346,6 @@ Begin
 
   Assert(APDFAttachments <> nil, 'Must pass a TPDFAttachments');
   Assert(Not APDFAttachments.FreeObjects, 'APDFAttachments must be set to FreeObjects');
-
-  sFolder := ExtractFileDir(AFilename);
-  sOriginal := ChangeFileExt(ExtractFileName(AFilename), '');
-  sExt := ExtractFileExt(AFilename);
 
   // TODO: Compare Existing Attachments then update or append accordingly
   //oExistingAttachments := TPDFAttachments.Create;

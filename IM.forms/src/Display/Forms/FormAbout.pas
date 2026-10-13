@@ -93,9 +93,7 @@ Procedure ShowAbout;
 Implementation
 
 Uses
-  LCLIntf,
-  VersionSupport, OSSupport,
-  ThirdPartySupport;
+  LCLIntf, VersionSupport, ThirdPartySupport;
 
   {$R *.lfm}
 
@@ -221,7 +219,7 @@ Begin
   End;
 
   memAbout.Lines.Clear;
-  memAbout.Lines.Add(Application.exename);
+  memAbout.Lines.Add(Application.ExeName);
   memAbout.Lines.Add('');
 
   oResourceStrings := TStringList.Create;
