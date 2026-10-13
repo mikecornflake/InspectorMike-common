@@ -104,6 +104,8 @@ Type
     Procedure SetVolume(AValue: Integer); Override;
 
     Procedure SetAutoplay(AValue: Boolean); Override;
+
+    Procedure VideoVideoLoaded(Sender: TObject);
   Public
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
@@ -453,6 +455,12 @@ Begin
   End;
 End;
 
+Procedure TFrameSyncedVideo.VideoVideoLoaded(Sender: TObject);
+Begin
+  If AllVideosLoaded Then
+    DoVideoLoaded;
+End;
+
 Procedure TFrameSyncedVideo.UpdateStateFromChildren;
 Var
   i: Integer;
@@ -518,6 +526,7 @@ Begin
     fmeVideo.OnActivateFrame := @VideoActivateFrame;
     fmeVideo.OnVideoDblCLick := @VideoDblClick;
     fmeVideo.OnVideoMouseDown := @VideoMouseDown;
+    fmeVideo.OnVideoLoaded := @VideoVideoLoaded;
 
     FVideos.Add(fmeVideo);
   End;
@@ -718,7 +727,6 @@ Begin
     End;
 
     DoPosition;
-    DoVideoLoaded;
   End
   Else
     SetState(vsLoading);
