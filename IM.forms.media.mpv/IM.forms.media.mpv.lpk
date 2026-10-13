@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="IM.forms.media.mpv"/>
     <Type Value="RunAndDesignTime"/>
@@ -8,7 +8,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="src\Display\Frames;src\Support"/>
+        <OtherUnitFiles Value="src\Display\Frames;src\Support;src\Classes"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
@@ -23,6 +23,10 @@
       <Item>
         <Filename Value="src\Support\LibmpvSupport.pas"/>
         <UnitName Value="LibmpvSupport"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Classes\WaveformCache.pas"/>
+        <UnitName Value="WaveformCache"/>
       </Item>
     </Files>
     <RequiredPkgs>

@@ -149,6 +149,7 @@ Var
   iGaugeLeft: Integer;
   iGaugeRight, iGaugeHeight: Integer;
 Begin
+  // TODO: Handle Enabled
   If (ClientWidth <= 0) Or (ClientHeight <= 0) Then
     Exit;
 
