@@ -32,7 +32,8 @@ Interface
 Uses
   Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs,
   ComCtrls, StdCtrls, ExtCtrls, Menus, ActnList, FrameBase, FrameVideoBase,
-  Types, FormVolumePopup, IniFiles, LMessages, LCLType, GraphType;
+  Types, FormVolumePopup, IniFiles, LMessages, LCLType, GraphType,
+  TimeTrackbar, AudioWaveform;
 
 Type
   TOnGrabImage = Procedure(Sender: TObject; Const AFolder: String) Of Object;
@@ -74,6 +75,7 @@ Type
     lblTime: TLabel;
     mnuStepForward: TMenuItem;
     mnuStepBack: TMenuItem;
+    pnlTrackbar: TPanel;
     Separator2: TMenuItem;
     mnuCopyToClipboard: TMenuItem;
     Separator1: TMenuItem;
@@ -96,7 +98,6 @@ Type
     btnStepForward: TToolButton;
     ToolButton1: TToolButton;
     btnVolume: TToolButton;
-    trackVideo: TTrackBar;
     Procedure actCopyToClipboardExecute(Sender: TObject);
     Procedure actPlayPauseExecute(Sender: TObject);
     Procedure actResetRateExecute(Sender: TObject);
@@ -117,6 +118,9 @@ Type
     Procedure trackVideoMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   Private
+    FTrackbar: TTimeTrackbar;
+    FDecorator: TRenderer;
+
     FGrabImageBtnEnabled: Boolean;
     FPanel: TVideoPanel;
     FAutoplay: Boolean;
@@ -143,6 +147,7 @@ Type
     Function GetShowLabel: Boolean;
     Function GetVideoFileCount: Integer;
     Procedure SetAutoplay(AValue: Boolean);
+    Procedure SetDecorator(Const AValue: TRenderer);
     Procedure SetGrabImageBtnEnabled(Const AValue: Boolean);
     Procedure SetImageFolder(Const AValue: String);
     Procedure SetImageGrabHint(Const AValue: String);
@@ -197,6 +202,8 @@ Type
       Read FOnVideoPositionChange Write FOnVideoPositionChange;
 
     Property VideoTrackbarSeek: Boolean Read FVideoTrackbarSeek;
+
+    Property Decorator: TRenderer Read FDecorator Write SetDecorator;
   End;
 
 Const
@@ -247,9 +254,16 @@ Begin
   FUpdatingTracker := False;
   FLastSeekTick := 0;
 
-  trackVideo.Min := 0;
-  trackVideo.Max := 0;
-  trackVideo.Position := 0;
+  FTrackbar := TTimeTrackbar.Create(pnlTrackbar);
+  FTrackbar.Parent := pnlTrackbar;
+  FTrackbar.Align := alClient;
+
+  FTrackbar.StartDateTime := 0;
+  FTrackbar.EndDateTime := 0;
+  FTrackbar.Position := 0;
+  FTrackbar.OnChange := @trackVideoChange;
+
+  FDecorator := nil;
 
   FMuted := False;
   FVolume := 100;
@@ -264,6 +278,9 @@ End;
 
 Destructor TFrameVideoPlayer.Destroy;
 Begin
+  FDecorator := nil;
+  FreeAndNil(FTrackbar);
+
   FreeAndNil(fmeVideo);
   FreeAndNil(FPanel);
 
@@ -372,7 +389,7 @@ Begin
   actCopyToClipboard.Enabled := bCanGrab;
   actVolume.Enabled := bHasFile;
 
-  trackVideo.Enabled := bCanSeek;
+  FTrackbar.Enabled := bCanSeek;
 
   actPlayFaster.Hint := 'Play faster: ';
   actPlaySlower.Hint := 'Play slower: ';
@@ -708,38 +725,38 @@ Begin
   FLastSeekTick := GetTickCount64;
 
   If Assigned(fmeVideo) And fmeVideo.CanSeek Then
-    fmeVideo.Position := trackVideo.Position;
+    fmeVideo.PositionAsTime := FTrackbar.Position;
 End;
 
 Procedure TFrameVideoPlayer.trackVideoMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
-Var
-  NewPos: Integer;
+//Var
+//  NewPos: Integer;
 Begin
-  {$IFNDEF RELEASE}
-  DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}]);
-  {$ENDIF}
-  FLastSeekTick := 0;
+  //{$IFNDEF RELEASE}
+  //DebugLn(DBG_VIDEO_PLAYER, [ClassName, '.', {$I %CURRENTROUTINE%}]);
+  //{$ENDIF}
+  //FLastSeekTick := 0;
 
-  If Button <> mbLeft Then
-    Exit;
+  //If Button <> mbLeft Then
+  //  Exit;
 
-  If trackVideo.Max <= trackVideo.Min Then
-    Exit;
+  //If trackVideo.Max <= trackVideo.Min Then
+  //  Exit;
 
-  NewPos :=
-    trackVideo.Min + Round((X / trackVideo.ClientWidth) * (trackVideo.Max - trackVideo.Min));
+  //NewPos :=
+  //  trackVideo.Min + Round((X / trackVideo.ClientWidth) * (trackVideo.Max - trackVideo.Min));
 
-  If NewPos < trackVideo.Min Then
-    NewPos := trackVideo.Min
-  Else If NewPos > trackVideo.Max Then
-    NewPos := trackVideo.Max;
+  //If NewPos < trackVideo.Min Then
+  //  NewPos := trackVideo.Min
+  //Else If NewPos > trackVideo.Max Then
+  //  NewPos := trackVideo.Max;
 
-  FVideoTrackbarSeek := True;
-  trackVideo.Position := NewPos;
+  //FVideoTrackbarSeek := True;
+  //trackVideo.Position := NewPos;
 
-  If Assigned(fmeVideo) And fmeVideo.CanSeek Then
-    fmeVideo.Position := NewPos;
+  //If Assigned(fmeVideo) And fmeVideo.CanSeek Then
+  //  fmeVideo.Position := NewPos;
 End;
 
 Procedure TFrameVideoPlayer.btnGrabClick(Sender: TObject);
@@ -873,6 +890,15 @@ Begin
     fmeVideo.Autoplay := FAutoplay;
 End;
 
+Procedure TFrameVideoPlayer.SetDecorator(Const AValue: TRenderer);
+Begin
+  If FDecorator = AValue Then Exit;
+
+  FDecorator := AValue;
+
+  FTrackbar.Decorator := AValue;
+End;
+
 Procedure TFrameVideoPlayer.SetGrabImageBtnEnabled(Const AValue: Boolean);
 Begin
   If FGrabImageBtnEnabled = AValue Then
@@ -940,16 +966,17 @@ Begin
     {$ENDIF}
 
     If DurationMS > 0 Then
-      trackVideo.Max := DurationMS
+    Begin
+      FTrackbar.StartDateTime := fmeVideo.StartDateTime;
+      FTrackbar.EndDateTime := fmeVideo.EndDateTime;
+    End
     Else
-      trackVideo.Max := 0;
+    Begin
+      FTrackbar.StartDateTime := 0;
+      FTrackbar.EndDateTime := 0;
+    End;
 
-    If PositionMS < 0 Then
-      trackVideo.Position := 0
-    Else If PositionMS > trackVideo.Max Then
-      trackVideo.Position := trackVideo.Max
-    Else
-      trackVideo.Position := PositionMS;
+    FTrackbar.Position := fmeVideo.PositionAsTime;
   Finally
     FUpdatingTracker := False;
   End;
