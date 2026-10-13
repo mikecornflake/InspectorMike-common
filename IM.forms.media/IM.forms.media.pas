@@ -9,15 +9,8 @@ interface
 
 uses
   FrameImages, FramePDFViewer, FrameRelatedVideos, FrameSyncedVideo, FrameVideoPlayer, 
-  FrameVideoBase, VideoEngineFactory, FormVolumePopup, FrameSettingsSyncedVideo, AudioWaveform, 
-  LazarusPackageIntf;
+  FrameVideoBase, VideoEngineFactory, FormVolumePopup, FrameSettingsSyncedVideo, AudioWaveform;
 
 implementation
 
-procedure Register;
-begin
-end;
-
-initialization
-  RegisterPackage('IM.forms.media', @Register);
 end.

@@ -82,7 +82,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object btnSep2: TToolButton
         Left = 335
-        Height = 32
+        Height = 8
         Top = 0
         Caption = 'btnSep2'
         Style = tbsSeparator
@@ -99,7 +99,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object btnSep1: TToolButton
         Left = 73
-        Height = 32
+        Height = 8
         Top = 0
         Style = tbsSeparator
       end
@@ -113,7 +113,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object btnSep3: TToolButton
         Left = 279
-        Height = 32
+        Height = 8
         Top = 0
         Caption = 'btnSep3'
         Style = tbsSeparator
@@ -143,7 +143,7 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
       end
       object ToolButton1: TToolButton
         Left = 225
-        Height = 32
+        Height = 8
         Top = 0
         Caption = 'ToolButton1'
         Style = tbsSeparator
@@ -155,25 +155,21 @@ inherited FrameVideoPlayer: TFrameVideoPlayer
         Style = tbsButtonDrop
       end
     end
-    object trackVideo: TTrackBar
+    object pnlTrackbar: TPanel
       AnchorSideLeft.Control = tbVideo
       AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnlToolbar
       AnchorSideRight.Control = pnlToolbar
       AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = pnlToolbar
+      AnchorSideBottom.Side = asrBottom
       Left = 419
       Height = 34
-      Hint = 'Drag Trackbar to quickly scroll'#13#10'Or move mouse over video and scroll mousewheel:'#13#10'  Normal: 3 seconds'#13#10'  Ctrl+scroll: 1 second'#13#10'  Shift+scroll: 6 seconds'
       Top = 0
       Width = 223
-      Position = 0
-      TickMarks = tmTopLeft
-      TickStyle = tsNone
-      OnChange = trackVideoChange
-      Anchors = [akTop, akLeft, akRight]
-      ParentShowHint = False
-      ShowHint = True
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BevelOuter = bvNone
       TabOrder = 1
-      OnMouseDown = trackVideoMouseDown
     end
   end
   object ilToolbar32: TImageList[3]

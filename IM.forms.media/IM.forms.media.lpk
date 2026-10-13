@@ -3,7 +3,7 @@
   <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="IM.forms.media"/>
-    <Type Value="RunAndDesignTime"/>
+    <Type Value="RunTimeOnly"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
