@@ -35,7 +35,7 @@ Database helpers, export framework, SQL filtering dialogs, CSV/grid frames, and 
 - Depends on `IM.units` & Depends on `IM.forms`
 - Depends on Lazarus\FPC packages: `FCL`, `fpvectorialpkg` & `SynEdit`
 - Depends on third party package ZeosDB `zcomponent`
-- The routines are primarily designed for the Free Pascal database framework (SQLDB).  ZeosDB support is optional in terms of functionality, but currently requires the `zcomponent` package to compile.  The intention is to eventually separate ZeosDB-specific functionality into IM.database.ZeosDB.lpk.
+- The routines are primarily designed for the Free Pascal database framework (SQLDB).  ZeosDB support is optional in terms of functionality, but currently requires the `zcomponent` package to compile.  The intention is to eventually separate ZeosDB-specific functionality into `IM.database.ZeosDB.lpk`.
 
 ---
 
@@ -63,10 +63,13 @@ This repository contains reusable support units and frameworks used by multiple 
 ## Changelog
 
 ### [0.1.3.0] – 2026-10-14
-- Improvements to video units
-- Audio waveform routines
-- Fixed lpk Descriptions & build info
-- Added Third Party Support (full acknowledgement, licensing and links detailed in About Form)
+#### Added
+- Audio waveform extraction and rendering routines.
+- Third-party support acknowledgements, including licensing information and links in the About dialog.
+
+#### Changed
+- Improved video playback components.
+- Updated Lazarus package descriptions and build information.
 
 ### [0.1.2.0] – 2026-06-19
 #### Changed
