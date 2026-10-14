@@ -4,6 +4,7 @@
     <PathDelim Value="\"/>
     <Name Value="IM.database"/>
     <Type Value="RunAndDesignTime"/>
+    <Author Value="Mike Thompson / Inspector Mike 2.0 Pty Ltd"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -19,6 +20,13 @@
         <CustomOptions Value="-d$(BuildMode)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Database helpers, export framework, SQL filtering dialogs, CSV/grid frames, and DBGrid support.
+- Depends on `IM.units` &amp; Depends on `IM.forms`
+- Depends on Lazarus\FPC packages: `FCL`, `fpvectorialpkg` &amp; `SynEdit`
+- Depends on third party package ZeosDB `zcomponent`
+- The routines are primarily designed for the Free Pascal database framework (SQLDB).  ZeosDB support is optional in terms of functionality, but currently requires the `zcomponent` package to compile.  The intention is to eventually separate ZeosDB-specific functionality into `IM.database.ZeosDB.lpk`."/>
+    <License Value="GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)"/>
+    <Version Minor="1" Release="3"/>
     <Files>
       <Item>
         <Filename Value="src\Classes\Exporters.pas"/>

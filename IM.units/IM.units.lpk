@@ -3,7 +3,8 @@
   <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="IM.units"/>
-    <Type Value="RunAndDesignTime"/>
+    <Type Value="RunTimeOnly"/>
+    <Author Value="Mike Thompson / Inspector Mike 2.0 Pty Ltd"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -19,6 +20,10 @@
         <CustomOptions Value="-d$(BuildMode)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Base units for Inspector Mike packages
+- Core standalone utility units and helper classes."/>
+    <License Value="GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)"/>
+    <Version Minor="1" Release="3"/>
     <Files>
       <Item>
         <Filename Value="src\Classes\Logs.pas"/>

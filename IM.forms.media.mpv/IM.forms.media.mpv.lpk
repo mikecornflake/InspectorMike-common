@@ -4,6 +4,7 @@
     <PathDelim Value="\"/>
     <Name Value="IM.forms.media.mpv"/>
     <Type Value="RunAndDesignTime"/>
+    <Author Value="Mike Thompson / Inspector Mike 2.0 Pty Ltd"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -18,6 +19,10 @@
         <CustomOptions Value="-d$(BuildMode)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Video playback and audio extraction support using libmpv and the URUWorks Pascal wrapper (MPL-2.0)
+- Depends on `IM.forms.media` &amp; `UWMPVPlayer`"/>
+    <License Value="GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)"/>
+    <Version Minor="1" Release="3"/>
     <Files>
       <Item>
         <Filename Value="src\Display\Frames\FrameVideoLibmpv.pas"/>

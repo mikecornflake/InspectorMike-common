@@ -4,6 +4,7 @@
     <PathDelim Value="\"/>
     <Name Value="IM.forms.media"/>
     <Type Value="RunTimeOnly"/>
+    <Author Value="Mike Thompson / Inspector Mike 2.0 Pty Ltd"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -19,6 +20,10 @@
         <CustomOptions Value="-d$(BuildMode)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Media-related frames and support classes, including image, PDF, audio waveforms, video, and synchronised video playback.
+- Depends on `IM.forms`"/>
+    <License Value="GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)"/>
+    <Version Minor="1" Release="3"/>
     <Files>
       <Item>
         <Filename Value="src\Display\Frames\FrameImages.lfm"/>

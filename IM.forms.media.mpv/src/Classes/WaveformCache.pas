@@ -372,6 +372,9 @@ Begin
       ReadWaveform(sAudioFile, oWavInfo, oWaveBuckets, iBucket_mS);
     End;
 
+  If FileExists(sAudioFile) Then
+    DeleteFile(sAudioFile);
+
   // Use FResults to get this back to the main thread
   oCacheItem := TWaveformCacheItem.Create;
   oCacheItem.VideoFilename := AWaveformRequest.VideoFilename;

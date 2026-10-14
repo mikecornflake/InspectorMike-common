@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="5">
+  <Package Version="6">
     <PathDelim Value="\"/>
     <Name Value="IM.units.LazSerial"/>
     <Type Value="RunAndDesignTime"/>
+    <Author Value="Mike Thompson / Inspector Mike 2.0 Pty Ltd"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -15,6 +16,11 @@
         <CustomOptions Value="-d$(BuildMode)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Optional serial-port support units. 
+- Depends on `IM.units`
+- Depends on third party unit LazSerialPort"/>
+    <License Value="GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)"/>
+    <Version Minor="1" Release="3"/>
     <Files>
       <Item>
         <Filename Value="src\Support\LazSerialSupport.pas"/>

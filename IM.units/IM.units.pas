@@ -8,17 +8,11 @@ unit IM.units;
 interface
 
 uses
-  Logs, MRUs, Settings, ffmpegSupport, FileSupport, GPSSupport, OSSupport, StringSupport, 
-  TesseractSupport, VersionSupport, WGS84, XMLSupport, XPDFSupport, InspectionSupport, 
-  qpdfSupport, PDF, ImageSupport, PopplerSupport, ThirdPartySupport, LoggingSupport, IMMessaging, 
-  IMLists, LazarusPackageIntf;
+  Logs, MRUs, Settings, ffmpegSupport, FileSupport, GPSSupport, OSSupport, 
+  StringSupport, TesseractSupport, VersionSupport, WGS84, XMLSupport, 
+  XPDFSupport, InspectionSupport, qpdfSupport, PDF, ImageSupport, 
+  PopplerSupport, ThirdPartySupport, LoggingSupport, IMMessaging, IMLists;
 
 implementation
 
-procedure Register;
-begin
-end;
-
-initialization
-  RegisterPackage('IM.units', @Register);
 end.

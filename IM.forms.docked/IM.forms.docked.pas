@@ -8,14 +8,8 @@ unit IM.forms.docked;
 interface
 
 uses
-  DockManagers, DialogDockManager, DockBase, FormMultiDock, LazarusPackageIntf;
+  DockManagers, DialogDockManager, DockBase, FormMultiDock;
 
 implementation
 
-procedure Register;
-begin
-end;
-
-initialization
-  RegisterPackage('IM.forms.docked', @Register);
 end.

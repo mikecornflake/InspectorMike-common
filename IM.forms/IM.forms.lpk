@@ -4,6 +4,7 @@
     <PathDelim Value="\"/>
     <Name Value="IM.forms"/>
     <Type Value="RunAndDesignTime"/>
+    <Author Value="Mike Thompson / Inspector Mike 2.0 Pty Ltd"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -19,6 +20,11 @@
         <CustomOptions Value="-d$(BuildMode)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Base forms, smart About dialog, persistent forms, common frames, and shared form infrastructure.
+- Depends on the following packages distributed with Lazarus and fpc
+-- `TurbopowerIPro`, `SynEditDsgn`, `SynEdit`, `LCLBase` &amp; `FCL`"/>
+    <License Value="GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)"/>
+    <Version Minor="1" Release="3"/>
     <Files>
       <Item>
         <Filename Value="src\Classes\ControlGridLayout.pas"/>
