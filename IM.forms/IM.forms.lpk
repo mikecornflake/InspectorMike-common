@@ -103,22 +103,6 @@
         <UnitName Value="DialogFrameHost"/>
       </Item>
       <Item>
-        <Filename Value="src\Display\Dialogs\DialogImageSelection.pas"/>
-        <UnitName Value="DialogImageSelection"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Display\Dialogs\DialogImageSelection.lfm"/>
-        <Type Value="LFM"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Display\Frames\FrameImageViewer.lfm"/>
-        <Type Value="LFM"/>
-      </Item>
-      <Item>
-        <Filename Value="src\Display\Frames\FrameImageViewer.pas"/>
-        <UnitName Value="FrameImageViewer"/>
-      </Item>
-      <Item>
         <Filename Value="src\Classes\TimeTrackbar.pas"/>
         <UnitName Value="TimeTrackbar"/>
       </Item>

@@ -10,7 +10,7 @@ interface
 uses
   ControlGridLayout, PipelineEventMap, FormAbout, FormMain, FormPersistent, FrameAboutThirdParty, 
   FrameBase, FrameHTMLs, FramePipelineView, WizardBase, ControlsSupport, DialogFrameHost, 
-  DialogImageSelection, FrameImageViewer, TimeTrackbar, LazarusPackageIntf;
+  TimeTrackbar, LazarusPackageIntf;
 
 implementation
 

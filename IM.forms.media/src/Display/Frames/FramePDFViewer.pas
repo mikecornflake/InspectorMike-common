@@ -43,7 +43,7 @@ Interface
 
 Uses
   Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, ExtCtrls,
-  ComCtrls, FrameBase, FrameImages, Graphics, Dialogs, ActnList, Menus, PDF;
+  ComCtrls, FrameBase, FrameImageViewer, Graphics, Dialogs, ActnList, Menus, PDF;
 
 Type
 
@@ -143,7 +143,7 @@ Type
     FPicture: TPicture; // Cache for thumbnailer
     FActive: Boolean;
     FFilename: String;
-    fmeImages: TFrameImage;
+    fmeImages: TFrameImageViewer;
     FPage: Integer;
     FPageCount: Integer;
     FPDFDir: String;
@@ -206,7 +206,7 @@ Constructor TFramePDFViewer.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
-  fmeImages := TFrameImage.Create(Self);
+  fmeImages := TFrameImageViewer.Create(Self);
   fmeImages.Parent := pnlImages;
   fmeImages.Align := alClient;
   fmeImages.Name := 'fmeImages';

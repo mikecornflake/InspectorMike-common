@@ -1,4 +1,4 @@
-Unit FrameImageViewer;
+Unit FrameImageGrid;
 
 {$mode ObjFPC}{$H+}
 {$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
@@ -39,9 +39,9 @@ Type
     Procedure InvalidateThumbnails;
   End;
 
-  { TFrameImageViewer }
+  { TFrameImageGrid }
 
-  TFrameImageViewer = Class(TFrame)
+  TFrameImageGrid = Class(TFrame)
     actImages: TActionList;
     actAddimage: TAction;
     actRefreshList: TAction;
@@ -180,9 +180,9 @@ Begin
     oImage.InvalidateThumbnail;
 End;
 
-{ TFrameImageViewer }
+{ TFrameImageGrid }
 
-Constructor TFrameImageViewer.Create(TheOwner: TComponent);
+Constructor TFrameImageGrid.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
 
@@ -199,14 +199,14 @@ Begin
   RefreshUI;
 End;
 
-Destructor TFrameImageViewer.Destroy;
+Destructor TFrameImageGrid.Destroy;
 Begin
   FreeAndNil(FImages);
 
   Inherited Destroy;
 End;
 
-Procedure TFrameImageViewer.UpdateGridLayout;
+Procedure TFrameImageGrid.UpdateGridLayout;
 Var
   iCellWidth, iCellHeight: Integer;
   iCols, iRows: Integer;
@@ -240,7 +240,7 @@ Begin
   RefreshUI;
 End;
 
-Procedure TFrameImageViewer.grdImagesDrawCell(Sender: TObject; aCol, aRow: Integer;
+Procedure TFrameImageGrid.grdImagesDrawCell(Sender: TObject; aCol, aRow: Integer;
   aRect: TRect; aState: TGridDrawState);
 Var
   iIndex: Integer;
@@ -327,13 +327,13 @@ Begin
     2, oImage.Caption);
 End;
 
-Procedure TFrameImageViewer.grdImagesGetCellHint(Sender: TObject; aCol, aRow: Integer;
+Procedure TFrameImageGrid.grdImagesGetCellHint(Sender: TObject; aCol, aRow: Integer;
   Var HintText: String);
 Begin
   HintText := grdImages.Hint;
 End;
 
-Procedure TFrameImageViewer.grdImagesMouseDown(Sender: TObject; Button: TMouseButton;
+Procedure TFrameImageGrid.grdImagesMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 Var
   aCol, aRow: Integer;
@@ -350,7 +350,7 @@ Begin
   End;
 End;
 
-Procedure TFrameImageViewer.pmImagesPopup(Sender: TObject);
+Procedure TFrameImageGrid.pmImagesPopup(Sender: TObject);
 //Var
 //  iIndex: Integer;
 Begin
@@ -359,7 +359,7 @@ Begin
   RefreshUI;
 End;
 
-Procedure TFrameImageViewer.RefreshUI;
+Procedure TFrameImageGrid.RefreshUI;
 Var
   iIndex: Integer;
   bHasImages, bImageSelected: Boolean;
@@ -384,18 +384,18 @@ Begin
   actRefreshList.Visible := ToolBar.Visible;
 End;
 
-Procedure TFrameImageViewer.SetShowToolbar(Const AValue: Boolean);
+Procedure TFrameImageGrid.SetShowToolbar(Const AValue: Boolean);
 Begin
   ToolBar.Visible := AValue;
   RefreshUI;
 End;
 
-Procedure TFrameImageViewer.FrameResize(Sender: TObject);
+Procedure TFrameImageGrid.FrameResize(Sender: TObject);
 Begin
   UpdateGridLayout;
 End;
 
-Procedure TFrameImageViewer.actOpenFolderExecute(Sender: TObject);
+Procedure TFrameImageGrid.actOpenFolderExecute(Sender: TObject);
 Var
   iIndex: Integer;
   oImage: TViewerImage;
@@ -411,13 +411,13 @@ Begin
     LaunchFile('explorer.exe', Format('/e,/select,"%s"', [oImage.FileName]));
 End;
 
-Procedure TFrameImageViewer.actRefreshListExecute(Sender: TObject);
+Procedure TFrameImageGrid.actRefreshListExecute(Sender: TObject);
 Begin
   If Assigned(FOnRequestRefreshImages) Then
     FOnRequestRefreshImages(Self);
 End;
 
-Procedure TFrameImageViewer.actRenameImageExecute(Sender: TObject);
+Procedure TFrameImageGrid.actRenameImageExecute(Sender: TObject);
 Var
   iIndex: Integer;
   oImage: TViewerImage;
@@ -458,13 +458,13 @@ Begin
     End;
 End;
 
-Procedure TFrameImageViewer.actAddimageExecute(Sender: TObject);
+Procedure TFrameImageGrid.actAddimageExecute(Sender: TObject);
 Begin
   If Assigned(FOnRequestAddImage) Then
     FOnRequestAddImage(Self);
 End;
 
-Procedure TFrameImageViewer.actDeleteImageExecute(Sender: TObject);
+Procedure TFrameImageGrid.actDeleteImageExecute(Sender: TObject);
 Var
   iIndex: Integer;
   oImage: TViewerImage;
@@ -497,7 +497,7 @@ Begin
   End;
 End;
 
-Procedure TFrameImageViewer.actViewImageClick(Sender: TObject);
+Procedure TFrameImageGrid.actViewImageClick(Sender: TObject);
 Var
   iIndex: Integer;
   oImage: TViewerImage;
@@ -513,7 +513,7 @@ Begin
     LaunchDocument(oImage.FileName);
 End;
 
-Procedure TFrameImageViewer.grdImagesClick(Sender: TObject);
+Procedure TFrameImageGrid.grdImagesClick(Sender: TObject);
 Var
   iIndex: Integer;
   oImage: TViewerImage;
@@ -534,7 +534,7 @@ Begin
   End;
 End;
 
-Procedure TFrameImageViewer.SetThumbnailBorder(Const AValue: Integer);
+Procedure TFrameImageGrid.SetThumbnailBorder(Const AValue: Integer);
 Begin
   If FThumbnailBorder = AValue Then Exit;
 
@@ -543,7 +543,7 @@ Begin
   UpdateGridLayout;
 End;
 
-Function TFrameImageViewer.GetImage(AIndex: Integer): TViewerImage;
+Function TFrameImageGrid.GetImage(AIndex: Integer): TViewerImage;
 Begin
   If (AIndex >= 0) And (AIndex < FImages.Count) Then
     Result := FImages[AIndex]
@@ -551,12 +551,12 @@ Begin
     Result := nil;
 End;
 
-Function TFrameImageViewer.GetShowToolbar: Boolean;
+Function TFrameImageGrid.GetShowToolbar: Boolean;
 Begin
   Result := ToolBar.Visible;;
 End;
 
-Procedure TFrameImageViewer.SetThumbnailSize(Const AWidth, AHeight: Integer);
+Procedure TFrameImageGrid.SetThumbnailSize(Const AWidth, AHeight: Integer);
 Begin
   If (FThumbnailWidth = AWidth) And (FThumbnailHeight = AHeight) Then
     Exit;
@@ -569,7 +569,7 @@ Begin
   UpdateGridLayout;
 End;
 
-Function TFrameImageViewer.AddImage(Const AFilename, ACaption: String): TViewerImage;
+Function TFrameImageGrid.AddImage(Const AFilename, ACaption: String): TViewerImage;
 Var
   oImage: TViewerImage;
 Begin
@@ -584,29 +584,29 @@ Begin
   UpdateGridLayout;
 End;
 
-Procedure TFrameImageViewer.ClearImages;
+Procedure TFrameImageGrid.ClearImages;
 Begin
   FImages.Clear;
 
   UpdateGridLayout;
 End;
 
-Procedure TFrameImageViewer.RefreshImages;
+Procedure TFrameImageGrid.RefreshImages;
 Begin
   actRefreshList.Execute;
 End;
 
-Function TFrameImageViewer.ImageCount: Integer;
+Function TFrameImageGrid.ImageCount: Integer;
 Begin
   Result := FImages.Count;
 End;
 
-Procedure TFrameImageViewer.LoadSettings(AInifile: TIniFile);
+Procedure TFrameImageGrid.LoadSettings(AInifile: TIniFile);
 Begin
 
 End;
 
-Procedure TFrameImageViewer.SaveSettings(AInifile: TIniFile);
+Procedure TFrameImageGrid.SaveSettings(AInifile: TIniFile);
 Begin
 
 End;

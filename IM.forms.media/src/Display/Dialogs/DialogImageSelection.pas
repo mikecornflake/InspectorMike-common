@@ -5,7 +5,7 @@ Unit DialogImageSelection;
 Interface
 
 Uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel, FrameImageViewer;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel, FrameImageGrid;
 
 Type
 
@@ -18,7 +18,7 @@ Type
     Procedure FormCreate(Sender: TObject);
     Procedure FormDestroy(Sender: TObject);
   Private
-    fmeImageViewer: TFrameImageViewer;
+    fmeImageViewer: TFrameImageGrid;
     Function GetCaptionNotSelected: String;
     Function GetCaptionSelected: String;
     Function GetImage(AIndex: Integer): TViewerImage;
@@ -48,7 +48,7 @@ Uses
 
 Procedure TDialogImageSelection.FormCreate(Sender: TObject);
 Begin
-  fmeImageViewer := TFrameImageViewer.Create(self);
+  fmeImageViewer := TFrameImageGrid.Create(self);
   fmeImageViewer.Parent := self;
   fmeImageViewer.Align := alClient;
   fmeImageViewer.Name := 'fmeImageViewer';

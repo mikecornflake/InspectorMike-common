@@ -1,4 +1,4 @@
-inherited FrameImage: TFrameImage
+inherited FrameImage: TFrameImageViewer
   Height = 323
   Width = 377
   ClientHeight = 323

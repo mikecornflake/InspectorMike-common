@@ -1,8 +1,8 @@
-Unit FrameImages;
+Unit FrameImageViewer;
 
 {-------------------------------------------------------------------------------
   Package   : IM.forms.media
-  Unit      : FrameImages.pas
+  Unit      : FrameImageViewer.pas
   Description
     Image viewer frame with navigation and clipboard actions.
 
@@ -48,9 +48,9 @@ Uses
 Type
   TScrollToNext = Procedure(Sender: TObject; AScrollUp: Boolean) Of Object;
 
-  { TFrameImage }
+  { TFrameImageViewer }
 
-  TFrameImage = Class(TFrameBase)
+  TFrameImageViewer = Class(TFrameBase)
     imgImage: TImage;
     lblStatus: TLabel;
     MenuItem1: TMenuItem;
@@ -109,9 +109,9 @@ Uses
 
   {$R *.lfm}
 
-  { TFrameImage }
+  { TFrameImageViewer }
 
-Constructor TFrameImage.Create(TheOwner: TComponent);
+Constructor TFrameImageViewer.Create(TheOwner: TComponent);
 Begin
   Inherited Create(TheOwner);
   FPDF := False;
@@ -123,7 +123,7 @@ Begin
   FScrollToNext := nil;
 End;
 
-Procedure TFrameImage.mnuCopyToClipboardClick(Sender: TObject);
+Procedure TFrameImageViewer.mnuCopyToClipboardClick(Sender: TObject);
 Var
   oBmp: TBitmap;
 Begin
@@ -139,14 +139,14 @@ Begin
   End;
 End;
 
-Procedure TFrameImage.FrameResize(Sender: TObject);
+Procedure TFrameImageViewer.FrameResize(Sender: TObject);
 Begin
   Stretch := FStretch;
 
   ResizeImage;
 End;
 
-Procedure TFrameImage.mnuImagePopup(Sender: TObject);
+Procedure TFrameImageViewer.mnuImagePopup(Sender: TObject);
 Begin
   If FStretch Then
     mnuToggleStretch.Caption := 'Show Full Size'
@@ -158,7 +158,7 @@ Begin
   mnuToggleStretch.Enabled := mnuCopyToClipboard.Enabled;
 End;
 
-Procedure TFrameImage.mnuOpenInExplorer2Click(Sender: TObject);
+Procedure TFrameImageViewer.mnuOpenInExplorer2Click(Sender: TObject);
 Begin
   If Assigned(imgImage.Picture.Graphic) Then
     LaunchFile('explorer.exe', Format('/e,/select,"%s"', [FFilename]))
@@ -166,13 +166,13 @@ Begin
     ShowMessage('No image loaded...');
 End;
 
-Procedure TFrameImage.mnuToggleStretchClick(Sender: TObject);
+Procedure TFrameImageViewer.mnuToggleStretchClick(Sender: TObject);
 Begin
   Stretch := Not FStretch;
   CenterImage;
 End;
 
-Procedure TFrameImage.sboxImageMouseWheel(Sender: TObject; Shift: TShiftState;
+Procedure TFrameImageViewer.sboxImageMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; Var Handled: Boolean);
 Var
   iDirection, iPosition: Integer;
@@ -217,7 +217,7 @@ Begin
   End;
 End;
 
-Procedure TFrameImage.SetFilename(Const AValue: String);
+Procedure TFrameImageViewer.SetFilename(Const AValue: String);
 Begin
   If FFilename = AValue Then
     exit;
@@ -241,7 +241,7 @@ Begin
     ClearImage;
 End;
 
-Procedure TFrameImage.SetScale(AValue: Double);
+Procedure TFrameImageViewer.SetScale(AValue: Double);
 Begin
   FZoomToWidth := False;
 
@@ -250,7 +250,7 @@ Begin
   ResizeImage;
 End;
 
-Procedure TFrameImage.SetStretch(AValue: Boolean);
+Procedure TFrameImageViewer.SetStretch(AValue: Boolean);
 Begin
   FStretch := AValue;
 
@@ -262,7 +262,7 @@ Begin
     Zoom100;
 End;
 
-Procedure TFrameImage.ZoomToPage;
+Procedure TFrameImageViewer.ZoomToPage;
 Var
   dScaleX, dScaleY: Extended;
 Begin
@@ -282,7 +282,7 @@ Begin
   End;
 End;
 
-Procedure TFrameImage.SetZoomToWidth(AValue: Boolean);
+Procedure TFrameImageViewer.SetZoomToWidth(AValue: Boolean);
 Begin
   FStretch := False;
 
@@ -295,7 +295,7 @@ Begin
   RefreshUI;
 End;
 
-Procedure TFrameImage.Zoom100;
+Procedure TFrameImageViewer.Zoom100;
 Begin
   FStretch := False;
   Scale := 1;
@@ -303,38 +303,38 @@ Begin
   RefreshUI;
 End;
 
-Procedure TFrameImage.ZoomIn;
+Procedure TFrameImageViewer.ZoomIn;
 Begin
   FStretch := False;
   Scale := Scale * 1.1;
   RefreshUI;
 End;
 
-Procedure TFrameImage.ZoomOut;
+Procedure TFrameImageViewer.ZoomOut;
 Begin
   FStretch := False;
   Scale := Scale / 1.1;
   RefreshUI;
 End;
 
-Procedure TFrameImage.ScrollToTop;
+Procedure TFrameImageViewer.ScrollToTop;
 Begin
   sboxImage.VertScrollBar.Position := 0;
 End;
 
-Procedure TFrameImage.ScrollToBottom;
+Procedure TFrameImageViewer.ScrollToBottom;
 Begin
   sboxImage.VertScrollBar.Position := sboxImage.VertScrollBar.Page + sboxImage.VertScrollBar.Range;
 End;
 
-Procedure TFrameImage.ClearImage;
+Procedure TFrameImageViewer.ClearImage;
 Begin
   FFilename := '';
   imgImage.Picture.Clear;
   lblStatus.Caption := '';
 End;
 
-Procedure TFrameImage.CenterImage;
+Procedure TFrameImageViewer.CenterImage;
 Begin
   With sboxImage.HorzScrollBar Do
     Position := (Range - Page) Div 2;
@@ -346,12 +346,12 @@ Begin
       Position := (Range - Page) Div 2;
 End;
 
-Function TFrameImage.GetScale: Double;
+Function TFrameImageViewer.GetScale: Double;
 Begin
   Result := FScale;
 End;
 
-Procedure TFrameImage.ResizeImage;
+Procedure TFrameImageViewer.ResizeImage;
 
   Function ScaleInt(AValue: Double): Integer;
   Begin

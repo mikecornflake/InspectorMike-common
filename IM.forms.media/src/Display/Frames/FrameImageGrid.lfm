@@ -1,4 +1,4 @@
-object FrameImageViewer: TFrameImageViewer
+object FrameImageGrid: TFrameImageGrid
   Left = 0
   Height = 394
   Hint = 'Click on an image to select or unselect'

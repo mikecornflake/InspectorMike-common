@@ -9,8 +9,8 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="src\Display\Frames"/>
-        <OtherUnitFiles Value="src\Classes;src\Display\Frames;src\Display\Forms"/>
+        <IncludeFiles Value="src\Display\Frames;src\Display\Dialogs"/>
+        <OtherUnitFiles Value="src\Classes;src\Display\Frames;src\Display\Forms;src\Display\Dialogs"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
@@ -26,12 +26,12 @@
     <Version Minor="1" Release="3"/>
     <Files>
       <Item>
-        <Filename Value="src\Display\Frames\FrameImages.lfm"/>
+        <Filename Value="src\Display\Frames\FrameImageViewer.lfm"/>
         <Type Value="LFM"/>
       </Item>
       <Item>
-        <Filename Value="src\Display\Frames\FrameImages.pas"/>
-        <UnitName Value="FrameImages"/>
+        <Filename Value="src\Display\Frames\FrameImageViewer.pas"/>
+        <UnitName Value="FrameImageViewer"/>
       </Item>
       <Item>
         <Filename Value="src\Display\Frames\FramePDFViewer.lfm"/>
@@ -92,6 +92,22 @@
       <Item>
         <Filename Value="src\Classes\AudioWaveform.pas"/>
         <UnitName Value="AudioWaveform"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Dialogs\DialogImageSelection.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Dialogs\DialogImageSelection.pas"/>
+        <UnitName Value="DialogImageSelection"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameImageGrid.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="src\Display\Frames\FrameImageGrid.pas"/>
+        <UnitName Value="FrameImageGrid"/>
       </Item>
     </Files>
     <RequiredPkgs>

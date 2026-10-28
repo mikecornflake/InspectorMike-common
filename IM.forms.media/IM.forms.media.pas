@@ -8,8 +8,9 @@ unit IM.forms.media;
 interface
 
 uses
-  FrameImages, FramePDFViewer, FrameRelatedVideos, FrameSyncedVideo, FrameVideoPlayer, 
-  FrameVideoBase, VideoEngineFactory, FormVolumePopup, FrameSettingsSyncedVideo, AudioWaveform;
+  FrameImageViewer, FramePDFViewer, FrameRelatedVideos, FrameSyncedVideo, FrameVideoPlayer, 
+  FrameVideoBase, VideoEngineFactory, FormVolumePopup, FrameSettingsSyncedVideo, AudioWaveform, 
+  DialogImageSelection, FrameImageGrid;
 
 implementation
 
