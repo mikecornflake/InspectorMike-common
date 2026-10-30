@@ -118,6 +118,7 @@ Type
 
     Procedure grdImagesMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    Procedure grdImagesSelectCell(Sender: TObject; aCol, aRow: Integer; Var CanSelect: Boolean);
     Procedure pmImagesPopup(Sender: TObject);
   Private
     FCaptionNotSelected: String;
@@ -133,6 +134,7 @@ Type
     FWorker: TThumbnailWorker;
     FGeneration: QWord;
     FDestroying: Boolean;
+    FCurrentImageIndex: Integer;
 
     Procedure ThumbnailReady(ARequest: TThumbnailRequest);
     Procedure QueueThumbnail(AIndex: Integer);
@@ -317,8 +319,7 @@ Begin
 
     Try
       // BGRA decoding only; no canvas, window handle or LCL operations.
-      Req.Bitmap := GetFileThumbnail(Req.FileName, Req.Width, Req.Height,
-        BGRAWhite, False);
+      Req.Bitmap := GetFileThumbnail(Req.FileName, Req.Width, Req.Height, BGRAWhite, False);
     Except
       // A damaged image should not kill the worker thread.
       FreeAndNil(Req.Bitmap);
@@ -397,6 +398,9 @@ Begin
   FGeneration := 0;
   FDestroying := False;
   FWorker := TThumbnailWorker.Create(Self);
+
+  grdImages.FocusRectVisible := False;
+  FCurrentImageIndex := -1;
 
   RefreshUI;
 End;
@@ -493,7 +497,7 @@ Begin
     iTop := aRect.Top + FThumbnailBorder;
 
     oThumbnail.Draw(grdImages.Canvas, iLeft, iTop, True);
-    
+
     // FilterGrayscale returns a new bitmap, not the cached thumbnail.
     If oThumbnail <> oImage.CachedThumbnail Then
       oThumbnail.Free;
@@ -536,6 +540,21 @@ Begin
   iLeft := aRect.Left + ((aRect.Width - grdImages.Canvas.TextWidth(oImage.Caption)) Div 2);
   grdImages.Canvas.TextOut(iLeft, aRect.Top + FThumbnailBorder + FThumbnailHeight +
     2, oImage.Caption);
+
+  // Highlight Selection
+  If iIndex = FCurrentImageIndex Then
+  Begin
+    R := aRect;
+    InflateRect(R, -2, -2);
+
+    grdImages.Canvas.Brush.Style := bsClear;
+    grdImages.Canvas.Pen.Color := clHighlight;
+    grdImages.Canvas.Pen.Width := 2;
+    grdImages.Canvas.Rectangle(R);
+
+    grdImages.Canvas.Brush.Style := bsSolid;
+    grdImages.Canvas.Pen.Width := 1;
+  End;
 End;
 
 Procedure TFrameImageGrid.grdImagesGetCellHint(Sender: TObject; aCol, aRow: Integer;
@@ -547,38 +566,65 @@ End;
 Procedure TFrameImageGrid.grdImagesMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 Var
-  aCol, aRow: Integer;
+  aCol, aRow, iIndex: Integer;
 Begin
   If Button <> mbRight Then
     Exit;
 
   grdImages.MouseToCell(X, Y, aCol, aRow);
 
-  If (aCol >= grdImages.FixedCols) And (aRow >= grdImages.FixedRows) Then
-  Begin
-    grdImages.Col := aCol;
-    grdImages.Row := aRow;
-  End;
+  If (aCol < grdImages.FixedCols) Or (aRow < grdImages.FixedRows) Then
+    Exit;
+
+  If (aCol < 0) Or (aRow < 0) Then
+    Exit;
+
+  iIndex := (aRow * grdImages.ColCount) + aCol;
+
+  If iIndex >= FImages.Count Then
+    Exit;
+
+  grdImages.Col := aCol;
+  grdImages.Row := aRow;
+
+  FCurrentImageIndex := iIndex;
+
+  grdImages.Invalidate;
+  RefreshUI;
+End;
+
+Procedure TFrameImageGrid.grdImagesSelectCell(Sender: TObject; aCol, aRow: Integer;
+  Var CanSelect: Boolean);
+Var
+  iIndex: Integer;
+Begin
+  If FUpdateCount > 0 Then
+    Exit;
+
+  iIndex := (aRow * grdImages.ColCount) + aCol;
+
+  CanSelect := (iIndex >= 0) And (iIndex < FImages.Count);
+
+  If Not CanSelect Then
+    Exit;
+
+  FCurrentImageIndex := iIndex;
+
+  grdImages.Invalidate;
+  RefreshUI;
 End;
 
 Procedure TFrameImageGrid.pmImagesPopup(Sender: TObject);
-//Var
-//  iIndex: Integer;
 Begin
-  //  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
-
   RefreshUI;
 End;
 
 Procedure TFrameImageGrid.RefreshUI;
 Var
-  iIndex: Integer;
   bHasImages, bImageSelected: Boolean;
 Begin
-  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
-
   bHasImages := (FImages.Count > 0);
-  bImageSelected := (iIndex < FImages.Count);
+  bImageSelected := (FCurrentImageIndex >= 0) And (FCurrentImageIndex < FImages.Count);
 
   actViewImage.Enabled := Enabled And bHasImages And bImageSelected;
   actOpenFolder.Enabled := Enabled And bHasImages And bImageSelected;
@@ -611,9 +657,9 @@ Var
   iIndex: Integer;
   oImage: TViewerImage;
 Begin
-  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
+  iIndex := FCurrentImageIndex;
 
-  If iIndex >= FImages.Count Then
+  If (iIndex<0) Or (iIndex >= FImages.Count) Then
     Exit;
 
   oImage := FImages[iIndex];
@@ -634,9 +680,9 @@ Var
   oImage: TViewerImage;
   sFilename, sFolder, sNewFilename, sMessage: String;
 Begin
-  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
+  iIndex := FCurrentImageIndex;
 
-  If iIndex >= FImages.Count Then
+  If (iIndex<0) Or (iIndex >= FImages.Count) Then
     Exit;
 
   oImage := FImages[iIndex];
@@ -681,9 +727,9 @@ Var
   oImage: TViewerImage;
   sMessage: String;
 Begin
-  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
+  iIndex := FCurrentImageIndex;
 
-  If iIndex >= FImages.Count Then
+  If (iIndex<0) Or (iIndex >= FImages.Count) Then
     Exit;
 
   oImage := FImages[iIndex];
@@ -694,7 +740,7 @@ Begin
     If DeleteFile(oImage.FileName) Then
     Begin
       sMessage := 'Image ' + oImage.FileName + ' deleted';
-      
+
       CancelThumbnails;
       FImages.Delete(iIndex);
       FImages.InvalidateThumbnails;
@@ -716,9 +762,9 @@ Var
   iIndex: Integer;
   oImage: TViewerImage;
 Begin
-  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
+  iIndex := FCurrentImageIndex;
 
-  If iIndex >= FImages.Count Then
+  If (iIndex<0) Or (iIndex >= FImages.Count) Then
     Exit;
 
   oImage := FImages[iIndex];
@@ -732,20 +778,21 @@ Var
   iIndex: Integer;
   oImage: TViewerImage;
 Begin
+  iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
+
+  If (iIndex < 0) Or (iIndex >= FImages.Count) Then
+    Exit;
+
+  FCurrentImageIndex := iIndex;
+
   If FSelectionMode <> ismNone Then
   Begin
-    iIndex := (grdImages.Row * grdImages.ColCount) + grdImages.Col;
-
-    If iIndex >= FImages.Count Then
-      Exit;
-
     oImage := FImages[iIndex];
-
     oImage.Selected := Not oImage.Selected;
-
-    grdImages.InvalidateCell(grdImages.Col, grdImages.Row);
-    RefreshUI;
   End;
+
+  grdImages.Invalidate;
+  RefreshUI;
 End;
 
 Procedure TFrameImageGrid.SetThumbnailBorder(Const AValue: Integer);
@@ -820,6 +867,10 @@ Procedure TFrameImageGrid.ClearImages;
 Begin
   CancelThumbnails;
   FImages.Clear;
+  FCurrentImageIndex := -1;
+
+  grdImages.Row := 0;
+  grdImages.Col := 0;
 
   If FUpdateCount = 0 Then
     UpdateGridLayout;

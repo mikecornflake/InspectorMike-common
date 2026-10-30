@@ -34,6 +34,7 @@ object FrameImageGrid: TFrameImageGrid
     OnDrawCell = grdImagesDrawCell
     OnGetCellHint = grdImagesGetCellHint
     OnMouseDown = grdImagesMouseDown
+    OnSelectCell = grdImagesSelectCell
   end
   object ToolBar: TToolBar
     Left = 0
