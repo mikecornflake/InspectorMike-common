@@ -367,7 +367,8 @@ End;
 Procedure SetBusy;
 Begin
   InterlockedIncrement(LBusy);
-  Application.MainForm.Cursor := crHourglass;
+  If Assigned(Application.MainForm) Then
+    Application.MainForm.Cursor := crHourglass;
   Screen.Cursor := crHourglass;
 End;
 
@@ -378,7 +379,8 @@ Begin
   Begin
     LBusy := 0;
 
-    Application.MainForm.Cursor := crDefault;
+    If Assigned(Application.MainForm) Then
+      Application.MainForm.Cursor := crDefault;
     Screen.Cursor := crDefault;
   End;
 End;
@@ -473,7 +475,7 @@ Begin
     // Big thanks to the SynEdit team for their solution to the variable header length problem
     iStartFragment := iStartHTML + Length(HEADER) + 2;
     iEndFragment := iStartFragment + Length(oHTML.Text) + Length(FOOTER1) + 2;
-    iEndHTML := iEndFragment + LENGTH(FOOTER2) + 2;
+    iEndHTML := iEndFragment + Length(FOOTER2) + 2;
 
     // insert the native header and opening html tags at the start of the string
     oHTML.Insert(0, Format(NATIVEHEADER, [iStartHTML, iEndHTML, iStartFragment,
