@@ -31,6 +31,7 @@ object FrameImageGrid: TFrameImageGrid
     ShowHint = True
     TabOrder = 0
     OnClick = grdImagesClick
+    OnDblClick = actViewImageClick
     OnDrawCell = grdImagesDrawCell
     OnGetCellHint = grdImagesGetCellHint
     OnMouseDown = grdImagesMouseDown

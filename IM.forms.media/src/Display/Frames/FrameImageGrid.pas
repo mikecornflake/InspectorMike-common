@@ -11,6 +11,8 @@ Uses
 
 Type
 
+  TOnSelectImage = Procedure(Sender: TObject; AFilename: String) Of Object;
+
   TImageSelectionMode = (ismNone, ismSingle, ismMultiple);
 
   { TViewerImage }
@@ -22,6 +24,7 @@ Type
     FSelected: Boolean;
     FThumbnail: TBGRABitmap;
     FThumbnailPending: Boolean;
+
   Public
     Constructor Create;
     Destructor Destroy; Override;
@@ -124,8 +127,6 @@ Type
     FCaptionNotSelected: String;
     FCaptionSelected: String;
     FImages: TViewerImageList;
-    FOnRequestAddImage: TNotifyEvent;
-    FOnRequestRefreshImages: TNotifyEvent;
     FSelectionMode: TImageSelectionMode;
     FThumbnailBorder: Integer;
     FThumbnailHeight: Integer;
@@ -136,16 +137,24 @@ Type
     FDestroying: Boolean;
     FCurrentImageIndex: Integer;
 
+    FOnRequestAddImage: TNotifyEvent;
+    FOnRequestRefreshImages: TNotifyEvent;
+    FOnSelectImage: TOnSelectImage;
+
     Procedure ThumbnailReady(ARequest: TThumbnailRequest);
     Procedure QueueThumbnail(AIndex: Integer);
     Procedure CancelThumbnails;
 
     Function GetImage(AIndex: Integer): TViewerImage;
     Function GetShowToolbar: Boolean;
+
     Procedure RefreshUI;
+
     Procedure SetShowToolbar(Const AValue: Boolean);
     Procedure SetThumbnailBorder(Const AValue: Integer);
     Procedure UpdateGridLayout;
+
+    Procedure DoSelectImage;
   Public
     Constructor Create(TheOwner: TComponent); Override;
     Destructor Destroy; Override;
@@ -181,6 +190,7 @@ Type
     Property OnRequestAddImage: TNotifyEvent Read FOnRequestAddImage Write FOnRequestAddImage;
     Property OnRequestRefreshImages: TNotifyEvent Read FOnRequestRefreshImages
       Write FOnRequestRefreshImages;
+    Property OnSelectImage: TOnSelectImage Read FOnSelectImage Write FOnSelectImage;
   End;
 
 Implementation
@@ -588,6 +598,7 @@ Begin
   grdImages.Row := aRow;
 
   FCurrentImageIndex := iIndex;
+  DoSelectImage;
 
   grdImages.Invalidate;
   RefreshUI;
@@ -609,6 +620,7 @@ Begin
     Exit;
 
   FCurrentImageIndex := iIndex;
+  DoSelectImage;
 
   grdImages.Invalidate;
   RefreshUI;
@@ -659,7 +671,7 @@ Var
 Begin
   iIndex := FCurrentImageIndex;
 
-  If (iIndex<0) Or (iIndex >= FImages.Count) Then
+  If (iIndex < 0) Or (iIndex >= FImages.Count) Then
     Exit;
 
   oImage := FImages[iIndex];
@@ -682,7 +694,7 @@ Var
 Begin
   iIndex := FCurrentImageIndex;
 
-  If (iIndex<0) Or (iIndex >= FImages.Count) Then
+  If (iIndex < 0) Or (iIndex >= FImages.Count) Then
     Exit;
 
   oImage := FImages[iIndex];
@@ -729,7 +741,7 @@ Var
 Begin
   iIndex := FCurrentImageIndex;
 
-  If (iIndex<0) Or (iIndex >= FImages.Count) Then
+  If (iIndex < 0) Or (iIndex >= FImages.Count) Then
     Exit;
 
   oImage := FImages[iIndex];
@@ -764,7 +776,7 @@ Var
 Begin
   iIndex := FCurrentImageIndex;
 
-  If (iIndex<0) Or (iIndex >= FImages.Count) Then
+  If (iIndex < 0) Or (iIndex >= FImages.Count) Then
     Exit;
 
   oImage := FImages[iIndex];
@@ -784,6 +796,7 @@ Begin
     Exit;
 
   FCurrentImageIndex := iIndex;
+  DoSelectImage;
 
   If FSelectionMode <> ismNone Then
   Begin
@@ -793,6 +806,22 @@ Begin
 
   grdImages.Invalidate;
   RefreshUI;
+End;
+
+Procedure TFrameImageGrid.DoSelectImage;
+Var
+  iIndex: Integer;
+  oImage: TViewerImage;
+Begin
+  iIndex := FCurrentImageIndex;
+
+  If (iIndex < 0) Or (iIndex >= FImages.Count) Then
+    Exit;
+
+  oImage := FImages[iIndex];
+
+  If Assigned(FOnSelectImage) Then
+    FOnSelectImage(Self, oImage.FileName);
 End;
 
 Procedure TFrameImageGrid.SetThumbnailBorder(Const AValue: Integer);
